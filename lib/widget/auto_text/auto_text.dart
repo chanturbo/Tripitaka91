@@ -149,7 +149,7 @@ class ATextTitleMediumTHColors extends StatelessWidget {
   Widget build(BuildContext context) {
     return AutoSizeText(
       text,
-      style: TextStyle(fontFamily: 'THSarabunNew', fontSize: 24, color: color),
+      style: TextStyle(fontFamily: 'THSarabunNew', fontSize: 26, color: color),
       maxFontSize: 30,
       minFontSize: 16,
     );

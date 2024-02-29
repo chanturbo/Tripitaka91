@@ -51,6 +51,7 @@ class _SubMenuExpansionTileState extends State<SubMenuExpansionTile> {
                       builder: (context) => BookShowTitle(
                         triBookid: (innerIndex + widget.bookAdd).toString(),
                         chkSearch: '',
+                        isMobile: widget.isTablet,
                       ),
                     ),
                   );

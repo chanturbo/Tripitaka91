@@ -49,6 +49,7 @@ class ListMenuTri3 extends StatelessWidget {
                       builder: (context) => BookShowTitle(
                         triBookid: (innerIndex + 75).toString(),
                         chkSearch: '',
+                        isMobile: false,
                       ),
                     ),
                   );

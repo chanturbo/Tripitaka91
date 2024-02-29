@@ -87,6 +87,7 @@ class _ShowBookSlideState extends State<ShowBookSlide> {
                               builder: (context) => BookShowTitle(
                                 triBookid: (index + 1).toString(),
                                 chkSearch: "",
+                                isMobile: widget.isMobile,
                               ),
                             ),
                           );
@@ -174,6 +175,7 @@ class _ShowBookSlideState extends State<ShowBookSlide> {
                               builder: (context) => BookShowTitle(
                                 triBookid: (index + 11).toString(),
                                 chkSearch: "",
+                                isMobile: widget.isMobile,
                               ),
                             ),
                           );
@@ -261,6 +263,7 @@ class _ShowBookSlideState extends State<ShowBookSlide> {
                               builder: (context) => BookShowTitle(
                                 triBookid: (index + 75).toString(),
                                 chkSearch: "",
+                                isMobile: widget.isMobile,
                               ),
                             ),
                           );

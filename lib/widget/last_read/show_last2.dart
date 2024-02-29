@@ -60,6 +60,7 @@ class _DummyLastBookAccessData2State extends State<DummyLastBookAccessData2> {
                                 triBookid:
                                     lastBookAccess.bookLastAccess.toString(),
                                 chkSearch: "",
+                                isMobile: widget.isMobile,
                               ),
                             ),
                           );
