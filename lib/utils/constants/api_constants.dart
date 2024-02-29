@@ -1,0 +1,61 @@
+/* -- LIST OF Constants used in APIs -- */
+
+// Example
+const String tSecretAPIKey = "tripiaka91_b2da6ds3df3e785v8ddc59198f7615ba";
+const int tSpeakNum = 10;
+const int tCorrectNum = 100;
+
+///////////// WEB-CONFIG ///////////////////
+const String tURLmain = "https://news.tripitaka91.com/";
+const String tURL = "https://news.tripitaka91.com/workspace/";
+const String tURLrandom = "${tURL}random.php";
+const String tURLtitle = "${tURL}showtitle.php";
+const String tURLtitleShow = "${tURL}showtitleshow.php";
+const String tURLtitleSearch = "${tURL}showtitlesearch.php";
+const String tURLtitleShowInPage = "${tURL}showtitleshowinpages.php";
+const String tURLtitleSearchTotal = "${tURL}totalsearchtitle.php";
+const String tURLtitleDict = "${tURL}showdictsearch.php";
+const String tURLtitleDictAll = "${tURL}showdictall.php";
+const String tURLtitleDictInPage = "${tURL}showdictsearchinpage.php";
+const String tURLtitleUserInPage = "${tURL}showuserinpage.php";
+const String tURLtitleUserInPageSpeak = "${tURL}showuserinpagespeak.php";
+const String tURLtitleUserInPageCorrect = "${tURL}showuserinpagecorrect.php";
+const String tURLtitleUserInPageCorrectSpeak =
+    "${tURL}showuserinpagecorrectspeak.php";
+const String tURLtitleDictbt = "${tURL}showdictbtsearch.php";
+const String tURLtitleDictbtAll = "${tURL}showdictbtall.php";
+const String tURLbooktri91Search = "${tURL}totalsearchtri.php";
+const String tURLbooktri91SearchSub = "${tURL}totalsearchtrisub.php";
+const String tURLdictSearch = "${tURL}totalsearchdict.php";
+const String tURLdictbtSearch = "${tURL}totalsearchdictbt.php";
+const String tURLbooktri91 = "${tURL}showbook.php";
+const String tURLbooktri91Line = "${tURL}showbookline.php";
+const String tURLbooktri91All = "${tURL}showbookall.php";
+const String tURLuserChk = "${tURL}user_chk.php";
+const String tURLuserChangePass = "${tURL}user_change_pass.php";
+const String tURLshowUser = "${tURL}user_show.php";
+const String tURLshowlogedit = "${tURL}show_logedit.php";
+const String tURLshowlogEditWithUser = "${tURL}show_logedit_withuser.php";
+const String tURLshowlogEditWithAll = "${tURL}show_logedit_withall.php";
+const String tURLshowlogSpeechWithUser = "${tURL}show_logspeech_withuser.php";
+const String tURLshowlogSpeechWithAll = "${tURL}show_speakedit_withall.php";
+const String tURLshowlogEditSum = "${tURL}show_logedit_sum.php";
+const String tURLshowlogSpeechSum = "${tURL}show_logSpeech_sum.php";
+const String tURLlogOut = "${tURL}log_out.php";
+const String tURLchkUserPass = "${tURL}user_chk_user_pass.php";
+const String tURLchkSaveUser = "${tURL}user_save.php";
+const String tURLresetUserPass = "${tURL}user_reset_pass.php";
+const String tURLconfirmUser = "${tURL}user_confirm_regis.php";
+const String tURLWaitconfirmUser = "${tURL}user_waitcount_regis.php";
+const String tURLgetIP = "${tURL}get_ip.php";
+const String tURLlogEditSave = "${tURL}save_logedit.php";
+const String tURLlogSpeechSave = "${tURL}save_logspeech.php";
+const String tURLSoundsGetLink = "${tURL}speech.php";
+const String tURLLogReads = "${tURL}log_reads.php";
+const String tURLLogSearch = "${tURL}log_history.php";
+const String tURLShowSearchTri = "${tURL}show_search_tri91.php";
+const String tURLupdateLogEdit = "${tURL}update_logedit.php";
+const String tURLupdateLogEditConfirm = "${tURL}update_logedit_confirm.php";
+const String tURLupdateSpeakConfirm = "${tURL}update_speak_confirm.php";
+const String tURLsuscessSpeakConfirm = "${tURL}confirm_speak.php";
+const String tURLsuscessCorrectConfirm = "${tURL}confirm_correct.php";
