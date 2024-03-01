@@ -80,9 +80,8 @@ class _TitleCardState extends State<TitleCard> {
                 );
               },
               title: widget.isMobile
-                  ? Text(
-                      widget.triTitle.replaceAll('', ''),
-                      style: Theme.of(context).textTheme.titleMedium,
+                  ? ATextTitleMediumTH(
+                      text: widget.triTitle.replaceAll('', ''),
                     )
                   : ATextTitleMedium(text: widget.triTitle.replaceAll('', '')),
             ),

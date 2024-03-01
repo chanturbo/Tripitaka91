@@ -145,7 +145,7 @@ class _BookShowTitleState extends State<BookShowTitle> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             Expanded(
-              flex: 1, //_size.width >= 750 ? 2 : 1,
+              flex: 2, //_size.width >= 750 ? 2 : 1,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
@@ -159,14 +159,14 @@ class _BookShowTitleState extends State<BookShowTitle> {
                     ),
                   ),
                   Expanded(
-                    flex: 1,
+                    flex: 2,
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Expanded(
-                            flex: 1,
+                            flex: 2,
                             child: ATextTitleLarge(
                                 text: 'เล่ม $bookid $bookTitleTri91'),
                           ),
@@ -181,71 +181,6 @@ class _BookShowTitleState extends State<BookShowTitle> {
                                   'มีทั้งหมด $numPageAll หน้า', // อ่านแล้ว $bookReadall หน้า',
                             ),
                           ),
-                          // Expanded(
-                          //   flex: 1,
-                          //   child: (lastBookAccess.isEmpty)
-                          //       ? const Text('')
-                          //       : TextButton(
-                          //           style: ButtonStyle(
-                          //             backgroundColor:
-                          //                 MaterialStateProperty.all<Color>(
-                          //                     Colors.red),
-                          //           ),
-                          //           onPressed: () {
-                          //             Navigator.push(
-                          //               context,
-                          //               MaterialPageRoute(
-                          //                 builder: (context) => Tri91PageView(
-                          //                   triBookid: widget.triBookid,
-                          //                   triPageid: int.parse(
-                          //                     lastBookAccess[0]
-                          //                         .pageLastAccess
-                          //                         .toString(),
-                          //                   ),
-                          //                   triBookline: '1',
-                          //                   chkSearch: '',
-                          //                 ),
-                          //               ),
-                          //             );
-                          //           },
-                          //           child: ATextDiskplaySmall(
-                          //             text:
-                          //                 'เล่มที่อ่านล่าสุด เล่ม ${lastBookAccess[0].bookLastAccess} หน้า ${lastBookAccess[0].pageLastAccess}',
-                          //           ),
-                          //         ),
-                          // : Container(
-                          //     decoration: BoxDecoration(
-                          //       border: Border.all(
-                          //           color: Colors
-                          //               .grey), // กำหนด border สีเทา
-                          //       borderRadius: BorderRadius.circular(
-                          //           8.0), // กำหนดขอบมน
-                          //     ),
-                          //     child: InkWell(
-                          //       onTap: () {
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //     builder: (context) => Tri91PageView(
-                          //       triBookid: widget.triBookid,
-                          //       triPageid: int.parse(
-                          //         lastBookAccess[0]
-                          //             .pageLastAccess
-                          //             .toString(),
-                          //       ),
-                          //       triBookline: '1',
-                          //       chkSearch: '',
-                          //     ),
-                          //   ),
-                          // );
-                          //       },
-                          //       child: ATextBodyMedium(
-                          //         text:
-                          //             ' เล่มที่อ่านล่าสุด เล่ม ${lastBookAccess[0].bookLastAccess} หน้า ${lastBookAccess[0].pageLastAccess} ',
-                          //       ),
-                          //     ),
-                          //   ), //'0000-00-00 00:00',
-                          // ),
                         ],
                       ),
                     ),
@@ -253,66 +188,6 @@ class _BookShowTitleState extends State<BookShowTitle> {
                 ],
               ),
             ),
-            // SizedBox(
-            //   child: Row(
-            //     crossAxisAlignment: CrossAxisAlignment.start,
-            //     children: <Widget>[
-            //       const SizedBox(
-            //         width: 10,
-            //       ),
-            //       SizedBox(
-            //         width: 150,
-            //         // child: ATextTitleMedium(
-            //         //     text:
-            //         //         'เล่มที่อ่านล่าสุด เล่ม ${lastBookAccess[0].bookLastAccess} หน้า ${lastBookAccess[0].pageLastAccess}'),
-            //         child: ElevatedButton(
-            //           style: ElevatedButton.styleFrom(
-            //             backgroundColor:
-            //                 TColors.secondary, // กำหนดสีพื้นหลังเป็นสีขาว
-            //             side: const BorderSide(color: TColors.secondary),
-            //           ),
-            //           onPressed: () {
-            //             Navigator.push(
-            //               context,
-            //               MaterialPageRoute(
-            //                 builder: (context) => Tri91PageView(
-            //                   triBookid:
-            //                       lastBookAccess[0].bookLastAccess.toString(),
-            //                   triPageid: lastBookAccess[0].pageLastAccess,
-            //                   triBookline: '1',
-            //                   chkSearch: '',
-            //                 ),
-            //               ),
-            //             );
-            //           },
-            //           child: const ATextDiskplaySmall(
-            //               text: 'เปิดหน้าที่อ่านล่าสุด'),
-            //         ),
-            //       ),
-            //       const SizedBox(width: 10),
-            //       SizedBox(
-            //         width: 160,
-            //         child: ElevatedButton(
-            //           style: ElevatedButton.styleFrom(
-            //             backgroundColor:
-            //                 TColors.secondary, // กำหนดสีพื้นหลังเป็นสีขาว
-            //             side: const BorderSide(color: TColors.secondary),
-            //           ),
-            //           onPressed: () {
-            //             checkLoginStatus(context);
-            //           },
-            //           child: const ATextDiskplaySmall(
-            //               text: 'แสดงหน้าที่ยังไม่ได้อ่าน'),
-            //         ), //lastPageRead(),
-            //       ),
-            //       const Expanded(
-            //         flex: 1,
-            //         child: Text(' '),
-            //       ),
-            //     ],
-            //   ),
-            // ),
-
             const SizedBox(width: 10),
             lastBookAccess.isEmpty
                 ? const Text('')
@@ -356,7 +231,7 @@ class _BookShowTitleState extends State<BookShowTitle> {
               height: 10,
             ),
             Expanded(
-              flex: 3,
+              flex: 4,
               child: SearchShowPagesTitleList(
                 bookid: widget.triBookid,
                 isMobile: widget.isMobile,
