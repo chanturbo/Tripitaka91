@@ -338,7 +338,7 @@ class _BookShowTitleState extends State<BookShowTitle> {
                     },
                     child: ATextDiskplayMedium(
                       text:
-                          'เล่มที่อ่านล่าสุด เล่ม ${lastBookAccess[0].bookLastAccess} หน้า ${lastBookAccess[0].pageLastAccess}',
+                          'เปิดหน้าที่อ่านล่าสุด เล่ม ${lastBookAccess[0].bookLastAccess} หน้า ${lastBookAccess[0].pageLastAccess}',
                     ),
                   ),
             const SizedBox(height: 10),
