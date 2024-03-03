@@ -191,7 +191,7 @@ class _Tri91PageViewState extends State<Tri91PageView> {
     return uniqueSet.toList();
   }
 
-  void _showDialogDict(BuildContext context, String result) {
+  void _showDialogDict(BuildContext context, String result, bool isM) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -201,6 +201,7 @@ class _Tri91PageViewState extends State<Tri91PageView> {
             if (snapshot.connectionState == ConnectionState.done) {
               // Data has been fetched, show the dialog
               return AlertDialog(
+                contentPadding: const EdgeInsets.all(5),
                 title: const Text('คำศัพท์ที่ตรวจพบในหน้านี้'),
                 content: SizedBox(
                   width: double.maxFinite,
@@ -208,87 +209,100 @@ class _Tri91PageViewState extends State<Tri91PageView> {
                     shrinkWrap: true,
                     itemCount: dataDict.length,
                     itemBuilder: (BuildContext context, int index) {
-                      return Column(
-                        children: [
-                          ListTile(
-                            leading: CircleAvatar(
-                              backgroundColor: Colors.blue[900],
-                              foregroundColor: Colors.white,
-                              child: ATextDiskplayMedium(text: '${index + 1}'),
-                            ),
-                            title: ATextTitleMedium(
-                              text:
-                                  '${textTitleReplace.getWordDict(dataDict[index])}\n- ${textTitleReplace.getWordDictDetail(dataDict[index])}',
-                            ),
-                            subtitle: Row(
-                              children: [
-                                InkWell(
-                                  onTap: () async {
-                                    LoadingDialog.show(context);
-                                    String txtTitle =
-                                        '${textTitleReplace.getWordDict(dataDict[index])} - ${textTitleReplace.getWordDictDetail(dataDict[index])}';
-                                    String namesave = textTitleReplace
-                                        .getWordDict(dataDict[index])
-                                        .trim()
-                                        .replaceAll(RegExp(r'\s+'), '');
+                      return ClipRRect(
+                        borderRadius: BorderRadius.circular(10.0),
+                        child: Card(
+                          margin: const EdgeInsets.all(5),
+                          color: Colors.white,
+                          child: Column(
+                            children: [
+                              ListTile(
+                                // leading: CircleAvatar(
+                                //   backgroundColor: Colors.blue[900],
+                                //   foregroundColor: Colors.white,
+                                //   child: ATextDiskplayMedium(text: '${index + 1}'),
+                                // ),
+                                title: isM
+                                    ? ATextTitleMedium18(
+                                        text:
+                                            '${textTitleReplace.getWordDict(dataDict[index])}\n- ${textTitleReplace.getWordDictDetail(dataDict[index])}',
+                                      )
+                                    : ATextTitleMedium(
+                                        text:
+                                            '${textTitleReplace.getWordDict(dataDict[index])}\n- ${textTitleReplace.getWordDictDetail(dataDict[index])}',
+                                      ),
+                                subtitle: Row(
+                                  children: [
+                                    InkWell(
+                                      onTap: () async {
+                                        LoadingDialog.show(context);
+                                        String txtTitle =
+                                            '${textTitleReplace.getWordDict(dataDict[index])} - ${textTitleReplace.getWordDictDetail(dataDict[index])}';
+                                        String namesave = textTitleReplace
+                                            .getWordDict(dataDict[index])
+                                            .trim()
+                                            .replaceAll(RegExp(r'\s+'), '');
 
-                                    String filename = 'dict-$namesave';
-                                    await audioPlayerManager.playAudio(
-                                        '3', filename, txtTitle);
-                                    // ignore: use_build_context_synchronously
-                                    LoadingDialog.hide(context);
-                                  },
-                                  child: Icon(
-                                    Icons.volume_up,
-                                    size: 20,
-                                    color: Colors.blue[300],
-                                  ),
+                                        String filename = 'dict-$namesave';
+                                        await audioPlayerManager.playAudio(
+                                            '3', filename, txtTitle);
+                                        // ignore: use_build_context_synchronously
+                                        LoadingDialog.hide(context);
+                                      },
+                                      child: Icon(
+                                        Icons.volume_up,
+                                        size: isM ? 25 : 20,
+                                        color: Colors.blue[300],
+                                      ),
+                                    ),
+                                    const SizedBox(width: 10),
+                                    InkWell(
+                                      onTap: () async {
+                                        String txtTitle =
+                                            '${textTitleReplace.getWordDict(dataDict[index])}\n- ${textTitleReplace.getWordDictDetail(dataDict[index])}';
+                                        txtTitle +=
+                                            ' ข้อความจากพจนานุกรม ฉบับประมวลศัพท์';
+                                        await Share.share(txtTitle,
+                                            subject:
+                                                'พจนานุกรม ฉบับประมวลศัพท์');
+                                      },
+                                      child: Icon(
+                                        Icons.share,
+                                        size: isM ? 21 : 16,
+                                        color: Colors.blue[300],
+                                      ),
+                                    ),
+                                    const SizedBox(width: 10),
+                                    InkWell(
+                                      onTap: () async {
+                                        String txtTitle =
+                                            '${textTitleReplace.getWordDict(dataDict[index])}\n${textTitleReplace.getWordDictDetail(dataDict[index])}';
+                                        txtTitle +=
+                                            ' ข้อความจากพจนานุกรม ฉบับประมวลศัพท์ รวบรวมโดย พระพรหมคุณาภรณ์ (ป.อ. ปยุตฺโต)';
+                                        Clipboard.setData(
+                                          ClipboardData(text: txtTitle),
+                                        );
+                                        _showSnackbar(context,
+                                            'คัดลอกข้อมูลเรียบร้อยแล้ว');
+                                      },
+                                      child: Icon(
+                                        Icons.copy,
+                                        size: isM ? 21 : 16,
+                                        color: Colors.blue[300],
+                                      ),
+                                    ),
+                                    const Expanded(
+                                      child: SizedBox(
+                                        child: Text(''),
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                const SizedBox(width: 10),
-                                InkWell(
-                                  onTap: () async {
-                                    String txtTitle =
-                                        '${textTitleReplace.getWordDict(dataDict[index])}\n- ${textTitleReplace.getWordDictDetail(dataDict[index])}';
-                                    txtTitle +=
-                                        ' ข้อความจากพจนานุกรม ฉบับประมวลศัพท์';
-                                    await Share.share(txtTitle,
-                                        subject: 'พจนานุกรม ฉบับประมวลศัพท์');
-                                  },
-                                  child: Icon(
-                                    Icons.share,
-                                    size: 16,
-                                    color: Colors.blue[300],
-                                  ),
-                                ),
-                                const SizedBox(width: 10),
-                                InkWell(
-                                  onTap: () async {
-                                    String txtTitle =
-                                        '${textTitleReplace.getWordDict(dataDict[index])}\n${textTitleReplace.getWordDictDetail(dataDict[index])}';
-                                    txtTitle +=
-                                        ' ข้อความจากพจนานุกรม ฉบับประมวลศัพท์ รวบรวมโดย พระพรหมคุณาภรณ์ (ป.อ. ปยุตฺโต)';
-                                    Clipboard.setData(
-                                      ClipboardData(text: txtTitle),
-                                    );
-                                    _showSnackbar(
-                                        context, 'คัดลอกข้อมูลเรียบร้อยแล้ว');
-                                  },
-                                  child: Icon(
-                                    Icons.copy,
-                                    size: 16,
-                                    color: Colors.blue[300],
-                                  ),
-                                ),
-                                const Expanded(
-                                  child: SizedBox(
-                                    child: Text(''),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            onTap: () {},
+                                onTap: () {},
+                              ),
+                            ],
                           ),
-                        ],
+                        ),
                       );
                     },
                   ),
@@ -317,6 +331,7 @@ class _Tri91PageViewState extends State<Tri91PageView> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          contentPadding: const EdgeInsets.all(5),
           title: const Text('สารบัญหัวข้อธรรม'),
           content: (numRecord == 0)
               ? SizedBox(
@@ -463,26 +478,25 @@ class _Tri91PageViewState extends State<Tri91PageView> {
                 showDialog(
                   context: context,
                   builder: (BuildContext context) {
-                    return FractionallySizedBox(
-                      widthFactor: 0.6,
-                      heightFactor: 0.6,
-                      child: SizedBox.expand(
-                        child: AlertDialog(
-                          backgroundColor: Colors.white,
-                          contentPadding: EdgeInsets.zero,
-                          title: const Text('แจ้งการอ่านออกเสียง'),
-                          content: EditSpeakScreen(
-                            comments: 'เล่ม $bookid หน้า $pageChanged',
-                          ),
-                          actions: <Widget>[
-                            TextButton(
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                              child: const Text('ปิดหน้าจอ'),
-                            ),
-                          ],
+                    return SizedBox.expand(
+                      child: AlertDialog(
+                        shape: const RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(32.0))),
+                        contentPadding: const EdgeInsets.all(5),
+                        backgroundColor: Colors.white,
+                        title: const Text('แจ้งการอ่านออกเสียง'),
+                        content: EditSpeakScreen(
+                          comments: 'เล่ม $bookid หน้า $pageChanged',
                         ),
+                        actions: <Widget>[
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text('ปิดหน้าจอ'),
+                          ),
+                        ],
                       ),
                     );
                   },
@@ -643,11 +657,13 @@ class _Tri91PageViewState extends State<Tri91PageView> {
     List<String> outputList = wordSearch.split(regex);
 
     return ClipRRect(
-      borderRadius: BorderRadius.circular(30.0),
+      borderRadius: BorderRadius.circular(10.0),
       child: Card(
+        margin: const EdgeInsets.all(5),
         color: Colors.white,
         child: Column(
-          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             ListTile(
               onTap: () {
@@ -669,14 +685,15 @@ class _Tri91PageViewState extends State<Tri91PageView> {
                   ? SubstringHighlight(
                       text: triTitle,
                       terms: outputList,
-                      textStyle:
-                          const TextStyle(fontSize: 16.0, color: Colors.black),
+                      textStyle: TextStyle(
+                          fontSize: isMobile ? 18.0 : 16.0,
+                          color: Colors.black),
                     )
                   : SubstringHighlight(
                       text: triTitle,
                       terms: outputList,
-                      textStyle:
-                          const TextStyle(fontSize: 16.0, color: Colors.red),
+                      textStyle: TextStyle(
+                          fontSize: isMobile ? 18.0 : 16.0, color: Colors.red),
                       textStyleHighlight: const TextStyle(color: Colors.black),
                     ),
               subtitle: Row(
@@ -698,7 +715,7 @@ class _Tri91PageViewState extends State<Tri91PageView> {
                     },
                     child: Icon(
                       Icons.volume_up,
-                      size: 20,
+                      size: isMobile ? 25 : 20,
                       color: Colors.blue[300], // Change color as needed
                     ),
                   ),
@@ -715,7 +732,7 @@ class _Tri91PageViewState extends State<Tri91PageView> {
                     },
                     child: Icon(
                       Icons.share,
-                      size: 16,
+                      size: isMobile ? 21 : 16,
                       color: Colors.blue[300], // Change color as needed
                     ),
                   ),
@@ -735,7 +752,7 @@ class _Tri91PageViewState extends State<Tri91PageView> {
                     },
                     child: Icon(
                       Icons.copy,
-                      size: 16,
+                      size: isMobile ? 21 : 16,
                       color: Colors.blue[300], // Change color as needed
                     ),
                   ),
@@ -752,24 +769,22 @@ class _Tri91PageViewState extends State<Tri91PageView> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return FractionallySizedBox(
-          widthFactor: 0.6,
-          heightFactor: 0.6,
-          child: SizedBox.expand(
-            child: AlertDialog(
-              backgroundColor: Colors.white,
-              contentPadding: EdgeInsets.zero,
-              title: const Text('เข้าสู่ระบบ'),
-              content: const LoginPageDialog(),
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: const Text('ปิดหน้าจอ'),
-                ),
-              ],
-            ),
+        return SizedBox.expand(
+          child: AlertDialog(
+            shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(32.0))),
+            contentPadding: const EdgeInsets.only(top: 10.0),
+            backgroundColor: Colors.white,
+            title: const Text('เข้าสู่ระบบ'),
+            content: const LoginPageDialog(),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('ปิดหน้าจอ'),
+              ),
+            ],
           ),
         );
       },
@@ -1052,22 +1067,24 @@ class _Tri91PageViewState extends State<Tri91PageView> {
               const Expanded(
                 child: Text(''),
               ),
-              isMobile
-                  ? Align(
-                      alignment: Alignment.centerLeft,
-                      child: TextButton(
-                        style: ButtonStyle(
-                          backgroundColor:
-                              MaterialStateProperty.all<Color>(Colors.blue),
-                        ),
-                        child:
-                            const ATextDiskplaySmall(text: 'สารบัญหัวข้อธรรม'),
-                        onPressed: () {
-                          _showDialogTitle(context, true);
-                        },
-                      ),
-                    )
-                  : const Text(''),
+              pageChanged == 0
+                  ? const Text('')
+                  : isMobile
+                      ? Align(
+                          alignment: Alignment.centerLeft,
+                          child: TextButton(
+                            style: ButtonStyle(
+                              backgroundColor:
+                                  MaterialStateProperty.all<Color>(Colors.blue),
+                            ),
+                            child: const ATextDiskplaySmall(
+                                text: 'สารบัญหัวข้อธรรม'),
+                            onPressed: () {
+                              _showDialogTitle(context, true);
+                            },
+                          ),
+                        )
+                      : const Text(''),
               pageChanged == 0
                   ? const Text('')
                   : Align(
@@ -1103,7 +1120,7 @@ class _Tri91PageViewState extends State<Tri91PageView> {
 
                               String result = uniqueItems.join(',');
 
-                              _showDialogDict(context, result);
+                              _showDialogDict(context, result, isMobile);
                             } else {
                               _showSnackbar(context, 'ไม่พบข้อมูลคำศัพท์');
                             }

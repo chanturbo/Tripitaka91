@@ -39,9 +39,10 @@ class _LoginPageDialogState extends State<LoginPageDialog> {
         //   ],
         // ),
         body: Container(
-          margin: const EdgeInsets.all(24),
+          padding: const EdgeInsets.all(5),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               _inputField(context),
             ],

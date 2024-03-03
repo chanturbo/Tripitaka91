@@ -231,7 +231,7 @@ class _MyHomeTabletState extends State<MyHomeTablet> {
                       height: 20,
                     ),
                     const ShowBookSlide(
-                      isMobile: true,
+                      isMobile: false,
                     ),
                   ],
                 ),

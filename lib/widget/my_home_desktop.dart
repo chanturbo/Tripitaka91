@@ -199,7 +199,7 @@ class _MyHomeDesktopState extends State<MyHomeDesktop> {
                       height: 20,
                     ),
                     const ShowBookSlide(
-                      isMobile: true,
+                      isMobile: false,
                     ),
                   ],
                 ),

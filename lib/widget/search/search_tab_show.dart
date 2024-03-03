@@ -17,12 +17,14 @@ class SearchTabShow extends StatelessWidget {
   final String title;
   final List<String> result;
   final int indexShow;
+  final bool isM;
 
   const SearchTabShow(
       {super.key,
       required this.title,
       required this.result,
-      required this.indexShow});
+      required this.indexShow,
+      required this.isM});
 
   @override
   Widget build(BuildContext context) {
@@ -31,14 +33,45 @@ class SearchTabShow extends StatelessWidget {
           indexShow: indexShow,
           title: title,
           pages: [
-            MyPageTabDetail(title: title, indexLocal: 0, result: result),
-            MyPageTabDetail(title: title, indexLocal: 1, result: result),
-            MyPageTabDetail(title: title, indexLocal: 2, result: result),
-            MyPageTabDetail(title: title, indexLocal: 3, result: result),
-            MyPageTabDetail(title: title, indexLocal: 4, result: result),
-            MyPageTabDetail(title: title, indexLocal: 5, result: result),
+            MyPageTabDetail(
+              title: title,
+              indexLocal: 0,
+              result: result,
+              isM: isM,
+            ),
+            MyPageTabDetail(
+              title: title,
+              indexLocal: 1,
+              result: result,
+              isM: isM,
+            ),
+            MyPageTabDetail(
+              title: title,
+              indexLocal: 2,
+              result: result,
+              isM: isM,
+            ),
+            MyPageTabDetail(
+              title: title,
+              indexLocal: 3,
+              result: result,
+              isM: isM,
+            ),
+            MyPageTabDetail(
+              title: title,
+              indexLocal: 4,
+              result: result,
+              isM: isM,
+            ),
+            MyPageTabDetail(
+              title: title,
+              indexLocal: 5,
+              result: result,
+              isM: isM,
+            ),
           ],
-          result: result),
+          result: result,
+          isM: isM),
     );
   }
 }
@@ -48,13 +81,16 @@ class MyTabPage extends StatelessWidget {
   final String title;
   final List<MyPageTabDetail> pages;
   final List<String> result;
+  final bool isM;
 
-  const MyTabPage(
-      {super.key,
-      required this.indexShow,
-      required this.title,
-      required this.pages,
-      required this.result});
+  const MyTabPage({
+    super.key,
+    required this.indexShow,
+    required this.title,
+    required this.pages,
+    required this.result,
+    required this.isM,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -70,24 +106,40 @@ class MyTabPage extends StatelessWidget {
             isScrollable: true,
             tabs: [
               Tab(
-                child:
-                    ATextDiskplaySmall(text: 'หัวข้อธรรมสำคัญ [${results[0]}]'),
+                child: isM
+                    ? ATextDiskplayLarge(
+                        text: 'หัวข้อธรรมสำคัญ [${results[0]}]')
+                    : ATextDiskplaySmall(
+                        text: 'หัวข้อธรรมสำคัญ [${results[0]}]'),
               ),
               Tab(
-                  child:
-                      ATextDiskplaySmall(text: 'พระวินัยปิฎก [${results[1]}]')),
+                child: isM
+                    ? ATextDiskplayLarge(text: 'พระวินัยปิฎก [${results[1]}]')
+                    : ATextDiskplaySmall(text: 'พระวินัยปิฎก [${results[1]}]'),
+              ),
               Tab(
-                  child: ATextDiskplaySmall(
-                      text: 'พระสุตันตปิฎก [${results[2]}]')),
+                child: isM
+                    ? ATextDiskplayLarge(text: 'พระสุตันตปิฎก [${results[2]}]')
+                    : ATextDiskplaySmall(text: 'พระสุตันตปิฎก [${results[2]}]'),
+              ),
               Tab(
-                  child: ATextDiskplaySmall(
-                      text: 'พระอภิธรรมปิฎก [${results[3]}]')),
+                child: isM
+                    ? ATextDiskplayLarge(text: 'พระอภิธรรมปิฎก [${results[3]}]')
+                    : ATextDiskplaySmall(
+                        text: 'พระอภิธรรมปิฎก [${results[3]}]'),
+              ),
               Tab(
-                  child:
-                      ATextDiskplaySmall(text: 'ประมวลศัพท์ [${results[4]}]')),
+                child: isM
+                    ? ATextDiskplayLarge(text: 'ประมวลศัพท์ [${results[4]}]')
+                    : ATextDiskplaySmall(text: 'ประมวลศัพท์ [${results[4]}]'),
+              ),
               Tab(
-                  child: ATextDiskplaySmall(
-                      text: 'พจนานุกรมไทย-บาลี [${results[5]}]')),
+                child: isM
+                    ? ATextDiskplayLarge(
+                        text: 'พจนานุกรมไทย-บาลี [${results[5]}]')
+                    : ATextDiskplaySmall(
+                        text: 'พจนานุกรมไทย-บาลี [${results[5]}]'),
+              ),
             ],
           ),
         ),
@@ -103,11 +155,14 @@ class MyPageTabDetail extends StatefulWidget {
   final String title;
   final int indexLocal;
   final List<String> result;
-  const MyPageTabDetail(
-      {super.key,
-      required this.title,
-      required this.indexLocal,
-      required this.result});
+  final bool isM;
+  const MyPageTabDetail({
+    super.key,
+    required this.title,
+    required this.indexLocal,
+    required this.result,
+    required this.isM,
+  });
 
   @override
   State<MyPageTabDetail> createState() => _MyPageTabDetailState();
@@ -210,6 +265,7 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                 ? const Text('ไม่พบข้อมูลสำหรับแสดงผล')
                 : SearchShowPagesTitle(
                     wordSearch: wordSearch,
+                    isM: widget.isM,
                   )
             : indexlocal == 1
                 ? FutureBuilder<TotalTitleSearchTri?>(
@@ -258,17 +314,20 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                       text: strTotal,
                                       terms:
                                           outputList, // หาก outputList ยังไม่ได้ถูกกำหนดให้ใช้ตามความเหมาะสม
-                                      textStyle: const TextStyle(
-                                          fontSize: 16.0, color: Colors.black),
+                                      textStyle: TextStyle(
+                                          fontSize: widget.isM ? 18.0 : 16.0,
+                                          color: Colors.black),
                                     ),
                                     onTap: () {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) => SearchShowPages(
-                                              title: strTotal,
-                                              wordSearch: widget.title,
-                                              bookid: strBook),
+                                            title: strTotal,
+                                            wordSearch: widget.title,
+                                            bookid: strBook,
+                                            isM: widget.isM,
+                                          ),
                                         ),
                                       );
                                     },
@@ -336,8 +395,9 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                           text: strTotal,
                                           terms:
                                               outputList, // หาก outputList ยังไม่ได้ถูกกำหนดให้ใช้ตามความเหมาะสม
-                                          textStyle: const TextStyle(
-                                              fontSize: 16.0,
+                                          textStyle: TextStyle(
+                                              fontSize:
+                                                  widget.isM ? 18.0 : 16.0,
                                               color: Colors.black),
                                         ),
                                         onTap: () {
@@ -346,9 +406,11 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                             MaterialPageRoute(
                                               builder: (context) =>
                                                   SearchShowPages(
-                                                      title: strTotal,
-                                                      wordSearch: widget.title,
-                                                      bookid: strBook),
+                                                title: strTotal,
+                                                wordSearch: widget.title,
+                                                bookid: strBook,
+                                                isM: widget.isM,
+                                              ),
                                             ),
                                           );
                                         },
@@ -418,8 +480,9 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                               text: strTotal,
                                               terms:
                                                   outputList, // หาก outputList ยังไม่ได้ถูกกำหนดให้ใช้ตามความเหมาะสม
-                                              textStyle: const TextStyle(
-                                                  fontSize: 16.0,
+                                              textStyle: TextStyle(
+                                                  fontSize:
+                                                      widget.isM ? 18.0 : 16.0,
                                                   color: Colors.black),
                                             ),
                                             onTap: () {
@@ -428,10 +491,11 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                                 MaterialPageRoute(
                                                   builder: (context) =>
                                                       SearchShowPages(
-                                                          title: strTotal,
-                                                          wordSearch:
-                                                              widget.title,
-                                                          bookid: strBook),
+                                                    title: strTotal,
+                                                    wordSearch: widget.title,
+                                                    bookid: strBook,
+                                                    isM: widget.isM,
+                                                  ),
                                                 ),
                                               );
                                             },
@@ -454,12 +518,14 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                 ? const Text('ไม่พบข้อมูลสำหรับแสดงผล')
                                 : SearchShowPagesDict(
                                     wordSearch: wordSearch,
+                                    isM: widget.isM,
                                   )
                             : indexlocal == 5
                                 ? widget.result[5] == '0'
                                     ? const Text('ไม่พบข้อมูลสำหรับแสดงผล')
                                     : SearchShowPagesDictbt(
                                         wordSearch: wordSearch,
+                                        isM: widget.isM,
                                       )
                                 : FutureBuilder(
                                     future: fetchData,

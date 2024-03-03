@@ -117,12 +117,17 @@ class _SearchShowPagesTitleListState extends State<SearchShowPagesTitleList> {
     if (mark == 'TRUE') {
       return Text(
         title,
-        style: const TextStyle(fontSize: 16, color: Colors.red),
+        style:
+            TextStyle(fontSize: widget.isMobile ? 18 : 16, color: Colors.red),
       );
     } else {
-      return ATextTitleMedium(
-        text: title,
-      );
+      return widget.isMobile
+          ? ATextTitleMedium18(
+              text: title,
+            )
+          : ATextTitleMedium(
+              text: title,
+            );
     }
   }
 

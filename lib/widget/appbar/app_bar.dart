@@ -72,7 +72,10 @@ class _AppBarCustomState extends State<AppBarCustom> {
               onTap: () {
                 showSearch(
                   context: context,
-                  delegate: DataSearch(),
+                  delegate:
+                      widget.isTablet == false && widget.isDesktop == false
+                          ? DataSearch(isM: true)
+                          : DataSearch(isM: false),
                 );
               },
               child: widget.isTablet == false && widget.isDesktop == false

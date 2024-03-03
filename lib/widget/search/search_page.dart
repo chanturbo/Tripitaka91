@@ -12,8 +12,8 @@ import 'package:tripitaka91/widget/auto_text/auto_text.dart';
 import 'package:tripitaka91/widget/search/search_tab_show.dart';
 
 class SearchPages extends StatefulWidget {
-  const SearchPages({super.key, required this.title});
-
+  const SearchPages({super.key, required this.title, required this.isM});
+  final bool isM;
   final String title;
 
   @override
@@ -163,9 +163,13 @@ class _SearchPagesState extends State<SearchPages> {
                                       total.toString(),
                                     ),
                                   ),
-                                  title: ATextTitleLarge(
-                                      text:
-                                          'หัวข้อธรรมสำคัญ พบจำนวน $total รายการ'),
+                                  title: widget.isM
+                                      ? ATextTitleMedium18(
+                                          text:
+                                              'หัวข้อธรรมสำคัญ พบจำนวน $total รายการ')
+                                      : ATextTitleLarge(
+                                          text:
+                                              'หัวข้อธรรมสำคัญ พบจำนวน $total รายการ'),
                                   onTap: () {
                                     Navigator.pushReplacement(
                                       context,
@@ -174,6 +178,7 @@ class _SearchPagesState extends State<SearchPages> {
                                           title: wordSearch,
                                           result: titleMenu,
                                           indexShow: 0,
+                                          isM: widget.isM,
                                         ),
                                       ),
                                     );
@@ -188,10 +193,15 @@ class _SearchPagesState extends State<SearchPages> {
                                       total.toString(),
                                     ),
                                   ),
-                                  title: ATextTitleMedium(
-                                    text:
-                                        'หัวข้อธรรมสำคัญ พบจำนวน $total รายการ',
-                                  ),
+                                  title: widget.isM
+                                      ? ATextTitleMedium18(
+                                          text:
+                                              'หัวข้อธรรมสำคัญ พบจำนวน $total รายการ',
+                                        )
+                                      : ATextTitleMedium(
+                                          text:
+                                              'หัวข้อธรรมสำคัญ พบจำนวน $total รายการ',
+                                        ),
                                 );
                               }
                             }
@@ -235,30 +245,15 @@ class _SearchPagesState extends State<SearchPages> {
                                       total.toString(),
                                     ),
                                   ),
-                                  title: ATextTitleLarge(
-                                    text: 'พระวินัยปิฎก พบจำนวน $total รายการ',
-                                  ),
-                                  // title: Row(
-                                  //   crossAxisAlignment:
-                                  //       CrossAxisAlignment.center,
-                                  //   children: [
-                                  //     CircleAvatar(
-                                  //       backgroundColor: Colors.blue[900],
-                                  //       foregroundColor: Colors.white,
-                                  //       child: Text(
-                                  //         total.toString(),
-                                  //       ),
-                                  //     ),
-                                  //     const SizedBox(
-                                  //       width: 12,
-                                  //     ),
-                                  //     ATextTitleLarge(
-                                  //       text:
-                                  //           'พระวินัยปิฎก พบจำนวน $total รายการ',
-                                  //     ),
-                                  //   ],
-                                  // ),
-                                  //subtitle: ATextTitleSmall(text: result),
+                                  title: widget.isM
+                                      ? ATextTitleMedium18(
+                                          text:
+                                              'พระวินัยปิฎก พบจำนวน $total รายการ',
+                                        )
+                                      : ATextTitleLarge(
+                                          text:
+                                              'พระวินัยปิฎก พบจำนวน $total รายการ',
+                                        ),
                                   onTap: () {
                                     Navigator.pushReplacement(
                                       context,
@@ -267,6 +262,7 @@ class _SearchPagesState extends State<SearchPages> {
                                           title: wordSearch,
                                           result: titleMenu,
                                           indexShow: 1,
+                                          isM: widget.isM,
                                         ),
                                       ),
                                     );
@@ -281,9 +277,15 @@ class _SearchPagesState extends State<SearchPages> {
                                       total.toString(),
                                     ),
                                   ),
-                                  title: ATextTitleMedium(
-                                    text: 'พระวินัยปิฎก พบจำนวน $total รายการ',
-                                  ),
+                                  title: widget.isM
+                                      ? ATextTitleMedium18(
+                                          text:
+                                              'พระวินัยปิฎก พบจำนวน $total รายการ',
+                                        )
+                                      : ATextTitleMedium(
+                                          text:
+                                              'พระวินัยปิฎก พบจำนวน $total รายการ',
+                                        ),
                                 );
                               }
                             }
@@ -319,10 +321,15 @@ class _SearchPagesState extends State<SearchPages> {
                                       total.toString(),
                                     ),
                                   ),
-                                  title: ATextTitleLarge(
-                                    text:
-                                        'พระสุตตันตปิฎก พบจำนวน $total รายการ',
-                                  ),
+                                  title: widget.isM
+                                      ? ATextTitleMedium18(
+                                          text:
+                                              'พระสุตตันตปิฎก พบจำนวน $total รายการ',
+                                        )
+                                      : ATextTitleLarge(
+                                          text:
+                                              'พระสุตตันตปิฎก พบจำนวน $total รายการ',
+                                        ),
                                   onTap: () {
                                     Navigator.pushReplacement(
                                       context,
@@ -331,6 +338,7 @@ class _SearchPagesState extends State<SearchPages> {
                                           title: wordSearch,
                                           result: titleMenu,
                                           indexShow: 2,
+                                          isM: widget.isM,
                                         ),
                                       ),
                                     );
@@ -345,10 +353,15 @@ class _SearchPagesState extends State<SearchPages> {
                                       total.toString(),
                                     ),
                                   ),
-                                  title: ATextTitleMedium(
-                                    text:
-                                        'พระสุตตันตปิฎก พบจำนวน $total รายการ',
-                                  ),
+                                  title: widget.isM
+                                      ? ATextTitleMedium18(
+                                          text:
+                                              'พระสุตตันตปิฎก พบจำนวน $total รายการ',
+                                        )
+                                      : ATextTitleMedium(
+                                          text:
+                                              'พระสุตตันตปิฎก พบจำนวน $total รายการ',
+                                        ),
                                 );
                               }
                             }
@@ -384,10 +397,15 @@ class _SearchPagesState extends State<SearchPages> {
                                       total.toString(),
                                     ),
                                   ),
-                                  title: ATextTitleLarge(
-                                    text:
-                                        'พระอภิธรรมปิฎก พบจำนวน $total รายการ',
-                                  ),
+                                  title: widget.isM
+                                      ? ATextTitleMedium18(
+                                          text:
+                                              'พระอภิธรรมปิฎก พบจำนวน $total รายการ',
+                                        )
+                                      : ATextTitleLarge(
+                                          text:
+                                              'พระอภิธรรมปิฎก พบจำนวน $total รายการ',
+                                        ),
                                   onTap: () {
                                     Navigator.pushReplacement(
                                       context,
@@ -396,6 +414,7 @@ class _SearchPagesState extends State<SearchPages> {
                                           title: wordSearch,
                                           result: titleMenu,
                                           indexShow: 3,
+                                          isM: widget.isM,
                                         ),
                                       ),
                                     );
@@ -410,10 +429,15 @@ class _SearchPagesState extends State<SearchPages> {
                                       total.toString(),
                                     ),
                                   ),
-                                  title: ATextTitleMedium(
-                                    text:
-                                        'พระอภิธรรมปิฎก พบจำนวน $total รายการ',
-                                  ),
+                                  title: widget.isM
+                                      ? ATextTitleMedium18(
+                                          text:
+                                              'พระอภิธรรมปิฎก พบจำนวน $total รายการ',
+                                        )
+                                      : ATextTitleMedium(
+                                          text:
+                                              'พระอภิธรรมปิฎก พบจำนวน $total รายการ',
+                                        ),
                                 );
                               }
                             }
@@ -447,10 +471,14 @@ class _SearchPagesState extends State<SearchPages> {
                                       total.toString(),
                                     ),
                                   ),
-                                  title: ATextTitleLarge(
-                                    text:
-                                        'พจนานุกรม ฉบับประมวลศัพท์ พบจำนวน $total รายการ',
-                                  ),
+                                  title: widget.isM
+                                      ? ATextTitleMedium18(
+                                          text:
+                                              'พจนานุกรม ฉบับประมวลศัพท์ พบจำนวน $total รายการ')
+                                      : ATextTitleLarge(
+                                          text:
+                                              'พจนานุกรม ฉบับประมวลศัพท์ พบจำนวน $total รายการ',
+                                        ),
                                   onTap: () {
                                     Navigator.pushReplacement(
                                       context,
@@ -459,6 +487,7 @@ class _SearchPagesState extends State<SearchPages> {
                                           title: wordSearch,
                                           result: titleMenu,
                                           indexShow: 4,
+                                          isM: widget.isM,
                                         ),
                                       ),
                                     );
@@ -473,10 +502,15 @@ class _SearchPagesState extends State<SearchPages> {
                                       total.toString(),
                                     ),
                                   ),
-                                  title: ATextTitleMedium(
-                                    text:
-                                        'พจนานุกรม ฉบับประมวลศัพท์ พบจำนวน $total รายการ',
-                                  ),
+                                  title: widget.isM
+                                      ? ATextTitleMedium18(
+                                          text:
+                                              'พจนานุกรม ฉบับประมวลศัพท์ พบจำนวน $total รายการ',
+                                        )
+                                      : ATextTitleMedium(
+                                          text:
+                                              'พจนานุกรม ฉบับประมวลศัพท์ พบจำนวน $total รายการ',
+                                        ),
                                 );
                               }
                             }
@@ -510,9 +544,13 @@ class _SearchPagesState extends State<SearchPages> {
                                       total.toString(),
                                     ),
                                   ),
-                                  title: ATextTitleLarge(
-                                      text:
-                                          'พจนานุกรม ไทย-บาลี พบจำนวน $total รายการ'),
+                                  title: widget.isM
+                                      ? ATextTitleMedium18(
+                                          text:
+                                              'พจนานุกรม ไทย-บาลี พบจำนวน $total รายการ')
+                                      : ATextTitleLarge(
+                                          text:
+                                              'พจนานุกรม ไทย-บาลี พบจำนวน $total รายการ'),
                                   onTap: () {
                                     Navigator.pushReplacement(
                                       context,
@@ -521,6 +559,7 @@ class _SearchPagesState extends State<SearchPages> {
                                           title: wordSearch,
                                           result: titleMenu,
                                           indexShow: 5,
+                                          isM: widget.isM,
                                         ),
                                       ),
                                     );
@@ -535,9 +574,13 @@ class _SearchPagesState extends State<SearchPages> {
                                       total.toString(),
                                     ),
                                   ),
-                                  title: ATextTitleMedium(
-                                      text:
-                                          'พจนานุกรม ไทย-บาลี พบจำนวน $total รายการ'),
+                                  title: widget.isM
+                                      ? ATextTitleMedium18(
+                                          text:
+                                              'พจนานุกรม ไทย-บาลี พบจำนวน $total รายการ')
+                                      : ATextTitleMedium(
+                                          text:
+                                              'พจนานุกรม ไทย-บาลี พบจำนวน $total รายการ'),
                                 );
                               }
                             }

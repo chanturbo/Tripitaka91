@@ -10,6 +10,9 @@ import 'package:tripitaka91/widget/search/data_search.dart';
 import 'package:tripitaka91/widget/search/search_page.dart';
 
 class DataSearch extends SearchDelegate<String> {
+  final bool isM; // เพิ่มพารามิเตอร์ isM ใน constructor
+  DataSearch({required this.isM});
+
   @override
   List<Widget> buildActions(BuildContext context) {
     return [
@@ -45,6 +48,7 @@ class DataSearch extends SearchDelegate<String> {
           MaterialPageRoute(
             builder: (context) => SearchPages(
               title: query,
+              isM: isM,
             ),
           ),
         );
@@ -81,7 +85,9 @@ class DataSearch extends SearchDelegate<String> {
                   showResults(context);
                 },
                 leading: const Icon(Icons.access_time),
-                title: ATextTitleMedium(text: suggestionList[index]),
+                title: isM
+                    ? ATextTitleMedium18(text: suggestionList[index])
+                    : ATextTitleMedium(text: suggestionList[index]),
               ),
             );
           } else {
@@ -119,6 +125,7 @@ class DataSearch extends SearchDelegate<String> {
                     MaterialPageRoute(
                       builder: (context) => SearchPages(
                         title: query,
+                        isM: isM,
                       ),
                     ),
                   );

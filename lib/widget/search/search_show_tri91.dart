@@ -17,12 +17,15 @@ class SearchShowPages extends StatefulWidget {
   final String title;
   final String wordSearch;
   final String bookid;
+  final bool isM;
 
-  const SearchShowPages(
-      {super.key,
-      required this.title,
-      required this.wordSearch,
-      required this.bookid});
+  const SearchShowPages({
+    super.key,
+    required this.title,
+    required this.wordSearch,
+    required this.bookid,
+    required this.isM,
+  });
 
   @override
   State<SearchShowPages> createState() => _SearchShowPagesState();
@@ -158,8 +161,9 @@ class _SearchShowPagesState extends State<SearchShowPages> {
                   title: SubstringHighlight(
                     text: textTitleReplace.extractText(data[index]),
                     terms: outputList,
-                    textStyle:
-                        const TextStyle(fontSize: 16.0, color: Colors.black),
+                    textStyle: TextStyle(
+                        fontSize: widget.isM ? 18.0 : 16.0,
+                        color: Colors.black),
                   ),
                   subtitle: Row(
                     children: [
@@ -182,7 +186,7 @@ class _SearchShowPagesState extends State<SearchShowPages> {
                         },
                         child: Icon(
                           Icons.volume_up,
-                          size: 20,
+                          size: widget.isM ? 25 : 20,
                           color: Colors.blue[300],
                         ),
                       ),
@@ -215,7 +219,7 @@ class _SearchShowPagesState extends State<SearchShowPages> {
                         },
                         child: Icon(
                           Icons.copy,
-                          size: 16,
+                          size: widget.isM ? 21 : 16,
                           color: Colors.blue[300],
                         ),
                       ),

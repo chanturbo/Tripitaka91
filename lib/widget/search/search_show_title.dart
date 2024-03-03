@@ -16,8 +16,10 @@ import 'package:tripitaka91/widget/right_clipper/center_clipper.dart';
 
 class SearchShowPagesTitle extends StatefulWidget {
   final String wordSearch;
+  final bool isM;
 
-  const SearchShowPagesTitle({super.key, required this.wordSearch});
+  const SearchShowPagesTitle(
+      {super.key, required this.wordSearch, required this.isM});
 
   @override
   State<SearchShowPagesTitle> createState() => _SearchShowPagesTitleState();
@@ -148,128 +150,181 @@ class _SearchShowPagesTitleState extends State<SearchShowPagesTitle> {
                     text:
                         '${textTitleReplace.extractText(dataTitle[index]).replaceAll(textTitleReplace.getBookBlue(dataTitle[index]), '')} ',
                     terms: outputList,
-                    textStyle:
-                        const TextStyle(fontSize: 16.0, color: Colors.black),
+                    textStyle: TextStyle(
+                        fontSize: widget.isM ? 18.0 : 16.0,
+                        color: Colors.black),
                   ),
-                  subtitle: Row(
+                  subtitle: Column(
                     children: [
-                      InkWell(
-                        onTap: () async {
-                          LoadingDialog.show(context);
-                          String bookIds =
-                              textTitleReplace.getBookId(dataTitle[index]);
-                          String pageId =
-                              textTitleReplace.getPageId(dataTitle[index]);
-                          String bookLine =
-                              textTitleReplace.getLineId(dataTitle[index]);
-                          String noTitleCate =
-                              textTitleReplace.getCate(dataTitle[index]);
-                          String noTitle =
-                              textTitleReplace.getNo(dataTitle[index]);
+                      Row(
+                        children: [
+                          InkWell(
+                            onTap: () async {
+                              LoadingDialog.show(context);
+                              String bookIds =
+                                  textTitleReplace.getBookId(dataTitle[index]);
+                              String pageId =
+                                  textTitleReplace.getPageId(dataTitle[index]);
+                              String bookLine =
+                                  textTitleReplace.getLineId(dataTitle[index]);
+                              String noTitleCate =
+                                  textTitleReplace.getCate(dataTitle[index]);
+                              String noTitle =
+                                  textTitleReplace.getNo(dataTitle[index]);
 
-                          String txtTitle = textTitleReplace.replaceText(
-                              textTitleReplace.extractText(dataTitle[index]),
-                              textTitleReplace.getBookBlue(dataTitle[index]));
+                              String txtTitle = textTitleReplace.replaceText(
+                                  textTitleReplace
+                                      .extractText(dataTitle[index]),
+                                  textTitleReplace
+                                      .getBookBlue(dataTitle[index]));
 
-                          String filename = noTitleCate.replaceAll('.', '');
-                          filename =
-                              '$filename-$noTitle-$bookIds-$pageId-$bookLine';
-                          await audioPlayerManager.playAudio(
-                              '1', filename, txtTitle);
-                          // ignore: use_build_context_synchronously
-                          LoadingDialog.hide(context);
-                        },
-                        child: Icon(
-                          Icons.volume_up,
-                          size: 20,
-                          color: Colors.blue[300],
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      InkWell(
-                        onTap: () async {
-                          String bookIds =
-                              textTitleReplace.getBookId(dataTitle[index]);
-                          String pageId =
-                              textTitleReplace.getPageId(dataTitle[index]);
-                          String bookLine =
-                              textTitleReplace.getLineId(dataTitle[index]);
-                          String txtTitle =
-                              '${textTitleReplace.extractText(dataTitle[index]).replaceAll(textTitleReplace.getBookBlue(dataTitle[index]), '')} ';
-                          txtTitle +=
-                              'สรุปเนื้อความจากพระไตรปิฎก ฉบับ มมร. เล่ม $bookIds หน้า $pageId บรรทัด $bookLine';
-                          await Share.share(
-                              '$txtTitle อ่านรายละเอียด -> $tURLmain$bookIds-$pageId-$bookLine.htm',
-                              subject: 'สรุปหัวข้อธรรมจากพระไตรปิฎก');
-                        },
-                        child: Icon(
-                          Icons.share,
-                          size: 16,
-                          color: Colors.blue[300],
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      InkWell(
-                        onTap: () async {
-                          String bookIds =
-                              textTitleReplace.getBookId(dataTitle[index]);
-                          String pageId =
-                              textTitleReplace.getPageId(dataTitle[index]);
-                          String bookLine =
-                              textTitleReplace.getLineId(dataTitle[index]);
-                          String txtTitle =
-                              '${textTitleReplace.extractText(dataTitle[index]).replaceAll(textTitleReplace.getBookBlue(dataTitle[index]), '')} ';
-                          txtTitle +=
-                              'สรุปเนื้อความจากพระไตรปิฎก ฉบับ มมร. เล่ม $bookIds หน้า $pageId บรรทัด $bookLine';
-                          Clipboard.setData(
-                            ClipboardData(
-                                text:
-                                    '$txtTitle อ่านรายละเอียด -> $tURLmain$bookIds-$pageId-$bookLine.htm'),
-                          );
-                          _showSnackbar(context, 'คัดลอกข้อมูลเรียบร้อยแล้ว');
-                        },
-                        child: Icon(
-                          Icons.copy,
-                          size: 16,
-                          color: Colors.blue[300],
-                        ),
-                      ),
-                      const Expanded(
-                        child: SizedBox(
-                          child: Text(''),
-                        ),
-                      ),
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: ClipPath(
-                          clipper: DoubleTriangleRectangleClipper(),
-                          child: Container(
-                            padding: const EdgeInsets.all(3.0),
-                            color: Colors.blue[900],
-                            child: ATextLabelSmall(
-                              text:
-                                  '${textTitleReplace.extractRemainingText(dataTitle[index])} ',
+                              String filename = noTitleCate.replaceAll('.', '');
+                              filename =
+                                  '$filename-$noTitle-$bookIds-$pageId-$bookLine';
+                              await audioPlayerManager.playAudio(
+                                  '1', filename, txtTitle);
+                              // ignore: use_build_context_synchronously
+                              LoadingDialog.hide(context);
+                            },
+                            child: Icon(
+                              Icons.volume_up,
+                              size: widget.isM ? 25 : 20,
+                              color: Colors.blue[300],
                             ),
                           ),
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: ClipPath(
-                          clipper: DoubleTriangleRectangleClipper(),
-                          child: Container(
-                            padding: const EdgeInsets.all(3.0),
-                            color: Colors.red, // Change color as needed
-                            child: Center(
-                              child: ATextLabelSmall(
-                                text:
-                                    'เล่มสีแดง ${textTitleReplace.getBookRed(dataTitle[index])}', // Access widget property
-                              ),
+                          const SizedBox(width: 10),
+                          InkWell(
+                            onTap: () async {
+                              String bookIds =
+                                  textTitleReplace.getBookId(dataTitle[index]);
+                              String pageId =
+                                  textTitleReplace.getPageId(dataTitle[index]);
+                              String bookLine =
+                                  textTitleReplace.getLineId(dataTitle[index]);
+                              String txtTitle =
+                                  '${textTitleReplace.extractText(dataTitle[index]).replaceAll(textTitleReplace.getBookBlue(dataTitle[index]), '')} ';
+                              txtTitle +=
+                                  'สรุปเนื้อความจากพระไตรปิฎก ฉบับ มมร. เล่ม $bookIds หน้า $pageId บรรทัด $bookLine';
+                              await Share.share(
+                                  '$txtTitle อ่านรายละเอียด -> $tURLmain$bookIds-$pageId-$bookLine.htm',
+                                  subject: 'สรุปหัวข้อธรรมจากพระไตรปิฎก');
+                            },
+                            child: Icon(
+                              Icons.share,
+                              size: widget.isM ? 21 : 16,
+                              color: Colors.blue[300],
                             ),
                           ),
-                        ),
+                          const SizedBox(width: 10),
+                          InkWell(
+                            onTap: () async {
+                              String bookIds =
+                                  textTitleReplace.getBookId(dataTitle[index]);
+                              String pageId =
+                                  textTitleReplace.getPageId(dataTitle[index]);
+                              String bookLine =
+                                  textTitleReplace.getLineId(dataTitle[index]);
+                              String txtTitle =
+                                  '${textTitleReplace.extractText(dataTitle[index]).replaceAll(textTitleReplace.getBookBlue(dataTitle[index]), '')} ';
+                              txtTitle +=
+                                  'สรุปเนื้อความจากพระไตรปิฎก ฉบับ มมร. เล่ม $bookIds หน้า $pageId บรรทัด $bookLine';
+                              Clipboard.setData(
+                                ClipboardData(
+                                    text:
+                                        '$txtTitle อ่านรายละเอียด -> $tURLmain$bookIds-$pageId-$bookLine.htm'),
+                              );
+                              _showSnackbar(
+                                  context, 'คัดลอกข้อมูลเรียบร้อยแล้ว');
+                            },
+                            child: Icon(
+                              Icons.copy,
+                              size: widget.isM ? 21 : 16,
+                              color: Colors.blue[300],
+                            ),
+                          ),
+                          const Expanded(
+                            child: SizedBox(
+                              child: Text(''),
+                            ),
+                          ),
+                          widget.isM
+                              ? const Text('')
+                              : Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: ClipPath(
+                                    clipper: DoubleTriangleRectangleClipper(),
+                                    child: Container(
+                                      padding: const EdgeInsets.all(3.0),
+                                      color: Colors.blue[900],
+                                      child: ATextLabelSmall(
+                                        text:
+                                            '${textTitleReplace.extractRemainingText(dataTitle[index])} ',
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                          const SizedBox(width: 10),
+                          widget.isM
+                              ? const Text('')
+                              : Align(
+                                  alignment: Alignment.centerRight,
+                                  child: ClipPath(
+                                    clipper: DoubleTriangleRectangleClipper(),
+                                    child: Container(
+                                      padding: const EdgeInsets.all(3.0),
+                                      color:
+                                          Colors.red, // Change color as needed
+                                      child: Center(
+                                        child: ATextLabelSmall(
+                                          text:
+                                              'เล่มสีแดง ${textTitleReplace.getBookRed(dataTitle[index])}', // Access widget property
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                        ],
                       ),
+                      widget.isM
+                          ? Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: ClipPath(
+                                    clipper: DoubleTriangleRectangleClipper(),
+                                    child: Container(
+                                      padding: const EdgeInsets.all(3.0),
+                                      color: Colors.blue[900],
+                                      child: ATextLabelSmall(
+                                        text:
+                                            '${textTitleReplace.extractRemainingText(dataTitle[index])} ',
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 10),
+                                Align(
+                                  alignment: Alignment.centerRight,
+                                  child: ClipPath(
+                                    clipper: DoubleTriangleRectangleClipper(),
+                                    child: Container(
+                                      padding: const EdgeInsets.all(3.0),
+                                      color:
+                                          Colors.red, // Change color as needed
+                                      child: Center(
+                                        child: ATextLabelSmall(
+                                          text:
+                                              'เล่มสีแดง ${textTitleReplace.getBookRed(dataTitle[index])}', // Access widget property
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            )
+                          : const Text(''),
                     ],
                   ),
                   onTap: () {

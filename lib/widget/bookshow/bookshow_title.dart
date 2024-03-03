@@ -145,7 +145,7 @@ class _BookShowTitleState extends State<BookShowTitle> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             Expanded(
-              flex: 2, //_size.width >= 750 ? 2 : 1,
+              flex: widget.isMobile ? 2 : 1, //_size.width >= 750 ? 2 : 1,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
@@ -159,19 +159,19 @@ class _BookShowTitleState extends State<BookShowTitle> {
                     ),
                   ),
                   Expanded(
-                    flex: 2,
+                    flex: 1,
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Expanded(
-                            flex: 2,
+                            flex: widget.isMobile ? 2 : 1,
                             child: ATextTitleLarge(
                                 text: 'เล่ม $bookid $bookTitleTri91'),
                           ),
                           Expanded(
-                            flex: 4,
+                            flex: widget.isMobile ? 4 : 2,
                             child: ATextTitleMedium(text: '[ $triCatage ]'),
                           ),
                           Expanded(
@@ -181,6 +181,42 @@ class _BookShowTitleState extends State<BookShowTitle> {
                                   'มีทั้งหมด $numPageAll หน้า', // อ่านแล้ว $bookReadall หน้า',
                             ),
                           ),
+                          widget.isMobile
+                              ? const SizedBox.shrink()
+                              : Expanded(
+                                  flex: 1,
+                                  child: lastBookAccess.isEmpty
+                                      ? const Text('')
+                                      : TextButton(
+                                          style: ButtonStyle(
+                                            backgroundColor:
+                                                MaterialStateProperty.all<
+                                                    Color>(Colors.orange),
+                                          ),
+                                          onPressed: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    Tri91PageView(
+                                                  triBookid: widget.triBookid,
+                                                  triPageid: int.parse(
+                                                    lastBookAccess[0]
+                                                        .pageLastAccess
+                                                        .toString(),
+                                                  ),
+                                                  triBookline: '1',
+                                                  chkSearch: '',
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                          child: ATextDiskplayMedium(
+                                            text:
+                                                'เปิดหน้าที่อ่านล่าสุด เล่ม ${lastBookAccess[0].bookLastAccess} หน้า ${lastBookAccess[0].pageLastAccess}',
+                                          ),
+                                        ),
+                                ),
                         ],
                       ),
                     ),
@@ -188,35 +224,41 @@ class _BookShowTitleState extends State<BookShowTitle> {
                 ],
               ),
             ),
-            const SizedBox(width: 10),
-            lastBookAccess.isEmpty
-                ? const Text('')
-                : TextButton(
-                    style: ButtonStyle(
-                      backgroundColor:
-                          MaterialStateProperty.all<Color>(Colors.orange),
-                    ),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => Tri91PageView(
-                            triBookid: widget.triBookid,
-                            triPageid: int.parse(
-                              lastBookAccess[0].pageLastAccess.toString(),
-                            ),
-                            triBookline: '1',
-                            chkSearch: '',
-                          ),
+            widget.isMobile
+                ? const SizedBox(width: 10)
+                : const SizedBox.shrink(),
+            widget.isMobile
+                ? lastBookAccess.isEmpty
+                    ? const Text('')
+                    : TextButton(
+                        style: ButtonStyle(
+                          backgroundColor:
+                              MaterialStateProperty.all<Color>(Colors.orange),
                         ),
-                      );
-                    },
-                    child: ATextDiskplayMedium(
-                      text:
-                          'เปิดหน้าที่อ่านล่าสุด เล่ม ${lastBookAccess[0].bookLastAccess} หน้า ${lastBookAccess[0].pageLastAccess}',
-                    ),
-                  ),
-            const SizedBox(height: 10),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => Tri91PageView(
+                                triBookid: widget.triBookid,
+                                triPageid: int.parse(
+                                  lastBookAccess[0].pageLastAccess.toString(),
+                                ),
+                                triBookline: '1',
+                                chkSearch: '',
+                              ),
+                            ),
+                          );
+                        },
+                        child: ATextDiskplayMedium(
+                          text:
+                              'เปิดหน้าที่อ่านล่าสุด เล่ม ${lastBookAccess[0].bookLastAccess} หน้า ${lastBookAccess[0].pageLastAccess}',
+                        ),
+                      )
+                : const SizedBox.shrink(),
+            widget.isMobile
+                ? const SizedBox(height: 10)
+                : const SizedBox.shrink(),
             const Row(
               children: <Widget>[
                 Icon(
@@ -231,7 +273,7 @@ class _BookShowTitleState extends State<BookShowTitle> {
               height: 10,
             ),
             Expanded(
-              flex: 4,
+              flex: widget.isMobile ? 4 : 3,
               child: SearchShowPagesTitleList(
                 bookid: widget.triBookid,
                 isMobile: widget.isMobile,

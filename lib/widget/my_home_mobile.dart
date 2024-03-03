@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:tripitaka91/widget/appbar/app_bar.dart';
-import 'package:tripitaka91/widget/menu/list_menu.dart';
 import 'package:tripitaka91/utils/api_connect/remote_service.dart';
 import 'package:tripitaka91/utils/constants/colors.dart';
 import 'package:tripitaka91/utils/models/rand_title.dart';
@@ -11,6 +10,7 @@ import 'package:tripitaka91/widget/card/title_card.dart';
 import 'package:tripitaka91/widget/last_read/show_last.dart';
 import 'package:tripitaka91/widget/last_read/show_last2.dart';
 import 'package:tripitaka91/widget/line_custom/mylinepainter.dart';
+import 'package:tripitaka91/widget/menu/list_menu_mobile.dart';
 import 'package:tripitaka91/widget/right_clipper/center_clipper.dart';
 import 'package:tripitaka91/widget/right_clipper/right_clipper.dart';
 import 'package:tripitaka91/widget/showbook/show_book.dart';
@@ -104,12 +104,7 @@ class _MyHomeMobileState extends State<MyHomeMobile> {
     double screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       key: _scaffoldKey,
-      drawer: const Drawer(
-        child: ListMenu(
-          isDesktop: true,
-          isTablet: false,
-        ),
-      ),
+      drawer: const Drawer(child: ListMenuMobile()),
       appBar: AppBar(
         title: const AppBarCustom(
           isDesktop: false,
@@ -205,13 +200,13 @@ class _MyHomeMobileState extends State<MyHomeMobile> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          _scaffoldKey.currentState?.openDrawer();
-        },
-        tooltip: 'เมนู',
-        child: const Icon(Icons.menu_outlined),
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () {
+      //     _scaffoldKey.currentState?.openDrawer();
+      //   },
+      //   tooltip: 'เมนู',
+      //   child: const Icon(Icons.menu_outlined),
+      // ),
     );
   }
 }

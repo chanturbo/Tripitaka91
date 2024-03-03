@@ -103,6 +103,20 @@ class ATextTitleMedium extends StatelessWidget {
   }
 }
 
+class ATextTitleMedium18 extends StatelessWidget {
+  final String text;
+
+  const ATextTitleMedium18({super.key, required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      text,
+      style: const TextStyle(fontFamily: 'Roboto', fontSize: 18),
+    );
+  }
+}
+
 class ATextTitleMediumColor extends StatelessWidget {
   final String text;
   final Color color; // เพิ่มพารามิเตอร์สำหรับระบุสี

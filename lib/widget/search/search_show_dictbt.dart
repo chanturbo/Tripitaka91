@@ -14,8 +14,10 @@ import 'package:tripitaka91/widget/login/loading_dialog.dart';
 
 class SearchShowPagesDictbt extends StatefulWidget {
   final String wordSearch;
+  final bool isM;
 
-  const SearchShowPagesDictbt({super.key, required this.wordSearch});
+  const SearchShowPagesDictbt(
+      {super.key, required this.wordSearch, required this.isM});
 
   @override
   State<SearchShowPagesDictbt> createState() => _SearchShowPagesDictbtState();
@@ -146,8 +148,9 @@ class _SearchShowPagesDictbtState extends State<SearchShowPagesDictbt> {
                     text:
                         '${textTitleReplace.getWordDict(dataDictbt[index])}\n- ${textTitleReplace.getWordDictDetail(dataDictbt[index])}',
                     terms: outputList,
-                    textStyle:
-                        const TextStyle(fontSize: 16.0, color: Colors.black),
+                    textStyle: TextStyle(
+                        fontSize: widget.isM ? 18.0 : 16.0,
+                        color: Colors.black),
                   ),
                   subtitle: Row(
                     children: [
@@ -168,7 +171,7 @@ class _SearchShowPagesDictbtState extends State<SearchShowPagesDictbt> {
                         },
                         child: Icon(
                           Icons.volume_up,
-                          size: 20,
+                          size: widget.isM ? 25 : 20,
                           color: Colors.blue[300],
                         ),
                       ),
@@ -183,7 +186,7 @@ class _SearchShowPagesDictbtState extends State<SearchShowPagesDictbt> {
                         },
                         child: Icon(
                           Icons.share,
-                          size: 16,
+                          size: widget.isM ? 21 : 16,
                           color: Colors.blue[300],
                         ),
                       ),
@@ -200,7 +203,7 @@ class _SearchShowPagesDictbtState extends State<SearchShowPagesDictbt> {
                         },
                         child: Icon(
                           Icons.copy,
-                          size: 16,
+                          size: widget.isM ? 21 : 16,
                           color: Colors.blue[300],
                         ),
                       ),
