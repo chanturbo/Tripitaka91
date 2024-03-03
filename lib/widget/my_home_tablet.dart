@@ -245,7 +245,7 @@ class _MyHomeTabletState extends State<MyHomeTablet> {
 
   sideBar() {
     return Container(
-      width: 110,
+      width: 120,
       height: MediaQuery.of(context).size.height,
       color: Colors.white,
       child: ListView(

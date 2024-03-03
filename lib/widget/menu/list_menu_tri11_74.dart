@@ -14,31 +14,25 @@ class ListMenuTri2 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
+    return Column(
       children: [
-        Container(
-          height: 10,
-        ),
-        ClipPath(
-          clipper: RightTriangleRectangleClipper(),
-          child: Container(
-            width: 100,
-            height: 25,
-            color: TColors.primary,
-            child: const Center(
-              child: ATextDiskplayMedium(
-                text: 'พระสุตตันตปิฎก',
+        Align(
+          alignment: Alignment.centerLeft,
+          child: ClipPath(
+            clipper: RightTriangleRectangleClipper(),
+            child: Container(
+              width: 100,
+              height: 25,
+              color: TColors.primary,
+              child: const Center(
+                child: ATextDiskplayMedium(
+                  text: 'พระสุตตันตปิฎก',
+                ),
               ),
             ),
           ),
         ),
-        // SubMenuExpansionTile(
-        //   titleText: 'พระวินัยปิฎก',
-        //   menuList: book_1,
-        //   bookAdd: 1,
-        //   isTablet: isTablet,
-        // ),
-        SizedBox(
+        Expanded(
           child: ListView.builder(
             shrinkWrap: true,
             itemCount: book_2.length,

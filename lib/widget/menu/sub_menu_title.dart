@@ -34,8 +34,7 @@ class _SubMenuNoIconExpansionTileState
                     context,
                     MaterialPageRoute(
                       builder: (context) => ShowTitlePages(
-                        wordSearch: widget.menuList[innerIndex],
-                      ),
+                          wordSearch: widget.menuList[innerIndex], isM: false),
                     ),
                   );
                 },
