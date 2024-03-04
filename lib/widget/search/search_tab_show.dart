@@ -327,6 +327,7 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                             wordSearch: widget.title,
                                             bookid: strBook,
                                             isM: widget.isM,
+                                            catalog: 'พระวินัยปิฎก',
                                           ),
                                         ),
                                       );
@@ -410,6 +411,7 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                                 wordSearch: widget.title,
                                                 bookid: strBook,
                                                 isM: widget.isM,
+                                                catalog: 'พระสุตตันตปิฎก',
                                               ),
                                             ),
                                           );
@@ -495,6 +497,7 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                                     wordSearch: widget.title,
                                                     bookid: strBook,
                                                     isM: widget.isM,
+                                                    catalog: 'พระอภิธรรมปิฎก',
                                                   ),
                                                 ),
                                               );

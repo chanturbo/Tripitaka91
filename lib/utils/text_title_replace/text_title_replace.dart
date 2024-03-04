@@ -172,4 +172,49 @@ class TextTitleReplace {
 
     return remainingText;
   }
+
+  String getGroup(String fullText) {
+    // แยกข้อความโดยใช้ตัวแบ่ง "|"
+    List<String> parts = fullText.split('|');
+
+    // ตรวจสอบว่ามีส่วนหลังจากการแยกหรือไม่
+    String remainingText = parts.length > 1 ? parts.sublist(1).join('|') : '';
+
+    // เพิ่มข้อความ "เล่ม หน้า บรรทัด" ท้ายข้อความที่แยกได้
+    if (remainingText.isNotEmpty) {
+      remainingText = parts[8];
+    }
+
+    return remainingText;
+  }
+
+  String getCategory(String fullText) {
+    // แยกข้อความโดยใช้ตัวแบ่ง "|"
+    List<String> parts = fullText.split('|');
+
+    // ตรวจสอบว่ามีส่วนหลังจากการแยกหรือไม่
+    String remainingText = parts.length > 1 ? parts.sublist(1).join('|') : '';
+
+    // เพิ่มข้อความ "เล่ม หน้า บรรทัด" ท้ายข้อความที่แยกได้
+    if (remainingText.isNotEmpty) {
+      remainingText = parts[9];
+    }
+
+    return remainingText;
+  }
+
+  String getDetail(String fullText) {
+    // แยกข้อความโดยใช้ตัวแบ่ง "|"
+    List<String> parts = fullText.split('|');
+
+    // ตรวจสอบว่ามีส่วนหลังจากการแยกหรือไม่
+    String remainingText = parts.length > 1 ? parts.sublist(1).join('|') : '';
+
+    // เพิ่มข้อความ "เล่ม หน้า บรรทัด" ท้ายข้อความที่แยกได้
+    if (remainingText.isNotEmpty) {
+      remainingText = parts[10];
+    }
+
+    return remainingText;
+  }
 }

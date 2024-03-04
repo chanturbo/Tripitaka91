@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
@@ -149,7 +150,16 @@ class _SearchShowPagesDictState extends State<SearchShowPagesDict> {
                         '${textTitleReplace.getWordDict(dataDict[index])}\n- ${textTitleReplace.getWordDictDetail(dataDict[index])}',
                     terms: outputList,
                     textStyle: TextStyle(
-                        fontSize: widget.isM ? 18.0 : 16.0,
+                        fontFamily: widget.isM
+                            ? 'Roboto'
+                            : kIsWeb
+                                ? 'THSarabunNew'
+                                : 'Roboto',
+                        fontSize: widget.isM
+                            ? 18.0
+                            : kIsWeb
+                                ? 24.0
+                                : 16.0,
                         color: Colors.black),
                   ),
                   subtitle: Row(

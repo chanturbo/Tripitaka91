@@ -282,7 +282,7 @@ class _SearchShowPagesTitleListState extends State<SearchShowPagesTitleList> {
                             ),
                           ),
                           widget.isMobile
-                              ? const Text('')
+                              ? const SizedBox.shrink()
                               : Align(
                                   alignment: Alignment.centerLeft,
                                   child: ClipPath(
@@ -298,10 +298,10 @@ class _SearchShowPagesTitleListState extends State<SearchShowPagesTitleList> {
                                   ),
                                 ),
                           widget.isMobile
-                              ? const Text('')
+                              ? const SizedBox.shrink()
                               : const SizedBox(width: 10),
                           widget.isMobile
-                              ? const Text('')
+                              ? const SizedBox.shrink()
                               : Align(
                                   alignment: Alignment.centerRight,
                                   child: ClipPath(
@@ -338,10 +338,10 @@ class _SearchShowPagesTitleListState extends State<SearchShowPagesTitleList> {
                                     ),
                                   ),
                                 )
-                              : const Text(''),
+                              : const SizedBox.shrink(),
                           widget.isMobile
                               ? const SizedBox(width: 10)
-                              : const Text(''),
+                              : const SizedBox.shrink(),
                           widget.isMobile
                               ? Align(
                                   alignment: Alignment.centerRight,
@@ -360,7 +360,7 @@ class _SearchShowPagesTitleListState extends State<SearchShowPagesTitleList> {
                                     ),
                                   ),
                                 )
-                              : const Text(''),
+                              : const SizedBox.shrink(),
                         ],
                       ),
                     ],

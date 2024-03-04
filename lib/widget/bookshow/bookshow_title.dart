@@ -186,7 +186,7 @@ class _BookShowTitleState extends State<BookShowTitle> {
                               : Expanded(
                                   flex: 1,
                                   child: lastBookAccess.isEmpty
-                                      ? const Text('')
+                                      ? const SizedBox.shrink()
                                       : TextButton(
                                           style: ButtonStyle(
                                             backgroundColor:
@@ -229,7 +229,7 @@ class _BookShowTitleState extends State<BookShowTitle> {
                 : const SizedBox.shrink(),
             widget.isMobile
                 ? lastBookAccess.isEmpty
-                    ? const Text('')
+                    ? const SizedBox.shrink()
                     : TextButton(
                         style: ButtonStyle(
                           backgroundColor:

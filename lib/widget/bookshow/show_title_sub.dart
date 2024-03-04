@@ -1,8 +1,10 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:share_plus/share_plus.dart';
+import 'package:substring_highlight/substring_highlight.dart';
 import 'package:tripitaka91/utils/constants/api_constants.dart';
 import 'package:tripitaka91/utils/models/users.dart';
 import 'package:tripitaka91/utils/play_audio/audio_manager.dart';
@@ -112,20 +114,41 @@ class _ShowTitlePagesState extends State<ShowTitlePages> {
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
-  Widget _showText(String title, String mark) {
+  Widget _showText(
+      String title, String mark, String bookid, String pageid, String lineid) {
     if (mark == 'TRUE') {
-      return Text(
-        title,
-        style: TextStyle(fontSize: widget.isM ? 18 : 16, color: Colors.red),
+      return SubstringHighlight(
+        text: '[เล่ม $bookid หน้า $pageid บรรทัด $lineid] \n$title',
+        term: title,
+        textStyle: TextStyle(
+          fontFamily: widget.isM
+              ? 'Roboto'
+              : kIsWeb
+                  ? 'THSarabunNew'
+                  : 'Roboto',
+          fontSize: widget.isM
+              ? 18.0
+              : kIsWeb
+                  ? 24.0
+                  : 16.0,
+        ),
       );
     } else {
-      return widget.isM
-          ? ATextTitleMedium18(
-              text: title,
-            )
-          : ATextTitleMedium(
-              text: title,
-            );
+      return Text(
+        '[เล่ม $bookid หน้า $pageid บรรทัด $lineid] \n$title',
+        style: TextStyle(
+          fontFamily: widget.isM
+              ? 'Roboto'
+              : kIsWeb
+                  ? 'THSarabunNew'
+                  : 'Roboto',
+          fontSize: widget.isM
+              ? 18.0
+              : kIsWeb
+                  ? 24.0
+                  : 16.0,
+        ),
+      );
     }
   }
 
@@ -164,6 +187,9 @@ class _ShowTitlePagesState extends State<ShowTitlePages> {
                   title: _showText(
                     '${textTitleReplace.extractText(dataTitle[index]).replaceAll(textTitleReplace.getBookBlue(dataTitle[index]), '')} ',
                     textTitleReplace.getMark(dataTitle[index]),
+                    textTitleReplace.getBookId(dataTitle[index]),
+                    textTitleReplace.getPageId(dataTitle[index]),
+                    textTitleReplace.getLineId(dataTitle[index]),
                   ),
                   subtitle: Column(
                     children: [
@@ -259,7 +285,7 @@ class _ShowTitlePagesState extends State<ShowTitlePages> {
                             ),
                           ),
                           widget.isM
-                              ? const Text('')
+                              ? const SizedBox.shrink()
                               : Align(
                                   alignment: Alignment.centerLeft,
                                   child: ClipPath(
@@ -275,10 +301,10 @@ class _ShowTitlePagesState extends State<ShowTitlePages> {
                                   ),
                                 ),
                           widget.isM
-                              ? const Text('')
+                              ? const SizedBox.shrink()
                               : const SizedBox(width: 10),
                           widget.isM
-                              ? const Text('')
+                              ? const SizedBox.shrink()
                               : Align(
                                   alignment: Alignment.centerRight,
                                   child: ClipPath(
@@ -315,10 +341,10 @@ class _ShowTitlePagesState extends State<ShowTitlePages> {
                                     ),
                                   ),
                                 )
-                              : const Text(''),
+                              : const SizedBox.shrink(),
                           widget.isM
                               ? const SizedBox(width: 10)
-                              : const Text(''),
+                              : const SizedBox.shrink(),
                           widget.isM
                               ? Align(
                                   alignment: Alignment.centerRight,
@@ -337,7 +363,7 @@ class _ShowTitlePagesState extends State<ShowTitlePages> {
                                     ),
                                   ),
                                 )
-                              : const Text(''),
+                              : const SizedBox.shrink(),
                         ],
                       ),
                     ],

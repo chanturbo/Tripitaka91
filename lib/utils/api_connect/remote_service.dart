@@ -506,7 +506,81 @@ class GetLastRead {
     List<LastBookAccess> dummyDataList = generateDummyData();
     Users? users = await getUsersList();
     if (users == null) {
-      return dummyDataList;
+      final response = await http.post(
+        Uri.parse(tURLLogReads),
+        body: {
+          "token": tSecretAPIKey,
+          "action": "read",
+          "username": 'guest',
+          "json_data": "{}",
+        },
+      );
+
+      if (response.statusCode == 200) {
+        var json = response.body;
+        var decodedJson = jsonDecode(utf8.decode(json.runes.toList()));
+        // var unicodeJson = jsonEncode(decodedJson);
+        // print(unicodeJson);
+
+        bool successValue = decodedJson['success'];
+        var data = decodedJson['data'];
+        // print(data);
+
+        if (successValue) {
+          List<LastBookAccess> lastBookAccessList = List<LastBookAccess>.from(
+            data.map((item) => LastBookAccess(
+                  username: item['username'],
+                  timeLastAccess: DateTime.parse(item['time_last_access']),
+                  bookLastAccess: item['book_last_access'],
+                  pageLastAccess: item['page_last_access'],
+                )),
+          );
+
+          if (lastBookAccessList.isNotEmpty) {
+            dummyDataList =
+                generateDummyDataFromDB(lastBookAccessList[0].timeLastAccess);
+
+            // for (var lastBookAccess in lastBookAccessList) {
+            //   print('Time Last Access: ${lastBookAccess.timeLastAccess}');
+            // }
+            // print(lastBookAccessList.length);
+            //print('showcase');
+            // List<LastBookAccessSuccess> lastBookAccessList =
+            //     lastBookAccessSuccessFromJson(decodedJson);
+            // if (lastBookAccessList.isNotEmpty) {
+            for (var lastBookAccessSuccess in lastBookAccessList) {
+              // print(lastBookAccessSuccess.bookLastAccess);
+              for (var lastBookAccess1 in dummyDataList) {
+                if (lastBookAccess1.bookLastAccess ==
+                    lastBookAccessSuccess.bookLastAccess) {
+                  lastBookAccess1.pageLastAccess =
+                      lastBookAccessSuccess.pageLastAccess;
+                  lastBookAccess1.timeLastAccess =
+                      lastBookAccessSuccess.timeLastAccess;
+                  break;
+                }
+              }
+            }
+            // for (var lastBookAccess in dummyDataList) {
+            //   print('Time Last Access: ${lastBookAccess.timeLastAccess}');
+            // }
+            dummyDataList
+                .sort((a, b) => b.timeLastAccess.compareTo(a.timeLastAccess));
+            // // ตรวจสอบข้อมูลที่ได้
+            // for (var lastBookAccess in dummyDataList) {
+            //   print('Time Last Access: ${lastBookAccess.timeLastAccess}');
+            // }
+            return dummyDataList;
+          } else {
+            return dummyDataList;
+          }
+        } else {
+          return dummyDataList;
+        }
+      } else {
+        return dummyDataList;
+        //throw Exception('เกิดข้อผิดพลาดในการเชื่อมต่อกับ API');
+      }
     } else {
       final response = await http.post(
         Uri.parse(tURLLogReads),

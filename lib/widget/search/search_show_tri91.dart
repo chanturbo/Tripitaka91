@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:substring_highlight/substring_highlight.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +19,7 @@ class SearchShowPages extends StatefulWidget {
   final String wordSearch;
   final String bookid;
   final bool isM;
+  final String catalog;
 
   const SearchShowPages({
     super.key,
@@ -25,6 +27,7 @@ class SearchShowPages extends StatefulWidget {
     required this.wordSearch,
     required this.bookid,
     required this.isM,
+    required this.catalog,
   });
 
   @override
@@ -159,10 +162,20 @@ class _SearchShowPagesState extends State<SearchShowPages> {
                     child: ATextDiskplayMedium(text: '${index + 1}'),
                   ),
                   title: SubstringHighlight(
-                    text: textTitleReplace.extractText(data[index]),
+                    text:
+                        '[${widget.catalog} เล่ม ${textTitleReplace.getBookId(data[index])} หน้า ${textTitleReplace.getPageId(data[index])} บรรทัด ${textTitleReplace.getLineId(data[index])}]\n${textTitleReplace.extractText(data[index])}',
                     terms: outputList,
                     textStyle: TextStyle(
-                        fontSize: widget.isM ? 18.0 : 16.0,
+                        fontFamily: widget.isM
+                            ? 'Roboto'
+                            : kIsWeb
+                                ? 'THSarabunNew'
+                                : 'Roboto',
+                        fontSize: widget.isM
+                            ? 18.0
+                            : kIsWeb
+                                ? 24.0
+                                : 16.0,
                         color: Colors.black),
                   ),
                   subtitle: Row(

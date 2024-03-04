@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
@@ -147,11 +148,22 @@ class _SearchShowPagesTitleState extends State<SearchShowPagesTitle> {
                     child: ATextDiskplayMedium(text: '${index + 1}'),
                   ),
                   title: SubstringHighlight(
-                    text:
-                        '${textTitleReplace.extractText(dataTitle[index]).replaceAll(textTitleReplace.getBookBlue(dataTitle[index]), '')} ',
+                    text: textTitleReplace.getCategory(dataTitle[index]) ==
+                            'รวมหัวข้อธรรมสำคัญ 91เล่ม'
+                        ? '[${textTitleReplace.getCategory(dataTitle[index])} - ${textTitleReplace.getDetail(dataTitle[index])}]\n${textTitleReplace.extractText(dataTitle[index]).replaceAll(textTitleReplace.getBookBlue(dataTitle[index]), '')}'
+                        : '[${textTitleReplace.getCategory(dataTitle[index])} เล่ม ${textTitleReplace.getBookId(dataTitle[index])} หน้า ${textTitleReplace.getPageId(dataTitle[index])} บรรทัด ${textTitleReplace.getLineId(dataTitle[index])}]\n${textTitleReplace.extractText(dataTitle[index]).replaceAll(textTitleReplace.getBookBlue(dataTitle[index]), '')}',
                     terms: outputList,
                     textStyle: TextStyle(
-                        fontSize: widget.isM ? 18.0 : 16.0,
+                        fontFamily: widget.isM
+                            ? 'Roboto'
+                            : kIsWeb
+                                ? 'THSarabunNew'
+                                : 'Roboto',
+                        fontSize: widget.isM
+                            ? 18.0
+                            : kIsWeb
+                                ? 24.0
+                                : 16.0,
                         color: Colors.black),
                   ),
                   subtitle: Column(
@@ -248,7 +260,7 @@ class _SearchShowPagesTitleState extends State<SearchShowPagesTitle> {
                             ),
                           ),
                           widget.isM
-                              ? const Text('')
+                              ? const SizedBox.shrink()
                               : Align(
                                   alignment: Alignment.centerLeft,
                                   child: ClipPath(
@@ -265,7 +277,7 @@ class _SearchShowPagesTitleState extends State<SearchShowPagesTitle> {
                                 ),
                           const SizedBox(width: 10),
                           widget.isM
-                              ? const Text('')
+                              ? const SizedBox.shrink()
                               : Align(
                                   alignment: Alignment.centerRight,
                                   child: ClipPath(
@@ -324,7 +336,7 @@ class _SearchShowPagesTitleState extends State<SearchShowPagesTitle> {
                                 ),
                               ],
                             )
-                          : const Text(''),
+                          : const SizedBox.shrink(),
                     ],
                   ),
                   onTap: () {
