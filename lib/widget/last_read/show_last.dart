@@ -47,6 +47,7 @@ class _DummyLastBookAccessDataState extends State<DummyLastBookAccessData> {
                   return SizedBox(
                     width: 70,
                     child: Card(
+                      color: widget.isMobile ? Colors.blue : null,
                       margin: const EdgeInsets.all(5),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(5),
@@ -67,7 +68,7 @@ class _DummyLastBookAccessDataState extends State<DummyLastBookAccessData> {
                         },
                         child: Center(
                           child: widget.isMobile
-                              ? ATextTitleMedium(
+                              ? ATextDiskplayMedium(
                                   text: 'เล่ม ${lastBookAccess.bookLastAccess}')
                               : ATextLabelLarge(
                                   text:

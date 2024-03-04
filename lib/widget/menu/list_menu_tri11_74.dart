@@ -21,7 +21,6 @@ class ListMenuTri2 extends StatelessWidget {
           child: ClipPath(
             clipper: RightTriangleRectangleClipper(),
             child: Container(
-              width: 100,
               height: 25,
               color: TColors.primary,
               child: const Center(
@@ -38,9 +37,8 @@ class ListMenuTri2 extends StatelessWidget {
             itemCount: book_2.length,
             itemBuilder: (BuildContext innerContext, int innerIndex) {
               return ListTile(
-                title: Text(
-                  book_2[innerIndex],
-                  overflow: TextOverflow.ellipsis,
+                title: ATextTitleMedium(
+                  text: book_2[innerIndex],
                 ),
                 onTap: () {
                   Navigator.push(

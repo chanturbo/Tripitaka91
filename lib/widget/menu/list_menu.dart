@@ -40,18 +40,21 @@ class ListMenu extends StatelessWidget {
           menuList: book_1,
           bookAdd: 1,
           isTablet: isTablet,
+          isDesktop: isDesktop,
         ),
         SubMenuExpansionTile(
           titleText: 'พระสุตตันตปิฎก',
           menuList: book_2,
           bookAdd: 11,
           isTablet: isTablet,
+          isDesktop: isDesktop,
         ),
         SubMenuExpansionTile(
           titleText: 'พระอภิธรรมปิฎก',
           menuList: book_3,
           bookAdd: 75,
           isTablet: isTablet,
+          isDesktop: isDesktop,
         ),
         ClipPath(
           clipper: RightTriangleRectangleClipper(),
@@ -67,28 +70,59 @@ class ListMenu extends StatelessWidget {
           ),
         ),
         SubMenuNoIconExpansionTile(
-            titleText: '1.รวมชุดข้อมูลและหัวข้อพระไตรปิฎก', menuList: menu_9_1),
+          titleText: '1.รวมชุดข้อมูลและหัวข้อพระไตรปิฎก',
+          menuList: menu_9_1,
+          isTablet: isTablet,
+          isDesktop: isDesktop,
+        ),
         SubMenuNoIconExpansionTile(
-            titleText: '2.หลักสูตรอินเตอร์เน็ต', menuList: menu_9_2),
+          titleText: '2.หลักสูตรอินเตอร์เน็ต',
+          menuList: menu_9_2,
+          isTablet: isTablet,
+          isDesktop: isDesktop,
+        ),
         SubMenuNoIconExpansionTile(
-            titleText: '3.แก้ข้อกล่าวหาของสังคมด้วยคำสอนของพระพุทธเจ้า',
-            menuList: menu_9_3),
+          titleText: '3.แก้ข้อกล่าวหาของสังคมด้วยคำสอนของพระพุทธเจ้า',
+          menuList: menu_9_3,
+          isTablet: isTablet,
+          isDesktop: isDesktop,
+        ),
         SubMenuNoIconExpansionTile(
-            titleText: '4.หัวข้อวัตถุในพระพุทธศาสนาที่ถูกต้อง',
-            menuList: menu_9_4),
+          titleText: '4.หัวข้อวัตถุในพระพุทธศาสนาที่ถูกต้อง',
+          menuList: menu_9_4,
+          isTablet: isTablet,
+          isDesktop: isDesktop,
+        ),
         SubMenuNoIconExpansionTile(
-            titleText: '5.หนังสือความประพฤติของพระ', menuList: menu_9_5),
+          titleText: '5.หนังสือความประพฤติของพระ',
+          menuList: menu_9_5,
+          isTablet: isTablet,
+          isDesktop: isDesktop,
+        ),
         SubMenuNoIconExpansionTile(
-            titleText: '6.หัวข้อพระวินัยปิฎก และอรรถกถาแปล-พุทธทำนาย',
-            menuList: menu_9_6),
+          titleText: '6.หัวข้อพระวินัยปิฎก และอรรถกถาแปล-พุทธทำนาย',
+          menuList: menu_9_6,
+          isTablet: isTablet,
+          isDesktop: isDesktop,
+        ),
         SubMenuNoIconExpansionTile(
-            titleText: '7.การประกาศ และระเบียบวัด', menuList: menu_9_7),
+          titleText: '7.การประกาศ และระเบียบวัด',
+          menuList: menu_9_7,
+          isTablet: isTablet,
+          isDesktop: isDesktop,
+        ),
         SubMenuNoIconExpansionTile(
-            titleText: '8.ข้อมูลประกอบเพิ่มเติม แก้ข้อกล่าวหาสังคม',
-            menuList: menu_9_8),
+          titleText: '8.ข้อมูลประกอบเพิ่มเติม แก้ข้อกล่าวหาสังคม',
+          menuList: menu_9_8,
+          isTablet: isTablet,
+          isDesktop: isDesktop,
+        ),
         SubMenuNoIconExpansionTile(
-            titleText: '9.ข้อมูลพระไตรปิฎก กับเหตุการณ์ปัจจุบัน',
-            menuList: menu_9_9),
+          titleText: '9.ข้อมูลพระไตรปิฎก กับเหตุการณ์ปัจจุบัน',
+          menuList: menu_9_9,
+          isTablet: isTablet,
+          isDesktop: isDesktop,
+        ),
         ClipPath(
           clipper: RightTriangleRectangleClipper(),
           child: Container(
@@ -103,9 +137,11 @@ class ListMenu extends StatelessWidget {
           ),
         ),
         ListTile(
-          title: const Text(
-            'พจนานุกรม ฉบับประมวลศัพท์',
-          ),
+          title: (!isTablet && !isDesktop)
+              ? const ATextTitleMedium18(text: 'พจนานุกรม ฉบับประมวลศัพท์')
+              : const ATextTitleMedium(
+                  text: 'พจนานุกรม ฉบับประมวลศัพท์',
+                ),
           onTap: () {
             Navigator.push(
               context,
@@ -116,9 +152,11 @@ class ListMenu extends StatelessWidget {
           },
         ),
         ListTile(
-          title: const Text(
-            'พจนานุกรม ไทย-บาลี',
-          ),
+          title: (!isTablet && !isDesktop)
+              ? const ATextTitleMedium18(text: 'พจนานุกรม ไทย-บาลี')
+              : const ATextTitleMedium(
+                  text: 'พจนานุกรม ไทย-บาลี',
+                ),
           onTap: () {
             Navigator.push(
               context,
@@ -142,9 +180,11 @@ class ListMenu extends StatelessWidget {
           ),
         ),
         ListTile(
-          title: const Text(
-            'เกี่ยวกับโปรแกรม',
-          ),
+          title: (!isTablet && !isDesktop)
+              ? const ATextTitleMedium18(text: 'เกี่ยวกับโปรแกรม')
+              : const Text(
+                  'เกี่ยวกับโปรแกรม',
+                ),
           onTap: () {
             Navigator.push(
               context,

@@ -79,30 +79,7 @@ class _AppBarCustomState extends State<AppBarCustom> {
                 );
               },
               child: widget.isTablet == false && widget.isDesktop == false
-                  ? Container(
-                      padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: TColors.grey),
-                        borderRadius:
-                            BorderRadius.circular(TSizes.cardRadiusLg),
-                        color: TColors.textWhite,
-                      ),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const SizedBox(width: 10),
-                          const Icon(
-                            Icons.search,
-                            color: TColors.black,
-                          ),
-                          const SizedBox(width: TSizes.spaceBtwItems),
-                          Text(
-                            'ค้นหา...',
-                            style: Theme.of(context).textTheme.bodyLarge,
-                          ),
-                        ],
-                      ),
-                    )
+                  ? const SizedBox.shrink()
                   : Container(
                       width: widget.isDesktop ? 580 : 380,
                       padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),

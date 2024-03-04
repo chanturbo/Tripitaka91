@@ -22,7 +22,6 @@ class ListMenuDict extends StatelessWidget {
         ClipPath(
           clipper: RightTriangleRectangleClipper(),
           child: Container(
-            width: 100,
             height: 25,
             color: TColors.primary,
             child: const Center(
@@ -33,8 +32,8 @@ class ListMenuDict extends StatelessWidget {
           ),
         ),
         ListTile(
-          title: const Text(
-            'พจนานุกรม ฉบับประมวลศัพท์',
+          title: const ATextTitleMedium(
+            text: 'พจนานุกรม ฉบับประมวลศัพท์',
           ),
           onTap: () {
             Navigator.push(
@@ -46,8 +45,8 @@ class ListMenuDict extends StatelessWidget {
           },
         ),
         ListTile(
-          title: const Text(
-            'พจนานุกรม ไทย-บาลี',
+          title: const ATextTitleMedium(
+            text: 'พจนานุกรม ไทย-บาลี',
           ),
           onTap: () {
             Navigator.push(
