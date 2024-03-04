@@ -26,7 +26,8 @@ class _SearchMobileScreenState extends State<SearchMobileScreen> {
             );
           },
           child: Container(
-            width: screenWidth - 50,
+            height: 40,
+            width: screenWidth - 20,
             padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
             decoration: BoxDecoration(
               border: Border.all(color: TColors.grey),

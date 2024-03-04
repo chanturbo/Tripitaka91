@@ -162,8 +162,9 @@ class _SearchShowPagesState extends State<SearchShowPages> {
                     child: ATextDiskplayMedium(text: '${index + 1}'),
                   ),
                   title: SubstringHighlight(
-                    text:
-                        '[${widget.catalog} เล่ม ${textTitleReplace.getBookId(data[index])} หน้า ${textTitleReplace.getPageId(data[index])} บรรทัด ${textTitleReplace.getLineId(data[index])}]\n${textTitleReplace.extractText(data[index])}',
+                    text: widget.isM
+                        ? textTitleReplace.extractText(data[index])
+                        : '[${widget.catalog} เล่ม ${textTitleReplace.getBookId(data[index])} หน้า ${textTitleReplace.getPageId(data[index])} บรรทัด ${textTitleReplace.getLineId(data[index])}]\n${textTitleReplace.extractText(data[index])}',
                     terms: outputList,
                     textStyle: TextStyle(
                         fontFamily: widget.isM

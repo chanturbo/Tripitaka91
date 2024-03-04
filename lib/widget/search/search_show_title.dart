@@ -148,10 +148,16 @@ class _SearchShowPagesTitleState extends State<SearchShowPagesTitle> {
                     child: ATextDiskplayMedium(text: '${index + 1}'),
                   ),
                   title: SubstringHighlight(
-                    text: textTitleReplace.getCategory(dataTitle[index]) ==
-                            'รวมหัวข้อธรรมสำคัญ 91เล่ม'
-                        ? '[${textTitleReplace.getCategory(dataTitle[index])} - ${textTitleReplace.getDetail(dataTitle[index])}]\n${textTitleReplace.extractText(dataTitle[index]).replaceAll(textTitleReplace.getBookBlue(dataTitle[index]), '')}'
-                        : '[${textTitleReplace.getCategory(dataTitle[index])} เล่ม ${textTitleReplace.getBookId(dataTitle[index])} หน้า ${textTitleReplace.getPageId(dataTitle[index])} บรรทัด ${textTitleReplace.getLineId(dataTitle[index])}]\n${textTitleReplace.extractText(dataTitle[index]).replaceAll(textTitleReplace.getBookBlue(dataTitle[index]), '')}',
+                    text: widget.isM
+                        ? textTitleReplace
+                            .extractText(dataTitle[index])
+                            .replaceAll(
+                                textTitleReplace.getBookBlue(dataTitle[index]),
+                                '')
+                        : textTitleReplace.getCategory(dataTitle[index]) ==
+                                'รวมหัวข้อธรรมสำคัญ 91เล่ม'
+                            ? '[${textTitleReplace.getCategory(dataTitle[index])} - ${textTitleReplace.getDetail(dataTitle[index])}]\n${textTitleReplace.extractText(dataTitle[index]).replaceAll(textTitleReplace.getBookBlue(dataTitle[index]), '')}'
+                            : '[${textTitleReplace.getCategory(dataTitle[index])} เล่ม ${textTitleReplace.getBookId(dataTitle[index])} หน้า ${textTitleReplace.getPageId(dataTitle[index])} บรรทัด ${textTitleReplace.getLineId(dataTitle[index])}]\n${textTitleReplace.extractText(dataTitle[index]).replaceAll(textTitleReplace.getBookBlue(dataTitle[index]), '')}',
                     terms: outputList,
                     textStyle: TextStyle(
                         fontFamily: widget.isM

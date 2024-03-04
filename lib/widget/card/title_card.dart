@@ -149,9 +149,11 @@ class _TitleCardState extends State<TitleCard> {
                     color: Colors.blue[300], // Change color as needed
                   ),
                 ),
-                widget.isMobile ? const Text('') : const SizedBox(width: 10),
                 widget.isMobile
-                    ? const Text('')
+                    ? const SizedBox.shrink()
+                    : const SizedBox(width: 10),
+                widget.isMobile
+                    ? const SizedBox.shrink()
                     : Align(
                         alignment: Alignment.centerRight,
                         child: ClipPath(
@@ -167,9 +169,11 @@ class _TitleCardState extends State<TitleCard> {
                           ),
                         ),
                       ),
-                widget.isMobile ? const Text('') : const SizedBox(width: 10),
                 widget.isMobile
-                    ? const Text('')
+                    ? const SizedBox.shrink()
+                    : const SizedBox(width: 10),
+                widget.isMobile
+                    ? const SizedBox.shrink()
                     : Align(
                         alignment: Alignment.centerRight,
                         child: ClipPath(
@@ -226,7 +230,7 @@ class _TitleCardState extends State<TitleCard> {
                       ),
                     ],
                   )
-                : const Text(''),
+                : const SizedBox.shrink(),
           ],
         ),
       ),

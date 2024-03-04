@@ -118,7 +118,9 @@ class _ShowTitlePagesState extends State<ShowTitlePages> {
       String title, String mark, String bookid, String pageid, String lineid) {
     if (mark == 'TRUE') {
       return SubstringHighlight(
-        text: '[เล่ม $bookid หน้า $pageid บรรทัด $lineid] \n$title',
+        text: widget.isM
+            ? title
+            : '[เล่ม $bookid หน้า $pageid บรรทัด $lineid] \n$title',
         term: title,
         textStyle: TextStyle(
           fontFamily: widget.isM
@@ -134,21 +136,29 @@ class _ShowTitlePagesState extends State<ShowTitlePages> {
         ),
       );
     } else {
-      return Text(
-        '[เล่ม $bookid หน้า $pageid บรรทัด $lineid] \n$title',
-        style: TextStyle(
-          fontFamily: widget.isM
-              ? 'Roboto'
-              : kIsWeb
-                  ? 'THSarabunNew'
-                  : 'Roboto',
-          fontSize: widget.isM
-              ? 18.0
-              : kIsWeb
-                  ? 24.0
-                  : 16.0,
-        ),
-      );
+      return widget.isM
+          ? Text(
+              title,
+              style: const TextStyle(
+                fontFamily: 'Roboto',
+                fontSize: 18.0,
+              ),
+            )
+          : Text(
+              '[เล่ม $bookid หน้า $pageid บรรทัด $lineid] \n$title',
+              style: TextStyle(
+                fontFamily: widget.isM
+                    ? 'Roboto'
+                    : kIsWeb
+                        ? 'THSarabunNew'
+                        : 'Roboto',
+                fontSize: widget.isM
+                    ? 18.0
+                    : kIsWeb
+                        ? 24.0
+                        : 16.0,
+              ),
+            );
     }
   }
 
