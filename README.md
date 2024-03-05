@@ -1,6 +1,6 @@
 # tripitaka91
 
-A new Flutter project.
+Tripitaka 91 Project By Flutter.
 
 ## Getting Started
 

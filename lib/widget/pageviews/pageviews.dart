@@ -312,7 +312,7 @@ class _Tri91PageViewState extends State<Tri91PageView> {
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
-                    child: const Text('Close'),
+                    child: const Text('ปิด'),
                   ),
                 ],
               );
@@ -380,7 +380,7 @@ class _Tri91PageViewState extends State<Tri91PageView> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: const Text('Close'),
+              child: const Text('ปิด'),
             ),
           ],
         );

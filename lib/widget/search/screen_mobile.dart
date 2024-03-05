@@ -26,7 +26,7 @@ class _SearchMobileScreenState extends State<SearchMobileScreen> {
             );
           },
           child: Container(
-            height: 40,
+            height: 42,
             width: screenWidth - 20,
             padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
             decoration: BoxDecoration(
@@ -45,7 +45,7 @@ class _SearchMobileScreenState extends State<SearchMobileScreen> {
                 const SizedBox(width: TSizes.spaceBtwItems),
                 Text(
                   'ค้นหา...',
-                  style: Theme.of(context).textTheme.bodyLarge,
+                  style: Theme.of(context).textTheme.titleMedium,
                 ),
               ],
             ),
