@@ -414,6 +414,7 @@ class _ShowCorrectSaveState extends State<ShowCorrectSave> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          contentPadding: const EdgeInsets.all(5),
           title: SubstringHighlight(
             text: 'ระบุข้อความที่น่าจะถูก [ $correctWord ]',
             term: correctWord,
