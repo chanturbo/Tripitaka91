@@ -200,21 +200,26 @@ class _ShowTitlePagesState extends State<ShowTitlePages> {
             ),
             ElevatedButton(
               onPressed: () async {
-                // ทำสิ่งที่ต้องการเมื่อกดปุ่มบันทึกข้อมูล
-                String inputData = textController.text;
-                if (inputData == '') {
-                  _showSnackbar(context, 'กรุณาป้อนข้อมูลให้ครบถ้วน');
-                } else {
-                  // อาจทำการใช้ข้อมูลที่ป้อนเข้ามาต่อไป
-                  // print(
-                  //     'ข้อมูลที่ป้อน: $inputData เล่ม $bookid หน้า $bookpage บรรทัด $bookline');
-                  bool? confirm = await _showConfirmationDialog(context);
-                  if (confirm!) {
-                    await _fetchUpdateTitle(
-                        inputData, tripitaka91No, tripitaka91Code);
-                    // ignore: use_build_context_synchronously
-                    Navigator.of(context).pop(); // ปิดหน้าต่าง
+                if (usersChk != null) {
+                  // ทำสิ่งที่ต้องการเมื่อกดปุ่มบันทึกข้อมูล
+                  String inputData = textController.text;
+                  if (inputData == '') {
+                    _showSnackbar(context, 'กรุณาป้อนข้อมูลให้ครบถ้วน');
+                  } else {
+                    // อาจทำการใช้ข้อมูลที่ป้อนเข้ามาต่อไป
+                    // print(
+                    //     'ข้อมูลที่ป้อน: $inputData เล่ม $bookid หน้า $bookpage บรรทัด $bookline');
+                    bool? confirm = await _showConfirmationDialog(context);
+                    if (confirm!) {
+                      await _fetchUpdateTitle(
+                          inputData, tripitaka91No, tripitaka91Code);
+                      // ignore: use_build_context_synchronously
+                      Navigator.of(context).pop(); // ปิดหน้าต่าง
+                    }
                   }
+                } else {
+                  _showSnackbar(context, 'กรุณาเข้าสู่ระบบก่อน');
+                  Navigator.of(context).pop(); // ปิดหน้าต่าง
                 }
               },
               child: const Text(
