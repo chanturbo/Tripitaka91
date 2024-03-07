@@ -139,6 +139,7 @@ class _TitleCardState extends State<TitleCard> {
         'tripitaka91no': tripitaka91No,
         'tripitaka91code': tripitaka91Code,
         'titledetail': initialText,
+        'username': usersChk!.username,
       },
     );
 

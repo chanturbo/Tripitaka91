@@ -242,6 +242,7 @@ class _ShowTitlePagesState extends State<ShowTitlePages> {
         'tripitaka91no': tripitaka91No,
         'tripitaka91code': tripitaka91Code,
         'titledetail': initialText,
+        'username': usersChk!.username,
       },
     );
 
