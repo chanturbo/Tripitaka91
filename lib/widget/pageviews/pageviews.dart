@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -65,6 +66,8 @@ class _Tri91PageViewState extends State<Tri91PageView> {
   late int tribookline = 0;
   late String txtShowEmpty = 'โหลดข้อมูล...';
   final ScrollController _scrollControllerListTitle = ScrollController();
+  final ScrollController _scrollController = ScrollController();
+
   List<String> currentPlaylist = [];
   AudioPlayerManager audioPlayerManager = AudioPlayerManager();
   AudioPlayerManager audioPlayerManagerTitle = AudioPlayerManager();
@@ -78,6 +81,7 @@ class _Tri91PageViewState extends State<Tri91PageView> {
   List<String> dataDict = [];
   late TextTitleReplace textTitleReplace;
   bool loadFirst = true;
+  late Timer _timer;
 
   @override
   void initState() {
@@ -92,10 +96,62 @@ class _Tri91PageViewState extends State<Tri91PageView> {
         PageController(initialPage: widget.triPageid, viewportFraction: 1.0);
     textTitleReplace = TextTitleReplace();
     uniqueItems = [];
+    _timer = Timer(const Duration(seconds: 2), _onTimerFinished);
+  }
+
+  void _onTimerFinished() {
+    if (mounted) {
+      // ทำงานก็ต่อเมื่อ widget ยังไม่ถูก dispose
+      // print('Timer finished');
+
+      double midpoint = _scrollController.position.maxScrollExtent /
+          2; // คำนวณตำแหน่งกึ่งกลาง
+
+      int line = int.parse(widget.triBookline);
+      if (line < 6) {
+        midpoint = _scrollController.position.minScrollExtent;
+      } else if (line > 15) {
+        midpoint = _scrollController.position.maxScrollExtent;
+      }
+      if (_scrollController.hasClients) {
+        _scrollController.animateTo(
+          midpoint,
+          duration:
+              const Duration(milliseconds: 500), // หรือค่าอื่น ๆ ตามต้องการ
+          curve: Curves.easeOut, // หรือค่าอื่น ๆ ตามต้องการ
+        );
+      }
+    }
+  }
+
+  void _onTimerFinished2() {
+    if (mounted) {
+      // ทำงานก็ต่อเมื่อ widget ยังไม่ถูก dispose
+      // print('Timer finished');
+
+      double midpoint = _scrollController.position.maxScrollExtent /
+          2; // คำนวณตำแหน่งกึ่งกลาง
+
+      int line = tribookline;
+      if (line < 6) {
+        midpoint = _scrollController.position.minScrollExtent;
+      } else if (line > 15) {
+        midpoint = _scrollController.position.maxScrollExtent;
+      }
+      if (_scrollController.hasClients) {
+        _scrollController.animateTo(
+          midpoint,
+          duration:
+              const Duration(milliseconds: 500), // หรือค่าอื่น ๆ ตามต้องการ
+          curve: Curves.easeOut, // หรือค่าอื่น ๆ ตามต้องการ
+        );
+      }
+    }
   }
 
   @override
   void dispose() {
+    _timer.cancel();
     saveLastRead();
     audioPlayerManager.dispose();
     audioPlayerManagerTitle.dispose();
@@ -813,6 +869,7 @@ class _Tri91PageViewState extends State<Tri91PageView> {
                       duration: const Duration(milliseconds: 250),
                       curve: Curves.bounceInOut);
                   _currentSliderValue = pageId.toDouble();
+                  _timer = Timer(const Duration(seconds: 1), _onTimerFinished2);
                 });
               },
               title: (mark == 'FALSE')
@@ -1699,10 +1756,13 @@ class _Tri91PageViewState extends State<Tri91PageView> {
 
           return SizedBox(
             width: MediaQuery.of(context).size.width,
-            child: SelectableText.rich(
-              textSpan,
-              textAlign: TextAlign.center,
-              style: const TextStyle(height: -0.8),
+            child: SingleChildScrollView(
+              controller: _scrollController,
+              child: SelectableText.rich(
+                textSpan,
+                textAlign: TextAlign.center,
+                style: const TextStyle(height: -0.8),
+              ),
             ),
           );
         }
