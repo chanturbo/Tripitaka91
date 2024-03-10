@@ -77,6 +77,7 @@ class _Tri91PageViewState extends State<Tri91PageView> {
   late List<String> uniqueItems;
   List<String> dataDict = [];
   late TextTitleReplace textTitleReplace;
+  bool loadFirst = true;
 
   @override
   void initState() {
@@ -506,6 +507,7 @@ class _Tri91PageViewState extends State<Tri91PageView> {
       var jsonResponse = jsonDecode(utf8.decode(json.runes.toList()));
 
       if (jsonResponse['success'] == true) {
+        getDataTitle();
         // ignore: use_build_context_synchronously
         _showSnackbar(context, 'บันทึกข้อมูลเรียบร้อยแล้ว');
       } else {
@@ -583,16 +585,24 @@ class _Tri91PageViewState extends State<Tri91PageView> {
             if (value == 'item1') {
               if (users != null) {
                 Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => PageViewEdit(
-                      bookId: widget.triBookid,
-                      pageId: pageChanged.toString(),
-                      username: users!.username,
-                      logEdit: logEdit,
-                    ),
-                  ),
-                );
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => PageViewEdit(
+                        bookId: widget.triBookid,
+                        pageId: pageChanged.toString(),
+                        username: users!.username,
+                        logEdit: logEdit,
+                      ),
+                    )).then((value) {
+                  if (value != null && value == true) {
+                    // หลังจากกลับมาจาก NextPage และค่าที่ส่งกลับมาคือ true
+                    // ทำสิ่งที่คุณต้องการทำต่อได้ที่นี่
+                    // print('Returned with true');
+                    setState(() {
+                      _getLogEdit();
+                    });
+                  }
+                });
               } else {
                 // String mgr = 'กรุณาเข้าสู่ระบบก่อน';
                 chkLoginStatus(context);
@@ -1394,6 +1404,10 @@ class _Tri91PageViewState extends State<Tri91PageView> {
   }
 
   Widget showPage(String pageShow, int triLine, bool isMobile, bool isTable) {
+    if (loadFirst) {
+      _getLogEdit();
+      loadFirst = false;
+    }
     return FutureBuilder<List<BookTri91>?>(
       future: RemoteServiceBookTri91()
           .getBookTri91(widget.triBookid.toString(), pageShow, tSecretAPIKey),

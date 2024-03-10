@@ -344,7 +344,7 @@ class _PageViewEditState extends State<PageViewEdit> {
                 ),
               );
               // ignore: use_build_context_synchronously
-              Navigator.pop(context);
+              Navigator.pop(context, true);
             } else {
               // ignore: use_build_context_synchronously
               ScaffoldMessenger.of(context).showSnackBar(
