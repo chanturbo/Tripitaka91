@@ -38,6 +38,7 @@ const String tURLshowUser = "${tURL}user_show.php";
 const String tURLshowlogedit = "${tURL}show_logedit.php";
 const String tURLshowlogEditWithUser = "${tURL}show_logedit_withuser.php";
 const String tURLshowlogEditWithAll = "${tURL}show_logedit_withall.php";
+const String tURLshowlogEditWithPage = "${tURL}show_logedit_withpage.php";
 const String tURLshowlogSpeechWithUser = "${tURL}show_logspeech_withuser.php";
 const String tURLshowlogSpeechWithAll = "${tURL}show_speakedit_withall.php";
 const String tURLshowlogEditSum = "${tURL}show_logedit_sum.php";

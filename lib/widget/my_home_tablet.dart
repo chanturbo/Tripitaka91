@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:tripitaka91/utils/api_connect/remote_service.dart';
 import 'package:tripitaka91/utils/constants/colors.dart';
@@ -17,6 +19,7 @@ import 'package:tripitaka91/widget/menu/list_menu_title.dart';
 import 'package:tripitaka91/widget/menu/list_menu_tri11_74.dart';
 import 'package:tripitaka91/widget/menu/list_menu_tri1_10.dart';
 import 'package:tripitaka91/widget/menu/list_menu_tri75_91.dart';
+import 'package:tripitaka91/widget/pageviews/pageviews.dart';
 import 'package:tripitaka91/widget/right_clipper/center_clipper.dart';
 import 'package:tripitaka91/widget/right_clipper/right_clipper.dart';
 import 'package:tripitaka91/widget/showbook/show_book.dart';
@@ -45,17 +48,58 @@ class _MyHomeTabletState extends State<MyHomeTablet> {
   String triBookline = '1';
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   int sidebarButtonNo = 0;
+
   late Users? usersList;
+
+  String? book;
+  String? page;
+  String? line;
+  late Timer _timer;
 
   @override
   void initState() {
     super.initState();
     getDataRandTitle();
     userOnline();
+    _checkArguments();
+    _timer = Timer(const Duration(seconds: 1), _onTimerFinished);
+  }
+
+  void _onTimerFinished() {
+    if (mounted) {
+      // ทำงานก็ต่อเมื่อ widget ยังไม่ถูก dispose
+
+      if ((book != null) && (page != null) && (line != null)) {
+        // print('Timer finished book = $book page = $page line = $line');
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => Tri91PageView(
+              triBookid: book!,
+              triPageid: int.parse(page!),
+              triBookline: line!,
+              chkSearch: '',
+            ),
+          ),
+        );
+      }
+    }
+  }
+
+  void _checkArguments() {
+    final uri = Uri.base;
+    final Map<String, String> queryParameters = uri.queryParameters;
+
+    setState(() {
+      book = queryParameters['book'];
+      page = queryParameters['page'];
+      line = queryParameters['line'];
+    });
   }
 
   @override
   void dispose() {
+    _timer.cancel();
     logOutUser();
     super.dispose();
   }

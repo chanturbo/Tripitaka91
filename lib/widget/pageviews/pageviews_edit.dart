@@ -136,6 +136,7 @@ class _PageViewEditState extends State<PageViewEdit> {
                         TextEditingController(),
                         TextEditingController(),
                         TextEditingController(),
+                        TextEditingController(),
                       ]);
                     }
                     int targetPage = int.parse(widget.pageId);
@@ -172,6 +173,7 @@ class _PageViewEditState extends State<PageViewEdit> {
                       }
                     }
                     controllersList[index][0].text = book.bookLines.toString();
+                    controllersList[index][6].text = book.bookDetail;
                     return DataRow(
                       cells: [
                         DataCell(
@@ -302,6 +304,7 @@ class _PageViewEditState extends State<PageViewEdit> {
                 tripitaka91Book: int.parse(widget.bookId),
                 tripitaka91Page: int.parse(widget.pageId),
                 tripitaka91Line: int.parse(controllersList[i][0].text),
+                tripitaka91Detail: controllersList[i][6].text,
                 tripitaka91Wordincorrect: controllersList[i][1].text,
                 tripitaka91Wordcorrect: controllersList[i][2].text,
                 tripitaka91Wordcorrectcomment: comments,

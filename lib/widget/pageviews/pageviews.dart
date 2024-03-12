@@ -23,6 +23,7 @@ import 'package:tripitaka91/utils/models/rand_title.dart';
 import 'package:tripitaka91/widget/last_read/save_last.dart';
 import 'package:tripitaka91/widget/login/loading_dialog.dart';
 import 'package:tripitaka91/widget/login/login_dialog.dart';
+import 'package:tripitaka91/widget/login/show_logedit_save_with_page.dart';
 import 'package:tripitaka91/widget/pageviews/pageviews_edit.dart';
 import 'package:tripitaka91/widget/screen/respond_screen.dart';
 
@@ -663,6 +664,37 @@ class _Tri91PageViewState extends State<Tri91PageView> {
                 // String mgr = 'กรุณาเข้าสู่ระบบก่อน';
                 chkLoginStatus(context);
               }
+            } else if (value == 'item3') {
+              if (users != null) {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      contentPadding: const EdgeInsets.all(5),
+                      title: const Text('ยืนยันคำที่น่าจะผิดคำที่น่าจะถูก'),
+                      content: SizedBox(
+                        width: double.maxFinite,
+                        child: ShowCorrectSaveWithPage(
+                          bookid: widget.triBookid,
+                          pageid: pageChanged.toString(),
+                        ),
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            _getLogEdit();
+                            Navigator.of(context).pop();
+                          },
+                          child: const Text('ปิด'),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              } else {
+                // String mgr = 'กรุณาเข้าสู่ระบบก่อน';
+                chkLoginStatus(context);
+              }
             } else if (value == 'item2') {
               if (users != null) {
                 showDialog(
@@ -701,6 +733,10 @@ class _Tri91PageViewState extends State<Tri91PageView> {
             const PopupMenuItem(
               value: 'item1',
               child: Text('แจ้งคำผิดคำถูก'),
+            ),
+            const PopupMenuItem(
+              value: 'item3',
+              child: Text('ยืนยันการแก้ไขคำผิดคำถูก'),
             ),
             const PopupMenuItem(
               value: 'item2',

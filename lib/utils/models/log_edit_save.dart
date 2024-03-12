@@ -10,6 +10,7 @@ class LogeditSave {
   int tripitaka91Book;
   int tripitaka91Page;
   int tripitaka91Line;
+  String tripitaka91Detail;
   String tripitaka91Wordincorrect;
   String tripitaka91Wordcorrect;
   String tripitaka91Wordcorrectcomment;
@@ -25,6 +26,7 @@ class LogeditSave {
     required this.tripitaka91Book,
     required this.tripitaka91Page,
     required this.tripitaka91Line,
+    required this.tripitaka91Detail,
     required this.tripitaka91Wordincorrect,
     required this.tripitaka91Wordcorrect,
     String? tripitaka91Wordcorrectcomment,
@@ -42,6 +44,7 @@ class LogeditSave {
         tripitaka91Book: json["tripitaka91_book"],
         tripitaka91Page: json["tripitaka91_page"],
         tripitaka91Line: json["tripitaka91_line"],
+        tripitaka91Detail: json["book_detail_old"],
         tripitaka91Wordincorrect: json["tripitaka91_wordincorrect"],
         tripitaka91Wordcorrect: json["tripitaka91_wordcorrect"],
         tripitaka91Wordcorrectcomment: json["tripitaka91_wordcorrectcomment"],
@@ -60,6 +63,7 @@ class LogeditSave {
         "tripitaka91_book": tripitaka91Book,
         "tripitaka91_page": tripitaka91Page,
         "tripitaka91_line": tripitaka91Line,
+        "book_detail_old": tripitaka91Detail,
         "tripitaka91_wordincorrect": tripitaka91Wordincorrect,
         "tripitaka91_wordcorrect": tripitaka91Wordcorrect,
         "tripitaka91_wordcorrectcomment": tripitaka91Wordcorrectcomment,
