@@ -292,7 +292,7 @@ class _BookShowTitleState extends State<BookShowTitle> {
                     String code = widget.triBookid;
                     String linkPhp = 'tripitaka91_1.php';
                     await Share.share('$tURLmain$linkPhp?book_code=$code',
-                        subject: 'สารบัญ เล่ม $code');
+                        subject: 'สารบัญหัวข้อธรรม เล่ม $code');
                   },
                 ),
               ],
