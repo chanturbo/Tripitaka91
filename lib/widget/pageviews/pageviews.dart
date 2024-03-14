@@ -114,21 +114,30 @@ class _Tri91PageViewState extends State<Tri91PageView> {
 
       int line = int.parse(widget.triBookline);
       if (widget.isMobile) {
-        if (line < 6) {
+        if (line < 7) {
           midpoint = position1;
-        } else if (line < 12) {
+          if (line > 3) {
+            midpoint = position1 + (onepoint / 2);
+          }
+        } else if (line < 13) {
           midpoint = position2;
-        } else if (line < 18) {
+          if (line > 9) {
+            midpoint = position2 + (onepoint / 2);
+          }
+        } else if (line < 19) {
           midpoint = position3;
+          if (line > 15) {
+            midpoint = position3 + (onepoint / 2);
+          }
         } else {
           midpoint = position4;
         }
       } else {
-        if (line < 4) {
+        if (line < 5) {
           midpoint = position1;
-        } else if (line < 8) {
+        } else if (line < 9) {
           midpoint = position2;
-        } else if (line < 16) {
+        } else if (line < 17) {
           midpoint = position3;
         } else {
           midpoint = position4;
@@ -158,26 +167,36 @@ class _Tri91PageViewState extends State<Tri91PageView> {
 
       int line = triBookLineRead;
       if (widget.isMobile) {
-        if (line < 6) {
+        if (line < 7) {
           midpoint = position1;
-        } else if (line < 12) {
+          if (line > 3) {
+            midpoint = position1 + (onepoint / 2);
+          }
+        } else if (line < 13) {
           midpoint = position2;
-        } else if (line < 18) {
+          if (line > 9) {
+            midpoint = position2 + (onepoint / 2);
+          }
+        } else if (line < 19) {
           midpoint = position3;
+          if (line > 15) {
+            midpoint = position3 + (onepoint / 2);
+          }
         } else {
           midpoint = position4;
         }
       } else {
-        if (line < 4) {
+        if (line < 5) {
           midpoint = position1;
-        } else if (line < 8) {
+        } else if (line < 9) {
           midpoint = position2;
-        } else if (line < 16) {
+        } else if (line < 17) {
           midpoint = position3;
         } else {
           midpoint = position4;
         }
       }
+
       if (_scrollController.hasClients) {
         _scrollController.animateTo(
           midpoint,
