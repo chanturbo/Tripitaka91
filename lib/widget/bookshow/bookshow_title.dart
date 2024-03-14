@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:tripitaka91/utils/api_connect/remote_service.dart';
 import 'package:tripitaka91/utils/constants/api_constants.dart';
 import 'package:tripitaka91/utils/models/last_book_access.dart';
@@ -261,14 +263,38 @@ class _BookShowTitleState extends State<BookShowTitle> {
             widget.isMobile
                 ? const SizedBox(height: 10)
                 : const SizedBox.shrink(),
-            const Row(
+            Row(
               children: <Widget>[
-                Icon(
+                const Icon(
                   Icons.book,
                   size: 20,
                   color: Colors.blue,
                 ),
-                ATextBodyMedium(text: ' สารบัญหัวข้อธรรม'),
+                const ATextBodyMedium(text: ' สารบัญหัวข้อธรรม'),
+                const SizedBox(width: 10),
+                IconButton(
+                  color: Colors.black,
+                  icon: const Icon(Icons.copy),
+                  onPressed: () {
+                    String code = widget.triBookid;
+                    String linkPhp = 'tripitaka91_1.php';
+                    Clipboard.setData(
+                      ClipboardData(text: '$tURLmain$linkPhp?book_code=$code'),
+                    );
+                    _showSnackbar(context, 'คัดลอกข้อมูลเรียบร้อยแล้ว');
+                  },
+                ),
+                const SizedBox(width: 5),
+                IconButton(
+                  color: Colors.black,
+                  icon: const Icon(Icons.share),
+                  onPressed: () async {
+                    String code = widget.triBookid;
+                    String linkPhp = 'tripitaka91_1.php';
+                    await Share.share('$tURLmain$linkPhp?book_code=$code',
+                        subject: 'สารบัญ เล่ม $code');
+                  },
+                ),
               ],
             ),
             const SizedBox(
@@ -285,5 +311,14 @@ class _BookShowTitleState extends State<BookShowTitle> {
         ),
       ),
     );
+  }
+
+  void _showSnackbar(BuildContext context, String info) {
+    final snackBar = SnackBar(
+      content: Text(info),
+      duration: const Duration(seconds: 1),
+    );
+
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }
