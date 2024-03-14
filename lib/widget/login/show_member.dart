@@ -8,6 +8,7 @@ import 'package:tripitaka91/utils/shared_preferences/shared_value.dart';
 import 'package:tripitaka91/widget/auto_text/auto_text.dart';
 import 'package:tripitaka91/widget/login/change_password_dialog.dart';
 import 'package:tripitaka91/widget/login/profile_menu.dart';
+import 'package:tripitaka91/widget/login/profile_menu_future.dart';
 import 'package:tripitaka91/widget/login/profile_menu_speech.dart';
 import 'package:tripitaka91/widget/login/section_heading.dart';
 import 'package:http/http.dart' as http;
@@ -40,37 +41,37 @@ class _MemberDisplayState extends State<MemberDisplay> {
     return getUsersList();
   }
 
-  // Future<String> _logEditFutureSum() async {
-  //   Users? users = await getUsersList();
-  //   String tmpUser = 'guest';
-  //   if (users != null) {
-  //     tmpUser = users.username;
-  //   }
+  Future<String> _logEditFutureSum() async {
+    Users? users = await getUsersList();
+    String tmpUser = 'guest';
+    if (users != null) {
+      tmpUser = users.username;
+    }
 
-  //   final response = await http.post(
-  //     Uri.parse(tURLshowlogEditSum),
-  //     body: {
-  //       'token': tSecretAPIKey,
-  //       'username': tmpUser,
-  //     },
-  //   );
+    final response = await http.post(
+      Uri.parse(tURLshowlogEditSum),
+      body: {
+        'token': tSecretAPIKey,
+        'username': tmpUser,
+      },
+    );
 
-  //   if (response.statusCode == 200) {
-  //     var json = response.body;
-  //     var jsonResponse = jsonDecode(utf8.decode(json.runes.toList()));
+    if (response.statusCode == 200) {
+      var json = response.body;
+      var jsonResponse = jsonDecode(utf8.decode(json.runes.toList()));
 
-  //     if (jsonResponse['success'] == true) {
-  //       // ถ้าสำเร็จ คืนค่าจำนวนรายการที่ได้จาก API
-  //       return jsonResponse['total_logs'].toString();
-  //     } else {
-  //       // ถ้าไม่สำเร็จ คืนค่าว่าง
-  //       return '';
-  //     }
-  //   } else {
-  //     // ถ้าเกิด HTTP Error จะ throw Exception
-  //     throw Exception('HTTP Error: ${response.statusCode}');
-  //   }
-  // }
+      if (jsonResponse['success'] == true) {
+        // ถ้าสำเร็จ คืนค่าจำนวนรายการที่ได้จาก API
+        return jsonResponse['total_logs'].toString();
+      } else {
+        // ถ้าไม่สำเร็จ คืนค่าว่าง
+        return '';
+      }
+    } else {
+      // ถ้าเกิด HTTP Error จะ throw Exception
+      throw Exception('HTTP Error: ${response.statusCode}');
+    }
+  }
 
   Future<String> _logSpeechFutureSum() async {
     Users? users = await getUsersList();
@@ -179,16 +180,16 @@ class _MemberDisplayState extends State<MemberDisplay> {
                   title: 'วัน/เดือน/ปีเกิด',
                   value: formatDate.formatDate(users.birthDate),
                 ),
-                TProfileMenu(
-                  onPressed: () {},
-                  title: 'รายการแจ้งคำผิดคำถูก',
-                  value: '$values รายการ',
-                ),
-                // TProfileMenuFuture(
+                // TProfileMenu(
                 //   onPressed: () {},
                 //   title: 'รายการแจ้งคำผิดคำถูก',
-                //   valueFuture: _logEditFutureSum(),
+                //   value: '$values รายการ',
                 // ),
+                TProfileMenuFuture(
+                  onPressed: () {},
+                  title: 'รายการแจ้งคำผิดคำถูก',
+                  valueFuture: _logEditFutureSum(),
+                ),
                 TProfileMenuSpeechFuture(
                   onPressed: () {},
                   title: 'รายการแจ้งคำอ่าน',

@@ -358,6 +358,7 @@ class _SearchShowPagesTitleState extends State<SearchShowPagesTitle> {
                           triBookline:
                               textTitleReplace.getLineId(dataTitle[index]),
                           chkSearch: widget.wordSearch,
+                          isMobile: widget.isM,
                         ),
                       ),
                     );

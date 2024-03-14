@@ -4,10 +4,14 @@ import 'package:tripitaka91/widget/bookshow/show_title_sub.dart';
 
 class SubShowTitle extends StatefulWidget {
   final String titleText;
-  final List<String> menuList;
+  final String menuMain;
+  final List<List<String>> menuList;
 
   const SubShowTitle(
-      {super.key, required this.titleText, required this.menuList});
+      {super.key,
+      required this.titleText,
+      required this.menuList,
+      required this.menuMain});
 
   @override
   State<SubShowTitle> createState() => _SubShowTitleState();
@@ -27,14 +31,16 @@ class _SubShowTitleState extends State<SubShowTitle> {
           itemCount: widget.menuList.length,
           itemBuilder: (BuildContext innerContext, int innerIndex) {
             return ListTile(
-              title: ATextTitleMedium18(text: widget.menuList[innerIndex]),
+              title: ATextTitleMedium18(text: widget.menuList[innerIndex][0]),
               onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => ShowTitlePages(
-                      wordSearch: widget.menuList[innerIndex],
+                      wordSearch: widget.menuList[innerIndex][0],
                       isM: true,
+                      menuList: widget.menuList,
+                      menuMain: widget.menuMain,
                     ),
                   ),
                 );

@@ -40,7 +40,7 @@ class TAppTheme {
     fontFamily: 'Roboto',
     disabledColor: TColors.grey,
     brightness: Brightness.dark,
-    primaryColor: TColors.primary,
+    primaryColor: TColors.secondary,
     textTheme: TTextTheme.darkTextTheme,
     chipTheme: TChipTheme.darkChipTheme,
     scaffoldBackgroundColor: TColors.black,

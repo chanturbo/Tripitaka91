@@ -79,6 +79,7 @@ class _MyHomeTabletState extends State<MyHomeTablet> {
               triPageid: int.parse(page!),
               triBookline: line!,
               chkSearch: '',
+              isMobile: false,
             ),
           ),
         );

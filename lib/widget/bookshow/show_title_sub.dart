@@ -18,8 +18,14 @@ import 'package:tripitaka91/widget/right_clipper/center_clipper.dart';
 class ShowTitlePages extends StatefulWidget {
   final String wordSearch;
   final bool isM;
+  final String menuMain;
+  final List<List<String>> menuList;
   const ShowTitlePages(
-      {super.key, required this.wordSearch, required this.isM});
+      {super.key,
+      required this.wordSearch,
+      required this.isM,
+      required this.menuMain,
+      required this.menuList});
 
   @override
   State<ShowTitlePages> createState() => _ShowTitlePagesState();
@@ -300,9 +306,94 @@ class _ShowTitlePagesState extends State<ShowTitlePages> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: ATextDiskplayMedium(
-        text: widget.wordSearch,
-      )),
+        title: ATextDiskplayMedium(
+          text: widget.wordSearch,
+        ),
+        actions: [
+          IconButton(
+            color: Colors.white,
+            icon: const Icon(Icons.copy),
+            onPressed: () {
+              String searchText = widget.wordSearch;
+              int index = widget.menuList
+                  .indexWhere((element) => element[0] == searchText);
+              String bookcode = widget.menuList[index][0];
+              String sub1 = '';
+              if (widget.menuMain != '9.3') {
+                String text = bookcode;
+
+                // หาข้อความที่อยู่ในวงเล็บโดยใช้ Regex
+                RegExp regExp = RegExp(r"\((.*?)\)");
+                Iterable<Match> matches = regExp.allMatches(text);
+                List<String> extractedTexts = [];
+                for (Match match in matches) {
+                  // เพิ่มข้อความที่อยู่ในวงเล็บลงใน List
+                  extractedTexts.add(match.group(1)!);
+                }
+                if (extractedTexts.isNotEmpty) {
+                  sub1 = "(${extractedTexts.join(", ")})";
+                }
+              }
+
+              String code = widget.menuMain;
+              String sub = widget.menuList[index][1];
+              String linkPhp = 'tripitaka91_1.php';
+              if (sub1.isNotEmpty) {
+                Clipboard.setData(
+                  ClipboardData(
+                      text:
+                          '$tURLmain$linkPhp?book_code=$code&sub=$sub&sub1=$sub1'),
+                );
+              } else {
+                Clipboard.setData(
+                  ClipboardData(
+                      text: '$tURLmain$linkPhp?book_code=$code&sub=$sub'),
+                );
+              }
+
+              _showSnackbar(context, 'คัดลอกข้อมูลเรียบร้อยแล้ว');
+            },
+          ),
+          IconButton(
+            color: Colors.white,
+            icon: const Icon(Icons.share),
+            onPressed: () async {
+              String searchText = widget.wordSearch;
+              int index = widget.menuList
+                  .indexWhere((element) => element[0] == searchText);
+              String bookcode = widget.menuList[index][0];
+              String sub1 = '';
+              if (widget.menuMain != '9.3') {
+                String text = bookcode;
+
+                // หาข้อความที่อยู่ในวงเล็บโดยใช้ Regex
+                RegExp regExp = RegExp(r"\((.*?)\)");
+                Iterable<Match> matches = regExp.allMatches(text);
+                List<String> extractedTexts = [];
+                for (Match match in matches) {
+                  // เพิ่มข้อความที่อยู่ในวงเล็บลงใน List
+                  extractedTexts.add(match.group(1)!);
+                }
+                if (extractedTexts.isNotEmpty) {
+                  sub1 = "(${extractedTexts.join(", ")})";
+                }
+              }
+
+              String code = widget.menuMain;
+              String sub = widget.menuList[index][1];
+              String linkPhp = 'tripitaka91_1.php';
+              if (sub1.isNotEmpty) {
+                await Share.share(
+                    '$tURLmain$linkPhp?book_code=$code&sub=$sub&sub1=$sub1',
+                    subject: bookcode);
+              } else {
+                await Share.share('$tURLmain$linkPhp?book_code=$code&sub=$sub',
+                    subject: bookcode);
+              }
+            },
+          ),
+        ],
+      ),
       body: NotificationListener(
         onNotification: (ScrollNotification scrollInfo) {
           if (scrollInfo is ScrollEndNotification &&
@@ -551,6 +642,7 @@ class _ShowTitlePagesState extends State<ShowTitlePages> {
                             triBookline:
                                 textTitleReplace.getLineId(dataTitle[index]),
                             chkSearch: widget.wordSearch,
+                            isMobile: widget.isM,
                           ),
                         ),
                       );

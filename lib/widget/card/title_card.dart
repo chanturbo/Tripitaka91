@@ -210,6 +210,7 @@ class _TitleCardState extends State<TitleCard> {
                       triPageid: widget.pageId,
                       triBookline: widget.bookLine,
                       chkSearch: '',
+                      isMobile: widget.isMobile,
                     ),
                   ),
                 );

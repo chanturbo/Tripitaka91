@@ -32,6 +32,7 @@ class Tri91PageView extends StatefulWidget {
   final int triPageid;
   final String triBookline;
   final String chkSearch;
+  final bool isMobile;
 
   const Tri91PageView({
     super.key,
@@ -39,6 +40,7 @@ class Tri91PageView extends StatefulWidget {
     required this.triPageid,
     required this.triBookline,
     required this.chkSearch,
+    required this.isMobile,
   });
 
   @override
@@ -83,7 +85,7 @@ class _Tri91PageViewState extends State<Tri91PageView> {
   late TextTitleReplace textTitleReplace;
   bool loadFirst = true;
   late Timer _timer;
-
+  int triBookLineRead = 1;
   @override
   void initState() {
     super.initState();
@@ -102,18 +104,37 @@ class _Tri91PageViewState extends State<Tri91PageView> {
 
   void _onTimerFinished() {
     if (mounted) {
-      // ทำงานก็ต่อเมื่อ widget ยังไม่ถูก dispose
-      // print('Timer finished');
-
-      double midpoint = _scrollController.position.maxScrollExtent /
-          2; // คำนวณตำแหน่งกึ่งกลาง
+      double midpoint = _scrollController.position.maxScrollExtent / 2;
+      double onepoint = _scrollController.position.maxScrollExtent / 4;
+      double position1 = _scrollController.position.minScrollExtent;
+      double position2 = _scrollController.position.minScrollExtent + onepoint;
+      double position3 =
+          _scrollController.position.minScrollExtent + (onepoint * 2);
+      double position4 = _scrollController.position.maxScrollExtent;
 
       int line = int.parse(widget.triBookline);
-      if (line < 6) {
-        midpoint = _scrollController.position.minScrollExtent;
-      } else if (line > 15) {
-        midpoint = _scrollController.position.maxScrollExtent;
+      if (widget.isMobile) {
+        if (line < 6) {
+          midpoint = position1;
+        } else if (line < 12) {
+          midpoint = position2;
+        } else if (line < 18) {
+          midpoint = position3;
+        } else {
+          midpoint = position4;
+        }
+      } else {
+        if (line < 4) {
+          midpoint = position1;
+        } else if (line < 8) {
+          midpoint = position2;
+        } else if (line < 16) {
+          midpoint = position3;
+        } else {
+          midpoint = position4;
+        }
       }
+
       if (_scrollController.hasClients) {
         _scrollController.animateTo(
           midpoint,
@@ -127,17 +148,35 @@ class _Tri91PageViewState extends State<Tri91PageView> {
 
   void _onTimerFinished2() {
     if (mounted) {
-      // ทำงานก็ต่อเมื่อ widget ยังไม่ถูก dispose
-      // print('Timer finished');
+      double midpoint = _scrollController.position.maxScrollExtent / 2;
+      double onepoint = _scrollController.position.maxScrollExtent / 4;
+      double position1 = _scrollController.position.minScrollExtent;
+      double position2 = _scrollController.position.minScrollExtent + onepoint;
+      double position3 =
+          _scrollController.position.minScrollExtent + (onepoint * 2);
+      double position4 = _scrollController.position.maxScrollExtent;
 
-      double midpoint = _scrollController.position.maxScrollExtent /
-          2; // คำนวณตำแหน่งกึ่งกลาง
-
-      int line = tribookline;
-      if (line < 6) {
-        midpoint = _scrollController.position.minScrollExtent;
-      } else if (line > 15) {
-        midpoint = _scrollController.position.maxScrollExtent;
+      int line = triBookLineRead;
+      if (widget.isMobile) {
+        if (line < 6) {
+          midpoint = position1;
+        } else if (line < 12) {
+          midpoint = position2;
+        } else if (line < 18) {
+          midpoint = position3;
+        } else {
+          midpoint = position4;
+        }
+      } else {
+        if (line < 4) {
+          midpoint = position1;
+        } else if (line < 8) {
+          midpoint = position2;
+        } else if (line < 16) {
+          midpoint = position3;
+        } else {
+          midpoint = position4;
+        }
       }
       if (_scrollController.hasClients) {
         _scrollController.animateTo(
@@ -905,7 +944,7 @@ class _Tri91PageViewState extends State<Tri91PageView> {
                       duration: const Duration(milliseconds: 250),
                       curve: Curves.bounceInOut);
                   _currentSliderValue = pageId.toDouble();
-                  _timer = Timer(const Duration(seconds: 1), _onTimerFinished2);
+                  _timer = Timer(const Duration(seconds: 1), _onTimerFinished);
                 });
               },
               title: (mark == 'FALSE')
@@ -1060,15 +1099,20 @@ class _Tri91PageViewState extends State<Tri91PageView> {
                           LoadingDialog.show(context);
                           currentPlaylist.clear();
                           String txtDetail = '';
+                          triBookLineRead = 1;
                           String filename = '${widget.triBookid}-$pageids-1';
                           if (bookTri91.isNotEmpty) {
                             if (bookTri91[0].bookPages != pageChanged) {
                               LoadingDialog.hide(context);
                               _showSnackbar(
                                   context, 'กรุณากดปุ่มอ่านออกเสียงอีกครั้ง');
-                              setState(() {});
+                              setState(() {
+                                _timer = Timer(const Duration(seconds: 1),
+                                    _onTimerFinished2);
+                              });
                               return;
                             }
+                            triBookLineRead = 1;
                             filename =
                                 '${bookTri91[0].bookId}-${bookTri91[0].bookPages}-1';
 
@@ -1102,15 +1146,20 @@ class _Tri91PageViewState extends State<Tri91PageView> {
                           LoadingDialog.show(context);
                           currentPlaylist.clear();
                           String txtDetail = '';
+                          triBookLineRead = 1;
                           String filename = '${widget.triBookid}-$pageids-1';
                           if (bookTri91.isNotEmpty) {
                             if (bookTri91[0].bookPages != pageChanged) {
                               LoadingDialog.hide(context);
                               _showSnackbar(
                                   context, 'กรุณากดปุ่มอ่านออกเสียงอีกครั้ง');
-                              setState(() {});
+                              setState(() {
+                                _timer = Timer(const Duration(seconds: 1),
+                                    _onTimerFinished2);
+                              });
                               return;
                             }
+                            triBookLineRead = 1;
                             filename =
                                 '${bookTri91[0].bookId}-${bookTri91[0].bookPages}-1';
 
@@ -1122,6 +1171,7 @@ class _Tri91PageViewState extends State<Tri91PageView> {
                                         .trimRight()
                                         .replaceAll('.', '');
                                     txtDetail += modifiedBookDetail;
+                                    triBookLineRead = tribookline;
                                     filename =
                                         '${bookTri91[0].bookId}-${bookTri91[0].bookPages}-$tribookline';
                                   }
@@ -1134,7 +1184,10 @@ class _Tri91PageViewState extends State<Tri91PageView> {
                               }
                             }
                             currentPlaylist.add(txtDetail);
-                            setState(() {});
+                            setState(() {
+                              _timer = Timer(const Duration(seconds: 1),
+                                  _onTimerFinished2);
+                            });
                             await audioPlayerManager.playAudio(
                                 '0', filename, txtDetail);
                           }

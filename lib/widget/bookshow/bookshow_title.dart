@@ -207,6 +207,7 @@ class _BookShowTitleState extends State<BookShowTitle> {
                                                   ),
                                                   triBookline: '1',
                                                   chkSearch: '',
+                                                  isMobile: widget.isMobile,
                                                 ),
                                               ),
                                             );
@@ -246,6 +247,7 @@ class _BookShowTitleState extends State<BookShowTitle> {
                                 ),
                                 triBookline: '1',
                                 chkSearch: '',
+                                isMobile: widget.isMobile,
                               ),
                             ),
                           );

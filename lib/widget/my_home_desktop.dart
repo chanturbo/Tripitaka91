@@ -70,6 +70,7 @@ class _MyHomeDesktopState extends State<MyHomeDesktop> {
               triPageid: int.parse(page!),
               triBookline: line!,
               chkSearch: '',
+              isMobile: false,
             ),
           ),
         );

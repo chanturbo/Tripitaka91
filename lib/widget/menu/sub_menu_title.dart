@@ -4,13 +4,15 @@ import 'package:tripitaka91/widget/bookshow/show_title_sub.dart';
 
 class SubMenuNoIconExpansionTile extends StatelessWidget {
   final String titleText;
-  final List<String> menuList;
+  final String menuMain;
+  final List<List<String>> menuList;
   final bool isTablet;
   final bool isDesktop;
 
   const SubMenuNoIconExpansionTile({
     super.key,
     required this.titleText,
+    required this.menuMain,
     required this.menuList,
     required this.isTablet,
     required this.isDesktop,
@@ -29,15 +31,17 @@ class SubMenuNoIconExpansionTile extends StatelessWidget {
             menuList.length,
             (index) => ListTile(
               title: (!isTablet && !isDesktop)
-                  ? ATextTitleMedium18(text: menuList[index])
-                  : ATextTitleMedium(text: menuList[index]),
+                  ? ATextTitleMedium18(text: menuList[index][0])
+                  : ATextTitleMedium(text: menuList[index][0]),
               onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => ShowTitlePages(
-                      wordSearch: menuList[index],
-                      isM: (!isTablet && !isDesktop) ? true: false,
+                      wordSearch: menuList[index][0],
+                      isM: (!isTablet && !isDesktop) ? true : false,
+                      menuList: menuList,
+                      menuMain: menuMain,
                     ),
                   ),
                 );

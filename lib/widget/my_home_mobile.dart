@@ -72,6 +72,7 @@ class _MyHomeMobileState extends State<MyHomeMobile> {
               triPageid: int.parse(page!),
               triBookline: line!,
               chkSearch: '',
+              isMobile: true,
             ),
           ),
         );
