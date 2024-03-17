@@ -114,17 +114,17 @@ class _Tri91PageViewState extends State<Tri91PageView> {
 
       int line = int.parse(widget.triBookline);
       if (widget.isMobile) {
-        if (line < 7) {
+        if (line < 6) {
           midpoint = position1;
           if (line > 3) {
             midpoint = position1 + (onepoint / 2);
           }
-        } else if (line < 13) {
+        } else if (line < 12) {
           midpoint = position2;
           if (line > 9) {
             midpoint = position2 + (onepoint / 2);
           }
-        } else if (line < 19) {
+        } else if (line < 18) {
           midpoint = position3;
           if (line > 15) {
             midpoint = position3 + (onepoint / 2);
@@ -144,7 +144,8 @@ class _Tri91PageViewState extends State<Tri91PageView> {
         }
       }
 
-      if (_scrollController.hasClients) {
+      if ((_scrollController.positions.isNotEmpty) &&
+          (_scrollController.hasClients)) {
         _scrollController.animateTo(
           midpoint,
           duration:
@@ -167,17 +168,17 @@ class _Tri91PageViewState extends State<Tri91PageView> {
 
       int line = triBookLineRead;
       if (widget.isMobile) {
-        if (line < 7) {
+        if (line < 6) {
           midpoint = position1;
           if (line > 3) {
             midpoint = position1 + (onepoint / 2);
           }
-        } else if (line < 13) {
+        } else if (line < 12) {
           midpoint = position2;
           if (line > 9) {
             midpoint = position2 + (onepoint / 2);
           }
-        } else if (line < 19) {
+        } else if (line < 18) {
           midpoint = position3;
           if (line > 15) {
             midpoint = position3 + (onepoint / 2);
@@ -197,7 +198,8 @@ class _Tri91PageViewState extends State<Tri91PageView> {
         }
       }
 
-      if (_scrollController.hasClients) {
+      if ((_scrollController.positions.isNotEmpty) &&
+          (_scrollController.hasClients)) {
         _scrollController.animateTo(
           midpoint,
           duration:
@@ -963,7 +965,8 @@ class _Tri91PageViewState extends State<Tri91PageView> {
                       duration: const Duration(milliseconds: 250),
                       curve: Curves.bounceInOut);
                   _currentSliderValue = pageId.toDouble();
-                  _timer = Timer(const Duration(seconds: 1), _onTimerFinished);
+                  triBookLineRead = tribookline;
+                  _timer = Timer(const Duration(seconds: 1), _onTimerFinished2);
                 });
               },
               title: (mark == 'FALSE')
