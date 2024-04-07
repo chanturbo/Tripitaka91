@@ -208,78 +208,84 @@ class _MyHomeTabletState extends State<MyHomeTablet> {
               ),
             ),
             Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    Container(
-                      height: 10,
-                    ),
-                    Row(
-                      children: [
-                        Container(
-                          alignment: Alignment.topLeft,
-                          child: ClipPath(
-                            clipper: RightTriangleRectangleClipper(),
-                            child: Container(
-                              width: 100.0,
-                              height: 25.0,
-                              color: TColors.primary,
-                              child: const Center(
-                                child: ATextDiskplaySmall(
-                                  text: 'เล่มที่อ่านล่าสุด',
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        loadLastRead
-                            ? const DummyLastBookAccessData(isMobile: false)
-                            : const DummyLastBookAccessData2(isMobile: false),
-                      ],
-                    ),
-                    Container(
-                      height: 10,
-                    ),
-                    SizedBox(
-                      width: 85,
-                      height: 30,
-                      child: InkWell(
-                        onTap: () async {
-                          getDataRandTitle();
-                        },
+              child: Column(
+                children: [
+                  Container(
+                    height: 10,
+                  ),
+                  Row(
+                    children: [
+                      Container(
+                        alignment: Alignment.topLeft,
                         child: ClipPath(
-                          clipper: DoubleTriangleRectangleClipper(),
+                          clipper: RightTriangleRectangleClipper(),
                           child: Container(
-                            padding: const EdgeInsets.all(0.0),
-                            color: Colors.red, // Change color as needed
+                            width: 100.0,
+                            height: 25.0,
+                            color: TColors.primary,
                             child: const Center(
                               child: ATextDiskplaySmall(
-                                text: 'สุ่มหัวข้อธรรม',
+                                text: 'เล่มที่อ่านล่าสุด',
                               ),
                             ),
                           ),
                         ),
                       ),
+                      loadLastRead
+                          ? const DummyLastBookAccessData(isMobile: false)
+                          : const DummyLastBookAccessData2(isMobile: false),
+                    ],
+                  ),
+                  Container(
+                    height: 10,
+                  ),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          SizedBox(
+                            width: 85,
+                            height: 30,
+                            child: InkWell(
+                              onTap: () async {
+                                getDataRandTitle();
+                              },
+                              child: ClipPath(
+                                clipper: DoubleTriangleRectangleClipper(),
+                                child: Container(
+                                  padding: const EdgeInsets.all(0.0),
+                                  color: Colors.red, // Change color as needed
+                                  child: const Center(
+                                    child: ATextDiskplaySmall(
+                                      text: 'สุ่มหัวข้อธรรม',
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          TitleCard(
+                            triTitle: triTitle,
+                            bookBlue: bookBlue,
+                            bookRed: bookRed,
+                            bookIds: triBookid,
+                            pageId: triPageid,
+                            bookLine: triBookline,
+                            noTitle: noTitle,
+                            noTitleCate: noTitleCate,
+                            isMobile: false,
+                          ),
+                          Container(
+                            height: 20,
+                          ),
+                          const ShowBookSlide(
+                            isMobile: false,
+                          ),
+                        ],
+                      ),
                     ),
-                    TitleCard(
-                      triTitle: triTitle,
-                      bookBlue: bookBlue,
-                      bookRed: bookRed,
-                      bookIds: triBookid,
-                      pageId: triPageid,
-                      bookLine: triBookline,
-                      noTitle: noTitle,
-                      noTitleCate: noTitleCate,
-                      isMobile: false,
-                    ),
-                    Container(
-                      height: 20,
-                    ),
-                    const ShowBookSlide(
-                      isMobile: false,
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ],
