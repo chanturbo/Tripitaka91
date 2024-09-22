@@ -257,6 +257,22 @@ class ATextDiskplayLarge extends StatelessWidget {
   }
 }
 
+class ATextDiskplayLargeBlack extends StatelessWidget {
+  final String text;
+
+  const ATextDiskplayLargeBlack({super.key, required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    return AutoSizeText(
+      text,
+      style: Theme.of(context).textTheme.displayLarge?.copyWith(
+            color: Colors.black,
+          ),
+    );
+  }
+}
+
 class ATextDiskplayMedium extends StatelessWidget {
   final String text;
 
@@ -278,9 +294,22 @@ class ATextDiskplaySmall extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return AutoSizeText(text, style: Theme.of(context).textTheme.displaySmall);
+  }
+}
+
+class ATextDiskplaySmallBlack extends StatelessWidget {
+  final String text;
+
+  const ATextDiskplaySmallBlack({super.key, required this.text});
+
+  @override
+  Widget build(BuildContext context) {
     return AutoSizeText(
       text,
-      style: Theme.of(context).textTheme.displaySmall,
+      style: Theme.of(context).textTheme.displayMedium?.copyWith(
+            color: Colors.white,
+          ),
     );
   }
 }

@@ -12,7 +12,7 @@ import 'package:tripitaka91/utils/shared_preferences/shared_user.dart';
 import 'package:tripitaka91/utils/text_title_replace/text_title_replace.dart';
 import 'package:tripitaka91/widget/auto_text/auto_text.dart';
 import 'package:tripitaka91/widget/login/loading_dialog.dart';
-import 'package:tripitaka91/widget/pageviews/pageviews.dart';
+import 'package:tripitaka91/widget/pageviews/pageviews_html.dart';
 import 'package:tripitaka91/widget/right_clipper/center_clipper.dart';
 
 class ShowTitlePages extends StatefulWidget {
@@ -634,7 +634,7 @@ class _ShowTitlePagesState extends State<ShowTitlePages> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => Tri91PageView(
+                          builder: (context) => Tri91PageViewHtml(
                             triBookid:
                                 textTitleReplace.getBookId(dataTitle[index]),
                             triPageid: int.parse(

@@ -10,7 +10,7 @@ import 'package:tripitaka91/utils/models/users.dart';
 import 'package:tripitaka91/utils/shared_preferences/shared_user.dart';
 import 'package:tripitaka91/widget/auto_text/auto_text.dart';
 import 'package:tripitaka91/widget/bookshow/show_title_list.dart';
-import 'package:tripitaka91/widget/pageviews/pageviews.dart';
+import 'package:tripitaka91/widget/pageviews/pageviews_html.dart';
 
 class BookShowTitle extends StatefulWidget {
   final String triBookid;
@@ -200,7 +200,7 @@ class _BookShowTitleState extends State<BookShowTitle> {
                                               context,
                                               MaterialPageRoute(
                                                 builder: (context) =>
-                                                    Tri91PageView(
+                                                    Tri91PageViewHtml(
                                                   triBookid: widget.triBookid,
                                                   triPageid: int.parse(
                                                     lastBookAccess[0]
@@ -242,7 +242,7 @@ class _BookShowTitleState extends State<BookShowTitle> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => Tri91PageView(
+                              builder: (context) => Tri91PageViewHtml(
                                 triBookid: widget.triBookid,
                                 triPageid: int.parse(
                                   lastBookAccess[0].pageLastAccess.toString(),

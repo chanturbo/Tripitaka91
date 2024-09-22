@@ -399,6 +399,37 @@ class RemoteServiceTitleSearch {
   }
 }
 
+class RemoteServiceBookTri91Html {
+  Future<List<BookTri91>?> getBookTri91(
+      String bookId, String pageId, String token) async {
+    var client = http.Client();
+    var uri = Uri.parse(tURLbooktri91Html);
+
+    // สร้าง Map ที่มีข้อมูลที่ต้องการส่งไปด้วย
+    var data = {
+      'bookid': bookId,
+      'pageid': pageId,
+      'token': token,
+    };
+
+    // สร้าง request แบบ POST พร้อมส่งข้อมูล
+    var response = await client.post(
+      uri,
+      body: data,
+    );
+
+    if (response.statusCode == 200) {
+      var json = response.body;
+      var decodedJson = jsonDecode(utf8.decode(json.runes.toList()));
+      var unicodeJson = jsonEncode(decodedJson);
+      //print(unicodeJson);
+      return bookTri91FromJson(unicodeJson);
+    }
+
+    return null;
+  }
+}
+
 class RemoteServiceBookTri91 {
   Future<List<BookTri91>?> getBookTri91(
       String bookId, String pageId, String token) async {

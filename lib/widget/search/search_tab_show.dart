@@ -107,38 +107,45 @@ class MyTabPage extends StatelessWidget {
             tabs: [
               Tab(
                 child: isM
-                    ? ATextDiskplayLarge(
-                        text: 'หัวข้อธรรมสำคัญ [${results[0]}]')
-                    : ATextDiskplaySmall(
-                        text: 'หัวข้อธรรมสำคัญ [${results[0]}]'),
+                    ? ATextDiskplayLargeBlack(
+                        text: 'หัวข้อธรรมสำคัญ [ ${results[0]} ]')
+                    : ATextDiskplaySmallBlack(
+                        text: 'หัวข้อธรรมสำคัญ [ ${results[0]} ]'),
               ),
               Tab(
                 child: isM
-                    ? ATextDiskplayLarge(text: 'พระวินัยปิฎก [${results[1]}]')
-                    : ATextDiskplaySmall(text: 'พระวินัยปิฎก [${results[1]}]'),
+                    ? ATextDiskplayLargeBlack(
+                        text: 'พระวินัยปิฎก [ ${results[1]} ]')
+                    : ATextDiskplaySmallBlack(
+                        text: 'พระวินัยปิฎก [ ${results[1]} ]'),
               ),
               Tab(
                 child: isM
-                    ? ATextDiskplayLarge(text: 'พระสุตันตปิฎก [${results[2]}]')
-                    : ATextDiskplaySmall(text: 'พระสุตันตปิฎก [${results[2]}]'),
+                    ? ATextDiskplayLargeBlack(
+                        text: 'พระสุตันตปิฎก [ ${results[2]} ]')
+                    : ATextDiskplaySmallBlack(
+                        text: 'พระสุตันตปิฎก [ ${results[2]} ]'),
               ),
               Tab(
                 child: isM
-                    ? ATextDiskplayLarge(text: 'พระอภิธรรมปิฎก [${results[3]}]')
-                    : ATextDiskplaySmall(
-                        text: 'พระอภิธรรมปิฎก [${results[3]}]'),
+                    ? ATextDiskplayLargeBlack(
+                        text: 'พระอภิธรรมปิฎก [ ${results[3]} ]')
+                    : ATextDiskplaySmallBlack(
+                        text: 'พระอภิธรรมปิฎก [ ${results[3]} ]'),
               ),
               Tab(
                 child: isM
-                    ? ATextDiskplayLarge(text: 'ประมวลศัพท์ [${results[4]}]')
-                    : ATextDiskplaySmall(text: 'ประมวลศัพท์ [${results[4]}]'),
+                    ? ATextDiskplayLargeBlack(
+                        text: 'ประมวลศัพท์ [ ${results[4]} ]')
+                    : ATextDiskplaySmallBlack(
+                        text: 'ประมวลศัพท์ [ ${results[4]} ]'),
               ),
               Tab(
                 child: isM
-                    ? ATextDiskplayLarge(
-                        text: 'พจนานุกรมไทย-บาลี [${results[5]}]')
-                    : ATextDiskplaySmall(
-                        text: 'พจนานุกรมไทย-บาลี [${results[5]}]'),
+                    ? ATextDiskplayLargeBlack(
+                        text: 'พจนานุกรมไทย-บาลี [ ${results[5]} ]')
+                    : ATextDiskplaySmallBlack(
+                        text: 'พจนานุกรมไทย-บาลี [ ${results[5]} ]'),
               ),
             ],
           ),

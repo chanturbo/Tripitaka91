@@ -30,6 +30,7 @@ const String tURLbooktri91SearchSub = "${tURL}totalsearchtrisub.php";
 const String tURLdictSearch = "${tURL}totalsearchdict.php";
 const String tURLdictbtSearch = "${tURL}totalsearchdictbt.php";
 const String tURLbooktri91 = "${tURL}showbook.php";
+const String tURLbooktri91Html = "${tURL}showbook_html.php";
 const String tURLbooktri91Line = "${tURL}showbookline.php";
 const String tURLbooktri91All = "${tURL}showbookall.php";
 const String tURLuserChk = "${tURL}user_chk.php";

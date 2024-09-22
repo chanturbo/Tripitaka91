@@ -19,7 +19,7 @@ import 'package:tripitaka91/widget/menu/list_menu_title.dart';
 import 'package:tripitaka91/widget/menu/list_menu_tri11_74.dart';
 import 'package:tripitaka91/widget/menu/list_menu_tri1_10.dart';
 import 'package:tripitaka91/widget/menu/list_menu_tri75_91.dart';
-import 'package:tripitaka91/widget/pageviews/pageviews.dart';
+import 'package:tripitaka91/widget/pageviews/pageviews_html.dart';
 import 'package:tripitaka91/widget/right_clipper/center_clipper.dart';
 import 'package:tripitaka91/widget/right_clipper/right_clipper.dart';
 import 'package:tripitaka91/widget/showbook/show_book.dart';
@@ -74,7 +74,7 @@ class _MyHomeTabletState extends State<MyHomeTablet> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => Tri91PageView(
+            builder: (context) => Tri91PageViewHtml(
               triBookid: book!,
               triPageid: int.parse(page!),
               triBookline: line!,

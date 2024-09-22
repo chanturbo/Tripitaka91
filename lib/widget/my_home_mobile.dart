@@ -13,7 +13,7 @@ import 'package:tripitaka91/widget/last_read/show_last.dart';
 import 'package:tripitaka91/widget/last_read/show_last2.dart';
 import 'package:tripitaka91/widget/line_custom/mylinepainter.dart';
 import 'package:tripitaka91/widget/menu/list_menu.dart';
-import 'package:tripitaka91/widget/pageviews/pageviews.dart';
+import 'package:tripitaka91/widget/pageviews/pageviews_html.dart';
 import 'package:tripitaka91/widget/right_clipper/center_clipper.dart';
 import 'package:tripitaka91/widget/right_clipper/right_clipper.dart';
 import 'package:tripitaka91/widget/search/screen_mobile.dart';
@@ -67,7 +67,7 @@ class _MyHomeMobileState extends State<MyHomeMobile> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => Tri91PageView(
+            builder: (context) => Tri91PageViewHtml(
               triBookid: book!,
               triPageid: int.parse(page!),
               triBookline: line!,
