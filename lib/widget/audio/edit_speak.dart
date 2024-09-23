@@ -199,6 +199,19 @@ class _EditSpeakScreenState extends State<EditSpeakScreen> {
                       },
                       child: const ATextDiskplayMedium(text: ' บันทึก '),
                     ),
+                    const SizedBox(width: 20),
+                    ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all<Color>(Colors.red),
+                        side: MaterialStateProperty.all<BorderSide>(
+                            BorderSide.none),
+                      ),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: const ATextDiskplayMedium(text: ' ยกเลิก '),
+                    ),
                   ],
                 ),
               ],

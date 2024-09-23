@@ -26,29 +26,30 @@ class _LoginPageDialogState extends State<LoginPageDialog> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        // appBar: AppBar(
-        //   title: const Text(TTexts.signIn),
-        //   actions: [
-        //     IconButton(
-        //       color: TColors.white,
-        //       icon: const Icon(Icons.close),
-        //       onPressed: () {
-        //         Navigator.pop(context);
-        //       },
-        //     ),
-        //   ],
-        // ),
-        body: Container(
-          padding: const EdgeInsets.all(5),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              _inputField(context),
-            ],
-          ),
+          // appBar: AppBar(
+          //   title: const Text(TTexts.signIn),
+          //   actions: [
+          //     IconButton(
+          //       color: TColors.white,
+          //       icon: const Icon(Icons.close),
+          //       onPressed: () {
+          //         Navigator.pop(context);
+          //       },
+          //     ),
+          //   ],
+          // ),
+          body: Container(
+        padding: const EdgeInsets.all(5),
+        child: Column(
+          crossAxisAlignment:
+              CrossAxisAlignment.center, // จัดให้อยู่กลางแกนแนวนอน
+          mainAxisAlignment:
+              MainAxisAlignment.center, // จัดให้อยู่กลางแกนแนวตั้ง
+          children: [
+            _inputField(context),
+          ],
         ),
-      ),
+      )),
     );
   }
 
@@ -90,16 +91,34 @@ class _LoginPageDialogState extends State<LoginPageDialog> {
         ),
         const SizedBox(height: 10),
         Center(
-          child: TextButton(
-            style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
-            ),
-            onPressed: () {
-              _login(context);
-            },
-            child: const ATextDiskplayMedium(
-              text: ' เข้าสู่ระบบ ',
-            ),
+          child: Row(
+            children: [
+              TextButton(
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
+                ),
+                onPressed: () {
+                  _login(context);
+                },
+                child: const ATextDiskplayMedium(
+                  text: ' เข้าสู่ระบบ ',
+                ),
+              ),
+              const SizedBox(
+                width: 10,
+              ),
+              TextButton(
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
+                ),
+                onPressed: () {
+                  Navigator.pop(context, false);
+                },
+                child: const ATextDiskplayMedium(
+                  text: ' ยกเลิก ',
+                ),
+              ),
+            ],
           ),
         ),
         // ElevatedButton(

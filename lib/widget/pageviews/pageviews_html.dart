@@ -566,16 +566,8 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
             tabletView: buildBodyTablet(),
             desktopView: buildBody(),
           ),
-          // buildBody(),
-          // AnimatedDrawer(
-          //   isDrawerOpen: isDrawerOpen,
-          //   onToggleDrawer: toggleDrawer,
-          //   isWidth: 350,
-          //   pages: pageChanged.toString(),
-          // ),
         ],
       ),
-      //bottomNavigationBar: buildBottomAppBar(),
     );
   }
 
@@ -583,117 +575,98 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
     return AppBar(
       title: ATextDiskplayMedium(text: '(เล่ม $bookid) $bookTitleTri91'),
       actions: [
-        PopupMenuButton(
-          icon: const Icon(
-            color: TColors.white,
-            Icons.edit,
+        IconButton(
+          icon: const Tooltip(
+            message: 'แจ้งคำผิดคำถูก', // ข้อความ Tooltip
+            child: Icon(
+              Icons.edit,
+              color: Colors.white, // สีไอคอนเป็นสีขาว
+            ),
           ),
-          onSelected: (value) {
-            if (value == 'item1') {
-              if (users != null) {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => PageViewEdit(
-                        bookId: widget.triBookid,
-                        pageId: pageChanged.toString(),
-                        username: users!.username,
-                        logEdit: logEdit,
-                      ),
-                    )).then((value) {
-                  if (value != null && value == true) {
-                    // หลังจากกลับมาจาก NextPage และค่าที่ส่งกลับมาคือ true
-                    // ทำสิ่งที่คุณต้องการทำต่อได้ที่นี่
-                    // print('Returned with true');
-                    setState(() {
-                      _getLogEdit();
-                    });
-                  }
-                });
-              } else {
-                // String mgr = 'กรุณาเข้าสู่ระบบก่อน';
-                chkLoginStatus(context);
-              }
-            } else if (value == 'item3') {
-              if (users != null) {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      contentPadding: const EdgeInsets.all(5),
-                      title: const Text('ยืนยันคำที่น่าจะผิดคำที่น่าจะถูก'),
-                      content: SizedBox(
-                        width: double.maxFinite,
-                        child: ShowCorrectSaveWithPage(
-                          bookid: widget.triBookid,
-                          pageid: pageChanged.toString(),
-                        ),
-                      ),
-                      actions: [
-                        TextButton(
-                          onPressed: () {
-                            _getLogEdit();
-                            Navigator.of(context).pop();
-                          },
-                          child: const Text('ปิด'),
-                        ),
-                      ],
-                    );
-                  },
-                );
-              } else {
-                // String mgr = 'กรุณาเข้าสู่ระบบก่อน';
-                chkLoginStatus(context);
-              }
-            } else if (value == 'item2') {
-              if (users != null) {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return SizedBox.expand(
-                      child: AlertDialog(
-                        shape: const RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(32.0))),
-                        contentPadding: const EdgeInsets.all(5),
-                        backgroundColor: Colors.white,
-                        title: const Text('แจ้งการอ่านออกเสียง'),
-                        content: EditSpeakScreen(
-                          comments: 'เล่ม $bookid หน้า $pageChanged',
-                        ),
-                        actions: <Widget>[
-                          TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            child: const Text('ปิดหน้าจอ'),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                );
-              } else {
-                // String mgr = 'กรุณาเข้าสู่ระบบก่อน';
-                chkLoginStatus(context);
-              }
+          onPressed: () {
+            if (users != null) {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => PageViewEdit(
+                      bookId: widget.triBookid,
+                      pageId: pageChanged.toString(),
+                      username: users!.username,
+                      logEdit: logEdit,
+                    ),
+                  )).then((value) {
+                if (value != null && value == true) {
+                  // หลังจากกลับมาจาก NextPage และค่าที่ส่งกลับมาคือ true
+                  // ทำสิ่งที่คุณต้องการทำต่อได้ที่นี่
+                  // print('Returned with true');
+                  setState(() {
+                    _getLogEdit();
+                  });
+                }
+              });
+            } else {
+              // String mgr = 'กรุณาเข้าสู่ระบบก่อน';
+              chkLoginStatus(context);
             }
           },
-          itemBuilder: (BuildContext context) => <PopupMenuEntry>[
-            const PopupMenuItem(
-              value: 'item1',
-              child: Text('แจ้งคำผิดคำถูก'),
+        ),
+        IconButton(
+          icon: const Tooltip(
+            message: 'ยืนยันการแก้ไขคำผิดคำถูก', // ข้อความ Tooltip
+            child: Icon(
+              Icons.spellcheck,
+              color: Colors.white, // สีไอคอนเป็นสีขาว
             ),
-            const PopupMenuItem(
-              value: 'item3',
-              child: Text('ยืนยันการแก้ไขคำผิดคำถูก'),
+          ),
+          onPressed: () {
+            if (users != null) {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ShowCorrectSaveWithPage(
+                      bookid: widget.triBookid,
+                      pageid: pageChanged.toString(),
+                    ),
+                  )).then((value) {
+                if (value != null && value == true) {
+                  // หลังจากกลับมาจาก NextPage และค่าที่ส่งกลับมาคือ true
+                  // ทำสิ่งที่คุณต้องการทำต่อได้ที่นี่
+                  // print('Returned with true');
+                  setState(() {
+                    _getLogEdit();
+                  });
+                }
+              });
+            } else {
+              // String mgr = 'กรุณาเข้าสู่ระบบก่อน';
+              chkLoginStatus(context);
+            }
+          },
+        ),
+        IconButton(
+          icon: const Tooltip(
+            message: 'แจ้งการอ่านออกเสียง', // ข้อความ Tooltip
+            child: Icon(
+              Icons.record_voice_over,
+              color: Colors.white, // สีไอคอนเป็นสีขาว
             ),
-            const PopupMenuItem(
-              value: 'item2',
-              child: Text('แจ้งการอ่านออกเสียง'),
-            ),
-          ],
-        )
+          ),
+          onPressed: () {
+            if (users != null) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => EditSpeakScreen(
+                    comments: 'เล่ม $bookid หน้า $pageChanged',
+                  ),
+                ),
+              );
+            } else {
+              // String mgr = 'กรุณาเข้าสู่ระบบก่อน';
+              chkLoginStatus(context);
+            }
+          },
+        ),
       ],
     );
   }
@@ -863,7 +836,7 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
                       text: triTitle,
                       terms: outputList,
                       textStyle: TextStyle(
-                          letterSpacing: 0.4,
+                          letterSpacing: 0.2,
                           fontSize: isMobile ? 18.0 : 16.0,
                           color: Colors.black),
                     )
@@ -871,7 +844,7 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
                       text: triTitle,
                       terms: outputList,
                       textStyle: TextStyle(
-                          letterSpacing: 0.4,
+                          letterSpacing: 0.2,
                           fontSize: isMobile ? 18.0 : 16.0,
                           color: Colors.red),
                       textStyleHighlight: const TextStyle(color: Colors.black),
@@ -966,34 +939,49 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
   }
 
   void chkLoginStatus(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return SizedBox.expand(
-          child: AlertDialog(
-            shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(32.0))),
-            contentPadding: const EdgeInsets.only(top: 10.0),
-            backgroundColor: Colors.white,
-            title: const Text('เข้าสู่ระบบ'),
-            content: const LoginPageDialog(),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: const Text('ปิดหน้าจอ'),
-              ),
-            ],
-          ),
-        );
-      },
-    ).then((value) {
-      if (value == true) {
-        // อัปเดตตัวแปร users หรือ refresh หน้าจอ
-        _getUser();
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const LoginPageDialog(),
+        )).then((value) {
+      if (value != null && value == true) {
+        // หลังจากกลับมาจาก NextPage และค่าที่ส่งกลับมาคือ true
+        // ทำสิ่งที่คุณต้องการทำต่อได้ที่นี่
+        // print('Returned with true');
+        setState(() {
+          _getUser();
+        });
       }
     });
+
+    // showDialog(
+    //   context: context,
+    //   builder: (BuildContext context) {
+    //     return SizedBox.expand(
+    //       child: AlertDialog(
+    //         shape: const RoundedRectangleBorder(
+    //             borderRadius: BorderRadius.all(Radius.circular(32.0))),
+    //         contentPadding: const EdgeInsets.only(top: 10.0),
+    //         backgroundColor: Colors.white,
+    //         title: const Text('เข้าสู่ระบบ'),
+    //         content: const LoginPageDialog(),
+    //         actions: <Widget>[
+    //           TextButton(
+    //             onPressed: () {
+    //               Navigator.of(context).pop();
+    //             },
+    //             child: const Text('ปิดหน้าจอ'),
+    //           ),
+    //         ],
+    //       ),
+    //     );
+    //   },
+    // ).then((value) {
+    //   if (value == true) {
+    //     // อัปเดตตัวแปร users หรือ refresh หน้าจอ
+    //     _getUser();
+    //   }
+    // });
   }
 
   Widget pageview(bool isMobile, bool isTable) {

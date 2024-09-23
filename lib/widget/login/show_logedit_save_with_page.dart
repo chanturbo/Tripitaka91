@@ -495,439 +495,420 @@ class _ShowCorrectSaveWithPageState extends State<ShowCorrectSaveWithPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ListView.builder(
-        itemCount: loadedRecordsTitle + 1,
-        itemBuilder: (context, index) {
-          if (index == loadedRecordsTitle) {
-            // print('opt $opt');
-            // print('index  $index');
-            // print('loadedRecordsTitle $loadedRecordsTitle');
-            return loadingTitle
-                ? const Center(child: CircularProgressIndicator())
-                : loadedRecordsTitle == 0
-                    ? Column(
-                        children: [
-                          const SizedBox(height: 10),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              const SizedBox(
-                                width: 10,
-                              ),
-                              ElevatedButton(
-                                onPressed: () {
-                                  opt = '0';
-                                  _handleAddData();
-                                },
-                                style: ButtonStyle(
-                                  backgroundColor: MaterialStateProperty.all<
-                                      Color>(opt ==
-                                          '0'
-                                      ? Colors.orange
-                                      : Colors
-                                          .white), // กำหนดสีพื้นหลังเป็นสีขาว
-                                  shape: MaterialStateProperty.all<
-                                      RoundedRectangleBorder>(
-                                    RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(
-                                          18.0), // กำหนดขนาดของเส้นขอบ
-                                      side: const BorderSide(
-                                          color: Colors
-                                              .black), // กำหนดสีของเส้นขอบ
-                                    ),
-                                  ),
-                                ),
-                                child: ATextLabelMediumColor(
-                                    color:
-                                        opt == '0' ? Colors.white : Colors.grey,
-                                    text: ' แสดงข้อมูลที่ยังไม่ยืนยัน '),
-                              ),
-                              const SizedBox(width: 20),
-                              ElevatedButton(
-                                onPressed: () {
-                                  opt = '1';
-                                  _handleAddData();
-                                },
-                                style: ButtonStyle(
-                                  backgroundColor: MaterialStateProperty.all<
-                                      Color>(opt ==
-                                          '1'
-                                      ? Colors.orange
-                                      : Colors
-                                          .white), // กำหนดสีพื้นหลังเป็นสีขาว
-                                  shape: MaterialStateProperty.all<
-                                      RoundedRectangleBorder>(
-                                    RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(
-                                          18.0), // กำหนดขนาดของเส้นขอบ
-                                      side: const BorderSide(
-                                          color: Colors
-                                              .black), // กำหนดสีของเส้นขอบ
-                                    ),
-                                  ),
-                                ),
-                                child: ATextLabelMediumColor(
-                                    color:
-                                        opt == '1' ? Colors.white : Colors.grey,
-                                    text: ' แสดงข้อมูลที่ยืนยันแล้ว '),
-                              ),
-                              const SizedBox(width: 20),
-                              ElevatedButton(
-                                onPressed: () {
-                                  opt = '2';
-                                  _handleAddData();
-                                },
-                                style: ButtonStyle(
-                                  backgroundColor: MaterialStateProperty.all<
-                                      Color>(opt ==
-                                          '2'
-                                      ? Colors.orange
-                                      : Colors
-                                          .white), // กำหนดสีพื้นหลังเป็นสีขาว
-                                  shape: MaterialStateProperty.all<
-                                      RoundedRectangleBorder>(
-                                    RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(
-                                          18.0), // กำหนดขนาดของเส้นขอบ
-                                      side: const BorderSide(
-                                          color: Colors
-                                              .black), // กำหนดสีของเส้นขอบ
-                                    ),
-                                  ),
-                                ),
-                                child: ATextLabelMediumColor(
-                                    color:
-                                        opt == '2' ? Colors.white : Colors.grey,
-                                    text: ' แสดงข้อมูลที่แก้ไขแล้ว '),
-                              ),
-                            ],
-                          ),
-                        ],
-                      )
-                    : const SizedBox.shrink();
-          }
-          String userTmp = dataTitle[index]['users'];
-          userTmp = userTmp.replaceAll(',', ', ');
-          return Column(
-            children: [
-              if (index == 0) const SizedBox(height: 10),
-              if (index == 0)
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        opt = '0';
-                        _handleAddData();
-                      },
-                      style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all<Color>(
-                            opt == '0'
-                                ? Colors.orange
-                                : Colors.white), // กำหนดสีพื้นหลังเป็นสีขาว
-                        shape:
-                            MaterialStateProperty.all<RoundedRectangleBorder>(
-                          RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(
-                                18.0), // กำหนดขนาดของเส้นขอบ
-                            side: const BorderSide(
-                                color: Colors.black), // กำหนดสีของเส้นขอบ
-                          ),
-                        ),
-                      ),
-                      child: ATextLabelMediumColor(
-                          color: opt == '0' ? Colors.white : Colors.grey,
-                          text: ' แสดงข้อมูลที่ยังไม่ยืนยัน '),
-                    ),
-                    const SizedBox(width: 20),
-                    ElevatedButton(
-                      onPressed: () {
-                        opt = '1';
-                        _handleAddData();
-                      },
-                      style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all<Color>(
-                            opt == '1'
-                                ? Colors.orange
-                                : Colors.white), // กำหนดสีพื้นหลังเป็นสีขาว
-                        shape:
-                            MaterialStateProperty.all<RoundedRectangleBorder>(
-                          RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(
-                                18.0), // กำหนดขนาดของเส้นขอบ
-                            side: const BorderSide(
-                                color: Colors.black), // กำหนดสีของเส้นขอบ
-                          ),
-                        ),
-                      ),
-                      child: ATextLabelMediumColor(
-                          color: opt == '1' ? Colors.white : Colors.grey,
-                          text: ' แสดงข้อมูลที่ยืนยันแล้ว '),
-                    ),
-                    const SizedBox(width: 20),
-                    ElevatedButton(
-                      onPressed: () {
-                        opt = '2';
-                        _handleAddData();
-                      },
-                      style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all<Color>(
-                            opt == '2'
-                                ? Colors.orange
-                                : Colors.white), // กำหนดสีพื้นหลังเป็นสีขาว
-                        shape:
-                            MaterialStateProperty.all<RoundedRectangleBorder>(
-                          RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(
-                                18.0), // กำหนดขนาดของเส้นขอบ
-                            side: const BorderSide(
-                                color: Colors.black), // กำหนดสีของเส้นขอบ
-                          ),
-                        ),
-                      ),
-                      child: ATextLabelMediumColor(
-                          color: opt == '2' ? Colors.white : Colors.grey,
-                          text: ' แสดงข้อมูลที่แก้ไขแล้ว '),
-                    ),
-                  ],
+      body: Column(
+        children: [
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(context).pop(true);
+            },
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all<Color>(
+                  Colors.red), // กำหนดสีพื้นหลังเป็นสีขาว
+              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                RoundedRectangleBorder(
+                  borderRadius:
+                      BorderRadius.circular(10.0), // กำหนดขนาดของเส้นขอบ
+                  side: const BorderSide(
+                      color: Colors.black), // กำหนดสีของเส้นขอบ
                 ),
-              if (index == 0) const SizedBox(height: 10),
-              ListTile(
-                leading: CircleAvatar(
-                  backgroundColor: dataTitle[index]['bookconfirm'] == 0
-                      ? Colors.grey
-                      : dataTitle[index]['booksuscess'] == 0
-                          ? Colors.blue[900]
-                          : Colors.green,
-                  foregroundColor: Colors.white,
-                  child: ATextDiskplayMedium(text: '${index + 1}'),
-                ),
-                title: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+              ),
+            ),
+            child: const ATextLabelMediumColor(
+                color: Colors.white, text: ' - [ X ] ปิดหน้าจอ -> '),
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: loadedRecordsTitle + 1,
+              itemBuilder: (context, index) {
+                if (index == loadedRecordsTitle) {
+                  // print('opt $opt');
+                  // print('index  $index');
+                  // print('loadedRecordsTitle $loadedRecordsTitle');
+                  return loadingTitle
+                      ? const Center(child: CircularProgressIndicator())
+                      : loadedRecordsTitle == 0
+                          ? Column(
+                              children: [
+                                const SizedBox(height: 10),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        opt = '0';
+                                        _handleAddData();
+                                      },
+                                      style: ButtonStyle(
+                                        backgroundColor: MaterialStateProperty.all<
+                                            Color>(opt ==
+                                                '0'
+                                            ? Colors.orange
+                                            : Colors
+                                                .white), // กำหนดสีพื้นหลังเป็นสีขาว
+                                        shape: MaterialStateProperty.all<
+                                            RoundedRectangleBorder>(
+                                          RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                                18.0), // กำหนดขนาดของเส้นขอบ
+                                            side: const BorderSide(
+                                                color: Colors
+                                                    .black), // กำหนดสีของเส้นขอบ
+                                          ),
+                                        ),
+                                      ),
+                                      child: ATextLabelMediumColor(
+                                          color: opt == '0'
+                                              ? Colors.white
+                                              : Colors.grey,
+                                          text: ' แสดงข้อมูลที่ยังไม่ยืนยัน '),
+                                    ),
+                                    const SizedBox(width: 20),
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        opt = '1';
+                                        _handleAddData();
+                                      },
+                                      style: ButtonStyle(
+                                        backgroundColor: MaterialStateProperty.all<
+                                            Color>(opt ==
+                                                '1'
+                                            ? Colors.orange
+                                            : Colors
+                                                .white), // กำหนดสีพื้นหลังเป็นสีขาว
+                                        shape: MaterialStateProperty.all<
+                                            RoundedRectangleBorder>(
+                                          RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                                18.0), // กำหนดขนาดของเส้นขอบ
+                                            side: const BorderSide(
+                                                color: Colors
+                                                    .black), // กำหนดสีของเส้นขอบ
+                                          ),
+                                        ),
+                                      ),
+                                      child: ATextLabelMediumColor(
+                                          color: opt == '1'
+                                              ? Colors.white
+                                              : Colors.grey,
+                                          text: ' แสดงข้อมูลที่ยืนยันแล้ว '),
+                                    ),
+                                    const SizedBox(width: 20),
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        opt = '2';
+                                        _handleAddData();
+                                      },
+                                      style: ButtonStyle(
+                                        backgroundColor: MaterialStateProperty.all<
+                                            Color>(opt ==
+                                                '2'
+                                            ? Colors.orange
+                                            : Colors
+                                                .white), // กำหนดสีพื้นหลังเป็นสีขาว
+                                        shape: MaterialStateProperty.all<
+                                            RoundedRectangleBorder>(
+                                          RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                                18.0), // กำหนดขนาดของเส้นขอบ
+                                            side: const BorderSide(
+                                                color: Colors
+                                                    .black), // กำหนดสีของเส้นขอบ
+                                          ),
+                                        ),
+                                      ),
+                                      child: ATextLabelMediumColor(
+                                          color: opt == '2'
+                                              ? Colors.white
+                                              : Colors.grey,
+                                          text: ' แสดงข้อมูลที่แก้ไขแล้ว '),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            )
+                          : const SizedBox.shrink();
+                }
+                String userTmp = dataTitle[index]['users'];
+                userTmp = userTmp.replaceAll(',', ', ');
+                return Column(
                   children: [
-                    RichText(
-                      text: TextSpan(
+                    if (index == 0) const SizedBox(height: 10),
+                    if (index == 0)
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          const TextSpan(
-                            text: 'ข้อความที่น่าจะผิด : ',
-                            style: TextStyle(
-                                fontFamily: 'THSarabunNew',
-                                fontSize: 24,
-                                color: Colors.grey),
+                          const SizedBox(
+                            width: 10,
                           ),
-                          txtSpanHighlight(
-                              (dataTitle[index]['wordincorrect']).split(','),
-                              '${dataTitle[index]['detail_old']}'),
-                          const TextSpan(
-                            text: '\t\t\t\tคำที่น่าจะผิด : ',
-                            style: TextStyle(
-                                fontFamily: 'THSarabunNew',
-                                fontSize: 24,
-                                color: Colors.grey),
-                          ),
-                          TextSpan(
-                            text: '${dataTitle[index]['wordincorrect']}\n',
-                            style: const TextStyle(
-                                fontFamily: 'THSarabunNew',
-                                fontSize: 24,
-                                color: Colors.red),
-                          ),
-                          const TextSpan(
-                            text: 'ข้อความที่น่าจะถูก : ',
-                            style: TextStyle(
-                                fontFamily: 'THSarabunNew',
-                                fontSize: 24,
-                                color: Colors.grey),
-                          ),
-                          txtSpanHighlight(
-                              (dataTitle[index]['wordcorrect']).split(','),
-                              '${dataTitle[index]['detail_new']}'),
-                          const TextSpan(
-                            text: '\t\t\t\tคำที่น่าจะถูก : ',
-                            style: TextStyle(
-                                fontFamily: 'THSarabunNew',
-                                fontSize: 24,
-                                color: Colors.grey),
-                          ),
-                          TextSpan(
-                            text: '${dataTitle[index]['wordcorrect']}',
-                            style: const TextStyle(
-                                fontFamily: 'THSarabunNew',
-                                fontSize: 24,
-                                color: Colors.red),
-                          ),
-                        ],
-                      ),
-                    ),
-                    dataTitle[index]['detail_new'] == null
-                        ? InkWell(
-                            onTap: () {
-                              _showInputDialog(
-                                  context,
-                                  '${dataTitle[index]['wordcorrect']}',
-                                  '${dataTitle[index]['detail_old']}',
-                                  '${dataTitle[index]['tripitaka91_book']}',
-                                  '${dataTitle[index]['tripitaka91_page']}',
-                                  '${dataTitle[index]['tripitaka91_line']}');
+                          ElevatedButton(
+                            onPressed: () {
+                              opt = '0';
+                              _handleAddData();
                             },
-                            child: const SizedBox(
-                              width: 150,
-                              child: Row(
-                                children: [
-                                  Icon(Icons.add),
-                                  ATextLabelLarge(
-                                    text: 'เพิ่มข้อความที่น่าจะถูก...',
-                                  ),
-                                ],
+                            style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all<Color>(
+                                  opt == '0'
+                                      ? Colors.orange
+                                      : Colors
+                                          .white), // กำหนดสีพื้นหลังเป็นสีขาว
+                              shape: MaterialStateProperty.all<
+                                  RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(
+                                      18.0), // กำหนดขนาดของเส้นขอบ
+                                  side: const BorderSide(
+                                      color: Colors.black), // กำหนดสีของเส้นขอบ
+                                ),
                               ),
                             ),
-                          )
-                        : opt == '0'
-                            ? Row(
-                                children: [
-                                  InkWell(
-                                    onTap: () async {
-                                      bool? confirm =
-                                          await _showConfirmationDialog(
-                                              context);
-                                      if (confirm!) {
-                                        // print('ยืนยันข้อมูล');
-                                        await _fetchUpdateInsertDataCorrectConfirm(
-                                            '${dataTitle[index]['tripitaka91_book']}',
-                                            '${dataTitle[index]['tripitaka91_page']}',
-                                            '${dataTitle[index]['tripitaka91_line']}');
-                                      }
-                                    },
-                                    child: Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: ClipPath(
-                                        clipper:
-                                            DoubleTriangleRectangleClipper(),
-                                        child: Container(
-                                          padding: const EdgeInsets.all(3.0),
-                                          color: Colors.red,
-                                          child: const ATextDiskplaySmall(
-                                              text: 'ยืนยันข้อมูล'),
+                            child: ATextLabelMediumColor(
+                                color: opt == '0' ? Colors.white : Colors.grey,
+                                text: ' แสดงข้อมูลที่ยังไม่ยืนยัน '),
+                          ),
+                          const SizedBox(width: 20),
+                          ElevatedButton(
+                            onPressed: () {
+                              opt = '1';
+                              _handleAddData();
+                            },
+                            style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all<Color>(
+                                  opt == '1'
+                                      ? Colors.orange
+                                      : Colors
+                                          .white), // กำหนดสีพื้นหลังเป็นสีขาว
+                              shape: MaterialStateProperty.all<
+                                  RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(
+                                      18.0), // กำหนดขนาดของเส้นขอบ
+                                  side: const BorderSide(
+                                      color: Colors.black), // กำหนดสีของเส้นขอบ
+                                ),
+                              ),
+                            ),
+                            child: ATextLabelMediumColor(
+                                color: opt == '1' ? Colors.white : Colors.grey,
+                                text: ' แสดงข้อมูลที่ยืนยันแล้ว '),
+                          ),
+                          const SizedBox(width: 20),
+                          ElevatedButton(
+                            onPressed: () {
+                              opt = '2';
+                              _handleAddData();
+                            },
+                            style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all<Color>(
+                                  opt == '2'
+                                      ? Colors.orange
+                                      : Colors
+                                          .white), // กำหนดสีพื้นหลังเป็นสีขาว
+                              shape: MaterialStateProperty.all<
+                                  RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(
+                                      18.0), // กำหนดขนาดของเส้นขอบ
+                                  side: const BorderSide(
+                                      color: Colors.black), // กำหนดสีของเส้นขอบ
+                                ),
+                              ),
+                            ),
+                            child: ATextLabelMediumColor(
+                                color: opt == '2' ? Colors.white : Colors.grey,
+                                text: ' แสดงข้อมูลที่แก้ไขแล้ว '),
+                          ),
+                        ],
+                      ),
+                    if (index == 0) const SizedBox(height: 10),
+                    ListTile(
+                      leading: CircleAvatar(
+                        backgroundColor: dataTitle[index]['bookconfirm'] == 0
+                            ? Colors.grey
+                            : dataTitle[index]['booksuscess'] == 0
+                                ? Colors.blue[900]
+                                : Colors.green,
+                        foregroundColor: Colors.white,
+                        child: ATextDiskplayMedium(text: '${index + 1}'),
+                      ),
+                      title: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          RichText(
+                            text: TextSpan(
+                              children: [
+                                const TextSpan(
+                                  text: 'ข้อความที่น่าจะผิด : ',
+                                  style: TextStyle(
+                                      fontFamily: 'THSarabunNew',
+                                      fontSize: 24,
+                                      color: Colors.grey),
+                                ),
+                                txtSpanHighlight(
+                                    (dataTitle[index]['wordincorrect'])
+                                        .split(','),
+                                    '${dataTitle[index]['detail_old']}'),
+                                const TextSpan(
+                                  text: '\t\t\t\tคำที่น่าจะผิด : ',
+                                  style: TextStyle(
+                                      fontFamily: 'THSarabunNew',
+                                      fontSize: 24,
+                                      color: Colors.grey),
+                                ),
+                                TextSpan(
+                                  text:
+                                      '${dataTitle[index]['wordincorrect']}\n',
+                                  style: const TextStyle(
+                                      fontFamily: 'THSarabunNew',
+                                      fontSize: 24,
+                                      color: Colors.red),
+                                ),
+                                const TextSpan(
+                                  text: 'ข้อความที่น่าจะถูก : ',
+                                  style: TextStyle(
+                                      fontFamily: 'THSarabunNew',
+                                      fontSize: 24,
+                                      color: Colors.grey),
+                                ),
+                                txtSpanHighlight(
+                                    (dataTitle[index]['wordcorrect'])
+                                        .split(','),
+                                    '${dataTitle[index]['detail_new']}'),
+                                const TextSpan(
+                                  text: '\t\t\t\tคำที่น่าจะถูก : ',
+                                  style: TextStyle(
+                                      fontFamily: 'THSarabunNew',
+                                      fontSize: 24,
+                                      color: Colors.grey),
+                                ),
+                                TextSpan(
+                                  text: '${dataTitle[index]['wordcorrect']}',
+                                  style: const TextStyle(
+                                      fontFamily: 'THSarabunNew',
+                                      fontSize: 24,
+                                      color: Colors.red),
+                                ),
+                              ],
+                            ),
+                          ),
+                          dataTitle[index]['detail_new'] == null
+                              ? InkWell(
+                                  onTap: () {
+                                    _showInputDialog(
+                                        context,
+                                        '${dataTitle[index]['wordcorrect']}',
+                                        '${dataTitle[index]['detail_old']}',
+                                        '${dataTitle[index]['tripitaka91_book']}',
+                                        '${dataTitle[index]['tripitaka91_page']}',
+                                        '${dataTitle[index]['tripitaka91_line']}');
+                                  },
+                                  child: const SizedBox(
+                                    width: 150,
+                                    child: Row(
+                                      children: [
+                                        Icon(Icons.add),
+                                        ATextLabelLarge(
+                                          text: 'เพิ่มข้อความที่น่าจะถูก...',
                                         ),
-                                      ),
+                                      ],
                                     ),
                                   ),
-                                  const SizedBox(
-                                    width: 5,
-                                  ),
-                                  InkWell(
-                                    onTap: () {
-                                      _showDialogUser(
-                                          context,
-                                          'รายชื่อสมาชิกที่ยืนยันแล้ว',
-                                          '${dataTitle[index]['tripitaka91_book']}',
-                                          '${dataTitle[index]['tripitaka91_page']}',
-                                          '${dataTitle[index]['tripitaka91_line']}');
-                                    },
-                                    child: Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: ClipPath(
-                                        clipper:
-                                            DoubleTriangleRectangleClipper(),
-                                        child: Container(
-                                          padding: const EdgeInsets.all(3.0),
-                                          color: Colors.green,
-                                          child: ATextDiskplaySmall(
-                                              text:
-                                                  'สมาชิกได้ยืนยันแล้ว ${dataTitle[index]['bookconfirm']} ท่าน'),
-                                        ),
-                                      ),
-                                    ),
-                                  )
-                                ],
-                              )
-                            : opt == '1'
-                                ? InkWell(
-                                    onTap: () {
-                                      _showDialogUser(
-                                          context,
-                                          'รายชื่อสมาชิกที่ยืนยันแล้ว',
-                                          '${dataTitle[index]['tripitaka91_book']}',
-                                          '${dataTitle[index]['tripitaka91_page']}',
-                                          '${dataTitle[index]['tripitaka91_line']}');
-                                    },
-                                    child: Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: ClipPath(
-                                        clipper:
-                                            DoubleTriangleRectangleClipper(),
-                                        child: Container(
-                                          padding: const EdgeInsets.all(3.0),
-                                          color: Colors.green,
-                                          child: ATextDiskplaySmall(
-                                              text:
-                                                  'สมาชิกได้ยืนยันแล้ว ${dataTitle[index]['bookconfirm']} ท่าน'),
-                                        ),
-                                      ),
-                                    ),
-                                  )
-                                : Row(
-                                    children: [
-                                      const SizedBox(width: 10),
-                                      dataTitle[index]['booksuscess'] == 1
-                                          ? Align(
-                                              alignment: Alignment.centerLeft,
-                                              child: ClipPath(
-                                                clipper:
-                                                    DoubleTriangleRectangleClipper(),
-                                                child: Container(
-                                                  padding:
-                                                      const EdgeInsets.all(3.0),
-                                                  color: Colors.green,
-                                                  child: const ATextLabelMediumColor(
-                                                      color: Colors.white,
-                                                      text:
-                                                          ' ข้อมูลถูกแก้ไขเรียบร้อยแล้ว '),
-                                                ),
+                                )
+                              : opt == '0'
+                                  ? Row(
+                                      children: [
+                                        InkWell(
+                                          onTap: () async {
+                                            bool? confirm =
+                                                await _showConfirmationDialog(
+                                                    context);
+                                            if (confirm!) {
+                                              // print('ยืนยันข้อมูล');
+                                              await _fetchUpdateInsertDataCorrectConfirm(
+                                                  '${dataTitle[index]['tripitaka91_book']}',
+                                                  '${dataTitle[index]['tripitaka91_page']}',
+                                                  '${dataTitle[index]['tripitaka91_line']}');
+                                            }
+                                          },
+                                          child: Align(
+                                            alignment: Alignment.centerLeft,
+                                            child: ClipPath(
+                                              clipper:
+                                                  DoubleTriangleRectangleClipper(),
+                                              child: Container(
+                                                padding:
+                                                    const EdgeInsets.all(3.0),
+                                                color: Colors.red,
+                                                child: const ATextDiskplaySmall(
+                                                    text: 'ยืนยันข้อมูล'),
                                               ),
-                                            )
-                                          : dataTitle[index]['bookconfirm'] >=
-                                                  tCorrectNum
-                                              ? InkWell(
-                                                  onTap: () async {
-                                                    Users? users =
-                                                        await getUsersList();
-                                                    String tmpLevel = '2';
-                                                    if (users != null) {
-                                                      tmpLevel =
-                                                          users.levelAccess;
-                                                    }
-                                                    if (tmpLevel == '1') {
-                                                      bool? confirm =
-                                                          // ignore: use_build_context_synchronously
-                                                          await _showConfirmationDialog(
-                                                              context);
-                                                      if (confirm!) {
-                                                        // ignore: use_build_context_synchronously
-                                                        LoadingDialog.show(
-                                                            context);
-                                                        await _fetchConfirmSuscess(
-                                                            '${dataTitle[index]['tripitaka91_book']}',
-                                                            '${dataTitle[index]['tripitaka91_page']}',
-                                                            '${dataTitle[index]['tripitaka91_line']}');
-                                                        // ignore: use_build_context_synchronously
-                                                        LoadingDialog.hide(
-                                                            context);
-                                                        // print(
-                                                        //     'ยืนยันการยืนแก้ไขข้อมูล');
-                                                        // print('${dataTitle[index]['words']}');
-                                                      }
-                                                    } else {
-                                                      // ignore: use_build_context_synchronously
-                                                      _showSnackbar(context,
-                                                          'คุณยังไม่ได้รับสิทธิ์ยืนยันการแก้ไขข้อมูล');
-                                                    }
-                                                  },
-                                                  child: Align(
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          width: 5,
+                                        ),
+                                        InkWell(
+                                          onTap: () {
+                                            _showDialogUser(
+                                                context,
+                                                'รายชื่อสมาชิกที่ยืนยันแล้ว',
+                                                '${dataTitle[index]['tripitaka91_book']}',
+                                                '${dataTitle[index]['tripitaka91_page']}',
+                                                '${dataTitle[index]['tripitaka91_line']}');
+                                          },
+                                          child: Align(
+                                            alignment: Alignment.centerLeft,
+                                            child: ClipPath(
+                                              clipper:
+                                                  DoubleTriangleRectangleClipper(),
+                                              child: Container(
+                                                padding:
+                                                    const EdgeInsets.all(3.0),
+                                                color: Colors.green,
+                                                child: ATextDiskplaySmall(
+                                                    text:
+                                                        'สมาชิกได้ยืนยันแล้ว ${dataTitle[index]['bookconfirm']} ท่าน'),
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    )
+                                  : opt == '1'
+                                      ? InkWell(
+                                          onTap: () {
+                                            _showDialogUser(
+                                                context,
+                                                'รายชื่อสมาชิกที่ยืนยันแล้ว',
+                                                '${dataTitle[index]['tripitaka91_book']}',
+                                                '${dataTitle[index]['tripitaka91_page']}',
+                                                '${dataTitle[index]['tripitaka91_line']}');
+                                          },
+                                          child: Align(
+                                            alignment: Alignment.centerLeft,
+                                            child: ClipPath(
+                                              clipper:
+                                                  DoubleTriangleRectangleClipper(),
+                                              child: Container(
+                                                padding:
+                                                    const EdgeInsets.all(3.0),
+                                                color: Colors.green,
+                                                child: ATextDiskplaySmall(
+                                                    text:
+                                                        'สมาชิกได้ยืนยันแล้ว ${dataTitle[index]['bookconfirm']} ท่าน'),
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                      : Row(
+                                          children: [
+                                            const SizedBox(width: 10),
+                                            dataTitle[index]['booksuscess'] == 1
+                                                ? Align(
                                                     alignment:
                                                         Alignment.centerLeft,
                                                     child: ClipPath(
@@ -937,115 +918,180 @@ class _ShowCorrectSaveWithPageState extends State<ShowCorrectSaveWithPage> {
                                                         padding:
                                                             const EdgeInsets
                                                                 .all(3.0),
-                                                        color: Colors.red,
-                                                        child: const ATextDiskplaySmall(
+                                                        color: Colors.green,
+                                                        child: const ATextLabelMediumColor(
+                                                            color: Colors.white,
                                                             text:
-                                                                'ยืนยันการยืนแก้ไขข้อมูล'),
+                                                                ' ข้อมูลถูกแก้ไขเรียบร้อยแล้ว '),
                                                       ),
                                                     ),
-                                                  ),
-                                                )
-                                              : Align(
-                                                  alignment:
-                                                      Alignment.centerLeft,
-                                                  child: ClipPath(
-                                                    clipper:
-                                                        DoubleTriangleRectangleClipper(),
-                                                    child: Container(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              3.0),
-                                                      color: Colors.yellow,
-                                                      child: const ATextLabelMediumColor(
-                                                          color: Colors.black,
-                                                          text:
-                                                              ' รอสมาชิกยืนยันครบ $tCorrectNum ท่าน '),
-                                                    ),
+                                                  )
+                                                : dataTitle[index]
+                                                            ['bookconfirm'] >=
+                                                        tCorrectNum
+                                                    ? InkWell(
+                                                        onTap: () async {
+                                                          Users? users =
+                                                              await getUsersList();
+                                                          String tmpLevel = '2';
+                                                          if (users != null) {
+                                                            tmpLevel = users
+                                                                .levelAccess;
+                                                          }
+                                                          if (tmpLevel == '1') {
+                                                            bool? confirm =
+                                                                // ignore: use_build_context_synchronously
+                                                                await _showConfirmationDialog(
+                                                                    context);
+                                                            if (confirm!) {
+                                                              // ignore: use_build_context_synchronously
+                                                              LoadingDialog
+                                                                  .show(
+                                                                      context);
+                                                              await _fetchConfirmSuscess(
+                                                                  '${dataTitle[index]['tripitaka91_book']}',
+                                                                  '${dataTitle[index]['tripitaka91_page']}',
+                                                                  '${dataTitle[index]['tripitaka91_line']}');
+                                                              // ignore: use_build_context_synchronously
+                                                              LoadingDialog
+                                                                  .hide(
+                                                                      context);
+                                                              // print(
+                                                              //     'ยืนยันการยืนแก้ไขข้อมูล');
+                                                              // print('${dataTitle[index]['words']}');
+                                                            }
+                                                          } else {
+                                                            // ignore: use_build_context_synchronously
+                                                            _showSnackbar(
+                                                                context,
+                                                                'คุณยังไม่ได้รับสิทธิ์ยืนยันการแก้ไขข้อมูล');
+                                                          }
+                                                        },
+                                                        child: Align(
+                                                          alignment: Alignment
+                                                              .centerLeft,
+                                                          child: ClipPath(
+                                                            clipper:
+                                                                DoubleTriangleRectangleClipper(),
+                                                            child: Container(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .all(3.0),
+                                                              color: Colors.red,
+                                                              child: const ATextDiskplaySmall(
+                                                                  text:
+                                                                      'ยืนยันการยืนแก้ไขข้อมูล'),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      )
+                                                    : Align(
+                                                        alignment: Alignment
+                                                            .centerLeft,
+                                                        child: ClipPath(
+                                                          clipper:
+                                                              DoubleTriangleRectangleClipper(),
+                                                          child: Container(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .all(3.0),
+                                                            color:
+                                                                Colors.yellow,
+                                                            child: const ATextLabelMediumColor(
+                                                                color: Colors
+                                                                    .black,
+                                                                text:
+                                                                    ' รอสมาชิกยืนยันครบ $tCorrectNum ท่าน '),
+                                                          ),
+                                                        ),
+                                                      ),
+                                            const SizedBox(width: 10),
+                                            InkWell(
+                                              onTap: () {
+                                                _showDialogUser(
+                                                    context,
+                                                    'รายชื่อสมาชิกที่ยืนยันแล้ว',
+                                                    '${dataTitle[index]['tripitaka91_book']}',
+                                                    '${dataTitle[index]['tripitaka91_page']}',
+                                                    '${dataTitle[index]['tripitaka91_line']}');
+                                              },
+                                              child: Align(
+                                                alignment: Alignment.centerLeft,
+                                                child: ClipPath(
+                                                  clipper:
+                                                      DoubleTriangleRectangleClipper(),
+                                                  child: Container(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            3.0),
+                                                    color: Colors.green,
+                                                    child: ATextDiskplaySmall(
+                                                        text:
+                                                            'สมาชิกที่ยืนยัน ${dataTitle[index]['bookconfirm']} ท่าน'),
                                                   ),
                                                 ),
-                                      const SizedBox(width: 10),
-                                      InkWell(
-                                        onTap: () {
-                                          _showDialogUser(
-                                              context,
-                                              'รายชื่อสมาชิกที่ยืนยันแล้ว',
-                                              '${dataTitle[index]['tripitaka91_book']}',
-                                              '${dataTitle[index]['tripitaka91_page']}',
-                                              '${dataTitle[index]['tripitaka91_line']}');
-                                        },
-                                        child: Align(
-                                          alignment: Alignment.centerLeft,
-                                          child: ClipPath(
-                                            clipper:
-                                                DoubleTriangleRectangleClipper(),
-                                            child: Container(
-                                              padding:
-                                                  const EdgeInsets.all(3.0),
-                                              color: Colors.green,
-                                              child: ATextDiskplaySmall(
-                                                  text:
-                                                      'สมาชิกที่ยืนยัน ${dataTitle[index]['bookconfirm']} ท่าน'),
+                                              ),
                                             ),
-                                          ),
+                                          ],
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                    const Divider(),
-                    ATextTitleSmallTHColor(
-                        color: Colors.grey,
-                        text:
-                            'เล่ม ${dataTitle[index]['tripitaka91_book']} หน้า ${dataTitle[index]['tripitaka91_page']} บรรทัด ${dataTitle[index]['tripitaka91_line']}\nหมายเหตุ : ${dataTitle[index]['wordcorrectcomment'] ?? '-'}'),
-                  ],
-                ),
-                subtitle: Row(
-                  children: [
-                    InkWell(
-                      onTap: () {
-                        _showDialogUserCorrect(
-                            context,
-                            'รายชื่อสมาชิกที่แจ้งคำที่น่าจะผิด/คำที่น่าจะถูก',
-                            '${dataTitle[index]['tripitaka91_book']}',
-                            '${dataTitle[index]['tripitaka91_page']}',
-                            '${dataTitle[index]['tripitaka91_line']}');
-                      },
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: ClipPath(
-                          clipper: DoubleTriangleRectangleClipper(),
-                          child: Container(
-                            padding: const EdgeInsets.all(3.0),
-                            color: Colors.orange,
-                            child:
-                                ATextDiskplaySmall(text: 'แจ้งโดย : $userTmp'),
-                          ),
-                        ),
+                          const Divider(),
+                          ATextTitleSmallTHColor(
+                              color: Colors.grey,
+                              text:
+                                  'เล่ม ${dataTitle[index]['tripitaka91_book']} หน้า ${dataTitle[index]['tripitaka91_page']} บรรทัด ${dataTitle[index]['tripitaka91_line']}\nหมายเหตุ : ${dataTitle[index]['wordcorrectcomment'] ?? '-'}'),
+                        ],
                       ),
+                      subtitle: Row(
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              _showDialogUserCorrect(
+                                  context,
+                                  'รายชื่อสมาชิกที่แจ้งคำที่น่าจะผิด/คำที่น่าจะถูก',
+                                  '${dataTitle[index]['tripitaka91_book']}',
+                                  '${dataTitle[index]['tripitaka91_page']}',
+                                  '${dataTitle[index]['tripitaka91_line']}');
+                            },
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: ClipPath(
+                                clipper: DoubleTriangleRectangleClipper(),
+                                child: Container(
+                                  padding: const EdgeInsets.all(3.0),
+                                  color: Colors.orange,
+                                  child: ATextDiskplaySmall(
+                                      text: 'แจ้งโดย : $userTmp'),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      onTap: () {
+                        // audioPlayerManager.stop();
+                        // Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //     builder: (context) => Tri91PageView(
+                        //       triBookid:
+                        //           textTitleReplace.getBookId(dataTitle[index]),
+                        //       triPageid: int.parse(
+                        //           textTitleReplace.getPageId(dataTitle[index])),
+                        //       triBookline:
+                        //           textTitleReplace.getLineId(dataTitle[index]),
+                        //       chkSearch: widget.wordSearch,
+                        //     ),
+                        //   ),
+                        // );
+                      },
                     ),
+                    const Divider(),
                   ],
-                ),
-                onTap: () {
-                  // audioPlayerManager.stop();
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //     builder: (context) => Tri91PageView(
-                  //       triBookid:
-                  //           textTitleReplace.getBookId(dataTitle[index]),
-                  //       triPageid: int.parse(
-                  //           textTitleReplace.getPageId(dataTitle[index])),
-                  //       triBookline:
-                  //           textTitleReplace.getLineId(dataTitle[index]),
-                  //       chkSearch: widget.wordSearch,
-                  //     ),
-                  //   ),
-                  // );
-                },
-              ),
-              const Divider(),
-            ],
-          );
-        },
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
