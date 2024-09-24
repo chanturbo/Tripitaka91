@@ -24,7 +24,7 @@ class ListMenuTitle extends StatelessWidget {
           child: Container(
             width: 100,
             height: 25,
-            color: TColors.primary,
+            color: TColors.primary1,
             child: const Center(
               child: ATextDiskplayMedium(
                 text: 'หมวดหัวข้อธรรมสำคัญ',

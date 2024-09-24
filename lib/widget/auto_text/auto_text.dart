@@ -267,7 +267,7 @@ class ATextDiskplayLargeBlack extends StatelessWidget {
     return AutoSizeText(
       text,
       style: Theme.of(context).textTheme.displayLarge?.copyWith(
-            color: Colors.black,
+            color: Colors.white,
           ),
     );
   }

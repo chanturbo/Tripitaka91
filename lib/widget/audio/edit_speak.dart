@@ -135,8 +135,9 @@ class _EditSpeakScreenState extends State<EditSpeakScreen> {
                 ),
                 const SizedBox(height: 20),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    const Expanded(child: Text('')),
+                    // const Expanded(child: Text('')),
                     ElevatedButton(
                       style: ButtonStyle(
                         backgroundColor:
@@ -162,7 +163,7 @@ class _EditSpeakScreenState extends State<EditSpeakScreen> {
                       child:
                           const ATextDiskplayMedium(text: ' ทดสอบเสียงอ่าน '),
                     ),
-                    const SizedBox(width: 20),
+                    const SizedBox(width: 10),
                     ElevatedButton(
                       style: ButtonStyle(
                         backgroundColor:
@@ -199,7 +200,7 @@ class _EditSpeakScreenState extends State<EditSpeakScreen> {
                       },
                       child: const ATextDiskplayMedium(text: ' บันทึก '),
                     ),
-                    const SizedBox(width: 20),
+                    const SizedBox(width: 10),
                     ElevatedButton(
                       style: ButtonStyle(
                         backgroundColor:
@@ -212,6 +213,7 @@ class _EditSpeakScreenState extends State<EditSpeakScreen> {
                       },
                       child: const ATextDiskplayMedium(text: ' ยกเลิก '),
                     ),
+                    const Expanded(child: Text('')),
                   ],
                 ),
               ],

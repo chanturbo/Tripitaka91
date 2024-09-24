@@ -3,10 +3,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-import 'package:hexcolor/hexcolor.dart';
 import 'package:http/http.dart' as http;
 import 'package:share_plus/share_plus.dart';
-import 'package:simple_html_css/simple_html_css.dart';
 import 'package:substring_highlight/substring_highlight.dart';
 import 'package:tripitaka91/utils/api_connect/remote_service.dart';
 import 'package:tripitaka91/utils/constants/api_constants.dart';
@@ -28,14 +26,14 @@ import 'package:tripitaka91/widget/login/show_logedit_save_with_page.dart';
 import 'package:tripitaka91/widget/pageviews/pageviews_edit.dart';
 import 'package:tripitaka91/widget/screen/respond_screen.dart';
 
-class Tri91PageView extends StatefulWidget {
+class Tri91PageViewHtml1 extends StatefulWidget {
   final String triBookid;
   final int triPageid;
   final String triBookline;
   final String chkSearch;
   final bool isMobile;
 
-  const Tri91PageView({
+  const Tri91PageViewHtml1({
     super.key,
     required this.triBookid,
     required this.triPageid,
@@ -45,10 +43,10 @@ class Tri91PageView extends StatefulWidget {
   });
 
   @override
-  State<Tri91PageView> createState() => _Tri91PageViewState();
+  State<Tri91PageViewHtml1> createState() => _Tri91PageViewHtml1State();
 }
 
-class _Tri91PageViewState extends State<Tri91PageView> {
+class _Tri91PageViewHtml1State extends State<Tri91PageViewHtml1> {
   late List<RandTitle> randTitle = [];
   late List<BookTri91> bookTri91 = [];
   late List<Tri91BookAll> tri91BookAll = [];
@@ -70,7 +68,6 @@ class _Tri91PageViewState extends State<Tri91PageView> {
   late int tribookline = 0;
   late String txtShowEmpty = 'โหลดข้อมูล...';
   final ScrollController _scrollControllerListTitle = ScrollController();
-  final ScrollController _scrollController = ScrollController();
 
   List<String> currentPlaylist = [];
   AudioPlayerManager audioPlayerManager = AudioPlayerManager();
@@ -84,8 +81,7 @@ class _Tri91PageViewState extends State<Tri91PageView> {
   late List<String> uniqueItems;
   List<String> dataDict = [];
   late TextTitleReplace textTitleReplace;
-  bool loadFirst = true;
-  late Timer _timer;
+
   int triBookLineRead = 1;
 
   late InAppWebViewController webViewController;
@@ -103,120 +99,10 @@ class _Tri91PageViewState extends State<Tri91PageView> {
         PageController(initialPage: widget.triPageid, viewportFraction: 1.0);
     textTitleReplace = TextTitleReplace();
     uniqueItems = [];
-    _timer = Timer(const Duration(seconds: 2), _onTimerFinished);
-  }
-
-  void _onTimerFinished() {
-    if (mounted) {
-      double midpoint = _scrollController.position.maxScrollExtent / 2;
-      double onepoint = _scrollController.position.maxScrollExtent / 4;
-      double position1 = _scrollController.position.minScrollExtent;
-      double position2 = _scrollController.position.minScrollExtent + onepoint;
-      double position3 =
-          _scrollController.position.minScrollExtent + (onepoint * 2);
-      double position4 = _scrollController.position.maxScrollExtent;
-
-      int line = int.parse(widget.triBookline);
-      if (widget.isMobile) {
-        if (line < 6) {
-          midpoint = position1;
-          if (line > 3) {
-            midpoint = position1 + (onepoint / 2);
-          }
-        } else if (line < 12) {
-          midpoint = position2;
-          if (line > 9) {
-            midpoint = position2 + (onepoint / 2);
-          }
-        } else if (line < 18) {
-          midpoint = position3;
-          if (line > 15) {
-            midpoint = position3 + (onepoint / 2);
-          }
-        } else {
-          midpoint = position4;
-        }
-      } else {
-        if (line < 5) {
-          midpoint = position1;
-        } else if (line < 9) {
-          midpoint = position2;
-        } else if (line < 17) {
-          midpoint = position3;
-        } else {
-          midpoint = position4;
-        }
-      }
-
-      if ((_scrollController.positions.isNotEmpty) &&
-          (_scrollController.hasClients)) {
-        _scrollController.animateTo(
-          midpoint,
-          duration:
-              const Duration(milliseconds: 500), // หรือค่าอื่น ๆ ตามต้องการ
-          curve: Curves.easeOut, // หรือค่าอื่น ๆ ตามต้องการ
-        );
-      }
-    }
-  }
-
-  void _onTimerFinished2() {
-    if (mounted) {
-      double midpoint = _scrollController.position.maxScrollExtent / 2;
-      double onepoint = _scrollController.position.maxScrollExtent / 4;
-      double position1 = _scrollController.position.minScrollExtent;
-      double position2 = _scrollController.position.minScrollExtent + onepoint;
-      double position3 =
-          _scrollController.position.minScrollExtent + (onepoint * 2);
-      double position4 = _scrollController.position.maxScrollExtent;
-
-      int line = triBookLineRead;
-      if (widget.isMobile) {
-        if (line < 6) {
-          midpoint = position1;
-          if (line > 3) {
-            midpoint = position1 + (onepoint / 2);
-          }
-        } else if (line < 12) {
-          midpoint = position2;
-          if (line > 9) {
-            midpoint = position2 + (onepoint / 2);
-          }
-        } else if (line < 18) {
-          midpoint = position3;
-          if (line > 15) {
-            midpoint = position3 + (onepoint / 2);
-          }
-        } else {
-          midpoint = position4;
-        }
-      } else {
-        if (line < 5) {
-          midpoint = position1;
-        } else if (line < 9) {
-          midpoint = position2;
-        } else if (line < 17) {
-          midpoint = position3;
-        } else {
-          midpoint = position4;
-        }
-      }
-
-      if ((_scrollController.positions.isNotEmpty) &&
-          (_scrollController.hasClients)) {
-        _scrollController.animateTo(
-          midpoint,
-          duration:
-              const Duration(milliseconds: 500), // หรือค่าอื่น ๆ ตามต้องการ
-          curve: Curves.easeOut, // หรือค่าอื่น ๆ ตามต้องการ
-        );
-      }
-    }
   }
 
   @override
   void dispose() {
-    _timer.cancel();
     saveLastRead();
     audioPlayerManager.dispose();
     audioPlayerManagerTitle.dispose();
@@ -680,16 +566,8 @@ class _Tri91PageViewState extends State<Tri91PageView> {
             tabletView: buildBodyTablet(),
             desktopView: buildBody(),
           ),
-          // buildBody(),
-          // AnimatedDrawer(
-          //   isDrawerOpen: isDrawerOpen,
-          //   onToggleDrawer: toggleDrawer,
-          //   isWidth: 350,
-          //   pages: pageChanged.toString(),
-          // ),
         ],
       ),
-      //bottomNavigationBar: buildBottomAppBar(),
     );
   }
 
@@ -697,117 +575,98 @@ class _Tri91PageViewState extends State<Tri91PageView> {
     return AppBar(
       title: ATextDiskplayMedium(text: '(เล่ม $bookid) $bookTitleTri91'),
       actions: [
-        PopupMenuButton(
-          icon: const Icon(
-            color: TColors.white,
-            Icons.edit,
+        IconButton(
+          icon: const Tooltip(
+            message: 'แจ้งคำผิดคำถูก', // ข้อความ Tooltip
+            child: Icon(
+              Icons.edit,
+              color: Colors.white, // สีไอคอนเป็นสีขาว
+            ),
           ),
-          onSelected: (value) {
-            if (value == 'item1') {
-              if (users != null) {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => PageViewEdit(
-                        bookId: widget.triBookid,
-                        pageId: pageChanged.toString(),
-                        username: users!.username,
-                        logEdit: logEdit,
-                      ),
-                    )).then((value) {
-                  if (value != null && value == true) {
-                    // หลังจากกลับมาจาก NextPage และค่าที่ส่งกลับมาคือ true
-                    // ทำสิ่งที่คุณต้องการทำต่อได้ที่นี่
-                    // print('Returned with true');
-                    setState(() {
-                      _getLogEdit();
-                    });
-                  }
-                });
-              } else {
-                // String mgr = 'กรุณาเข้าสู่ระบบก่อน';
-                chkLoginStatus(context);
-              }
-            } else if (value == 'item3') {
-              if (users != null) {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      contentPadding: const EdgeInsets.all(5),
-                      title: const Text('ยืนยันคำที่น่าจะผิดคำที่น่าจะถูก'),
-                      content: SizedBox(
-                        width: double.maxFinite,
-                        child: ShowCorrectSaveWithPage(
-                          bookid: widget.triBookid,
-                          pageid: pageChanged.toString(),
-                        ),
-                      ),
-                      actions: [
-                        TextButton(
-                          onPressed: () {
-                            _getLogEdit();
-                            Navigator.of(context).pop();
-                          },
-                          child: const Text('ปิด'),
-                        ),
-                      ],
-                    );
-                  },
-                );
-              } else {
-                // String mgr = 'กรุณาเข้าสู่ระบบก่อน';
-                chkLoginStatus(context);
-              }
-            } else if (value == 'item2') {
-              if (users != null) {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return SizedBox.expand(
-                      child: AlertDialog(
-                        shape: const RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(32.0))),
-                        contentPadding: const EdgeInsets.all(5),
-                        backgroundColor: Colors.white,
-                        title: const Text('แจ้งการอ่านออกเสียง'),
-                        content: EditSpeakScreen(
-                          comments: 'เล่ม $bookid หน้า $pageChanged',
-                        ),
-                        actions: <Widget>[
-                          TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            child: const Text('ปิดหน้าจอ'),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                );
-              } else {
-                // String mgr = 'กรุณาเข้าสู่ระบบก่อน';
-                chkLoginStatus(context);
-              }
+          onPressed: () {
+            if (users != null) {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => PageViewEdit(
+                      bookId: widget.triBookid,
+                      pageId: pageChanged.toString(),
+                      username: users!.username,
+                      logEdit: logEdit,
+                    ),
+                  )).then((value) {
+                if (value != null && value == true) {
+                  // หลังจากกลับมาจาก NextPage และค่าที่ส่งกลับมาคือ true
+                  // ทำสิ่งที่คุณต้องการทำต่อได้ที่นี่
+                  // print('Returned with true');
+                  setState(() {
+                    _getLogEdit();
+                  });
+                }
+              });
+            } else {
+              // String mgr = 'กรุณาเข้าสู่ระบบก่อน';
+              chkLoginStatus(context);
             }
           },
-          itemBuilder: (BuildContext context) => <PopupMenuEntry>[
-            const PopupMenuItem(
-              value: 'item1',
-              child: Text('แจ้งคำผิดคำถูก'),
+        ),
+        IconButton(
+          icon: const Tooltip(
+            message: 'ยืนยันการแก้ไขคำผิดคำถูก', // ข้อความ Tooltip
+            child: Icon(
+              Icons.spellcheck,
+              color: Colors.white, // สีไอคอนเป็นสีขาว
             ),
-            const PopupMenuItem(
-              value: 'item3',
-              child: Text('ยืนยันการแก้ไขคำผิดคำถูก'),
+          ),
+          onPressed: () {
+            if (users != null) {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ShowCorrectSaveWithPage(
+                      bookid: widget.triBookid,
+                      pageid: pageChanged.toString(),
+                    ),
+                  )).then((value) {
+                if (value != null && value == true) {
+                  // หลังจากกลับมาจาก NextPage และค่าที่ส่งกลับมาคือ true
+                  // ทำสิ่งที่คุณต้องการทำต่อได้ที่นี่
+                  // print('Returned with true');
+                  setState(() {
+                    _getLogEdit();
+                  });
+                }
+              });
+            } else {
+              // String mgr = 'กรุณาเข้าสู่ระบบก่อน';
+              chkLoginStatus(context);
+            }
+          },
+        ),
+        IconButton(
+          icon: const Tooltip(
+            message: 'แจ้งการอ่านออกเสียง', // ข้อความ Tooltip
+            child: Icon(
+              Icons.record_voice_over,
+              color: Colors.white, // สีไอคอนเป็นสีขาว
             ),
-            const PopupMenuItem(
-              value: 'item2',
-              child: Text('แจ้งการอ่านออกเสียง'),
-            ),
-          ],
-        )
+          ),
+          onPressed: () {
+            if (users != null) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => EditSpeakScreen(
+                    comments: 'เล่ม $bookid หน้า $pageChanged',
+                  ),
+                ),
+              );
+            } else {
+              // String mgr = 'กรุณาเข้าสู่ระบบก่อน';
+              chkLoginStatus(context);
+            }
+          },
+        ),
       ],
     );
   }
@@ -970,7 +829,6 @@ class _Tri91PageViewState extends State<Tri91PageView> {
                       curve: Curves.bounceInOut);
                   _currentSliderValue = pageId.toDouble();
                   triBookLineRead = tribookline;
-                  _timer = Timer(const Duration(seconds: 1), _onTimerFinished2);
                 });
               },
               title: (mark == 'FALSE')
@@ -978,6 +836,7 @@ class _Tri91PageViewState extends State<Tri91PageView> {
                       text: triTitle,
                       terms: outputList,
                       textStyle: TextStyle(
+                          letterSpacing: 0.2,
                           fontSize: isMobile ? 18.0 : 16.0,
                           color: Colors.black),
                     )
@@ -985,7 +844,9 @@ class _Tri91PageViewState extends State<Tri91PageView> {
                       text: triTitle,
                       terms: outputList,
                       textStyle: TextStyle(
-                          fontSize: isMobile ? 18.0 : 16.0, color: Colors.red),
+                          letterSpacing: 0.2,
+                          fontSize: isMobile ? 18.0 : 16.0,
+                          color: Colors.red),
                       textStyleHighlight: const TextStyle(color: Colors.black),
                     ),
               subtitle: Row(
@@ -1078,34 +939,49 @@ class _Tri91PageViewState extends State<Tri91PageView> {
   }
 
   void chkLoginStatus(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return SizedBox.expand(
-          child: AlertDialog(
-            shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(32.0))),
-            contentPadding: const EdgeInsets.only(top: 10.0),
-            backgroundColor: Colors.white,
-            title: const Text('เข้าสู่ระบบ'),
-            content: const LoginPageDialog(),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: const Text('ปิดหน้าจอ'),
-              ),
-            ],
-          ),
-        );
-      },
-    ).then((value) {
-      if (value == true) {
-        // อัปเดตตัวแปร users หรือ refresh หน้าจอ
-        _getUser();
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const LoginPageDialog(),
+        )).then((value) {
+      if (value != null && value == true) {
+        // หลังจากกลับมาจาก NextPage และค่าที่ส่งกลับมาคือ true
+        // ทำสิ่งที่คุณต้องการทำต่อได้ที่นี่
+        // print('Returned with true');
+        setState(() {
+          _getUser();
+        });
       }
     });
+
+    // showDialog(
+    //   context: context,
+    //   builder: (BuildContext context) {
+    //     return SizedBox.expand(
+    //       child: AlertDialog(
+    //         shape: const RoundedRectangleBorder(
+    //             borderRadius: BorderRadius.all(Radius.circular(32.0))),
+    //         contentPadding: const EdgeInsets.only(top: 10.0),
+    //         backgroundColor: Colors.white,
+    //         title: const Text('เข้าสู่ระบบ'),
+    //         content: const LoginPageDialog(),
+    //         actions: <Widget>[
+    //           TextButton(
+    //             onPressed: () {
+    //               Navigator.of(context).pop();
+    //             },
+    //             child: const Text('ปิดหน้าจอ'),
+    //           ),
+    //         ],
+    //       ),
+    //     );
+    //   },
+    // ).then((value) {
+    //   if (value == true) {
+    //     // อัปเดตตัวแปร users หรือ refresh หน้าจอ
+    //     _getUser();
+    //   }
+    // });
   }
 
   Widget pageview(bool isMobile, bool isTable) {
@@ -1132,10 +1008,7 @@ class _Tri91PageViewState extends State<Tri91PageView> {
                               LoadingDialog.hide(context);
                               _showSnackbar(
                                   context, 'กรุณากดปุ่มอ่านออกเสียงอีกครั้ง');
-                              setState(() {
-                                _timer = Timer(const Duration(seconds: 1),
-                                    _onTimerFinished2);
-                              });
+                              setState(() {});
                               return;
                             }
                             triBookLineRead = 1;
@@ -1179,10 +1052,7 @@ class _Tri91PageViewState extends State<Tri91PageView> {
                               LoadingDialog.hide(context);
                               _showSnackbar(
                                   context, 'กรุณากดปุ่มอ่านออกเสียงอีกครั้ง');
-                              setState(() {
-                                _timer = Timer(const Duration(seconds: 1),
-                                    _onTimerFinished2);
-                              });
+                              setState(() {});
                               return;
                             }
                             triBookLineRead = 1;
@@ -1210,10 +1080,7 @@ class _Tri91PageViewState extends State<Tri91PageView> {
                               }
                             }
                             currentPlaylist.add(txtDetail);
-                            setState(() {
-                              _timer = Timer(const Duration(seconds: 1),
-                                  _onTimerFinished2);
-                            });
+                            setState(() {});
                             await audioPlayerManager.playAudio(
                                 '0', filename, txtDetail);
                           }
@@ -1576,12 +1443,8 @@ class _Tri91PageViewState extends State<Tri91PageView> {
   }
 
   Widget showPage(String pageShow, int triLine, bool isMobile, bool isTable) {
-    if (loadFirst) {
-      _getLogEdit();
-      loadFirst = false;
-    }
     return FutureBuilder<List<BookTri91>?>(
-      future: RemoteServiceBookTri91()
+      future: RemoteServiceBookTri91Html()
           .getBookTri91(widget.triBookid.toString(), pageShow, tSecretAPIKey),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -1595,289 +1458,19 @@ class _Tri91PageViewState extends State<Tri91PageView> {
         } else {
           // สร้าง Container เพื่อแสดงข้อมูล
           bookTri91 = snapshot.data ?? [];
-          int targetPage = int.parse(pageShow);
-
-          List<Logedit> result = logEdit
-              .where((log) => log.tripitaka91Page == targetPage)
-              .toList();
-
-          String title = bookTitleTri91;
-          String page = pageShow;
-          String htmlContent, snapText;
-          int triPage = int.parse(pageShow);
-          if (triPage == 0) {
-            htmlContent = """
-<body>
-<span style='font-weight:800;'></span>
-""";
-          } else {
-            htmlContent = """
-<body>
-<span style='font-weight:800;'> $title หน้าที่ $page</span><br>
-
-""";
-          }
-
-          for (int i = 0; i < snapshot.data!.length; i++) {
-            snapText = snapshot.data![i].bookDetail
-                .toString()
-                .replaceAll('LineNull', '&nbsp;');
-            snapText = snapText.replaceAll('     ', '&nbsp;');
-            snapText = snapText.replaceAll('    ', '&nbsp;');
-            snapText = snapText.replaceAll('   ', '&nbsp;');
-            snapText = snapText.replaceAll('  ', '&nbsp;');
-            snapText = snapText.replaceAll(' ', '&nbsp;');
-            snapText = snapText.replaceAll('<  /B>', '');
-            snapText = snapText.replaceAll('<  /SUP>', '');
-            snapText = snapText.replaceAll('<  /SUP>', '');
-            snapText = snapText.replaceAll('<  /H1>', '');
-            snapText = snapText.replaceAll('<  /H2>', '');
-            snapText = snapText.replaceAll('< /B>', '');
-            snapText = snapText.replaceAll('< /H1>', '');
-            snapText = snapText.replaceAll('< /H2>', '');
-            snapText = snapText.replaceAll('<ฺฺB>', '');
-            snapText = snapText.replaceAll('<ฺฺ/B>', '');
-            snapText = snapText.replaceAll('</็H2>', '');
-            snapText = snapText.replaceAll('<H/1>', '');
-            snapText = snapText.replaceAll('</H2 >', '');
-            snapText = snapText.replaceAll('</3 1>', '');
-            snapText = snapText.replaceAll('</SUP', '');
-            snapText = snapText.replaceAll('/SUP>', '');
-            snapText = snapText.replaceAll('SUP>', '');
-            snapText = snapText.replaceAll('</H >', '');
-            snapText = snapText.replaceAll('/B>', '');
-            snapText = snapText.replaceAll('</H4', '');
-            snapText = snapText.replaceAll('</H3', '');
-            snapText = snapText.replaceAll('</H2', '');
-            snapText = snapText.replaceAll('</H1', '');
-            snapText = snapText.replaceAll('</I', '');
-            snapText = snapText.replaceAll('</B', '');
-            snapText = snapText.replaceAll('H1>', '');
-            snapText = snapText.replaceAll('B>', '');
-            snapText = snapText.replaceAll('</', '');
-            snapText = snapText.replaceAll('<', '');
-            snapText = snapText.replaceAll('>', '');
-
-            List<String> findWord = widget.chkSearch.split(' ');
-            if (findWord.isNotEmpty) {
-              for (var x = 0; x < findWord.length; x++) {
-                if (findWord[x] != '') {
-                  String b;
-                  if (triLine > 0) {
-                    if (snapshot.data?[i].bookLines == (triLine)) {
-                      // if ((this.bgColor == '#6b6b6e') ||
-                      //     (this.bgColor == '#121212')) {
-                      //   b = "<span style='color:yellow'>";
-                      //   b = "$b${findWord[x]}</span>";
-                      // } else {
-                      b = "<span style=color:red>";
-                      b = "$b${findWord[x]}</span>";
-                      // }
-                    } else {
-                      // if ((this.bgColor == '#6b6b6e') ||
-                      //     (this.bgColor == '#121212')) {
-                      //   b = "<span style='color:orange'>";
-                      //   b = "$b${findWord[x]}</span>";
-                      // } else {
-                      b = "<span style=color:red>";
-                      b = "$b${findWord[x]}</span>";
-                      // }
-                    }
-                    // print('b = ${b}');
-                    // print('snapText = ${snapText}');
-                    // print('findWord[x] = ${findWord[x]}');
-                    snapText = snapText.replaceAll(findWord[x].toString(), b);
-                  }
-                }
-              }
-            }
-
-            String logEdit = '';
-            int chkComfirm = 2;
-            int chkSuscess = 2;
-            bool chkLogShow = false;
-            String lineOld = '';
-            String lineNew = '';
-            for (Logedit log in result) {
-              if (log.tripitaka91Line == snapshot.data?[i].bookLines) {
-                String wordIncorrect = log.tripitaka91Wordincorrect;
-                String wordCorrect = log.tripitaka91Wordcorrect;
-                String nameid = log.firstNameid;
-                String firestName = log.firstName;
-                String lastName = log.lastName;
-                lineOld = log.bookDetailOld;
-                lineNew = log.bookDetailNew;
-                String tmpLog =
-                    'คำที่น่าจะผิด: [$wordIncorrect] คำที่น่าจะถูก: [$wordCorrect] แจ้งโดย: $nameid$firestName $lastName\n';
-                logEdit = '$logEdit$tmpLog';
-                chkComfirm = log.bookConfirm;
-                chkSuscess = log.bookSuscess;
-                chkLogShow = true;
-              }
-            }
-            if (chkLogShow) {
-              if (chkSuscess == 1) {
-                logEdit =
-                    '$logEdit \nหมายเหตุ: {มีการแก้ไขข้อมูลเรียบร้อยแล้ว}\nข้อความเดิม: $lineOld\nข้อความที่แก้ไข: $lineNew';
-                if (logEdit != '') {
-                  logEdit = '<a href="$logEdit">[*]</a> ';
-                }
-              } else if (chkSuscess == 0) {
-                if (chkComfirm == 0) {
-                  logEdit = '$logEdit \nหมายเหตุ: [ยังไม่มีการแก้ไข]';
-                } else {
-                  logEdit =
-                      '$logEdit \nหมายเหตุ: [อยู่ในกระบวนการแก้ไขข้อมูล]\nข้อความเดิม: $lineOld\nข้อความที่แก้ไข: $lineNew';
-                }
-                if (logEdit != '') {
-                  logEdit = '<a href="$logEdit">[*]</a> ';
-                }
-              }
-            }
-
-            if (int.parse(pageShow) == pageids) {
-              if (snapshot.data?[i].bookLines == (triLine)) {
-                htmlContent =
-                    """$htmlContent<p style='background-color:yellow;'>
-""";
-              } else {
-                htmlContent = """$htmlContent<p>
-""";
-              }
-            } else {
-              htmlContent = """$htmlContent<p>
-""";
-            }
-
-            htmlContent = """$htmlContent$logEdit$snapText</p>
-""";
-          }
-
-          htmlContent = """$htmlContent</body>
-""";
-
-          // or use HTML.toRichText()
-          final TextSpan textSpan = HTML.toTextSpan(
-            context,
-            htmlContent,
-            linksCallback: (dynamic link) {
-              List<TextSpan> getWordSpans(String text) {
-                List<TextSpan> spans = [];
-                RegExp expBrackets = RegExp(r'\[([^\]]+)\]');
-                RegExp expCurlyBraces = RegExp(r'\{([^}]+)\}');
-                Iterable<RegExpMatch> matchesBrackets =
-                    expBrackets.allMatches(text);
-                Iterable<RegExpMatch> matchesCurlyBraces =
-                    expCurlyBraces.allMatches(text);
-
-                int previousEnd = 0;
-                for (RegExpMatch matchBrackets in matchesBrackets) {
-                  // Add the text before the match
-                  spans.add(TextSpan(
-                      text: text.substring(previousEnd, matchBrackets.start)));
-                  // Add the matched text with custom style (สีแดงสำหรับ [])
-                  spans.add(
-                    TextSpan(
-                      text: matchBrackets.group(1),
-                      style: const TextStyle(
-                        color: Colors.red,
-                        fontSize: 16,
-                      ),
-                    ),
-                  );
-                  previousEnd = matchBrackets.end;
-                }
-
-                // เพิ่มการเช็คสำหรับข้อความที่อยู่ใน {}
-                for (RegExpMatch matchCurlyBraces in matchesCurlyBraces) {
-                  // Add the text before the match
-                  spans.add(TextSpan(
-                      text:
-                          text.substring(previousEnd, matchCurlyBraces.start)));
-                  // Add the matched text with custom style (สีเขียวสำหรับ {})
-                  spans.add(
-                    TextSpan(
-                      text: matchCurlyBraces.group(1),
-                      style: const TextStyle(
-                        color: Colors.green,
-                        fontSize: 16,
-                      ),
-                    ),
-                  );
-                  previousEnd = matchCurlyBraces.end;
-                }
-
-                // Add the remaining text after the last match (เพิ่มข้อความที่เหลือหลังจากการตรวจสอบครั้งสุดท้าย)
-                if (previousEnd < text.length) {
-                  spans.add(TextSpan(text: text.substring(previousEnd)));
-                }
-
-                return spans;
-              }
-
-              if (link is String) {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      backgroundColor: Colors.white,
-                      title: const Text('รายงาน'),
-                      content: RichText(
-                        text: TextSpan(
-                          children: getWordSpans(link),
-                        ),
-                      ),
-                      actions: [
-                        TextButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          child: const Text('ปิดหน้าจอ'),
-                        ),
-                      ],
-                    );
-                  },
-                );
-              }
-            },
-            // as name suggests, optionally set the default text style
-            defaultTextStyle: TextStyle(
-                color: HexColor('#475859'), //Colors.grey[700],
-                decoration: TextDecoration.none,
-                fontFamily: "THSarabunNew",
-                fontSize: 28),
-            overrideStyle: <String, TextStyle>{
-              'span': const TextStyle(fontSize: 24), //isMobile
-              // ? const TextStyle(fontSize: 22)
-              // : isTable
-              //     ? const TextStyle(fontSize: 23)
-              //     : const TextStyle(fontSize: 24),
-              'p': isMobile
-                  ? const TextStyle(fontSize: 30)
-                  : const TextStyle(fontSize: 26),
-              // : isTable
-              //     ? const TextStyle(fontSize: 25)
-              //     : const TextStyle(fontSize: 26),
-              'a': const TextStyle(
-                fontSize: 26,
-                color: Colors.red,
-                letterSpacing: 0,
-                decoration: TextDecoration.none,
-              ),
-              // specify any tag not just the supported ones,
-              // and apply TextStyles to them and/override them
-            },
-          );
+          String keyword_ = widget.chkSearch.replaceAll(" ", "%");
 
           return SizedBox(
             width: MediaQuery.of(context).size.width,
-            child: SingleChildScrollView(
-              controller: _scrollController,
-              child: SelectableText.rich(
-                textSpan,
-                textAlign: TextAlign.center,
-                style: const TextStyle(height: -0.8),
-              ),
+            child: InAppWebView(
+              initialUrlRequest: URLRequest(
+                  url: WebUri(int.parse(pageShow) == pageids
+                      ? widget.chkSearch != ''
+                          ? 'https://news.tripitaka91.com/tripitaka91_app.php?book=${widget.triBookid}&page=$pageShow&line=$tribookline&keyword=$keyword_'
+                          : 'https://news.tripitaka91.com/tripitaka91_app.php?book=${widget.triBookid}&page=$pageShow&line=$tribookline'
+                      : widget.chkSearch != ''
+                          ? 'https://news.tripitaka91.com/tripitaka91_app.php?book=${widget.triBookid}&page=$pageShow&keyword=$keyword_'
+                          : 'https://news.tripitaka91.com/tripitaka91_app.php?book=${widget.triBookid}&page=$pageShow')),
             ),
           );
         }

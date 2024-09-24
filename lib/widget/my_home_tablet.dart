@@ -222,7 +222,7 @@ class _MyHomeTabletState extends State<MyHomeTablet> {
                           child: Container(
                             width: 100.0,
                             height: 25.0,
-                            color: TColors.primary,
+                            color: TColors.primary1,
                             child: const Center(
                               child: ATextDiskplaySmall(
                                 text: 'เล่มที่อ่านล่าสุด',

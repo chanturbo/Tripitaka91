@@ -26,7 +26,7 @@ class SubMenuExpansionTile extends StatelessWidget {
           ? null
           : const Icon(
               Icons.book_outlined,
-              color: TColors.primary,
+              color: TColors.primary1,
             ),
       title: (!isTablet && !isDesktop)
           ? ATextTitleMedium18(text: titleText)

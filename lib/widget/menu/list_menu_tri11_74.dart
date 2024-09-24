@@ -22,7 +22,7 @@ class ListMenuTri2 extends StatelessWidget {
             clipper: RightTriangleRectangleClipper(),
             child: Container(
               height: 25,
-              color: TColors.primary,
+              color: TColors.primary1,
               child: const Center(
                 child: ATextDiskplayMedium(
                   text: 'พระสุตตันตปิฎก',

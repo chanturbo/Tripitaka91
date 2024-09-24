@@ -401,8 +401,14 @@ class _ShowCorrectSaveWithPageState extends State<ShowCorrectSaveWithPage> {
     );
   }
 
-  void _showInputDialog(BuildContext context, String correctWord,
-      String initialText, String bookid, String bookpage, String bookline) {
+  void _showInputDialog(
+      BuildContext context,
+      String wordincorrect,
+      String correctWord,
+      String initialText,
+      String bookid,
+      String bookpage,
+      String bookline) {
     final TextEditingController textController =
         TextEditingController(text: initialText);
 
@@ -411,11 +417,44 @@ class _ShowCorrectSaveWithPageState extends State<ShowCorrectSaveWithPage> {
       builder: (BuildContext context) {
         return AlertDialog(
           contentPadding: const EdgeInsets.all(5),
-          title: SubstringHighlight(
-            text: 'ระบุข้อความที่น่าจะถูก [ $correctWord ]',
-            term: correctWord,
-            textStyle:
-                const TextStyle(fontFamily: 'THSarabunNew', fontSize: 24),
+          title: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              RichText(
+                text: TextSpan(
+                  children: [
+                    const TextSpan(
+                      text: 'ข้อความที่น่าจะผิด : ',
+                      style: TextStyle(
+                          fontFamily: 'THSarabunNew',
+                          fontSize: 24,
+                          color: Colors.grey),
+                    ),
+                    txtSpanHighlight(wordincorrect.split(','), initialText),
+                    const TextSpan(
+                      text: '\t\t\t\tคำที่น่าจะผิด : ',
+                      style: TextStyle(
+                          fontFamily: 'THSarabunNew',
+                          fontSize: 24,
+                          color: Colors.grey),
+                    ),
+                    TextSpan(
+                      text: '$wordincorrect\n',
+                      style: const TextStyle(
+                          fontFamily: 'THSarabunNew',
+                          fontSize: 24,
+                          color: Colors.red),
+                    ),
+                  ],
+                ),
+              ),
+              SubstringHighlight(
+                text: 'ระบุข้อความที่น่าจะถูก [ $correctWord ]',
+                term: correctWord,
+                textStyle:
+                    const TextStyle(fontFamily: 'THSarabunNew', fontSize: 24),
+              ),
+            ],
           ),
           content: TextFormField(
             style: const TextStyle(fontFamily: 'THSarabunNew', fontSize: 26),
@@ -799,6 +838,7 @@ class _ShowCorrectSaveWithPageState extends State<ShowCorrectSaveWithPage> {
                                   onTap: () {
                                     _showInputDialog(
                                         context,
+                                        '${dataTitle[index]['wordincorrect']}',
                                         '${dataTitle[index]['wordcorrect']}',
                                         '${dataTitle[index]['detail_old']}',
                                         '${dataTitle[index]['tripitaka91_book']}',
