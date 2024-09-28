@@ -6,7 +6,7 @@ const int tSpeakNum = 10;
 const int tCorrectNum = 100;
 
 ///////////// WEB-CONFIG ///////////////////
-const String tURLmain = "https://news.tripitaka91.com/";
+const String tURLmain = "https://www.tripitaka91.com/";
 const String tURL = "https://news.tripitaka91.com/workspace/";
 const String tURLrandom = "${tURL}random.php";
 const String tURLtitle = "${tURL}showtitle.php";

@@ -1,31 +1,43 @@
-import 'dart:ui' as ui;
-import 'dart:typed_data';
-import 'dart:io';
-import 'package:flutter/rendering.dart';
+// image_capture_service.dart
+
+import 'dart:io' as io;
+import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:flutter/material.dart';
+import 'package:tripitaka91/utils/constants/api_constants.dart';
+// สำหรับการใช้งานเว็บ
+// ignore: avoid_web_libraries_in_flutter
+import 'dart:html' as html; // ไม่ควรใช้ในแพลตฟอร์มอื่นนอกจากเว็บ
 
 class ImageCaptureService {
-  Future<void> captureAndSharePng(GlobalKey globalKey) async {
+  Future<void> captureAndSharePng(Uint8List capturedImage, String bookid,
+      String pageid, String lineid) async {
     try {
-      RenderRepaintBoundary boundary =
-          globalKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
-      ui.Image image = await boundary.toImage(pixelRatio: 2.0);
-      ByteData? byteData =
-          await image.toByteData(format: ui.ImageByteFormat.png);
-      Uint8List pngBytes = byteData!.buffer.asUint8List();
+      String link = '$tURLmain$bookid-$pageid-$lineid.htm';
 
-      // บันทึกภาพไปยังโฟลเดอร์ชั่วคราว
-      final directory = (await getTemporaryDirectory()).path;
-      File imgFile = File('$directory/card_image.png');
-      await imgFile.writeAsBytes(pngBytes);
+      if (kIsWeb) {
+        // วิธีการสำหรับเว็บ
+        final blob = html.Blob([capturedImage], 'image/png');
+        final url = html.Url.createObjectUrlFromBlob(blob);
+        // ignore: unused_local_variable
+        final anchor = html.AnchorElement(href: url)
+          ..setAttribute('download', 'tripitaka91_$bookid-$pageid-$lineid.png')
+          ..click();
+        html.Url.revokeObjectUrl(url);
+      } else {
+        // วิธีการสำหรับแพลตฟอร์มอื่น ๆ (iOS, Android, ฯลฯ)
+        final directory = (await getApplicationDocumentsDirectory()).path;
+        io.File imgFile = io.File('$directory/tripitaka91_img.png');
+        await imgFile.writeAsBytes(capturedImage);
 
-      // แชร์ไฟล์รูปภาพ (แก้ไขเป็น shareXFiles)
-      await Share.shareXFiles([XFile(imgFile.path)], text: 'Here is the card!');
+        // แชร์ไฟล์รูปภาพ
+        await Share.shareXFiles([XFile(imgFile.path)],
+            text: 'อ่านเนื้อความเต็ม $link');
+      }
     } catch (e) {
+      // คุณสามารถจัดการข้อผิดพลาดได้ตามต้องการ
       // ignore: avoid_print
-      print(e.toString());
+      print('Error in ImageCaptureService: $e');
     }
   }
 }

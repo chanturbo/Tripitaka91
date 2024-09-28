@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
-import 'package:share_plus/share_plus.dart';
 import 'package:tripitaka91/utils/constants/api_constants.dart';
+import 'package:tripitaka91/utils/img_service/shared_image_generator.dart';
 import 'package:tripitaka91/utils/models/users.dart';
 import 'package:tripitaka91/utils/play_audio/audio_manager.dart';
 import 'package:tripitaka91/utils/shared_preferences/shared_user.dart';
@@ -34,6 +34,7 @@ class _SearchShowPagesTitleListState extends State<SearchShowPagesTitleList> {
 
   AudioPlayerManager audioPlayerManager = AudioPlayerManager();
   Users? usersChk;
+  final SharedImageGenerator sharedImageGenerator = SharedImageGenerator();
 
   @override
   void initState() {
@@ -372,11 +373,22 @@ class _SearchShowPagesTitleListState extends State<SearchShowPagesTitleList> {
                                   textTitleReplace.getLineId(dataTitle[index]);
                               String txtTitle =
                                   '${textTitleReplace.extractText(dataTitle[index]).replaceAll(textTitleReplace.getBookBlue(dataTitle[index]), '')} ';
-                              txtTitle +=
-                                  'สรุปเนื้อความจากพระไตรปิฎก ฉบับ มมร. เล่ม $bookIds หน้า $pageId บรรทัด $bookLine';
-                              await Share.share(
-                                  '$txtTitle อ่านรายละเอียด -> $tURLmain$bookIds-$pageId-$bookLine.htm',
-                                  subject: 'สรุปหัวข้อธรรมจากพระไตรปิฎก');
+                              // txtTitle +=
+                              //     'สรุปเนื้อความจากพระไตรปิฎก ฉบับ มมร. เล่ม $bookIds หน้า $pageId บรรทัด $bookLine';
+                              // await Share.share(
+                              //     '$txtTitle อ่านรายละเอียด -> $tURLmain$bookIds-$pageId-$bookLine.htm',
+                              //     subject: 'สรุปหัวข้อธรรมจากพระไตรปิฎก');
+                              sharedImageGenerator.generateAndShare(
+                                context: context,
+                                bookTitle: txtTitle.replaceAll('', ''),
+                                bookid: bookIds,
+                                pageid: pageId.toString(),
+                                lineid: bookLine,
+                                bookBlue: textTitleReplace
+                                    .getBookBlue(dataTitle[index]),
+                                bookRed: textTitleReplace
+                                    .getBookRed(dataTitle[index]),
+                              );
                             },
                             child: Icon(
                               Icons.share,

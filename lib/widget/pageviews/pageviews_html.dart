@@ -11,6 +11,7 @@ import 'package:substring_highlight/substring_highlight.dart';
 import 'package:tripitaka91/utils/api_connect/remote_service.dart';
 import 'package:tripitaka91/utils/constants/api_constants.dart';
 import 'package:tripitaka91/utils/constants/colors.dart';
+import 'package:tripitaka91/utils/img_service/shared_image_generator.dart';
 import 'package:tripitaka91/utils/models/book_tri91.dart';
 import 'package:tripitaka91/utils/models/log_edit.dart';
 import 'package:tripitaka91/utils/models/tri91_bookall.dart';
@@ -90,6 +91,8 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
   bool chkTimer = false;
   bool chkTimer2 = false;
   late InAppWebViewController webViewController;
+
+  final SharedImageGenerator sharedImageGenerator = SharedImageGenerator();
 
   @override
   void initState() {
@@ -1052,11 +1055,21 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
                     onTap: () async {
                       String txtTitle =
                           textReplacer.replaceText(triTitle, bookBlue);
-                      txtTitle +=
-                          'สรุปเนื้อความจากพระไตรปิฎก ฉบับ มมร. เล่ม $bookIds หน้า $pageId บรรทัด $bookLine';
-                      await Share.share(
-                          '$txtTitle อ่านรายละเอียด -> $tURLmain$bookIds-$pageId-$bookLine.htm',
-                          subject: 'สรุปหัวข้อธรรมจากพระไตรปิฎก');
+                      // txtTitle +=
+                      //     'สรุปเนื้อความจากพระไตรปิฎก ฉบับ มมร. เล่ม $bookIds หน้า $pageId บรรทัด $bookLine';
+                      // await Share.share(
+                      //     '$txtTitle อ่านรายละเอียด -> $tURLmain$bookIds-$pageId-$bookLine.htm',
+                      //     subject: 'สรุปหัวข้อธรรมจากพระไตรปิฎก');
+
+                      sharedImageGenerator.generateAndShare(
+                        context: context,
+                        bookTitle: txtTitle,
+                        bookid: bookIds,
+                        pageid: pageId.toString(),
+                        lineid: bookLine,
+                        bookBlue: bookBlue,
+                        bookRed: bookRed,
+                      );
                     },
                     child: Icon(
                       Icons.share,

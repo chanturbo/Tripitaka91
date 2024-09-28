@@ -2,8 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:tripitaka91/utils/constants/api_constants.dart';
+import 'package:tripitaka91/utils/img_service/shared_image_generator.dart';
 import 'package:tripitaka91/utils/models/users.dart';
 import 'package:tripitaka91/utils/play_audio/audio_manager.dart';
 import 'package:tripitaka91/utils/shared_preferences/shared_user.dart';
@@ -47,6 +47,8 @@ class _TitleCardState extends State<TitleCard> {
   final TextTitleReplace textReplacer = TextTitleReplace();
   // final MyNotifier iconNotifier = MyNotifier(true);
   Users? usersChk;
+
+  final SharedImageGenerator sharedImageGenerator = SharedImageGenerator();
 
   @override
   void initState() {
@@ -251,13 +253,22 @@ class _TitleCardState extends State<TitleCard> {
                 const SizedBox(width: 10),
                 InkWell(
                   onTap: () async {
-                    String txtTitle = textReplacer.replaceText(
-                        widget.triTitle, widget.bookBlue);
-                    txtTitle +=
-                        'สรุปเนื้อความจากพระไตรปิฎก ฉบับ มมร. เล่ม ${widget.bookIds} หน้า ${widget.pageId} บรรทัด ${widget.bookLine}';
-                    await Share.share(
-                        '$txtTitle อ่านรายละเอียด -> $tURLmain${widget.bookIds}-${widget.pageId}-${widget.bookLine}.htm',
-                        subject: 'สรุปหัวข้อธรรมจากพระไตรปิฎก');
+                    // String txtTitle = textReplacer.replaceText(
+                    //     widget.triTitle, widget.bookBlue);
+                    // txtTitle +=
+                    //     'สรุปเนื้อความจากพระไตรปิฎก ฉบับ มมร. เล่ม ${widget.bookIds} หน้า ${widget.pageId} บรรทัด ${widget.bookLine}';
+                    // await Share.share(
+                    //     '$txtTitle อ่านรายละเอียด -> $tURLmain${widget.bookIds}-${widget.pageId}-${widget.bookLine}.htm',
+                    //     subject: 'สรุปหัวข้อธรรมจากพระไตรปิฎก');
+                    sharedImageGenerator.generateAndShare(
+                      context: context,
+                      bookTitle: widget.triTitle.replaceAll('', ''),
+                      bookid: widget.bookIds,
+                      pageid: widget.pageId.toString(),
+                      lineid: widget.bookLine,
+                      bookBlue: widget.bookBlue,
+                      bookRed: widget.bookRed,
+                    );
                   },
                   child: Icon(
                     Icons.share,
