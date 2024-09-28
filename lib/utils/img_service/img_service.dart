@@ -15,7 +15,21 @@ class ImageCaptureService {
     try {
       String link = '$tURLmain$bookid-$pageid-$lineid.htm';
 
-      if (kIsWeb) {
+      // ตรวจสอบว่าเป็น iPhone หรือ iPad หรือไม่
+      final userAgent = html.window.navigator.userAgent;
+      final isIPhone = userAgent.contains('iPhone');
+      final isIPad = userAgent.contains('iPad');
+
+      if ((isIPhone) || (isIPad)) {
+        // วิธีการสำหรับแพลตฟอร์มอื่น ๆ (iOS, Android, ฯลฯ)
+        final directory = (await getTemporaryDirectory()).path;
+        io.File imgFile = io.File('$directory/tripitaka91_img.png');
+        await imgFile.writeAsBytes(capturedImage);
+
+        // แชร์ไฟล์รูปภาพ
+        await Share.shareXFiles([XFile(imgFile.path)],
+            text: 'อ่านเนื้อความเต็ม $link');
+      } else if (kIsWeb) {
         // วิธีการสำหรับเว็บ
         final blob = html.Blob([capturedImage], 'image/png');
         final url = html.Url.createObjectUrlFromBlob(blob);
