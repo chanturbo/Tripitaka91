@@ -40,13 +40,16 @@ class SharedImageGenerator {
           child: Column(
             mainAxisSize: MainAxisSize.min, // ปรับความสูงตามเนื้อหา
             children: [
-              RichText(
-                text: TextSpan(
-                  text: bookTitle,
-                  style: TextStyle(
-                    fontFamily: 'THSarabunNew',
-                    fontSize: 30,
-                    color: Colors.blue[900],
+              Align(
+                alignment: Alignment.centerLeft,
+                child: RichText(
+                  text: TextSpan(
+                    text: bookTitle,
+                    style: TextStyle(
+                      fontFamily: 'THSarabunNew',
+                      fontSize: 30,
+                      color: Colors.blue[900],
+                    ),
                   ),
                 ),
               ),
