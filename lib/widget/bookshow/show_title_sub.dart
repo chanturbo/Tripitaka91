@@ -627,8 +627,8 @@ class _ShowTitlePagesState extends State<ShowTitlePages> {
                   ),
                   onTap: () {
                     if (textTitleReplace.getBookId(dataTitle[index]) == '0') {
-                      _showSnackbar(
-                          context, 'กรุณาดูรายละเอียดในหัวข้อหนังสือแนะนำ');
+                      _showSnackbar(context,
+                          'กรุณาดูรายละเอียดในหัวข้อหนังสือแนะนำ หนังสืออุทิศบุญที่ได้ผล หน้า 68');
                     } else {
                       audioPlayerManager.stop();
                       Navigator.push(

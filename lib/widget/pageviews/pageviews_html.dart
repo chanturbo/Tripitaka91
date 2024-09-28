@@ -698,6 +698,44 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
     return AppBar(
       title: ATextDiskplayMedium(text: '(เล่ม $bookid) $bookTitleTri91'),
       actions: [
+        InkWell(
+          onTap: () async {
+            String tmpLine = '1';
+            if (pageChanged == pageids) {
+              tmpLine = tribookline.toString();
+            }
+            await Share.share(
+                '$tURLmain${widget.triBookid}-$pageChanged-$tmpLine.htm',
+                subject: 'พระไตรปิฎก');
+          },
+          child: Icon(
+            Icons.share,
+            size: widget.isMobile ? 25 : 18,
+            color: Colors.white, // Change color as needed
+          ),
+        ),
+        const Text('   '),
+        InkWell(
+          onTap: () async {
+            String tmpLine = '1';
+            if (pageChanged == pageids) {
+              tmpLine = tribookline.toString();
+            }
+            await Clipboard.setData(
+              ClipboardData(
+                  text:
+                      '$tURLmain${widget.triBookid}-$pageChanged-$tmpLine.htm'),
+            );
+            // ignore: use_build_context_synchronously
+            _showSnackbar(context, 'คัดลอกข้อมูลเรียบร้อยแล้ว');
+          },
+          child: Icon(
+            Icons.copy,
+            size: widget.isMobile ? 25 : 18,
+            color: Colors.white, // Change color as needed
+          ),
+        ),
+        const Text('   '),
         PopupMenuButton(
           icon: const Icon(
             color: TColors.white,
@@ -1666,8 +1704,13 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
                       //   b = "<span style='color:yellow'>";
                       //   b = "$b${findWord[x]}</span>";
                       // } else {
-                      b = "<span style=color:black>";
-                      b = "$b${findWord[x]}</span>";
+                      if (int.parse(pageShow) == pageids) {
+                        b = "<span style=color:black>";
+                        b = "$b${findWord[x]}</span>";
+                      } else {
+                        b = "<span style=color:red>";
+                        b = "$b${findWord[x]}</span>";
+                      }
                       // }
                     } else {
                       // if ((this.bgColor == '#6b6b6e') ||

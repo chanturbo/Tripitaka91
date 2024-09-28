@@ -347,21 +347,26 @@ class _SearchShowPagesTitleState extends State<SearchShowPagesTitle> {
                   ),
                   onTap: () {
                     audioPlayerManager.stop();
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => Tri91PageViewHtml(
-                          triBookid:
-                              textTitleReplace.getBookId(dataTitle[index]),
-                          triPageid: int.parse(
-                              textTitleReplace.getPageId(dataTitle[index])),
-                          triBookline:
-                              textTitleReplace.getLineId(dataTitle[index]),
-                          chkSearch: widget.wordSearch,
-                          isMobile: widget.isM,
+                    if (textTitleReplace.getBookId(dataTitle[index]) == '0') {
+                      _showSnackbar(context,
+                          'กรุณาดูรายละเอียดในหัวข้อหนังสือแนะนำ หนังสืออุทิศบุญที่ได้ผล หน้า 68');
+                    } else {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Tri91PageViewHtml(
+                            triBookid:
+                                textTitleReplace.getBookId(dataTitle[index]),
+                            triPageid: int.parse(
+                                textTitleReplace.getPageId(dataTitle[index])),
+                            triBookline:
+                                textTitleReplace.getLineId(dataTitle[index]),
+                            chkSearch: widget.wordSearch,
+                            isMobile: widget.isM,
+                          ),
                         ),
-                      ),
-                    );
+                      );
+                    }
                   },
                 ),
                 const Divider(),
