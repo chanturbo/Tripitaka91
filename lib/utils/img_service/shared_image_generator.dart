@@ -101,21 +101,21 @@ class SharedImageGenerator {
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  'ฉบับมหามกุฏราชวิทยาลัย',
+                  'ฉบับมหามกุฏราชวิทยาลัย | อ่านเนื้อความเต็ม -> ',
                   style: TextStyle(
                       fontFamily: 'THSarabunNew',
                       fontSize: 20,
                       color: Colors.grey[800]),
                 ),
               ),
-              const Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'อ่านเนื้อความเต็ม -> ',
-                  style: TextStyle(
-                      fontFamily: 'Roboto', fontSize: 16, color: Colors.black),
-                ),
-              ),
+              // const Align(
+              //   alignment: Alignment.centerLeft,
+              //   child: Text(
+              //     'อ่านเนื้อความเต็ม -> ',
+              //     style: TextStyle(
+              //         fontFamily: 'Roboto', fontSize: 16, color: Colors.black),
+              //   ),
+              // ),
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
