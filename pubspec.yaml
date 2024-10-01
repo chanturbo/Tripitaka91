@@ -38,10 +38,7 @@ flutter:
   assets:
      - assets/images/
      - assets/images/bookcover/
-     - assets/images/ebook/
-     - assets/css/     
-     - assets/js/
-     - assets/db/
+     - assets/images/ebook/     
      - assets/fonts/
      - assets/pdf/
      - assets/fonts/CupertinoIcons.ttf

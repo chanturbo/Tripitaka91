@@ -27,9 +27,10 @@ class SharedImageGenerator {
     required String bookBlue,
     required String bookRed,
   }) async {
+    String strReplaceBookBlue = "$bookid/$pageid/$lineid";
     // สร้างคอนเทนเนอร์ตามที่คุณมีในฟังก์ชันเดิม
     final container = SizedBox(
-      width: 615, // กำหนดความกว้างที่คงที่
+      width: 360, // กำหนดความกว้างที่คงที่
       child: Card(
         margin: const EdgeInsets.all(5),
         shadowColor: TColors.primary,
@@ -44,7 +45,7 @@ class SharedImageGenerator {
                 alignment: Alignment.centerLeft,
                 child: RichText(
                   text: TextSpan(
-                    text: bookTitle,
+                    text: bookTitle.replaceAll(strReplaceBookBlue, ''),
                     style: TextStyle(
                       fontFamily: 'THSarabunNew',
                       fontSize: 30,
@@ -90,7 +91,7 @@ class SharedImageGenerator {
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  'สรุปเนื้อความจากพระไตรปิฎกและอรรถกถาแปล ชุด 91 เล่ม ฉบับมหามกุฏราชวิทยาลัย',
+                  'สรุปเนื้อความจากพระไตรปิฎกและอรรถกถาแปล ชุด 91 เล่ม',
                   style: TextStyle(
                       fontFamily: 'THSarabunNew',
                       fontSize: 20,
@@ -100,9 +101,27 @@ class SharedImageGenerator {
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  'อ่านเนื้อความเต็ม -> $tURLmain$bookid-$pageid-$lineid.htm',
-                  style: const TextStyle(
+                  'ฉบับมหามกุฏราชวิทยาลัย',
+                  style: TextStyle(
+                      fontFamily: 'THSarabunNew',
+                      fontSize: 20,
+                      color: Colors.grey[800]),
+                ),
+              ),
+              const Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'อ่านเนื้อความเต็ม -> ',
+                  style: TextStyle(
                       fontFamily: 'Roboto', fontSize: 16, color: Colors.black),
+                ),
+              ),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  '$tURLmain$bookid-$pageid-$lineid.htm',
+                  style: const TextStyle(
+                      fontFamily: 'Roboto', fontSize: 16, color: Colors.red),
                 ),
               ),
             ],
