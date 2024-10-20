@@ -11,7 +11,7 @@ import 'package:tripitaka91/widget/auto_text/auto_text.dart';
 import 'package:tripitaka91/widget/card/title_card.dart';
 import 'package:tripitaka91/widget/last_read/show_last.dart';
 import 'package:tripitaka91/widget/last_read/show_last2.dart';
-import 'package:tripitaka91/widget/line_custom/mylinepainter.dart';
+// import 'package:tripitaka91/widget/line_custom/mylinepainter.dart';
 import 'package:tripitaka91/widget/menu/list_menu.dart';
 import 'package:tripitaka91/widget/pageviews/pageviews_html.dart';
 import 'package:tripitaka91/widget/right_clipper/center_clipper.dart';
@@ -145,7 +145,7 @@ class _MyHomeMobileState extends State<MyHomeMobile> {
 
   @override
   Widget build(BuildContext context) {
-    double screenHeight = MediaQuery.of(context).size.height;
+    // double screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       key: _scaffoldKey,
       drawer: const Drawer(
@@ -163,22 +163,26 @@ class _MyHomeMobileState extends State<MyHomeMobile> {
         padding: const EdgeInsets.all(0),
         child: Row(
           children: <Widget>[
-            Container(
-              alignment: Alignment.topCenter,
-              child: CustomPaint(
-                painter: MyVerticalLinePainter(),
-                size: Size(0.5, screenHeight),
-              ),
-            ),
+            // Container(
+            //   alignment: Alignment.topCenter,
+            //   child: CustomPaint(
+            //     painter: MyVerticalLinePainter(),
+            //     size: Size(0.1, screenHeight),
+            //   ),
+            // ),
             Expanded(
               child: Column(
                 children: [
                   Container(
+                    color: TColors.primary,
                     height: 10,
                   ),
-                  const SearchMobileScreen(),
+                  Container(
+                      color: TColors.primary,
+                      child: const SearchMobileScreen()),
                   Container(
                     height: 10,
+                    color: TColors.primary,
                   ),
                   Row(
                     children: [
