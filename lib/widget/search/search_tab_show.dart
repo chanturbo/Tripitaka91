@@ -3,6 +3,7 @@ import 'package:substring_highlight/substring_highlight.dart';
 import 'package:tripitaka91/utils/api_connect/remote_service.dart';
 import 'package:tripitaka91/utils/constants/api_constants.dart';
 import 'package:tripitaka91/utils/constants/colors.dart';
+import 'package:tripitaka91/utils/db_helper/db_helper.dart';
 import 'package:tripitaka91/utils/models/rand_title.dart';
 import 'package:tripitaka91/utils/models/totalsearchtitle.dart';
 import 'package:tripitaka91/utils/models/totalsearchtri.dart';
@@ -217,20 +218,26 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
   }
 
   Future<TotalTitleSearchTri?> loadDataTri1() async {
-    randTri = await RemoteServiceTri91SearchTotal()
-        .getBookTri91("1", "10", widget.title, tSecretAPIKey);
+    randTri = widget.online
+        ? await RemoteServiceTri91SearchTotal()
+            .getBookTri91("1", "10", widget.title, tSecretAPIKey)
+        : await DatabaseHelper().getBook91SearchSet1(widget.title);
     return randTri;
   }
 
   Future<TotalTitleSearchTri?> loadDataTri2() async {
-    randTri = await RemoteServiceTri91SearchTotal()
-        .getBookTri91("11", "74", widget.title, tSecretAPIKey);
+    randTri = widget.online
+        ? await RemoteServiceTri91SearchTotal()
+            .getBookTri91("11", "74", widget.title, tSecretAPIKey)
+        : await DatabaseHelper().getBook91SearchSet2(widget.title);
     return randTri;
   }
 
   Future<TotalTitleSearchTri?> loadDataTri3() async {
-    randTri = await RemoteServiceTri91SearchTotal()
-        .getBookTri91("75", "91", widget.title, tSecretAPIKey);
+    randTri = widget.online
+        ? await RemoteServiceTri91SearchTotal()
+            .getBookTri91("75", "91", widget.title, tSecretAPIKey)
+        : await DatabaseHelper().getBook91SearchSet3(widget.title);
     return randTri;
   }
 
@@ -534,13 +541,15 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                     online: widget.online,
                                   )
                             : indexlocal == 5
-                                ? widget.result[5] == '0'
-                                    ? const Text('ไม่พบข้อมูลสำหรับแสดงผล')
-                                    : SearchShowPagesDictbt(
-                                        wordSearch: wordSearch,
-                                        isM: widget.isM,
-                                        online: widget.online,
-                                      )
+                                ? widget.online
+                                    ? widget.result[5] == '0'
+                                        ? const Text('ไม่พบข้อมูลสำหรับแสดงผล')
+                                        : SearchShowPagesDictbt(
+                                            wordSearch: wordSearch,
+                                            isM: widget.isM,
+                                            online: widget.online,
+                                          )
+                                    : const Text('ไม่พบข้อมูลสำหรับแสดงผล')
                                 : FutureBuilder(
                                     future: fetchData,
                                     builder: (context, snapshot) {

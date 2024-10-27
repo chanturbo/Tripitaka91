@@ -25,6 +25,17 @@ class DatabaseHelper {
     return _database!;
   }
 
+  Future<void> deleteSearchHistory(String keyword) async {
+    final db = await database; // ดึงฐานข้อมูลที่ใช้งานอยู่
+
+    // สร้างคำสั่งลบข้อมูล
+    await db.delete(
+      'tripitaka91_stat_search', // ชื่อของตาราง
+      where: 'keywords = ?', // เงื่อนไขที่ใช้ในการลบ
+      whereArgs: [keyword], // ค่าที่ใช้ในเงื่อนไข
+    );
+  }
+
   Future<Database> _initDatabase() async {
     // ดึง dbPath จาก SharedPreferences
     final prefs = await SharedPreferences.getInstance();
@@ -42,6 +53,213 @@ class DatabaseHelper {
       //     'CREATE TABLE items(id INTEGER PRIMARY KEY, name TEXT)',
       //   );
       // },
+    );
+  }
+
+  Future<List<String>> fetchTri91(
+      int bookid, String wordsearch, int startFrom, int recordsPerPage) async {
+    final db = await database;
+
+    // Query ข้อมูลหลักจาก tripitaka91_91book_line
+    final List<Map<String, dynamic>> result = await db.query(
+      'tripitaka91_91book_line',
+      where: 'book_id = ? AND book_detail LIKE ?',
+      whereArgs: [bookid, '%$wordsearch%'],
+      limit: recordsPerPage,
+      offset: startFrom,
+    );
+
+    List<String> response = [];
+
+    for (var row in result) {
+      // คำนวณบรรทัดก่อนหน้าและบรรทัดถัดไป
+      int lineBefore = row['book_lines'] - 1;
+      int lineAfter = row['book_lines'] + 1;
+
+      // Query ข้อมูลบรรทัดก่อนหน้า
+      Map<String, dynamic>? rowBefore = (await db.query(
+        'tripitaka91_91book_line',
+        where: 'book_id = ? AND book_pages = ? AND book_lines = ?',
+        whereArgs: [bookid, row['book_pages'], lineBefore],
+        limit: 1,
+      ))
+          .firstOrNull;
+
+      // Query ข้อมูลบรรทัดถัดไป
+      Map<String, dynamic>? rowAfter = (await db.query(
+        'tripitaka91_91book_line',
+        where: 'book_id = ? AND book_pages = ? AND book_lines = ?',
+        whereArgs: [bookid, row['book_pages'], lineAfter],
+        limit: 1,
+      ))
+          .firstOrNull;
+
+      // รวมบรรทัดก่อนหน้า ข้อมูลปัจจุบัน และบรรทัดถัดไป
+      String strBefore = rowBefore?['book_detail'] ?? '';
+      String strAfter = rowAfter?['book_detail'] ?? '';
+      String cleanedString =
+          '$strBefore${row['book_detail']}$strAfter|${row['book_id']}|${row['book_pages']}|${row['book_lines']}';
+
+      response.add(cleanedString);
+    }
+
+    return response;
+  }
+
+  Future<List<String>> fetchDict(
+      String wordsearch, int startFrom, int recordsPerPage) async {
+    final db = await database;
+
+    // Query with LIKE filter, ORDER, and LIMIT for tripitaka91_dict
+    final List<Map<String, dynamic>> result = await db.query(
+      'tripitaka91_dict',
+      where: 'buddic_word LIKE ?',
+      whereArgs: ['%$wordsearch%'],
+      orderBy: 'buddic_word',
+      limit: recordsPerPage,
+      offset: startFrom,
+    );
+
+    // Convert the result to a list of formatted strings
+    List<String> response = [];
+    for (var rowTitle in result) {
+      String cleanedString =
+          '${rowTitle['buddic_word']}|${rowTitle['buddic_detail']}';
+      response.add(cleanedString);
+    }
+
+    return response;
+  }
+
+  Future<TotalTitleSearchTri> getBook91SearchSet3(String wordsearch) async {
+    final dbClient = await database;
+
+    // Query เพื่อดึงข้อมูล JSON ในฟิลด์ tmp_1 ตาม keyword ที่ต้องการ
+    List<Map<String, dynamic>> x = await dbClient.rawQuery(
+        '''SELECT tmp_1 FROM tripitaka91_stat_search WHERE keywords = ?''',
+        [wordsearch.replaceAll('%', ' ')]);
+
+    int total = 0;
+    // สร้าง List สำหรับเก็บข้อมูลของแต่ละเล่ม
+    Map<String, int> bookDetails = {};
+
+    if (x.isNotEmpty) {
+      // แปลงข้อมูล tmp_1 จาก String เป็น Map
+      Map<String, dynamic> jsonData = jsonDecode(x[0]["tmp_1"]);
+
+      // ตรวจสอบว่ามี set1 อยู่ใน jsonData หรือไม่
+      if (jsonData.containsKey("set3") && jsonData["set3"] is Map) {
+        Map<String, dynamic> set1Data = jsonData["set3"];
+
+        // วนลูปดึงข้อมูลเฉพาะเล่มและหมายเลขกำกับ ไม่รวม key 'รวม'
+        set1Data.forEach((key, value) {
+          if (key == 'set3') {
+            value.forEach((subKey, subValue) {
+              if (subKey != 'รวม') {
+                bookDetails[subKey] = subValue;
+              } else {
+                total = subValue;
+              }
+            });
+          }
+        });
+      }
+    }
+    String formattedString = bookDetails.entries
+        .map((entry) => '${entry.key.replaceAll('เล่ม ', '')}#${entry.value}')
+        .join('|');
+
+    return TotalTitleSearchTri(
+      totalRecords: total,
+      detailRecords: formattedString,
+    );
+  }
+
+  Future<TotalTitleSearchTri> getBook91SearchSet2(String wordsearch) async {
+    final dbClient = await database;
+
+    // Query เพื่อดึงข้อมูล JSON ในฟิลด์ tmp_1 ตาม keyword ที่ต้องการ
+    List<Map<String, dynamic>> x = await dbClient.rawQuery(
+        '''SELECT tmp_1 FROM tripitaka91_stat_search WHERE keywords = ?''',
+        [wordsearch.replaceAll('%', ' ')]);
+
+    int total = 0;
+    // สร้าง List สำหรับเก็บข้อมูลของแต่ละเล่ม
+    Map<String, int> bookDetails = {};
+
+    if (x.isNotEmpty) {
+      // แปลงข้อมูล tmp_1 จาก String เป็น Map
+      Map<String, dynamic> jsonData = jsonDecode(x[0]["tmp_1"]);
+
+      // ตรวจสอบว่ามี set1 อยู่ใน jsonData หรือไม่
+      if (jsonData.containsKey("set2") && jsonData["set2"] is Map) {
+        Map<String, dynamic> set1Data = jsonData["set2"];
+
+        // วนลูปดึงข้อมูลเฉพาะเล่มและหมายเลขกำกับ ไม่รวม key 'รวม'
+        set1Data.forEach((key, value) {
+          if (key == 'set2') {
+            value.forEach((subKey, subValue) {
+              if (subKey != 'รวม') {
+                bookDetails[subKey] = subValue;
+              } else {
+                total = subValue;
+              }
+            });
+          }
+        });
+      }
+    }
+    String formattedString = bookDetails.entries
+        .map((entry) => '${entry.key.replaceAll('เล่ม ', '')}#${entry.value}')
+        .join('|');
+
+    return TotalTitleSearchTri(
+      totalRecords: total,
+      detailRecords: formattedString,
+    );
+  }
+
+  Future<TotalTitleSearchTri> getBook91SearchSet1(String wordsearch) async {
+    final dbClient = await database;
+
+    // Query เพื่อดึงข้อมูล JSON ในฟิลด์ tmp_1 ตาม keyword ที่ต้องการ
+    List<Map<String, dynamic>> x = await dbClient.rawQuery(
+        '''SELECT tmp_1 FROM tripitaka91_stat_search WHERE keywords = ?''',
+        [wordsearch.replaceAll('%', ' ')]);
+
+    int total = 0;
+    // สร้าง List สำหรับเก็บข้อมูลของแต่ละเล่ม
+    Map<String, int> bookDetails = {};
+
+    if (x.isNotEmpty) {
+      // แปลงข้อมูล tmp_1 จาก String เป็น Map
+      Map<String, dynamic> jsonData = jsonDecode(x[0]["tmp_1"]);
+
+      // ตรวจสอบว่ามี set1 อยู่ใน jsonData หรือไม่
+      if (jsonData.containsKey("set1") && jsonData["set1"] is Map) {
+        Map<String, dynamic> set1Data = jsonData["set1"];
+
+        // วนลูปดึงข้อมูลเฉพาะเล่มและหมายเลขกำกับ ไม่รวม key 'รวม'
+        set1Data.forEach((key, value) {
+          if (key == 'set1') {
+            value.forEach((subKey, subValue) {
+              if (subKey != 'รวม') {
+                bookDetails[subKey] = subValue;
+              } else {
+                total = subValue;
+              }
+            });
+          }
+        });
+      }
+    }
+    String formattedString = bookDetails.entries
+        .map((entry) => '${entry.key.replaceAll('เล่ม ', '')}#${entry.value}')
+        .join('|');
+
+    return TotalTitleSearchTri(
+      totalRecords: total,
+      detailRecords: formattedString,
     );
   }
 
@@ -143,13 +361,13 @@ class DatabaseHelper {
 
       // เพิ่มข้อมูลลงใน jsonData ถ้าค่า totalRecords ไม่เป็น 0
       if (totalRecords > 0) {
-        jsonData["set1"]["เล่ม ${record["book_id"]}"] = totalRecords;
+        jsonData["set1"]["${record["book_id"]}"] = totalRecords;
         totalRecordsSum += totalRecords;
       }
     }
 
     jsonData["set1"]["รวม"] = totalRecordsSum;
-
+    saveDataSet(wordsearch.replaceAll('%', '-'), '1', jsonData);
     // สร้าง TotalTitleSearchTri ด้วยค่ารวมทั้งหมด
     TotalTitleSearchTri result = TotalTitleSearchTri(
       totalRecords: totalRecordsSum,
@@ -233,13 +451,13 @@ class DatabaseHelper {
 
       // เพิ่มข้อมูลลงใน jsonData ถ้าค่า totalRecords ไม่เป็น 0
       if (totalRecords > 0) {
-        jsonData["set2"]["เล่ม ${record["book_id"]}"] = totalRecords;
+        jsonData["set2"]["${record["book_id"]}"] = totalRecords;
         totalRecordsSum += totalRecords;
       }
     }
 
     jsonData["set2"]["รวม"] = totalRecordsSum;
-
+    saveDataSet(wordsearch.replaceAll('%', '-'), '2', jsonData);
     // สร้าง TotalTitleSearchTri ด้วยค่ารวมทั้งหมด
     TotalTitleSearchTri result = TotalTitleSearchTri(
       totalRecords: totalRecordsSum,
@@ -323,13 +541,13 @@ class DatabaseHelper {
 
       // เพิ่มข้อมูลลงใน jsonData ถ้าค่า totalRecords ไม่เป็น 0
       if (totalRecords > 0) {
-        jsonData["set3"]["เล่ม ${record["book_id"]}"] = totalRecords;
+        jsonData["set3"]["${record["book_id"]}"] = totalRecords;
         totalRecordsSum += totalRecords;
       }
     }
 
     jsonData["set3"]["รวม"] = totalRecordsSum;
-
+    saveDataSet(wordsearch.replaceAll('%', '-'), '3', jsonData);
     // สร้าง TotalTitleSearchTri ด้วยค่ารวมทั้งหมด
     TotalTitleSearchTri result = TotalTitleSearchTri(
       totalRecords: totalRecordsSum,
@@ -337,7 +555,7 @@ class DatabaseHelper {
     );
 
     // บันทึกข้อมูลลงในฐานข้อมูล
-    // await saveHisSearchSet1_3(wordsearch.replaceAll('%', ' '), jsonData, '3');
+    await saveHisSearchSet1_3(wordsearch.replaceAll('%', ' '), jsonData, '3');
 
     return result;
   }
@@ -370,40 +588,65 @@ class DatabaseHelper {
       String query, Map<String, dynamic> jsonData) async {
     final dbClient = await database; // ใช้ database ผ่าน DatabaseHelper
 
-    // ตรวจสอบว่าคีย์เวิร์ดนี้มีในฐานข้อมูลแล้วหรือไม่
-    List<Map<String, dynamic>> x = await dbClient.rawQuery(
+    // ตรวจสอบว่าคีย์เวิร์ดนี้มีในฐานข้อมูลหรือไม่
+    final result = await dbClient.rawQuery(
         '''SELECT keywords, tmp_1 FROM tripitaka91_stat_search WHERE keywords = ?''',
         [query]);
 
-    int result = x.length;
-
     // สร้างวันที่ปัจจุบันในรูปแบบที่ต้องการ
-    final df = DateFormat('MM-dd HH:mm:ss');
-    String thYear = (DateTime.now().year + 543).toString();
-    String dateTime = '$thYear-${df.format(DateTime.now())}';
+    final dateTime =
+        '${DateTime.now().year + 543}-${DateFormat('MM-dd HH:mm:ss').format(DateTime.now())}';
+    final jsonString = jsonEncode(jsonData);
 
-    // แปลง jsonData เป็น JSON string
-    String jsonString = jsonEncode(jsonData);
-
-    if (result == 0) {
-      // ถ้ายังไม่มีคีย์เวิร์ดนี้ในฐานข้อมูล ให้เพิ่มเข้าไป
-      await dbClient.rawUpdate(
-          '''INSERT INTO tripitaka91_stat_search (keywords, last_search, tmp_1) 
-         VALUES (?, ?, ?)''', [query, dateTime, jsonString]);
+    if (result.isEmpty) {
+      // เพิ่มข้อมูลใหม่ถ้าไม่มีคีย์เวิร์ดในฐานข้อมูล
+      await dbClient.rawInsert(
+        '''INSERT INTO tripitaka91_stat_search (keywords, last_search, tmp_1) VALUES (?, ?, ?)''',
+        [query, dateTime, jsonString],
+      );
     } else {
-      // String tmp1Data = x[0]['tmp_1'] ?? 'ไม่มีข้อมูลใน tmp_1';
-      // print('ฐานข้อมูล tmp_1: $tmp1Data');
+      // ตรวจสอบและอัปเดตข้อมูล tmp_1
+      final tmp1String = result.first['tmp_1'] as String;
+      bool isValidMap;
 
-      // ถ้ามีแล้ว ให้ปรับปรุงวันที่และข้อมูล JSON ของคีย์เวิร์ดนี้
-      await dbClient.rawUpdate('''UPDATE tripitaka91_stat_search 
-         SET last_search = ? 
-         WHERE keywords = ? ''', [dateTime, query]);
+      try {
+        isValidMap = jsonDecode(tmp1String) is Map<String, dynamic>;
+      } catch (_) {
+        isValidMap = false;
+      }
+
+      if (isValidMap) {
+        await dbClient.rawUpdate(
+          '''UPDATE tripitaka91_stat_search SET last_search = ? WHERE keywords = ?''',
+          [dateTime, query],
+        );
+      } else {
+        // ลบข้อมูลที่ไม่ถูกต้องแล้วเพิ่มใหม่
+        await dbClient.rawDelete(
+          '''DELETE FROM tripitaka91_stat_search WHERE keywords = ?''',
+          [query],
+        );
+        await dbClient.rawInsert(
+          '''INSERT INTO tripitaka91_stat_search (keywords, last_search, tmp_1) VALUES (?, ?, ?)''',
+          [query, dateTime, jsonString],
+        );
+      }
     }
   }
 
   Future<void> saveHisSearchSet1_3(
       String query, Map<String, dynamic> newSetData, String setNo) async {
     final dbClient = await database;
+
+    String strPrefs = query.replaceAll(' ', '-');
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? set_1 = prefs.getString('${strPrefs}1');
+    String? set_2 = prefs.getString('${strPrefs}2');
+    String? set_3 = prefs.getString('${strPrefs}3');
+
+    Map<String, dynamic> jsonSet1 = {};
+    Map<String, dynamic> jsonSet2 = {};
+    Map<String, dynamic> jsonSet3 = {};
 
     // ตรวจสอบว่าคีย์เวิร์ดนี้มีในฐานข้อมูลแล้วหรือไม่
     List<Map<String, dynamic>> x = await dbClient.rawQuery(
@@ -423,7 +666,6 @@ class DatabaseHelper {
     if (result > 0) {
       // ดึงข้อมูล tmp_1 ที่มีอยู่แล้ว และแปลงเป็น Map
       String existingJsonString = x[0]["tmp_1"];
-      // print(existingJsonString);
       jsonData = jsonDecode(existingJsonString);
 
       // ตรวจสอบว่า jsonData["set$setNo"] เป็น Map หรือไม่
@@ -431,8 +673,31 @@ class DatabaseHelper {
         jsonData["set$setNo"] = {}; // ถ้าไม่ใช่ Map ให้ตั้งค่าใหม่เป็น Map
       }
 
-      // อัปเดตข้อมูลใน set ที่ต้องการ
-      jsonData["set$setNo"] = newSetData;
+      // รวมข้อมูลใหม่เข้ากับข้อมูลที่มีอยู่ใน set ที่ต้องการ
+      jsonData["set$setNo"].addAll(newSetData);
+
+      if (setNo == '1') {
+        if ((set_2 != null) && (set_3 != null)) {
+          jsonSet2 = jsonDecode(set_2);
+          jsonSet3 = jsonDecode(set_3);
+          jsonData["set2"].addAll(jsonSet2);
+          jsonData["set3"].addAll(jsonSet3);
+        }
+      } else if (setNo == '2') {
+        if ((set_1 != null) && (set_3 != null)) {
+          jsonSet1 = jsonDecode(set_1);
+          jsonSet3 = jsonDecode(set_3);
+          jsonData["set1"].addAll(jsonSet1);
+          jsonData["set3"].addAll(jsonSet3);
+        }
+      } else {
+        if ((set_1 != null) && (set_2 != null)) {
+          jsonSet1 = jsonDecode(set_1);
+          jsonSet2 = jsonDecode(set_2);
+          jsonData["set1"].addAll(jsonSet1);
+          jsonData["set2"].addAll(jsonSet2);
+        }
+      }
     } else {
       // ถ้าไม่มีข้อมูลในฐานข้อมูล ให้สร้าง jsonData ใหม่เฉพาะ set
       jsonData["set$setNo"] = newSetData;
@@ -443,20 +708,28 @@ class DatabaseHelper {
 
     if (result == 0) {
       // ถ้ายังไม่มีคีย์เวิร์ดนี้ในฐานข้อมูล ให้เพิ่มเข้าไป
-      await dbClient.rawUpdate(
+      await dbClient.rawInsert(
         '''INSERT INTO tripitaka91_stat_search (keywords, last_search, tmp_1) 
-         VALUES (?, ?, ?)''',
+       VALUES (?, ?, ?)''',
         [query, dateTime, jsonString],
       );
     } else {
       // ถ้ามีแล้ว ให้ปรับปรุงวันที่และข้อมูล JSON ของคีย์เวิร์ดนี้
       await dbClient.rawUpdate(
         '''UPDATE tripitaka91_stat_search 
-         SET last_search = ?, tmp_1 = ? 
-         WHERE keywords = ?''',
+       SET last_search = ?, tmp_1 = ? 
+       WHERE keywords = ?''',
         [dateTime, jsonString, query],
       );
     }
+  }
+
+  void saveDataSet(
+      String nameSet, String setNo, Map<String, dynamic> dataSet) async {
+    final prefs = await SharedPreferences.getInstance();
+    String jsonData = jsonEncode(dataSet); // แปลงข้อมูล Map เป็น String
+    await prefs.setString(
+        '$nameSet$setNo', jsonData); // บันทึกลงใน SharedPreferences
   }
 
   Future<List<LogSearch>> fetchSearchHistoryFromDB() async {

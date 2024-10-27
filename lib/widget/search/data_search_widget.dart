@@ -101,18 +101,57 @@ class DataSearch extends SearchDelegate<String> {
             );
           } else {
             List<LogSearch>? searchHistory = snapshot.data;
-            // return Text('num ${searchHistory?[0].keyword}');
-            return ListView.builder(
-              itemCount: searchHistory?.length,
-              itemBuilder: (context, index) => ListTile(
-                onTap: () {
-                  query = searchHistory[index].keyword;
-                  showResults(context);
+            if (online) {
+              // return Text('num ${searchHistory?[0].keyword}');
+              return ListView.builder(
+                itemCount: searchHistory?.length,
+                itemBuilder: (context, index) => ListTile(
+                  onTap: () {
+                    query = searchHistory[index].keyword;
+                    showResults(context);
+                  },
+                  leading: const Icon(Icons.access_time),
+                  title: ATextTitleMedium(text: searchHistory![index].keyword),
+                ),
+              );
+            } else {
+              return ListView.builder(
+                itemCount: searchHistory?.length,
+                itemBuilder: (context, index) {
+                  final item = searchHistory![index];
+
+                  return Dismissible(
+                    key: Key(item.keyword), // ใช้คีย์ที่ไม่ซ้ำกัน
+                    background: Container(
+                      color: Colors.red, // สีพื้นหลังเมื่อเลื่อน
+                      alignment: Alignment.centerRight,
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: const Icon(Icons.delete, color: Colors.white),
+                    ),
+                    onDismissed: (direction) {
+                      // ประมวลผลลบข้อมูลจากฐานข้อมูล
+                      dbhelper.deleteSearchHistory(
+                          item.keyword); // แทนที่ด้วยฟังก์ชันที่คุณใช้ลบ
+
+                      // แสดงข้อความแจ้งเตือน
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                            content: Text(
+                                '${item.keyword} ถูกลบจากประวัติการค้นหา!')),
+                      );
+                    },
+                    child: ListTile(
+                      onTap: () {
+                        query = item.keyword;
+                        showResults(context);
+                      },
+                      leading: const Icon(Icons.access_time),
+                      title: ATextTitleMedium(text: item.keyword),
+                    ),
+                  );
                 },
-                leading: const Icon(Icons.access_time),
-                title: ATextTitleMedium(text: searchHistory![index].keyword),
-              ),
-            );
+              );
+            }
           }
         },
       );
@@ -125,25 +164,26 @@ class DataSearch extends SearchDelegate<String> {
       return ListView.builder(
         itemCount: suggestionList.length,
         itemBuilder: (context, index) => ListTile(
-            onTap: () {
-              if (index < suggestionList.length) {
-                query = suggestionList[index];
-                Future.delayed(Duration.zero, () {
-                  close(context, '');
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => SearchPages(
-                        title: query,
-                        isM: isM,
-                        online: online,
-                      ),
+          onTap: () {
+            if (index < suggestionList.length) {
+              query = suggestionList[index];
+              Future.delayed(Duration.zero, () {
+                close(context, '');
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => SearchPages(
+                      title: query,
+                      isM: isM,
+                      online: online,
                     ),
-                  );
-                });
-              }
-            },
-            leading: const Icon(Icons.access_time),
-            title: ATextTitleMedium(text: suggestionList[index])),
+                  ),
+                );
+              });
+            }
+          },
+          leading: const Icon(Icons.access_time),
+          title: ATextTitleMedium(text: suggestionList[index]),
+        ),
       );
     }
   }

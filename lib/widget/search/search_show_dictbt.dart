@@ -192,7 +192,9 @@ class _SearchShowPagesDictbtState extends State<SearchShowPagesDictbt> {
                               ),
                             )
                           : const Text(''),
-                      const SizedBox(width: 10),
+                      widget.online
+                          ? const SizedBox(width: 10)
+                          : const SizedBox.shrink(),
                       InkWell(
                         onTap: () async {
                           String txtTitle =

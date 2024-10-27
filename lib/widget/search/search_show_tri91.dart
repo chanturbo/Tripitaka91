@@ -5,6 +5,7 @@ import 'package:substring_highlight/substring_highlight.dart';
 import 'package:flutter/material.dart';
 import 'package:tripitaka91/utils/constants/api_constants.dart';
 import 'package:http/http.dart' as http;
+import 'package:tripitaka91/utils/db_helper/db_helper.dart';
 import 'package:tripitaka91/utils/models/users.dart';
 import 'package:tripitaka91/utils/shared_preferences/shared_user.dart';
 import 'package:tripitaka91/utils/text_title_replace/text_title_replace.dart';
@@ -51,7 +52,7 @@ class _SearchShowPagesState extends State<SearchShowPages> {
     super.initState();
     textTitleReplace = TextTitleReplace();
     _scrollController.addListener(_scrollListener);
-    _fetchDataTri91();
+    widget.online ? _fetchDataTri91() : _fetchDataTri91DB();
   }
 
   @override
@@ -64,7 +65,40 @@ class _SearchShowPagesState extends State<SearchShowPages> {
     if (_scrollController.offset >=
             _scrollController.position.maxScrollExtent &&
         !_scrollController.position.outOfRange) {
-      _fetchDataTri91();
+      widget.online ? _fetchDataTri91() : _fetchDataTri91DB();
+    }
+  }
+
+  Future<void> _fetchDataTri91DB() async {
+    int recordsPerPage = 10; // จำนวนข้อมูลที่ต้องการดึงต่อหน้า
+    if (!loading) {
+      setState(() {
+        loading = true;
+      });
+
+      try {
+        // ดึงข้อมูลจาก SQLite โดยใช้ fetchTri91
+        List<String> newData = await DatabaseHelper().fetchTri91(
+          int.parse(widget.bookid),
+          widget.wordSearch.replaceAll(' ', '%'),
+          (page - 1) * recordsPerPage,
+          recordsPerPage,
+        );
+
+        setState(() {
+          loadedRecords += newData.length;
+          data.addAll(newData);
+          loading = false;
+          page++;
+        });
+      } catch (e) {
+        // จัดการข้อผิดพลาดในกรณีเกิดข้อผิดพลาด
+        // ignore: avoid_print
+        print('Database Error: $e');
+        setState(() {
+          loading = false;
+        });
+      }
     }
   }
 
@@ -142,7 +176,7 @@ class _SearchShowPagesState extends State<SearchShowPages> {
           if (_scrollController.offset >=
                   _scrollController.position.maxScrollExtent &&
               !_scrollController.position.outOfRange) {
-            _fetchDataTri91();
+            widget.online ? _fetchDataTri91() : _fetchDataTri91DB();
           }
           return false;
         },
@@ -217,7 +251,9 @@ class _SearchShowPagesState extends State<SearchShowPages> {
                       //     color: Colors.blue[300],
                       //   ),
                       // ),
-                      const SizedBox(width: 10),
+                      widget.online
+                          ? const SizedBox(width: 10)
+                          : const SizedBox.shrink(),
                       InkWell(
                         onTap: () async {
                           String bookIds =
