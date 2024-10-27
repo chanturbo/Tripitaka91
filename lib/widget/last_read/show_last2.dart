@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:tripitaka91/utils/api_connect/remote_service.dart';
+import 'package:tripitaka91/utils/db_helper/db_helper.dart';
 import 'package:tripitaka91/utils/models/last_book_access.dart';
 import 'package:tripitaka91/widget/auto_text/auto_text.dart';
 import 'package:tripitaka91/widget/bookshow/bookshow_title.dart';
 
 class DummyLastBookAccessData2 extends StatefulWidget {
   final bool isMobile;
-  const DummyLastBookAccessData2({super.key, required this.isMobile});
+  final bool online;
+  const DummyLastBookAccessData2(
+      {super.key, required this.isMobile, required this.online});
 
   @override
   State<DummyLastBookAccessData2> createState() =>
@@ -15,11 +18,14 @@ class DummyLastBookAccessData2 extends StatefulWidget {
 
 class _DummyLastBookAccessData2State extends State<DummyLastBookAccessData2> {
   GetLastRead getLastRead = GetLastRead();
+  final dbHelper = DatabaseHelper();
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<LastBookAccess>>(
-      future: getLastRead.fetchLastBookAccessList(), // ใส่ username ที่ต้องการ
+      future: widget.online
+          ? getLastRead.fetchLastBookAccessList()
+          : dbHelper.getLastReadDB(), // ใส่ username ที่ต้องการ
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(
@@ -62,6 +68,7 @@ class _DummyLastBookAccessData2State extends State<DummyLastBookAccessData2> {
                                     lastBookAccess.bookLastAccess.toString(),
                                 chkSearch: "",
                                 isMobile: widget.isMobile,
+                                online: widget.online,
                               ),
                             ),
                           );

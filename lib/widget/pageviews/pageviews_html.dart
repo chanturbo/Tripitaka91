@@ -11,6 +11,7 @@ import 'package:substring_highlight/substring_highlight.dart';
 import 'package:tripitaka91/utils/api_connect/remote_service.dart';
 import 'package:tripitaka91/utils/constants/api_constants.dart';
 import 'package:tripitaka91/utils/constants/colors.dart';
+import 'package:tripitaka91/utils/db_helper/db_helper.dart';
 import 'package:tripitaka91/utils/img_service/shared_image_generator.dart';
 import 'package:tripitaka91/utils/models/book_tri91.dart';
 import 'package:tripitaka91/utils/models/log_edit.dart';
@@ -35,6 +36,7 @@ class Tri91PageViewHtml extends StatefulWidget {
   final String triBookline;
   final String chkSearch;
   final bool isMobile;
+  final bool online;
 
   const Tri91PageViewHtml({
     super.key,
@@ -43,6 +45,7 @@ class Tri91PageViewHtml extends StatefulWidget {
     required this.triBookline,
     required this.chkSearch,
     required this.isMobile,
+    required this.online,
   });
 
   @override
@@ -64,8 +67,9 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
   late String bookRed = 'โหลดข้อมูล...';
   late int numRecord = 0;
   late int numPageAll = 1;
-  late int bookid = 1;
+  late int bookid = int.parse(widget.triBookid);
   late int pageids = widget.triPageid;
+  late bool online = widget.online;
   late int bookLine = 1;
   late String bookTitleTri91 = '';
   late int tribookline = 0;
@@ -93,6 +97,7 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
   late InAppWebViewController webViewController;
 
   final SharedImageGenerator sharedImageGenerator = SharedImageGenerator();
+  final dbHelper = DatabaseHelper();
 
   @override
   void initState() {
@@ -232,9 +237,10 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
   }
 
   void saveLastRead() async {
-    bool chk =
-        await saveBookAccessList(int.parse(widget.triBookid), pageChanged);
-    if (chk) {}
+    online
+        ? await saveBookAccessList(int.parse(widget.triBookid), pageChanged)
+        : await dbHelper.saveBookOpenLast(
+            int.parse(widget.triBookid), pageChanged);
   }
 
   Future<void> _getLogEdit() async {

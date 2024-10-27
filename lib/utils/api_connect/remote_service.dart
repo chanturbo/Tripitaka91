@@ -14,7 +14,7 @@ import 'package:tripitaka91/utils/models/users.dart';
 import 'package:tripitaka91/utils/shared_preferences/shared_user.dart';
 
 class RemoteServiceRandTitle {
-  Future<List<RandTitle>?> getRandTitle() async {
+  Future<List<RandTitle>?> getRandTitleAPI() async {
     var client = http.Client();
     var uri = Uri.parse(tURLrandom);
     var response = await client.post(uri);

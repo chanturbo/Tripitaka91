@@ -13,13 +13,23 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final bool online = false;
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       body: ResponsiveLayoutClass(
-        mobileView: MyHomeMobile(title: '${TTexts.appTitle} Mobile'),
-        tabletView: MyHomeTablet(title: '${TTexts.appTitle} Tablet'),
-        desktopView: MyHomeDesktop(title: '${TTexts.appTitle} Desktop'),
+        mobileView: MyHomeMobile(
+          title: '${TTexts.appTitle} Mobile',
+          online: online,
+        ),
+        tabletView: MyHomeTablet(
+          title: '${TTexts.appTitle} Tablet',
+          online: online,
+        ),
+        desktopView: MyHomeDesktop(
+          title: '${TTexts.appTitle} Desktop',
+          online: online,
+        ),
       ),
     );
   }

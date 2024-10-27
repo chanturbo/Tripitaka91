@@ -12,8 +12,13 @@ import 'package:tripitaka91/widget/showdict/dictshow_dictbt.dart';
 class ListMenu extends StatelessWidget {
   final bool isTablet;
   final bool isDesktop;
-
-  const ListMenu({super.key, required this.isTablet, required this.isDesktop});
+  final bool online;
+  const ListMenu({
+    super.key,
+    required this.isTablet,
+    required this.isDesktop,
+    required this.online,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -41,6 +46,7 @@ class ListMenu extends StatelessWidget {
           bookAdd: 1,
           isTablet: isTablet,
           isDesktop: isDesktop,
+          online: online,
         ),
         SubMenuExpansionTile(
           titleText: 'พระสุตตันตปิฎก',
@@ -48,6 +54,7 @@ class ListMenu extends StatelessWidget {
           bookAdd: 11,
           isTablet: isTablet,
           isDesktop: isDesktop,
+          online: online,
         ),
         SubMenuExpansionTile(
           titleText: 'พระอภิธรรมปิฎก',
@@ -55,6 +62,7 @@ class ListMenu extends StatelessWidget {
           bookAdd: 75,
           isTablet: isTablet,
           isDesktop: isDesktop,
+          online: online,
         ),
         ClipPath(
           clipper: RightTriangleRectangleClipper(),
@@ -75,6 +83,7 @@ class ListMenu extends StatelessWidget {
           menuMain: "9.1",
           isTablet: isTablet,
           isDesktop: isDesktop,
+          online: online,
         ),
         SubMenuNoIconExpansionTile(
           titleText: '2.หลักสูตรอินเตอร์เน็ต',
@@ -82,6 +91,7 @@ class ListMenu extends StatelessWidget {
           menuMain: "9.2",
           isTablet: isTablet,
           isDesktop: isDesktop,
+          online: online,
         ),
         SubMenuNoIconExpansionTile(
           titleText: '3.แก้ข้อกล่าวหาของสังคมด้วยคำสอนของพระพุทธเจ้า',
@@ -89,6 +99,7 @@ class ListMenu extends StatelessWidget {
           menuMain: "9.3",
           isTablet: isTablet,
           isDesktop: isDesktop,
+          online: online,
         ),
         SubMenuNoIconExpansionTile(
           titleText: '4.หัวข้อวัตถุในพระพุทธศาสนาที่ถูกต้อง',
@@ -96,6 +107,7 @@ class ListMenu extends StatelessWidget {
           menuMain: "9.4",
           isTablet: isTablet,
           isDesktop: isDesktop,
+          online: online,
         ),
         SubMenuNoIconExpansionTile(
           titleText: '5.หนังสือความประพฤติของพระ',
@@ -103,6 +115,7 @@ class ListMenu extends StatelessWidget {
           menuMain: "9.5",
           isTablet: isTablet,
           isDesktop: isDesktop,
+          online: online,
         ),
         SubMenuNoIconExpansionTile(
           titleText: '6.หัวข้อพระวินัยปิฎก และอรรถกถาแปล-พุทธทำนาย',
@@ -110,6 +123,7 @@ class ListMenu extends StatelessWidget {
           menuMain: "9.6",
           isTablet: isTablet,
           isDesktop: isDesktop,
+          online: online,
         ),
         SubMenuNoIconExpansionTile(
           titleText: '7.การประกาศ และระเบียบวัด',
@@ -117,6 +131,7 @@ class ListMenu extends StatelessWidget {
           menuMain: "9.7",
           isTablet: isTablet,
           isDesktop: isDesktop,
+          online: online,
         ),
         SubMenuNoIconExpansionTile(
           titleText: '8.ข้อมูลประกอบเพิ่มเติม แก้ข้อกล่าวหาสังคม',
@@ -124,6 +139,7 @@ class ListMenu extends StatelessWidget {
           menuMain: "9.8",
           isTablet: isTablet,
           isDesktop: isDesktop,
+          online: online,
         ),
         SubMenuNoIconExpansionTile(
           titleText: '9.ข้อมูลพระไตรปิฎก กับเหตุการณ์ปัจจุบัน',
@@ -131,6 +147,7 @@ class ListMenu extends StatelessWidget {
           menuMain: "9.9",
           isTablet: isTablet,
           isDesktop: isDesktop,
+          online: online,
         ),
         ClipPath(
           clipper: RightTriangleRectangleClipper(),
@@ -155,7 +172,9 @@ class ListMenu extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => const DictShowTitle(),
+                builder: (context) => DictShowTitle(
+                  online: online,
+                ),
               ),
             );
           },
@@ -170,7 +189,9 @@ class ListMenu extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => const DictbtShowTitle(),
+                builder: (context) => DictbtShowTitle(
+                  online: online,
+                ),
               ),
             );
           },

@@ -4,7 +4,11 @@ import 'package:tripitaka91/utils/constants/sizes.dart';
 import 'package:tripitaka91/widget/search/data_search_widget.dart';
 
 class SearchMobileScreen extends StatefulWidget {
-  const SearchMobileScreen({super.key});
+  final bool online;
+  const SearchMobileScreen({
+    super.key,
+    required this.online,
+  });
 
   @override
   State<SearchMobileScreen> createState() => _SearchMobileScreenState();
@@ -22,7 +26,10 @@ class _SearchMobileScreenState extends State<SearchMobileScreen> {
           onTap: () {
             showSearch(
               context: context,
-              delegate: DataSearch(isM: true),
+              delegate: DataSearch(
+                isM: true,
+                online: widget.online,
+              ),
             );
           },
           child: Container(

@@ -18,13 +18,16 @@ class SearchTabShow extends StatelessWidget {
   final List<String> result;
   final int indexShow;
   final bool isM;
+  final bool online;
 
-  const SearchTabShow(
-      {super.key,
-      required this.title,
-      required this.result,
-      required this.indexShow,
-      required this.isM});
+  const SearchTabShow({
+    super.key,
+    required this.title,
+    required this.result,
+    required this.indexShow,
+    required this.isM,
+    required this.online,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -38,36 +41,42 @@ class SearchTabShow extends StatelessWidget {
               indexLocal: 0,
               result: result,
               isM: isM,
+              online: online,
             ),
             MyPageTabDetail(
               title: title,
               indexLocal: 1,
               result: result,
               isM: isM,
+              online: online,
             ),
             MyPageTabDetail(
               title: title,
               indexLocal: 2,
               result: result,
               isM: isM,
+              online: online,
             ),
             MyPageTabDetail(
               title: title,
               indexLocal: 3,
               result: result,
               isM: isM,
+              online: online,
             ),
             MyPageTabDetail(
               title: title,
               indexLocal: 4,
               result: result,
               isM: isM,
+              online: online,
             ),
             MyPageTabDetail(
               title: title,
               indexLocal: 5,
               result: result,
               isM: isM,
+              online: online,
             ),
           ],
           result: result,
@@ -163,12 +172,15 @@ class MyPageTabDetail extends StatefulWidget {
   final int indexLocal;
   final List<String> result;
   final bool isM;
+  final bool online;
+
   const MyPageTabDetail({
     super.key,
     required this.title,
     required this.indexLocal,
     required this.result,
     required this.isM,
+    required this.online,
   });
 
   @override
@@ -273,6 +285,7 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                 : SearchShowPagesTitle(
                     wordSearch: wordSearch,
                     isM: widget.isM,
+                    online: widget.online,
                   )
             : indexlocal == 1
                 ? FutureBuilder<TotalTitleSearchTri?>(
@@ -335,6 +348,7 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                             bookid: strBook,
                                             isM: widget.isM,
                                             catalog: 'พระวินัยปิฎก',
+                                            online: widget.online,
                                           ),
                                         ),
                                       );
@@ -419,6 +433,7 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                                 bookid: strBook,
                                                 isM: widget.isM,
                                                 catalog: 'พระสุตตันตปิฎก',
+                                                online: widget.online,
                                               ),
                                             ),
                                           );
@@ -505,6 +520,7 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                                     bookid: strBook,
                                                     isM: widget.isM,
                                                     catalog: 'พระอภิธรรมปิฎก',
+                                                    online: widget.online,
                                                   ),
                                                 ),
                                               );
@@ -529,6 +545,7 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                 : SearchShowPagesDict(
                                     wordSearch: wordSearch,
                                     isM: widget.isM,
+                                    online: widget.online,
                                   )
                             : indexlocal == 5
                                 ? widget.result[5] == '0'
@@ -536,6 +553,7 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                     : SearchShowPagesDictbt(
                                         wordSearch: wordSearch,
                                         isM: widget.isM,
+                                        online: widget.online,
                                       )
                                 : FutureBuilder(
                                     future: fetchData,

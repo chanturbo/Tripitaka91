@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:tripitaka91/utils/api_connect/remote_service.dart';
 import 'package:tripitaka91/utils/constants/api_constants.dart';
+import 'package:tripitaka91/utils/db_helper/db_helper.dart';
 import 'package:tripitaka91/utils/models/totalsearchtitle.dart';
 import 'package:tripitaka91/utils/models/totalsearchtri.dart';
 import 'package:tripitaka91/utils/models/users.dart';
@@ -12,9 +13,15 @@ import 'package:tripitaka91/widget/auto_text/auto_text.dart';
 import 'package:tripitaka91/widget/search/search_tab_show.dart';
 
 class SearchPages extends StatefulWidget {
-  const SearchPages({super.key, required this.title, required this.isM});
   final bool isM;
   final String title;
+  final bool online;
+  const SearchPages({
+    super.key,
+    required this.title,
+    required this.isM,
+    required this.online,
+  });
 
   @override
   State<SearchPages> createState() => _SearchPagesState();
@@ -26,6 +33,8 @@ class _SearchPagesState extends State<SearchPages> {
   TotalTitleSearch? randDictbt;
   TotalTitleSearchTri? randTri;
   List<String> titleMenu = ["0", "0", "0", "0", "0", "0"];
+  final dbhelper = DatabaseHelper();
+  Map<String, dynamic> jsonData = {"set1": {}, "set2": {}, "set3": {}};
 
   // ฟังก์ชันที่ใช้สำหรับอัปเดตข้อมูลในดัชนีที่ระบุ
   void updateData(int index, String newValue) {
@@ -40,7 +49,9 @@ class _SearchPagesState extends State<SearchPages> {
   @override
   void initState() {
     super.initState();
-    fetchSearchHistoryFromAPI();
+    widget.online
+        ? fetchSearchHistoryFromAPI()
+        : dbhelper.saveHisSearch(widget.title, jsonData);
   }
 
   Future<bool> fetchSearchHistoryFromAPI() async {
@@ -73,43 +84,68 @@ class _SearchPagesState extends State<SearchPages> {
   }
 
   Future<TotalTitleSearch?> fetchDataTitle() async {
-    randTitle = await RemoteServiceTitleSearchTotal()
-        .getTitle(widget.title, tSecretAPIKey);
+    randTitle = widget.online
+        ? await RemoteServiceTitleSearchTotal()
+            .getTitle(widget.title, tSecretAPIKey)
+        : await dbhelper.getTri91TitleSearchDB(
+            widget.title.replaceAll(' ', '%'),
+          );
     updateData(0, randTitle!.totalRecords.toString());
     return randTitle;
   }
 
   Future<TotalTitleSearch?> fetchDict() async {
-    randDict = await RemoteServiceDictSearchTotal()
-        .getTitle(widget.title, tSecretAPIKey);
+    randDict = widget.online
+        ? await RemoteServiceDictSearchTotal()
+            .getTitle(widget.title, tSecretAPIKey)
+        : await dbhelper.getTriDictSearchDB(
+            widget.title.replaceAll(' ', '%'),
+          );
     updateData(4, randDict!.totalRecords.toString());
     return randDict;
   }
 
   Future<TotalTitleSearch?> fetchDictbt() async {
-    randDictbt = await RemoteServiceDictbtSearchTotal()
-        .getTitle(widget.title, tSecretAPIKey);
+    randDictbt = randDict = widget.online
+        ? await RemoteServiceDictbtSearchTotal()
+            .getTitle(widget.title, tSecretAPIKey)
+        : await dbhelper.getTriDictBtSearchDB(
+            widget.title.replaceAll(' ', '%'),
+          );
     updateData(5, randDictbt!.totalRecords.toString());
     return randDictbt;
   }
 
   Future<TotalTitleSearchTri?> fetchDataTri1() async {
-    randTri = await RemoteServiceTri91SearchTotal()
-        .getBookTri91("1", "10", widget.title, tSecretAPIKey);
+    randTri = widget.online
+        ? await RemoteServiceTri91SearchTotal()
+            .getBookTri91("1", "10", widget.title, tSecretAPIKey)
+        : await dbhelper.getBooks91_1SearchCount(
+            widget.title.replaceAll(' ', '%'),
+          );
+
     updateData(1, randTri!.totalRecords.toString());
     return randTri;
   }
 
   Future<TotalTitleSearchTri?> fetchDataTri2() async {
-    randTri = await RemoteServiceTri91SearchTotal()
-        .getBookTri91("11", "74", widget.title, tSecretAPIKey);
+    randTri = widget.online
+        ? await RemoteServiceTri91SearchTotal()
+            .getBookTri91("11", "74", widget.title, tSecretAPIKey)
+        : await dbhelper.getBooks91_2SearchCount(
+            widget.title.replaceAll(' ', '%'),
+          );
     updateData(2, randTri!.totalRecords.toString());
     return randTri;
   }
 
   Future<TotalTitleSearchTri?> fetchDataTri3() async {
-    randTri = await RemoteServiceTri91SearchTotal()
-        .getBookTri91("75", "91", widget.title, tSecretAPIKey);
+    randTri = widget.online
+        ? await RemoteServiceTri91SearchTotal()
+            .getBookTri91("75", "91", widget.title, tSecretAPIKey)
+        : await dbhelper.getBooks91_3SearchCount(
+            widget.title.replaceAll(' ', '%'),
+          );
     updateData(3, randTri!.totalRecords.toString());
     return randTri;
   }
@@ -179,6 +215,7 @@ class _SearchPagesState extends State<SearchPages> {
                                           result: titleMenu,
                                           indexShow: 0,
                                           isM: widget.isM,
+                                          online: widget.online,
                                         ),
                                       ),
                                     );
@@ -263,6 +300,7 @@ class _SearchPagesState extends State<SearchPages> {
                                           result: titleMenu,
                                           indexShow: 1,
                                           isM: widget.isM,
+                                          online: widget.online,
                                         ),
                                       ),
                                     );
@@ -339,6 +377,7 @@ class _SearchPagesState extends State<SearchPages> {
                                           result: titleMenu,
                                           indexShow: 2,
                                           isM: widget.isM,
+                                          online: widget.online,
                                         ),
                                       ),
                                     );
@@ -411,11 +450,11 @@ class _SearchPagesState extends State<SearchPages> {
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) => SearchTabShow(
-                                          title: wordSearch,
-                                          result: titleMenu,
-                                          indexShow: 3,
-                                          isM: widget.isM,
-                                        ),
+                                            title: wordSearch,
+                                            result: titleMenu,
+                                            indexShow: 3,
+                                            isM: widget.isM,
+                                            online: widget.online),
                                       ),
                                     );
                                   },
@@ -488,6 +527,7 @@ class _SearchPagesState extends State<SearchPages> {
                                           result: titleMenu,
                                           indexShow: 4,
                                           isM: widget.isM,
+                                          online: widget.online,
                                         ),
                                       ),
                                     );
@@ -560,6 +600,7 @@ class _SearchPagesState extends State<SearchPages> {
                                           result: titleMenu,
                                           indexShow: 5,
                                           isM: widget.isM,
+                                          online: widget.online,
                                         ),
                                       ),
                                     );

@@ -8,9 +8,12 @@ import 'package:tripitaka91/widget/right_clipper/right_clipper.dart';
 class ListMenuTitle extends StatelessWidget {
   final bool isTablet;
   final bool isDesktop;
-
+  final bool online;
   const ListMenuTitle(
-      {super.key, required this.isTablet, required this.isDesktop});
+      {super.key,
+      required this.isTablet,
+      required this.isDesktop,
+      required this.online});
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +41,7 @@ class ListMenuTitle extends StatelessWidget {
           menuMain: "9.1",
           isTablet: isTablet,
           isDesktop: isDesktop,
+          online: online,
         ),
         SubMenuNoIconExpansionTile(
           titleText: '2.หลักสูตรอินเตอร์เน็ต',
@@ -45,6 +49,7 @@ class ListMenuTitle extends StatelessWidget {
           menuMain: "9.2",
           isTablet: isTablet,
           isDesktop: isDesktop,
+          online: online,
         ),
         SubMenuNoIconExpansionTile(
           titleText: '3.แก้ข้อกล่าวหาของสังคมด้วยคำสอนของพระพุทธเจ้า',
@@ -52,6 +57,7 @@ class ListMenuTitle extends StatelessWidget {
           menuMain: "9.3",
           isTablet: isTablet,
           isDesktop: isDesktop,
+          online: online,
         ),
         SubMenuNoIconExpansionTile(
           titleText: '4.หัวข้อวัตถุในพระพุทธศาสนาที่ถูกต้อง',
@@ -59,6 +65,7 @@ class ListMenuTitle extends StatelessWidget {
           menuMain: "9.4",
           isTablet: isTablet,
           isDesktop: isDesktop,
+          online: online,
         ),
         SubMenuNoIconExpansionTile(
           titleText: '5.หนังสือความประพฤติของพระ',
@@ -66,6 +73,7 @@ class ListMenuTitle extends StatelessWidget {
           menuMain: "9.5",
           isTablet: isTablet,
           isDesktop: isDesktop,
+          online: online,
         ),
         SubMenuNoIconExpansionTile(
           titleText: '6.หัวข้อพระวินัยปิฎก และอรรถกถาแปล-พุทธทำนาย',
@@ -73,6 +81,7 @@ class ListMenuTitle extends StatelessWidget {
           menuMain: "9.6",
           isTablet: isTablet,
           isDesktop: isDesktop,
+          online: online,
         ),
         SubMenuNoIconExpansionTile(
           titleText: '7.การประกาศ และระเบียบวัด',
@@ -80,6 +89,7 @@ class ListMenuTitle extends StatelessWidget {
           menuMain: "9.7",
           isTablet: isTablet,
           isDesktop: isDesktop,
+          online: online,
         ),
         SubMenuNoIconExpansionTile(
           titleText: '8.ข้อมูลประกอบเพิ่มเติม แก้ข้อกล่าวหาสังคม',
@@ -87,6 +97,7 @@ class ListMenuTitle extends StatelessWidget {
           menuMain: "9.8",
           isTablet: isTablet,
           isDesktop: isDesktop,
+          online: online,
         ),
         SubMenuNoIconExpansionTile(
           titleText: '9.ข้อมูลพระไตรปิฎก กับเหตุการณ์ปัจจุบัน',
@@ -94,6 +105,7 @@ class ListMenuTitle extends StatelessWidget {
           menuMain: "9.9",
           isTablet: isTablet,
           isDesktop: isDesktop,
+          online: online,
         ),
       ],
     );

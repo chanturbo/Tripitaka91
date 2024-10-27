@@ -9,6 +9,7 @@ import 'package:substring_highlight/substring_highlight.dart';
 import 'package:tripitaka91/utils/api_connect/remote_service.dart';
 import 'package:tripitaka91/utils/constants/api_constants.dart';
 import 'package:tripitaka91/utils/constants/colors.dart';
+import 'package:tripitaka91/utils/db_helper/db_helper.dart';
 import 'package:tripitaka91/utils/models/book_tri91.dart';
 import 'package:tripitaka91/utils/models/log_edit.dart';
 import 'package:tripitaka91/utils/models/tri91_bookall.dart';
@@ -32,6 +33,7 @@ class Tri91PageViewHtml1 extends StatefulWidget {
   final String triBookline;
   final String chkSearch;
   final bool isMobile;
+  final bool online;
 
   const Tri91PageViewHtml1({
     super.key,
@@ -40,6 +42,7 @@ class Tri91PageViewHtml1 extends StatefulWidget {
     required this.triBookline,
     required this.chkSearch,
     required this.isMobile,
+    required this.online,
   });
 
   @override
@@ -85,6 +88,8 @@ class _Tri91PageViewHtml1State extends State<Tri91PageViewHtml1> {
   int triBookLineRead = 1;
 
   late InAppWebViewController webViewController;
+
+  final dbHelper = DatabaseHelper();
 
   @override
   void initState() {

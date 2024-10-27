@@ -8,6 +8,7 @@ class SubMenuNoIconExpansionTile extends StatelessWidget {
   final List<List<String>> menuList;
   final bool isTablet;
   final bool isDesktop;
+  final bool online;
 
   const SubMenuNoIconExpansionTile({
     super.key,
@@ -16,6 +17,7 @@ class SubMenuNoIconExpansionTile extends StatelessWidget {
     required this.menuList,
     required this.isTablet,
     required this.isDesktop,
+    required this.online,
   });
 
   @override
@@ -42,6 +44,7 @@ class SubMenuNoIconExpansionTile extends StatelessWidget {
                       isM: (!isTablet && !isDesktop) ? true : false,
                       menuList: menuList,
                       menuMain: menuMain,
+                      online: online,
                     ),
                   ),
                 );

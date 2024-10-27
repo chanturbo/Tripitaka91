@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:tripitaka91/utils/db_helper/db_helper.dart';
 import 'package:tripitaka91/widget/appbar/app_bar.dart';
 import 'package:tripitaka91/utils/api_connect/remote_service.dart';
 import 'package:tripitaka91/utils/constants/colors.dart';
@@ -20,8 +21,14 @@ import 'package:tripitaka91/widget/search/screen_mobile.dart';
 import 'package:tripitaka91/widget/showbook/show_book.dart';
 
 class MyHomeMobile extends StatefulWidget {
-  const MyHomeMobile({super.key, required this.title});
+  const MyHomeMobile({
+    super.key,
+    required this.title,
+    required this.online,
+  });
+
   final String title;
+  final bool online;
 
   @override
   State<MyHomeMobile> createState() => _MyHomeMobileState();
@@ -49,6 +56,8 @@ class _MyHomeMobileState extends State<MyHomeMobile> {
   String? line;
   late Timer _timer;
 
+  final dbHelper = DatabaseHelper();
+
   @override
   void initState() {
     super.initState();
@@ -73,6 +82,7 @@ class _MyHomeMobileState extends State<MyHomeMobile> {
               triBookline: line!,
               chkSearch: '',
               isMobile: true,
+              online: widget.online,
             ),
           ),
         );
@@ -108,7 +118,9 @@ class _MyHomeMobileState extends State<MyHomeMobile> {
 
   Future<void> getDataRandTitle() async {
     try {
-      randTitle = await RemoteServiceRandTitle().getRandTitle();
+      widget.online
+          ? randTitle = await RemoteServiceRandTitle().getRandTitleAPI()
+          : randTitle = await dbHelper.getRandTitleDB();
       if (randTitle != null) {
         setState(() {
           triCatage = randTitle![0].tripitaka91Category;
@@ -148,15 +160,17 @@ class _MyHomeMobileState extends State<MyHomeMobile> {
     // double screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       key: _scaffoldKey,
-      drawer: const Drawer(
+      drawer: Drawer(
           child: ListMenu(
         isTablet: false,
         isDesktop: false,
+        online: widget.online,
       )),
       appBar: AppBar(
-        title: const AppBarCustom(
+        title: AppBarCustom(
           isDesktop: false,
           isTablet: false,
+          online: widget.online,
         ),
       ),
       body: Container(
@@ -179,7 +193,9 @@ class _MyHomeMobileState extends State<MyHomeMobile> {
                   ),
                   Container(
                       color: TColors.primary,
-                      child: const SearchMobileScreen()),
+                      child: SearchMobileScreen(
+                        online: widget.online,
+                      )),
                   Container(
                     height: 10,
                     color: TColors.primary,
@@ -203,8 +219,14 @@ class _MyHomeMobileState extends State<MyHomeMobile> {
                         ),
                       ),
                       loadLastRead
-                          ? const DummyLastBookAccessData(isMobile: true)
-                          : const DummyLastBookAccessData2(isMobile: true),
+                          ? DummyLastBookAccessData(
+                              isMobile: true,
+                              online: widget.online,
+                            )
+                          : DummyLastBookAccessData2(
+                              isMobile: true,
+                              online: widget.online,
+                            ),
                     ],
                   ),
                   Container(
@@ -248,12 +270,14 @@ class _MyHomeMobileState extends State<MyHomeMobile> {
                             noTitle: noTitle,
                             noTitleCate: noTitleCate,
                             isMobile: true,
+                            online: widget.online,
                           ),
                           Container(
                             height: 20,
                           ),
-                          const ShowBookSlide(
+                          ShowBookSlide(
                             isMobile: true,
+                            online: widget.online,
                           ),
                         ],
                       ),

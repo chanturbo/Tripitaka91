@@ -16,11 +16,13 @@ class BookShowTitle extends StatefulWidget {
   final String triBookid;
   final String chkSearch;
   final bool isMobile;
+  final bool online;
   const BookShowTitle({
     super.key,
     required this.triBookid,
     required this.chkSearch,
     required this.isMobile,
+    required this.online,
   });
 
   @override
@@ -210,6 +212,7 @@ class _BookShowTitleState extends State<BookShowTitle> {
                                                   triBookline: '1',
                                                   chkSearch: '',
                                                   isMobile: widget.isMobile,
+                                                  online: widget.online,
                                                 ),
                                               ),
                                             );
@@ -250,6 +253,7 @@ class _BookShowTitleState extends State<BookShowTitle> {
                                 triBookline: '1',
                                 chkSearch: '',
                                 isMobile: widget.isMobile,
+                                online: widget.online,
                               ),
                             ),
                           );
@@ -305,6 +309,7 @@ class _BookShowTitleState extends State<BookShowTitle> {
               child: SearchShowPagesTitleList(
                 bookid: widget.triBookid,
                 isMobile: widget.isMobile,
+                online: widget.online,
               ),
             ),
           ],

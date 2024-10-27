@@ -9,7 +9,7 @@ class SubMenuExpansionTile extends StatelessWidget {
   final int bookAdd;
   final bool isTablet;
   final bool isDesktop;
-
+  final bool online;
   const SubMenuExpansionTile({
     super.key,
     required this.titleText,
@@ -17,6 +17,7 @@ class SubMenuExpansionTile extends StatelessWidget {
     required this.bookAdd,
     required this.isTablet,
     required this.isDesktop,
+    required this.online,
   });
 
   @override
@@ -50,6 +51,7 @@ class SubMenuExpansionTile extends StatelessWidget {
                       triBookid: (index + bookAdd).toString(),
                       chkSearch: '',
                       isMobile: (!isTablet && !isDesktop) ? true : isTablet,
+                      online: online,
                     ),
                   ),
                 );

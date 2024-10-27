@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:tripitaka91/utils/api_connect/remote_service.dart';
 import 'package:tripitaka91/utils/constants/colors.dart';
+import 'package:tripitaka91/utils/db_helper/db_helper.dart';
 import 'package:tripitaka91/utils/models/rand_title.dart';
 import 'package:tripitaka91/utils/models/users.dart';
 import 'package:tripitaka91/utils/shared_preferences/shared_user.dart';
@@ -25,9 +26,14 @@ import 'package:tripitaka91/widget/right_clipper/right_clipper.dart';
 import 'package:tripitaka91/widget/showbook/show_book.dart';
 
 class MyHomeTablet extends StatefulWidget {
-  const MyHomeTablet({super.key, required this.title});
+  const MyHomeTablet({
+    super.key,
+    required this.title,
+    required this.online,
+  });
 
   final String title;
+  final bool online;
 
   @override
   State<MyHomeTablet> createState() => _MyHomeTabletState();
@@ -56,6 +62,8 @@ class _MyHomeTabletState extends State<MyHomeTablet> {
   String? line;
   late Timer _timer;
 
+  final dbHelper = DatabaseHelper();
+
   @override
   void initState() {
     super.initState();
@@ -80,6 +88,7 @@ class _MyHomeTabletState extends State<MyHomeTablet> {
               triBookline: line!,
               chkSearch: '',
               isMobile: false,
+              online: widget.online,
             ),
           ),
         );
@@ -115,7 +124,9 @@ class _MyHomeTabletState extends State<MyHomeTablet> {
 
   Future<void> getDataRandTitle() async {
     try {
-      randTitle = await RemoteServiceRandTitle().getRandTitle();
+      widget.online
+          ? randTitle = await RemoteServiceRandTitle().getRandTitleAPI()
+          : randTitle = await dbHelper.getRandTitleDB();
       if (randTitle != null) {
         setState(() {
           triCatage = randTitle![0].tripitaka91Category;
@@ -156,9 +167,10 @@ class _MyHomeTabletState extends State<MyHomeTablet> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        title: const AppBarCustom(
+        title: AppBarCustom(
           isDesktop: false,
           isTablet: true,
+          online: widget.online,
         ),
       ),
       drawer: Container(
@@ -166,33 +178,39 @@ class _MyHomeTabletState extends State<MyHomeTablet> {
         padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
         width: 290,
         child: sidebarButtonNo == 1
-            ? const ListMenuTri1(
+            ? ListMenuTri1(
                 isDesktop: true,
                 isTablet: false,
+                online: widget.online,
               )
             : sidebarButtonNo == 2
-                ? const ListMenuTri2(
+                ? ListMenuTri2(
                     isDesktop: true,
                     isTablet: false,
+                    online: widget.online,
                   )
                 : sidebarButtonNo == 3
-                    ? const ListMenuTri3(
+                    ? ListMenuTri3(
                         isDesktop: true,
                         isTablet: false,
+                        online: widget.online,
                       )
                     : sidebarButtonNo == 4
-                        ? const ListMenuTitle(
+                        ? ListMenuTitle(
                             isDesktop: true,
                             isTablet: false,
+                            online: widget.online,
                           )
                         : sidebarButtonNo == 5
-                            ? const ListMenuDict(
+                            ? ListMenuDict(
                                 isDesktop: true,
                                 isTablet: false,
+                                online: widget.online,
                               )
-                            : const ListMenu(
+                            : ListMenu(
                                 isDesktop: true,
                                 isTablet: false,
+                                online: widget.online,
                               ),
       ),
       body: Container(
@@ -232,8 +250,14 @@ class _MyHomeTabletState extends State<MyHomeTablet> {
                         ),
                       ),
                       loadLastRead
-                          ? const DummyLastBookAccessData(isMobile: false)
-                          : const DummyLastBookAccessData2(isMobile: false),
+                          ? DummyLastBookAccessData(
+                              isMobile: false,
+                              online: widget.online,
+                            )
+                          : DummyLastBookAccessData2(
+                              isMobile: false,
+                              online: widget.online,
+                            ),
                     ],
                   ),
                   Container(
@@ -274,12 +298,14 @@ class _MyHomeTabletState extends State<MyHomeTablet> {
                             noTitle: noTitle,
                             noTitleCate: noTitleCate,
                             isMobile: false,
+                            online: widget.online,
                           ),
                           Container(
                             height: 20,
                           ),
-                          const ShowBookSlide(
+                          ShowBookSlide(
                             isMobile: false,
+                            online: widget.online,
                           ),
                         ],
                       ),

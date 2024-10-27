@@ -6,12 +6,15 @@ class SubShowTitle extends StatefulWidget {
   final String titleText;
   final String menuMain;
   final List<List<String>> menuList;
+  final bool online;
 
-  const SubShowTitle(
-      {super.key,
-      required this.titleText,
-      required this.menuList,
-      required this.menuMain});
+  const SubShowTitle({
+    super.key,
+    required this.titleText,
+    required this.menuList,
+    required this.menuMain,
+    required this.online,
+  });
 
   @override
   State<SubShowTitle> createState() => _SubShowTitleState();
@@ -41,6 +44,7 @@ class _SubShowTitleState extends State<SubShowTitle> {
                       isM: true,
                       menuList: widget.menuList,
                       menuMain: widget.menuMain,
+                      online: widget.online,
                     ),
                   ),
                 );

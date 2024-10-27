@@ -9,9 +9,13 @@ import 'package:tripitaka91/widget/search/data_search_widget.dart';
 class AppBarCustom extends StatefulWidget {
   final bool isTablet;
   final bool isDesktop;
-
-  const AppBarCustom(
-      {super.key, required this.isTablet, required this.isDesktop});
+  final bool online;
+  const AppBarCustom({
+    super.key,
+    required this.isTablet,
+    required this.isDesktop,
+    required this.online,
+  });
 
   @override
   State<AppBarCustom> createState() => _AppBarCustomState();
@@ -74,8 +78,14 @@ class _AppBarCustomState extends State<AppBarCustom> {
                   context: context,
                   delegate:
                       widget.isTablet == false && widget.isDesktop == false
-                          ? DataSearch(isM: true)
-                          : DataSearch(isM: false),
+                          ? DataSearch(
+                              isM: true,
+                              online: widget.online,
+                            )
+                          : DataSearch(
+                              isM: false,
+                              online: widget.online,
+                            ),
                 );
               },
               child: widget.isTablet == false && widget.isDesktop == false
@@ -107,10 +117,12 @@ class _AppBarCustomState extends State<AppBarCustom> {
                     ),
             ),
             const Spacer(),
-            IconButton(
-              icon: const Icon(Icons.person),
-              onPressed: _checkLoginStatus,
-            ),
+            widget.online
+                ? IconButton(
+                    icon: const Icon(Icons.person),
+                    onPressed: _checkLoginStatus,
+                  )
+                : const Text(''),
           ],
         ),
       ],

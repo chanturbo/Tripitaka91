@@ -8,7 +8,12 @@ import 'package:url_launcher/link.dart';
 
 class ShowBookSlide extends StatefulWidget {
   final bool isMobile;
-  const ShowBookSlide({super.key, required this.isMobile});
+  final bool online;
+  const ShowBookSlide({
+    super.key,
+    required this.isMobile,
+    required this.online,
+  });
 
   @override
   State<ShowBookSlide> createState() => _ShowBookSlideState();
@@ -88,6 +93,7 @@ class _ShowBookSlideState extends State<ShowBookSlide> {
                                 triBookid: (index + 1).toString(),
                                 chkSearch: "",
                                 isMobile: widget.isMobile,
+                                online: widget.online,
                               ),
                             ),
                           );
@@ -176,6 +182,7 @@ class _ShowBookSlideState extends State<ShowBookSlide> {
                                 triBookid: (index + 11).toString(),
                                 chkSearch: "",
                                 isMobile: widget.isMobile,
+                                online: widget.online,
                               ),
                             ),
                           );
@@ -264,6 +271,7 @@ class _ShowBookSlideState extends State<ShowBookSlide> {
                                 triBookid: (index + 75).toString(),
                                 chkSearch: "",
                                 isMobile: widget.isMobile,
+                                online: widget.online,
                               ),
                             ),
                           );

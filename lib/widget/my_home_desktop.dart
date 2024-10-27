@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:tripitaka91/utils/api_connect/remote_service.dart';
 import 'package:tripitaka91/utils/constants/colors.dart';
+import 'package:tripitaka91/utils/db_helper/db_helper.dart';
 import 'package:tripitaka91/utils/models/rand_title.dart';
 import 'package:tripitaka91/utils/models/users.dart';
 import 'package:tripitaka91/utils/shared_preferences/shared_user.dart';
@@ -19,9 +20,14 @@ import 'package:tripitaka91/widget/right_clipper/right_clipper.dart';
 import 'package:tripitaka91/widget/showbook/show_book.dart';
 
 class MyHomeDesktop extends StatefulWidget {
-  const MyHomeDesktop({super.key, required this.title});
+  const MyHomeDesktop({
+    super.key,
+    required this.title,
+    required this.online,
+  });
 
   final String title;
+  final bool online;
 
   @override
   State<MyHomeDesktop> createState() => _MyHomeDesktopState();
@@ -47,6 +53,8 @@ class _MyHomeDesktopState extends State<MyHomeDesktop> {
   String? line;
   late Timer _timer;
 
+  final dbHelper = DatabaseHelper();
+
   @override
   void initState() {
     super.initState();
@@ -71,6 +79,7 @@ class _MyHomeDesktopState extends State<MyHomeDesktop> {
               triBookline: line!,
               chkSearch: '',
               isMobile: false,
+              online: widget.online,
             ),
           ),
         );
@@ -106,7 +115,9 @@ class _MyHomeDesktopState extends State<MyHomeDesktop> {
 
   Future<void> getDataRandTitle() async {
     try {
-      randTitle = await RemoteServiceRandTitle().getRandTitle();
+      widget.online
+          ? randTitle = await RemoteServiceRandTitle().getRandTitleAPI()
+          : randTitle = await dbHelper.getRandTitleDB();
       if (randTitle != null) {
         setState(() {
           triCatage = randTitle![0].tripitaka91Category;
@@ -148,9 +159,10 @@ class _MyHomeDesktopState extends State<MyHomeDesktop> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const AppBarCustom(
+        title: AppBarCustom(
           isDesktop: true,
           isTablet: false,
+          online: widget.online,
         ),
       ),
       body: Container(
@@ -161,9 +173,10 @@ class _MyHomeDesktopState extends State<MyHomeDesktop> {
               color: TColors.white,
               padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
               width: 290,
-              child: const ListMenu(
+              child: ListMenu(
                 isDesktop: true,
                 isTablet: false,
+                online: widget.online,
               ),
             ),
             Container(
@@ -198,8 +211,14 @@ class _MyHomeDesktopState extends State<MyHomeDesktop> {
                         ),
                       ),
                       loadLastRead
-                          ? const DummyLastBookAccessData(isMobile: false)
-                          : const DummyLastBookAccessData2(isMobile: false),
+                          ? DummyLastBookAccessData(
+                              isMobile: false,
+                              online: widget.online,
+                            )
+                          : DummyLastBookAccessData2(
+                              isMobile: false,
+                              online: widget.online,
+                            ),
                     ],
                   ),
                   Container(
@@ -240,12 +259,14 @@ class _MyHomeDesktopState extends State<MyHomeDesktop> {
                             noTitle: noTitle,
                             noTitleCate: noTitleCate,
                             isMobile: false,
+                            online: widget.online,
                           ),
                           Container(
                             height: 20,
                           ),
-                          const ShowBookSlide(
+                          ShowBookSlide(
                             isMobile: false,
+                            online: widget.online,
                           ),
                         ],
                       ),

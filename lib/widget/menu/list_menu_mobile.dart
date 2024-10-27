@@ -12,7 +12,11 @@ import 'package:tripitaka91/widget/showdict/dictshow_dict.dart';
 import 'package:tripitaka91/widget/showdict/dictshow_dictbt.dart';
 
 class ListMenuMobile extends StatelessWidget {
-  const ListMenuMobile({super.key});
+  final bool online;
+  const ListMenuMobile({
+    super.key,
+    required this.online,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -40,8 +44,9 @@ class ListMenuMobile extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => const ShowBook1(
+                builder: (context) => ShowBook1(
                   txtTitle: 'พระวินัยปิฎก',
+                  online: online,
                 ),
               ),
             );
@@ -53,8 +58,9 @@ class ListMenuMobile extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => const ShowBook2(
+                builder: (context) => ShowBook2(
                   txtTitle: 'พระสุตตันตปิฎก',
+                  online: online,
                 ),
               ),
             );
@@ -66,8 +72,9 @@ class ListMenuMobile extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => const ShowBook3(
+                builder: (context) => ShowBook3(
                   txtTitle: 'พระอภิธรรมปิฎก',
+                  online: online,
                 ),
               ),
             );
@@ -94,9 +101,11 @@ class ListMenuMobile extends StatelessWidget {
               context,
               MaterialPageRoute(
                 builder: (context) => SubShowTitle(
-                    titleText: '1.รวมชุดข้อมูลและหัวข้อพระไตรปิฎก',
-                    menuList: menu_9_1,
-                    menuMain: "9.1"),
+                  titleText: '1.รวมชุดข้อมูลและหัวข้อพระไตรปิฎก',
+                  menuList: menu_9_1,
+                  menuMain: "9.1",
+                  online: online,
+                ),
               ),
             );
           },
@@ -108,9 +117,11 @@ class ListMenuMobile extends StatelessWidget {
               context,
               MaterialPageRoute(
                 builder: (context) => SubShowTitle(
-                    titleText: '2.หลักสูตรอินเตอร์เน็ต',
-                    menuList: menu_9_2,
-                    menuMain: "9.2"),
+                  titleText: '2.หลักสูตรอินเตอร์เน็ต',
+                  menuList: menu_9_2,
+                  menuMain: "9.2",
+                  online: online,
+                ),
               ),
             );
           },
@@ -124,9 +135,11 @@ class ListMenuMobile extends StatelessWidget {
               context,
               MaterialPageRoute(
                 builder: (context) => SubShowTitle(
-                    titleText: '3.แก้ข้อกล่าวหาของสังคมด้วยคำสอนของพระพุทธเจ้า',
-                    menuList: menu_9_3,
-                    menuMain: "9.3"),
+                  titleText: '3.แก้ข้อกล่าวหาของสังคมด้วยคำสอนของพระพุทธเจ้า',
+                  menuList: menu_9_3,
+                  menuMain: "9.3",
+                  online: online,
+                ),
               ),
             );
           },
@@ -140,9 +153,11 @@ class ListMenuMobile extends StatelessWidget {
               context,
               MaterialPageRoute(
                 builder: (context) => SubShowTitle(
-                    titleText: '4.หัวข้อวัตถุในพระพุทธศาสนาที่ถูกต้อง',
-                    menuList: menu_9_4,
-                    menuMain: "9.4"),
+                  titleText: '4.หัวข้อวัตถุในพระพุทธศาสนาที่ถูกต้อง',
+                  menuList: menu_9_4,
+                  menuMain: "9.4",
+                  online: online,
+                ),
               ),
             );
           },
@@ -154,9 +169,11 @@ class ListMenuMobile extends StatelessWidget {
               context,
               MaterialPageRoute(
                 builder: (context) => SubShowTitle(
-                    titleText: '5.หนังสือความประพฤติของพระ',
-                    menuList: menu_9_5,
-                    menuMain: "9.5"),
+                  titleText: '5.หนังสือความประพฤติของพระ',
+                  menuList: menu_9_5,
+                  menuMain: "9.5",
+                  online: online,
+                ),
               ),
             );
           },
@@ -170,9 +187,11 @@ class ListMenuMobile extends StatelessWidget {
               context,
               MaterialPageRoute(
                 builder: (context) => SubShowTitle(
-                    titleText: '6.หัวข้อพระวินัยปิฎก และอรรถกถาแปล-พุทธทำนาย',
-                    menuList: menu_9_6,
-                    menuMain: "9.6"),
+                  titleText: '6.หัวข้อพระวินัยปิฎก และอรรถกถาแปล-พุทธทำนาย',
+                  menuList: menu_9_6,
+                  menuMain: "9.6",
+                  online: online,
+                ),
               ),
             );
           },
@@ -184,9 +203,11 @@ class ListMenuMobile extends StatelessWidget {
               context,
               MaterialPageRoute(
                 builder: (context) => SubShowTitle(
-                    titleText: '7.การประกาศ และระเบียบวัด',
-                    menuList: menu_9_7,
-                    menuMain: "9.7"),
+                  titleText: '7.การประกาศ และระเบียบวัด',
+                  menuList: menu_9_7,
+                  menuMain: "9.7",
+                  online: online,
+                ),
               ),
             );
           },
@@ -200,9 +221,11 @@ class ListMenuMobile extends StatelessWidget {
               context,
               MaterialPageRoute(
                 builder: (context) => SubShowTitle(
-                    titleText: '8.ข้อมูลประกอบเพิ่มเติม แก้ข้อกล่าวหาสังคม',
-                    menuList: menu_9_8,
-                    menuMain: "9.8"),
+                  titleText: '8.ข้อมูลประกอบเพิ่มเติม แก้ข้อกล่าวหาสังคม',
+                  menuList: menu_9_8,
+                  menuMain: "9.8",
+                  online: online,
+                ),
               ),
             );
           },
@@ -216,9 +239,11 @@ class ListMenuMobile extends StatelessWidget {
               context,
               MaterialPageRoute(
                 builder: (context) => SubShowTitle(
-                    titleText: '9.ข้อมูลพระไตรปิฎก กับเหตุการณ์ปัจจุบัน',
-                    menuList: menu_9_9,
-                    menuMain: "9.9"),
+                  titleText: '9.ข้อมูลพระไตรปิฎก กับเหตุการณ์ปัจจุบัน',
+                  menuList: menu_9_9,
+                  menuMain: "9.9",
+                  online: online,
+                ),
               ),
             );
           },
@@ -244,7 +269,9 @@ class ListMenuMobile extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => const DictShowTitle(),
+                builder: (context) => DictShowTitle(
+                  online: online,
+                ),
               ),
             );
           },
@@ -257,7 +284,9 @@ class ListMenuMobile extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => const DictbtShowTitle(),
+                builder: (context) => DictbtShowTitle(
+                  online: online,
+                ),
               ),
             );
           },

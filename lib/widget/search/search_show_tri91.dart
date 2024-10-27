@@ -20,6 +20,7 @@ class SearchShowPages extends StatefulWidget {
   final String bookid;
   final bool isM;
   final String catalog;
+  final bool online;
 
   const SearchShowPages({
     super.key,
@@ -28,6 +29,7 @@ class SearchShowPages extends StatefulWidget {
     required this.bookid,
     required this.isM,
     required this.catalog,
+    required this.online,
   });
 
   @override
@@ -181,29 +183,31 @@ class _SearchShowPagesState extends State<SearchShowPages> {
                   ),
                   subtitle: Row(
                     children: [
-                      InkWell(
-                        onTap: () async {
-                          LoadingDialog.show(context);
-                          String bookIds =
-                              textTitleReplace.getBookId(data[index]);
-                          String pageId =
-                              textTitleReplace.getPageId(data[index]);
-                          String bookLine =
-                              textTitleReplace.getLineId(data[index]);
-                          String txtTitle =
-                              textTitleReplace.extractText(data[index]);
-                          String filename = '$bookIds-$pageId-$bookLine';
-                          await audioPlayerManager.playAudio(
-                              '2', filename, txtTitle);
-                          // ignore: use_build_context_synchronously
-                          LoadingDialog.hide(context);
-                        },
-                        child: Icon(
-                          Icons.volume_up,
-                          size: widget.isM ? 25 : 20,
-                          color: Colors.blue[300],
-                        ),
-                      ),
+                      widget.online
+                          ? InkWell(
+                              onTap: () async {
+                                LoadingDialog.show(context);
+                                String bookIds =
+                                    textTitleReplace.getBookId(data[index]);
+                                String pageId =
+                                    textTitleReplace.getPageId(data[index]);
+                                String bookLine =
+                                    textTitleReplace.getLineId(data[index]);
+                                String txtTitle =
+                                    textTitleReplace.extractText(data[index]);
+                                String filename = '$bookIds-$pageId-$bookLine';
+                                await audioPlayerManager.playAudio(
+                                    '2', filename, txtTitle);
+                                // ignore: use_build_context_synchronously
+                                LoadingDialog.hide(context);
+                              },
+                              child: Icon(
+                                Icons.volume_up,
+                                size: widget.isM ? 25 : 20,
+                                color: Colors.blue[300],
+                              ),
+                            )
+                          : const Text(''),
                       // const SizedBox(width: 10),
                       // InkWell(
                       //   onTap: () async {},
@@ -270,6 +274,7 @@ class _SearchShowPagesState extends State<SearchShowPages> {
                           triBookline: textTitleReplace.getLineId(data[index]),
                           chkSearch: widget.wordSearch,
                           isMobile: widget.isM,
+                          online: widget.online,
                         ),
                       ),
                     );

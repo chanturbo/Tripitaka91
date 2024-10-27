@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:tripitaka91/utils/constants/api_constants.dart';
+import 'package:tripitaka91/utils/db_helper/db_helper.dart';
 import 'package:tripitaka91/utils/models/showlog_search.dart';
 import 'package:tripitaka91/utils/models/users.dart';
 import 'package:tripitaka91/utils/shared_preferences/shared_user.dart';
@@ -11,7 +12,11 @@ import 'package:tripitaka91/widget/search/search_page.dart';
 
 class DataSearch extends SearchDelegate<String> {
   final bool isM; // เพิ่มพารามิเตอร์ isM ใน constructor
-  DataSearch({required this.isM});
+  final bool online;
+  DataSearch({
+    required this.isM,
+    required this.online,
+  });
 
   @override
   List<Widget> buildActions(BuildContext context) {
@@ -49,6 +54,7 @@ class DataSearch extends SearchDelegate<String> {
             builder: (context) => SearchPages(
               title: query,
               isM: isM,
+              online: online,
             ),
           ),
         );
@@ -60,13 +66,16 @@ class DataSearch extends SearchDelegate<String> {
 
   @override
   Widget buildSuggestions(BuildContext context) {
+    final dbhelper = DatabaseHelper();
     // สร้างข้อเสนอจาก query
     if (query.isEmpty) {
       // ถ้า query ว่างเปล่า ดึงประวัติการค้นหาจาก PHP API
       // และแสดงผลลัพธ์ที่ได้ใน ListView.builder
       return FutureBuilder(
-        future:
-            fetchSearchHistoryFromAPI(), // เรียกฟังก์ชันดึงประวัติการค้นหาจาก API
+        future: online
+            ? fetchSearchHistoryFromAPI()
+            : dbhelper
+                .fetchSearchHistoryFromDB(), // เรียกฟังก์ชันดึงประวัติการค้นหาจาก API
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const CircularProgressIndicator();
@@ -126,6 +135,7 @@ class DataSearch extends SearchDelegate<String> {
                       builder: (context) => SearchPages(
                         title: query,
                         isM: isM,
+                        online: online,
                       ),
                     ),
                   );

@@ -8,9 +8,13 @@ import 'package:tripitaka91/widget/showdict/dictshow_dictbt.dart';
 class ListMenuDict extends StatelessWidget {
   final bool isTablet;
   final bool isDesktop;
-
-  const ListMenuDict(
-      {super.key, required this.isTablet, required this.isDesktop});
+  final bool online;
+  const ListMenuDict({
+    super.key,
+    required this.isTablet,
+    required this.isDesktop,
+    required this.online,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +43,7 @@ class ListMenuDict extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => const DictShowTitle(),
+                builder: (context) => DictShowTitle(online: online),
               ),
             );
           },
@@ -52,7 +56,9 @@ class ListMenuDict extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => const DictbtShowTitle(),
+                builder: (context) => DictbtShowTitle(
+                  online: online,
+                ),
               ),
             );
           },

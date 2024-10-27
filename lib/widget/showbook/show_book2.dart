@@ -5,7 +5,12 @@ import 'package:tripitaka91/widget/menu/data_menu.dart';
 
 class ShowBook2 extends StatefulWidget {
   final String txtTitle;
-  const ShowBook2({super.key, required this.txtTitle});
+  final bool online;
+  const ShowBook2({
+    super.key,
+    required this.txtTitle,
+    required this.online,
+  });
 
   @override
   State<ShowBook2> createState() => _ShowBook2State();
@@ -38,6 +43,7 @@ class _ShowBook2State extends State<ShowBook2> {
                       triBookid: (innerIndex + 11).toString(),
                       chkSearch: '',
                       isMobile: true,
+                      online: widget.online,
                     ),
                   ),
                 );

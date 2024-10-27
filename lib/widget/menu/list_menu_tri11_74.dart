@@ -8,9 +8,13 @@ import 'package:tripitaka91/widget/right_clipper/right_clipper.dart';
 class ListMenuTri2 extends StatelessWidget {
   final bool isTablet;
   final bool isDesktop;
+  final bool online;
 
   const ListMenuTri2(
-      {super.key, required this.isTablet, required this.isDesktop});
+      {super.key,
+      required this.isTablet,
+      required this.isDesktop,
+      required this.online});
 
   @override
   Widget build(BuildContext context) {
@@ -48,6 +52,7 @@ class ListMenuTri2 extends StatelessWidget {
                         triBookid: (innerIndex + 11).toString(),
                         chkSearch: '',
                         isMobile: false,
+                        online: online,
                       ),
                     ),
                   );

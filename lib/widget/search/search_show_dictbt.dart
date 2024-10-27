@@ -16,9 +16,14 @@ import 'package:tripitaka91/widget/login/loading_dialog.dart';
 class SearchShowPagesDictbt extends StatefulWidget {
   final String wordSearch;
   final bool isM;
+  final bool online;
 
-  const SearchShowPagesDictbt(
-      {super.key, required this.wordSearch, required this.isM});
+  const SearchShowPagesDictbt({
+    super.key,
+    required this.wordSearch,
+    required this.isM,
+    required this.online,
+  });
 
   @override
   State<SearchShowPagesDictbt> createState() => _SearchShowPagesDictbtState();
@@ -164,27 +169,29 @@ class _SearchShowPagesDictbtState extends State<SearchShowPagesDictbt> {
                   ),
                   subtitle: Row(
                     children: [
-                      InkWell(
-                        onTap: () async {
-                          LoadingDialog.show(context);
-                          String txtTitle =
-                              '${textTitleReplace.getWordDict(dataDictbt[index])} - ${textTitleReplace.getWordDictDetail(dataDictbt[index])}';
-                          String namesave = textTitleReplace
-                              .getWordDict(dataDictbt[index])
-                              .trim()
-                              .replaceAll(RegExp(r'\s+'), '');
-                          String filename = 'dict-$namesave';
-                          await audioPlayerManager.playAudio(
-                              '3', filename, txtTitle);
-                          // ignore: use_build_context_synchronously
-                          LoadingDialog.hide(context);
-                        },
-                        child: Icon(
-                          Icons.volume_up,
-                          size: widget.isM ? 25 : 20,
-                          color: Colors.blue[300],
-                        ),
-                      ),
+                      widget.online
+                          ? InkWell(
+                              onTap: () async {
+                                LoadingDialog.show(context);
+                                String txtTitle =
+                                    '${textTitleReplace.getWordDict(dataDictbt[index])} - ${textTitleReplace.getWordDictDetail(dataDictbt[index])}';
+                                String namesave = textTitleReplace
+                                    .getWordDict(dataDictbt[index])
+                                    .trim()
+                                    .replaceAll(RegExp(r'\s+'), '');
+                                String filename = 'dict-$namesave';
+                                await audioPlayerManager.playAudio(
+                                    '3', filename, txtTitle);
+                                // ignore: use_build_context_synchronously
+                                LoadingDialog.hide(context);
+                              },
+                              child: Icon(
+                                Icons.volume_up,
+                                size: widget.isM ? 25 : 20,
+                                color: Colors.blue[300],
+                              ),
+                            )
+                          : const Text(''),
                       const SizedBox(width: 10),
                       InkWell(
                         onTap: () async {

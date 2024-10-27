@@ -18,9 +18,14 @@ import 'package:tripitaka91/widget/right_clipper/center_clipper.dart';
 class SearchShowPagesTitle extends StatefulWidget {
   final String wordSearch;
   final bool isM;
+  final bool online;
 
-  const SearchShowPagesTitle(
-      {super.key, required this.wordSearch, required this.isM});
+  const SearchShowPagesTitle({
+    super.key,
+    required this.wordSearch,
+    required this.isM,
+    required this.online,
+  });
 
   @override
   State<SearchShowPagesTitle> createState() => _SearchShowPagesTitleState();
@@ -176,40 +181,44 @@ class _SearchShowPagesTitleState extends State<SearchShowPagesTitle> {
                     children: [
                       Row(
                         children: [
-                          InkWell(
-                            onTap: () async {
-                              LoadingDialog.show(context);
-                              String bookIds =
-                                  textTitleReplace.getBookId(dataTitle[index]);
-                              String pageId =
-                                  textTitleReplace.getPageId(dataTitle[index]);
-                              String bookLine =
-                                  textTitleReplace.getLineId(dataTitle[index]);
-                              String noTitleCate =
-                                  textTitleReplace.getCate(dataTitle[index]);
-                              String noTitle =
-                                  textTitleReplace.getNo(dataTitle[index]);
+                          widget.online
+                              ? InkWell(
+                                  onTap: () async {
+                                    LoadingDialog.show(context);
+                                    String bookIds = textTitleReplace
+                                        .getBookId(dataTitle[index]);
+                                    String pageId = textTitleReplace
+                                        .getPageId(dataTitle[index]);
+                                    String bookLine = textTitleReplace
+                                        .getLineId(dataTitle[index]);
+                                    String noTitleCate = textTitleReplace
+                                        .getCate(dataTitle[index]);
+                                    String noTitle = textTitleReplace
+                                        .getNo(dataTitle[index]);
 
-                              String txtTitle = textTitleReplace.replaceText(
-                                  textTitleReplace
-                                      .extractText(dataTitle[index]),
-                                  textTitleReplace
-                                      .getBookBlue(dataTitle[index]));
+                                    String txtTitle =
+                                        textTitleReplace.replaceText(
+                                            textTitleReplace
+                                                .extractText(dataTitle[index]),
+                                            textTitleReplace
+                                                .getBookBlue(dataTitle[index]));
 
-                              String filename = noTitleCate.replaceAll('.', '');
-                              filename =
-                                  '$filename-$noTitle-$bookIds-$pageId-$bookLine';
-                              await audioPlayerManager.playAudio(
-                                  '1', filename, txtTitle);
-                              // ignore: use_build_context_synchronously
-                              LoadingDialog.hide(context);
-                            },
-                            child: Icon(
-                              Icons.volume_up,
-                              size: widget.isM ? 25 : 20,
-                              color: Colors.blue[300],
-                            ),
-                          ),
+                                    String filename =
+                                        noTitleCate.replaceAll('.', '');
+                                    filename =
+                                        '$filename-$noTitle-$bookIds-$pageId-$bookLine';
+                                    await audioPlayerManager.playAudio(
+                                        '1', filename, txtTitle);
+                                    // ignore: use_build_context_synchronously
+                                    LoadingDialog.hide(context);
+                                  },
+                                  child: Icon(
+                                    Icons.volume_up,
+                                    size: widget.isM ? 25 : 20,
+                                    color: Colors.blue[300],
+                                  ),
+                                )
+                              : const Text(''),
                           const SizedBox(width: 10),
                           InkWell(
                             onTap: () async {
@@ -375,6 +384,7 @@ class _SearchShowPagesTitleState extends State<SearchShowPagesTitle> {
                                 textTitleReplace.getLineId(dataTitle[index]),
                             chkSearch: widget.wordSearch,
                             isMobile: widget.isM,
+                            online: widget.online,
                           ),
                         ),
                       );

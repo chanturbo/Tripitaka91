@@ -16,9 +16,14 @@ import 'package:tripitaka91/widget/login/loading_dialog.dart';
 class SearchShowPagesDict extends StatefulWidget {
   final String wordSearch;
   final bool isM;
+  final bool online;
 
-  const SearchShowPagesDict(
-      {super.key, required this.wordSearch, required this.isM});
+  const SearchShowPagesDict({
+    super.key,
+    required this.wordSearch,
+    required this.isM,
+    required this.online,
+  });
 
   @override
   State<SearchShowPagesDict> createState() => _SearchShowPagesDictState();
@@ -164,28 +169,30 @@ class _SearchShowPagesDictState extends State<SearchShowPagesDict> {
                   ),
                   subtitle: Row(
                     children: [
-                      InkWell(
-                        onTap: () async {
-                          LoadingDialog.show(context);
-                          String txtTitle =
-                              '${textTitleReplace.getWordDict(dataDict[index])} - ${textTitleReplace.getWordDictDetail(dataDict[index])}';
-                          String namesave = textTitleReplace
-                              .getWordDict(dataDict[index])
-                              .trim()
-                              .replaceAll(RegExp(r'\s+'), '');
+                      widget.online
+                          ? InkWell(
+                              onTap: () async {
+                                LoadingDialog.show(context);
+                                String txtTitle =
+                                    '${textTitleReplace.getWordDict(dataDict[index])} - ${textTitleReplace.getWordDictDetail(dataDict[index])}';
+                                String namesave = textTitleReplace
+                                    .getWordDict(dataDict[index])
+                                    .trim()
+                                    .replaceAll(RegExp(r'\s+'), '');
 
-                          String filename = 'dict-$namesave';
-                          await audioPlayerManager.playAudio(
-                              '3', filename, txtTitle);
-                          // ignore: use_build_context_synchronously
-                          LoadingDialog.hide(context);
-                        },
-                        child: Icon(
-                          Icons.volume_up,
-                          size: widget.isM ? 25 : 20,
-                          color: Colors.blue[300],
-                        ),
-                      ),
+                                String filename = 'dict-$namesave';
+                                await audioPlayerManager.playAudio(
+                                    '3', filename, txtTitle);
+                                // ignore: use_build_context_synchronously
+                                LoadingDialog.hide(context);
+                              },
+                              child: Icon(
+                                Icons.volume_up,
+                                size: widget.isM ? 25 : 20,
+                                color: Colors.blue[300],
+                              ),
+                            )
+                          : const Text(''),
                       const SizedBox(width: 10),
                       InkWell(
                         onTap: () async {

@@ -25,6 +25,8 @@ class TitleCard extends StatefulWidget {
   final String noTitleCate;
   final bool isMobile;
 
+  final bool online;
+
   const TitleCard({
     super.key,
     required this.triTitle,
@@ -36,6 +38,7 @@ class TitleCard extends StatefulWidget {
     required this.noTitle,
     required this.noTitleCate,
     required this.isMobile,
+    required this.online,
   });
 
   @override
@@ -213,6 +216,7 @@ class _TitleCardState extends State<TitleCard> {
                       triBookline: widget.bookLine,
                       chkSearch: '',
                       isMobile: widget.isMobile,
+                      online: widget.online,
                     ),
                   ),
                 );
@@ -231,25 +235,29 @@ class _TitleCardState extends State<TitleCard> {
             Row(
               children: [
                 const SizedBox(width: 15),
-                InkWell(
-                  onTap: () async {
-                    LoadingDialog.show(context);
-                    String txtTitle = textReplacer.replaceText(
-                        widget.triTitle, widget.bookBlue);
+                widget.online
+                    ? InkWell(
+                        onTap: () async {
+                          LoadingDialog.show(context);
+                          String txtTitle = textReplacer.replaceText(
+                              widget.triTitle, widget.bookBlue);
 
-                    String filename = widget.noTitleCate.replaceAll('.', '');
-                    filename =
-                        '$filename-${widget.noTitle}-${widget.bookIds}-${widget.pageId}-${widget.bookLine}';
-                    await audioPlayerManager.playAudio('1', filename, txtTitle);
-                    // ignore: use_build_context_synchronously
-                    LoadingDialog.hide(context);
-                  },
-                  child: Icon(
-                    Icons.volume_up,
-                    size: widget.isMobile ? 25 : 20,
-                    color: Colors.blue[300], // Change color as needed
-                  ),
-                ),
+                          String filename =
+                              widget.noTitleCate.replaceAll('.', '');
+                          filename =
+                              '$filename-${widget.noTitle}-${widget.bookIds}-${widget.pageId}-${widget.bookLine}';
+                          await audioPlayerManager.playAudio(
+                              '1', filename, txtTitle);
+                          // ignore: use_build_context_synchronously
+                          LoadingDialog.hide(context);
+                        },
+                        child: Icon(
+                          Icons.volume_up,
+                          size: widget.isMobile ? 25 : 20,
+                          color: Colors.blue[300], // Change color as needed
+                        ),
+                      )
+                    : const Text(''),
                 const SizedBox(width: 10),
                 InkWell(
                   onTap: () async {

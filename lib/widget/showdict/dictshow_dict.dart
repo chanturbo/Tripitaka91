@@ -8,8 +8,10 @@ import 'package:tripitaka91/widget/showdict/show_dict_list.dart';
 import 'package:tripitaka91/widget/showdict/show_dict_list_2.dart';
 
 class DictShowTitle extends StatefulWidget {
+  final bool online;
   const DictShowTitle({
     super.key,
+    required this.online,
   });
 
   @override
@@ -124,133 +126,145 @@ class _DictShowTitleState extends State<DictShowTitle> {
               height: 10,
             ),
             Expanded(
-              child: dictSarabun == '...'
-                  ? loadFirst
-                      ? ShowPagesDictList(wordSearch: dictSarabun)
-                      : ShowPagesDictList2(wordSearch: dictSarabun)
-                  : loadFirst
-                      ? ShowPagesDictList(wordSearch: dictSarabun)
-                      : ShowPagesDictList2(wordSearch: dictSarabun),
-              // : FutureBuilder(
-              //     future: _fetchDataDict(),
-              //     builder: (context, snapshot) {
-              //       if (snapshot.connectionState ==
-              //           ConnectionState.waiting) {
-              //         return const Center(
-              //           child: CircularProgressIndicator(),
-              //         );
-              //       } else if (snapshot.hasError) {
-              //         return Center(
-              //           child: Text('Error: ${snapshot.error}'),
-              //         );
-              //       } else {
-              //         //print(snapshot.data?.length);
+                child: dictSarabun == '...'
+                    ? loadFirst
+                        ? ShowPagesDictList(
+                            wordSearch: dictSarabun,
+                            online: widget.online,
+                          )
+                        : ShowPagesDictList2(
+                            wordSearch: dictSarabun,
+                            online: widget.online,
+                          )
+                    : loadFirst
+                        ? ShowPagesDictList(
+                            wordSearch: dictSarabun,
+                            online: widget.online,
+                          )
+                        : ShowPagesDictList2(
+                            wordSearch: dictSarabun,
+                            online: widget.online,
+                          )
+                // : FutureBuilder(
+                //     future: _fetchDataDict(),
+                //     builder: (context, snapshot) {
+                //       if (snapshot.connectionState ==
+                //           ConnectionState.waiting) {
+                //         return const Center(
+                //           child: CircularProgressIndicator(),
+                //         );
+                //       } else if (snapshot.hasError) {
+                //         return Center(
+                //           child: Text('Error: ${snapshot.error}'),
+                //         );
+                //       } else {
+                //         //print(snapshot.data?.length);
 
-              //         return (snapshot.data?.length == null)
-              //             ? const Center(
-              //                 child: ATextTitleLarge(text: 'ไม่พบข้อมูล'))
-              //             : ListView.builder(
-              //                 shrinkWrap: true,
-              //                 itemCount: dataDict.length,
-              //                 itemBuilder:
-              //                     (BuildContext context, int index) {
-              //                   return Column(
-              //                     children: [
-              //                       ListTile(
-              //                         leading: CircleAvatar(
-              //                           backgroundColor: Colors.blue[900],
-              //                           foregroundColor: Colors.white,
-              //                           child: ATextDiskplayMedium(
-              //                               text: '${index + 1}'),
-              //                         ),
-              //                         title: ATextTitleMedium(
-              //                           text:
-              //                               '${textTitleReplace.getWordDict(dataDict[index])}\n- ${textTitleReplace.getWordDictDetail(dataDict[index])}',
-              //                         ),
-              //                         subtitle: Row(
-              //                           children: [
-              //                             InkWell(
-              //                               onTap: () async {
-              //                                 LoadingDialog.show(context);
-              //                                 String txtTitle =
-              //                                     '${textTitleReplace.getWordDict(dataDict[index])} - ${textTitleReplace.getWordDictDetail(dataDict[index])}';
-              //                                 String namesave =
-              //                                     textTitleReplace
-              //                                         .getWordDict(
-              //                                             dataDict[index])
-              //                                         .trim()
-              //                                         .replaceAll(
-              //                                             RegExp(r'\s+'),
-              //                                             '');
+                //         return (snapshot.data?.length == null)
+                //             ? const Center(
+                //                 child: ATextTitleLarge(text: 'ไม่พบข้อมูล'))
+                //             : ListView.builder(
+                //                 shrinkWrap: true,
+                //                 itemCount: dataDict.length,
+                //                 itemBuilder:
+                //                     (BuildContext context, int index) {
+                //                   return Column(
+                //                     children: [
+                //                       ListTile(
+                //                         leading: CircleAvatar(
+                //                           backgroundColor: Colors.blue[900],
+                //                           foregroundColor: Colors.white,
+                //                           child: ATextDiskplayMedium(
+                //                               text: '${index + 1}'),
+                //                         ),
+                //                         title: ATextTitleMedium(
+                //                           text:
+                //                               '${textTitleReplace.getWordDict(dataDict[index])}\n- ${textTitleReplace.getWordDictDetail(dataDict[index])}',
+                //                         ),
+                //                         subtitle: Row(
+                //                           children: [
+                //                             InkWell(
+                //                               onTap: () async {
+                //                                 LoadingDialog.show(context);
+                //                                 String txtTitle =
+                //                                     '${textTitleReplace.getWordDict(dataDict[index])} - ${textTitleReplace.getWordDictDetail(dataDict[index])}';
+                //                                 String namesave =
+                //                                     textTitleReplace
+                //                                         .getWordDict(
+                //                                             dataDict[index])
+                //                                         .trim()
+                //                                         .replaceAll(
+                //                                             RegExp(r'\s+'),
+                //                                             '');
 
-              //                                 String filename =
-              //                                     'dict-$namesave';
-              //                                 await audioPlayerManager
-              //                                     .playAudio('3', filename,
-              //                                         txtTitle);
-              //                                 // ignore: use_build_context_synchronously
-              //                                 LoadingDialog.hide(context);
-              //                               },
-              //                               child: Icon(
-              //                                 Icons.volume_up,
-              //                                 size: 20,
-              //                                 color: Colors.blue[300],
-              //                               ),
-              //                             ),
-              //                             const SizedBox(width: 10),
-              //                             InkWell(
-              //                               onTap: () async {
-              //                                 String txtTitle =
-              //                                     '${textTitleReplace.getWordDict(dataDict[index])}\n- ${textTitleReplace.getWordDictDetail(dataDict[index])}';
-              //                                 txtTitle +=
-              //                                     ' ข้อความจากพจนานุกรม ฉบับประมวลศัพท์ รวบรวมโดย พระพรหมคุณาภรณ์ (ป.อ. ปยุตฺโต)';
-              //                                 await Share.share(txtTitle,
-              //                                     subject:
-              //                                         'พจนานุกรม ฉบับประมวลศัพท์');
-              //                               },
-              //                               child: Icon(
-              //                                 Icons.share,
-              //                                 size: 16,
-              //                                 color: Colors.blue[300],
-              //                               ),
-              //                             ),
-              //                             const SizedBox(width: 10),
-              //                             InkWell(
-              //                               onTap: () async {
-              //                                 String txtTitle =
-              //                                     '${textTitleReplace.getWordDict(dataDict[index])}\n${textTitleReplace.getWordDictDetail(dataDict[index])}';
-              //                                 txtTitle +=
-              //                                     ' ข้อความจากพจนานุกรม ฉบับประมวลศัพท์ รวบรวมโดย พระพรหมคุณาภรณ์ (ป.อ. ปยุตฺโต)';
-              //                                 Clipboard.setData(
-              //                                   ClipboardData(
-              //                                       text: txtTitle),
-              //                                 );
-              //                                 _showSnackbar(context,
-              //                                     'คัดลอกข้อมูลเรียบร้อยแล้ว');
-              //                               },
-              //                               child: Icon(
-              //                                 Icons.copy,
-              //                                 size: 16,
-              //                                 color: Colors.blue[300],
-              //                               ),
-              //                             ),
-              //                             const Expanded(
-              //                               child: SizedBox(
-              //                                 child: Text(''),
-              //                               ),
-              //                             ),
-              //                           ],
-              //                         ),
-              //                         onTap: () {},
-              //                       ),
-              //                     ],
-              //                   );
-              //                 },
-              //               );
-              //       }
-              //     },
-              //   ),
-            ),
+                //                                 String filename =
+                //                                     'dict-$namesave';
+                //                                 await audioPlayerManager
+                //                                     .playAudio('3', filename,
+                //                                         txtTitle);
+                //                                 // ignore: use_build_context_synchronously
+                //                                 LoadingDialog.hide(context);
+                //                               },
+                //                               child: Icon(
+                //                                 Icons.volume_up,
+                //                                 size: 20,
+                //                                 color: Colors.blue[300],
+                //                               ),
+                //                             ),
+                //                             const SizedBox(width: 10),
+                //                             InkWell(
+                //                               onTap: () async {
+                //                                 String txtTitle =
+                //                                     '${textTitleReplace.getWordDict(dataDict[index])}\n- ${textTitleReplace.getWordDictDetail(dataDict[index])}';
+                //                                 txtTitle +=
+                //                                     ' ข้อความจากพจนานุกรม ฉบับประมวลศัพท์ รวบรวมโดย พระพรหมคุณาภรณ์ (ป.อ. ปยุตฺโต)';
+                //                                 await Share.share(txtTitle,
+                //                                     subject:
+                //                                         'พจนานุกรม ฉบับประมวลศัพท์');
+                //                               },
+                //                               child: Icon(
+                //                                 Icons.share,
+                //                                 size: 16,
+                //                                 color: Colors.blue[300],
+                //                               ),
+                //                             ),
+                //                             const SizedBox(width: 10),
+                //                             InkWell(
+                //                               onTap: () async {
+                //                                 String txtTitle =
+                //                                     '${textTitleReplace.getWordDict(dataDict[index])}\n${textTitleReplace.getWordDictDetail(dataDict[index])}';
+                //                                 txtTitle +=
+                //                                     ' ข้อความจากพจนานุกรม ฉบับประมวลศัพท์ รวบรวมโดย พระพรหมคุณาภรณ์ (ป.อ. ปยุตฺโต)';
+                //                                 Clipboard.setData(
+                //                                   ClipboardData(
+                //                                       text: txtTitle),
+                //                                 );
+                //                                 _showSnackbar(context,
+                //                                     'คัดลอกข้อมูลเรียบร้อยแล้ว');
+                //                               },
+                //                               child: Icon(
+                //                                 Icons.copy,
+                //                                 size: 16,
+                //                                 color: Colors.blue[300],
+                //                               ),
+                //                             ),
+                //                             const Expanded(
+                //                               child: SizedBox(
+                //                                 child: Text(''),
+                //                               ),
+                //                             ),
+                //                           ],
+                //                         ),
+                //                         onTap: () {},
+                //                       ),
+                //                     ],
+                //                   );
+                //                 },
+                //               );
+                //       }
+                //     },
+                //   ),
+                ),
           ],
         ),
       ),
