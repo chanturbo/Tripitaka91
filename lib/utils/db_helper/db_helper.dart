@@ -45,6 +45,33 @@ class DatabaseHelper {
     );
   }
 
+  Future<List<String>> fetchTitles(
+      String wordsearch, int startFrom, int recordsPerPage) async {
+    final db = await database;
+
+    // Query with LIKE filter, ORDER, and LIMIT
+    final List<Map<String, dynamic>> result = await db.query(
+      'tripitaka91_91title',
+      where: 'tripitaka91_title LIKE ?',
+      whereArgs: ['%$wordsearch%'],
+      orderBy: 'tripitaka91_book',
+      limit: recordsPerPage,
+      offset: startFrom,
+    );
+
+    List<String> response = [];
+    for (var rowTitle in result) {
+      String cleanedString =
+          '${rowTitle['tripitaka91_title']}|${rowTitle['tripitaka91_book']}|${rowTitle['tripitaka91_page']}|'
+          '${rowTitle['tripitaka91_line']}|${rowTitle['tripitaka91_book_red']}|${rowTitle['tripitaka91_code']}|'
+          '${rowTitle['tripitaka91_no']}|${rowTitle['tripitaka91_mark']}|${rowTitle['tripitaka91_group']}|'
+          '${rowTitle['tripitaka91_category']}|${rowTitle['tripitaka91_detail']}';
+      response.add(cleanedString);
+    }
+
+    return response;
+  }
+
   Future<TotalTitleSearchTri> getBooks91_1SearchCount(String wordsearch,
       {int bookid = 1, int bookidend = 10}) async {
     final dbClient = await database;

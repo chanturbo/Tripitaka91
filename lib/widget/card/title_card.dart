@@ -258,7 +258,9 @@ class _TitleCardState extends State<TitleCard> {
                         ),
                       )
                     : const Text(''),
-                const SizedBox(width: 10),
+                widget.online
+                    ? const SizedBox(width: 10)
+                    : const SizedBox.shrink(),
                 InkWell(
                   onTap: () async {
                     // String txtTitle = textReplacer.replaceText(

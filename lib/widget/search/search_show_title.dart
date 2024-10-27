@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:substring_highlight/substring_highlight.dart';
 import 'package:tripitaka91/utils/constants/api_constants.dart';
+import 'package:tripitaka91/utils/db_helper/db_helper.dart';
 import 'package:tripitaka91/utils/img_service/shared_image_generator.dart';
 import 'package:tripitaka91/utils/models/users.dart';
 import 'package:tripitaka91/utils/play_audio/audio_manager.dart';
@@ -46,7 +47,7 @@ class _SearchShowPagesTitleState extends State<SearchShowPagesTitle> {
     super.initState();
     textTitleReplace = TextTitleReplace();
     _scrollControllerTitle.addListener(_scrollListener);
-    _fetchDataTitle();
+    widget.online ? _fetchDataTitle() : _fetchDataTitleDB();
   }
 
   @override
@@ -59,7 +60,37 @@ class _SearchShowPagesTitleState extends State<SearchShowPagesTitle> {
     if (_scrollControllerTitle.offset >=
             _scrollControllerTitle.position.maxScrollExtent &&
         !_scrollControllerTitle.position.outOfRange) {
-      _fetchDataTitle();
+      widget.online ? _fetchDataTitle() : _fetchDataTitleDB();
+    }
+  }
+
+  Future<void> _fetchDataTitleDB() async {
+    int recordsPerPage = 10;
+    if (!loadingTitle) {
+      setState(() {
+        loadingTitle = true;
+      });
+
+      try {
+        List<String> newData = await DatabaseHelper().fetchTitles(
+          widget.wordSearch.replaceAll(' ', '%'),
+          (pageTitle - 1) * recordsPerPage,
+          recordsPerPage,
+        );
+
+        setState(() {
+          loadedRecordsTitle += newData.length;
+          dataTitle.addAll(newData);
+          loadingTitle = false;
+          pageTitle++;
+        });
+      } catch (e) {
+        // ignore: avoid_print
+        print('Database Error: $e');
+        setState(() {
+          loadingTitle = false;
+        });
+      }
     }
   }
 
@@ -131,7 +162,7 @@ class _SearchShowPagesTitleState extends State<SearchShowPagesTitle> {
         onNotification: (ScrollNotification scrollInfo) {
           if (scrollInfo is ScrollEndNotification &&
               scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
-            _fetchDataTitle();
+            widget.online ? _fetchDataTitle() : _fetchDataTitleDB();
           }
           return false;
         },
@@ -219,7 +250,9 @@ class _SearchShowPagesTitleState extends State<SearchShowPagesTitle> {
                                   ),
                                 )
                               : const Text(''),
-                          const SizedBox(width: 10),
+                          widget.online
+                              ? const SizedBox(width: 10)
+                              : const SizedBox.shrink(),
                           InkWell(
                             onTap: () async {
                               String bookIds =

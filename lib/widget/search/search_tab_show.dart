@@ -203,7 +203,6 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
     super.initState();
     indexlocal = widget.indexLocal;
     if (indexlocal == 0) {
-      // fetchDataTitle = loadDataTitle();
     } else if (indexlocal == 1) {
       loadDataTri1();
     } else if (indexlocal == 2) {
@@ -214,20 +213,7 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
       fetchDict();
     } else if (indexlocal == 5) {
       fetchDictbt();
-      // fetchData = loadData();
     }
-  }
-
-  Future<String> loadData() async {
-    await Future.delayed(const Duration(seconds: 1));
-    // ประมวลผลข้อมูลจาก searchQuery และ title ตามความต้องการ
-    return "Data loaded for and ${widget.title}";
-  }
-
-  Future<List<RandTitle?>> loadDataTitle() async {
-    randTitle = (await RemoteServiceTitleSearch()
-        .getTitle(widget.title, tSecretAPIKey))!;
-    return randTitle;
   }
 
   Future<TotalTitleSearchTri?> loadDataTri1() async {
