@@ -3,11 +3,13 @@ import 'package:intl/intl.dart';
 import 'dart:convert'; // เพิ่มการนำเข้าเพื่อใช้ jsonEncode
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:tripitaka91/utils/models/book_tri91.dart';
 import 'package:tripitaka91/utils/models/last_book_access.dart';
 import 'package:tripitaka91/utils/models/rand_title.dart';
 import 'package:tripitaka91/utils/models/showlog_search.dart';
 import 'package:tripitaka91/utils/models/totalsearchtitle.dart';
 import 'package:tripitaka91/utils/models/totalsearchtri.dart';
+import 'package:tripitaka91/utils/models/tri91_bookall.dart';
 
 class DatabaseHelper {
   static final DatabaseHelper _instance = DatabaseHelper._internal();
@@ -23,17 +25,6 @@ class DatabaseHelper {
     if (_database != null) return _database!;
     _database = await _initDatabase();
     return _database!;
-  }
-
-  Future<void> deleteSearchHistory(String keyword) async {
-    final db = await database; // ดึงฐานข้อมูลที่ใช้งานอยู่
-
-    // สร้างคำสั่งลบข้อมูล
-    await db.delete(
-      'tripitaka91_stat_search', // ชื่อของตาราง
-      where: 'keywords = ?', // เงื่อนไขที่ใช้ในการลบ
-      whereArgs: [keyword], // ค่าที่ใช้ในเงื่อนไข
-    );
   }
 
   Future<Database> _initDatabase() async {
@@ -54,6 +45,116 @@ class DatabaseHelper {
       //   );
       // },
     );
+  }
+
+  Future<List<BookTri91>?> getBookTri91(String bookId, String pageId) async {
+    final db = await database;
+
+    // Query the SQLite database
+    final List<Map<String, dynamic>> result = await db.query(
+      'tripitaka91_91book_line',
+      where: 'book_id = ? AND book_pages = ?',
+      whereArgs: [int.parse(bookId), int.parse(pageId)],
+      orderBy: 'book_line',
+    );
+
+    // Check if the result is not empty and return parsed data
+    if (result.isNotEmpty) {
+      return result.map((json) => BookTri91.fromJson(json)).toList();
+    } else {
+      // print('ไม่พบข้อมูล');
+      return null;
+    }
+  }
+
+// ฟังก์ชันในการดึงข้อมูลตาม keywords
+  Future<List<String>> fetchDataDict(String result) async {
+    final db = await database; // ดึงฐานข้อมูลที่ใช้งานอยู่
+    List<String> results = [];
+
+    // Split keywords by comma and trim each one
+    List<String> keywords = result.split(',').map((e) => e.trim()).toList();
+
+    // Use a SQL query to select data based on the keywords
+    String keywordsPlaceholders = keywords.map((_) => '?').join(',');
+    final query = '''
+      SELECT buddic_word, buddic_detail 
+      FROM tripitaka91_dict 
+      WHERE buddic_word IN ($keywordsPlaceholders)
+    ''';
+
+    final rows = await db.rawQuery(query, keywords);
+
+    if (rows.isNotEmpty) {
+      results = rows.map((row) {
+        return '${row['buddic_word']}|${row['buddic_detail']}';
+      }).toList();
+    } else {
+      results.add('ไม่พบข้อมูล');
+    }
+
+    return results;
+  }
+
+  Future<void> deleteSearchHistory(String keyword) async {
+    final db = await database; // ดึงฐานข้อมูลที่ใช้งานอยู่
+
+    // สร้างคำสั่งลบข้อมูล
+    await db.delete(
+      'tripitaka91_stat_search', // ชื่อของตาราง
+      where: 'keywords = ?', // เงื่อนไขที่ใช้ในการลบ
+      whereArgs: [keyword], // ค่าที่ใช้ในเงื่อนไข
+    );
+  }
+
+  Future<List<Tri91BookAll>?> getBookTri91All(String bookId) async {
+    final db = await database;
+    try {
+      // Query ข้อมูลจากตาราง SQLite
+      final List<Map<String, dynamic>> result = await db.query(
+        'tripitaka91_91title_1',
+        where: 'book_ids = ?',
+        whereArgs: [bookId],
+      );
+
+      // หากมีข้อมูลในผลลัพธ์ ให้แปลงเป็น JSON แล้วไปใช้ tri91BookAllFromJson
+      if (result.isNotEmpty) {
+        return tri91BookAllFromJson(jsonEncode(result));
+      } else {
+        return null;
+      }
+    } catch (e) {
+      // จัดการข้อผิดพลาดในกรณีเกิด Exception
+      // ignore: avoid_print
+      print('Error retrieving data from SQLite: $e');
+      return null;
+    }
+  }
+
+  Future<List<RandTitle>?> getTitle(String bookId) async {
+    final db = await database;
+    try {
+      // คำสั่ง SQL สำหรับเลือกข้อมูลจากตาราง โดยใช้การกรอง
+      final List<Map<String, dynamic>> result = await db.query(
+        'tripitaka91_91title',
+        where: 'tripitaka91_code = ?',
+        whereArgs: [bookId],
+        orderBy: 'tripitaka91_no',
+      );
+
+      // เช็คว่ามีข้อมูลหรือไม่
+      if (result.isNotEmpty) {
+        // แปลงข้อมูลที่ได้จาก SQLite เป็น JSON แล้วไปเรียกใช้ randTitleFromJson
+        return randTitleFromJson(jsonEncode(result));
+      } else {
+        return null;
+      }
+    } catch (e) {
+      // ถ้าเกิดข้อผิดพลาดในระหว่างการดึงข้อมูล
+      // ignore: avoid_print
+      print('Error retrieving data from SQLite: $e');
+      return null;
+    }
   }
 
   Future<List<String>> fetchTri91(
