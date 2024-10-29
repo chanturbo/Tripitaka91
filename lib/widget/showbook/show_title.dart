@@ -34,7 +34,17 @@ class _SubShowTitleState extends State<SubShowTitle> {
           itemCount: widget.menuList.length,
           itemBuilder: (BuildContext innerContext, int innerIndex) {
             return ListTile(
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              tileColor: Colors.white, // สีพื้นหลัง
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              leading: const Icon(Icons.menu_book,
+                  color: Colors.blueAccent, size: 28), // ไอคอนนำหน้า
               title: ATextTitleMedium18(text: widget.menuList[innerIndex][0]),
+              trailing: const Icon(Icons.arrow_forward_ios,
+                  color: Colors.grey, size: 18), // ไอคอนลูกศรขวา
               onTap: () {
                 Navigator.push(
                   context,
