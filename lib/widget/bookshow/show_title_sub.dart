@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:share_plus/share_plus.dart';
 import 'package:substring_highlight/substring_highlight.dart';
 import 'package:tripitaka91/utils/constants/api_constants.dart';
+import 'package:tripitaka91/utils/db_helper/db_helper.dart';
 import 'package:tripitaka91/utils/img_service/shared_image_generator.dart';
 import 'package:tripitaka91/utils/models/users.dart';
 import 'package:tripitaka91/utils/play_audio/audio_manager.dart';
@@ -52,7 +53,7 @@ class _ShowTitlePagesState extends State<ShowTitlePages> {
     super.initState();
     textTitleReplace = TextTitleReplace();
     _scrollControllerTitle.addListener(_scrollListener);
-    _fetchDataTitle();
+    widget.online ? _fetchDataTitle() : _fetchDataTitleDB();
     getUser();
   }
 
@@ -70,7 +71,37 @@ class _ShowTitlePagesState extends State<ShowTitlePages> {
     if (_scrollControllerTitle.offset >=
             _scrollControllerTitle.position.maxScrollExtent &&
         !_scrollControllerTitle.position.outOfRange) {
-      _fetchDataTitle();
+      widget.online ? _fetchDataTitle() : _fetchDataTitleDB();
+    }
+  }
+
+  Future<void> _fetchDataTitleDB() async {
+    int recordsPerPage = 10;
+    if (!loadingTitle) {
+      setState(() {
+        loadingTitle = true;
+      });
+
+      try {
+        List<String> newData = await DatabaseHelper().fetchTitlesDetail(
+          widget.wordSearch.replaceAll(' ', '%'),
+          (pageTitle - 1) * recordsPerPage,
+          recordsPerPage,
+        );
+
+        setState(() {
+          loadedRecordsTitle += newData.length;
+          dataTitle.addAll(newData);
+          loadingTitle = false;
+          pageTitle++;
+        });
+      } catch (e) {
+        // ignore: avoid_print
+        print('Database Error: $e');
+        setState(() {
+          loadingTitle = false;
+        });
+      }
     }
   }
 
@@ -267,7 +298,7 @@ class _ShowTitlePagesState extends State<ShowTitlePages> {
         loadedRecordsTitle = 0;
         loadingTitle = false;
         pageTitle = 1;
-        _fetchDataTitle();
+        widget.online ? _fetchDataTitle() : _fetchDataTitleDB();
         // ignore: use_build_context_synchronously
         _showSnackbar(context, 'บันทึกข้อมูลเรียบร้อยแล้ว');
       } else {
@@ -404,7 +435,7 @@ class _ShowTitlePagesState extends State<ShowTitlePages> {
         onNotification: (ScrollNotification scrollInfo) {
           if (scrollInfo is ScrollEndNotification &&
               scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
-            _fetchDataTitle();
+            widget.online ? _fetchDataTitle() : _fetchDataTitleDB();
           }
           return false;
         },
@@ -474,7 +505,9 @@ class _ShowTitlePagesState extends State<ShowTitlePages> {
                                   ),
                                 )
                               : const Text(''),
-                          const SizedBox(width: 10),
+                          widget.online
+                              ? const SizedBox(width: 10)
+                              : const SizedBox.shrink(),
                           InkWell(
                             onTap: () async {
                               String bookIds =

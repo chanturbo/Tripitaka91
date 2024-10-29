@@ -296,95 +296,100 @@ class _ShowBookSlideState extends State<ShowBookSlide> {
         Container(
           height: 10,
         ),
-        Row(
-          children: [
-            Container(
-              alignment: Alignment.topLeft,
-              child: ClipPath(
-                clipper: RightTriangleRectangleClipper(),
-                child: Container(
-                  width: 100.0,
-                  height: 25.0,
-                  color: TColors.primary,
-                  child: const Center(
-                    child: ATextDiskplaySmall(
-                      text: 'หนังสือแนะนำ',
+        widget.online
+            ? Row(
+                children: [
+                  Container(
+                    alignment: Alignment.topLeft,
+                    child: ClipPath(
+                      clipper: RightTriangleRectangleClipper(),
+                      child: Container(
+                        width: 100.0,
+                        height: 25.0,
+                        color: TColors.primary,
+                        child: const Center(
+                          child: ATextDiskplaySmall(
+                            text: 'หนังสือแนะนำ',
+                          ),
+                        ),
+                      ),
                     ),
                   ),
-                ),
-              ),
-            ),
-            const Expanded(
-              child: SizedBox(width: 16.0),
-            ),
-            ScrollControlButton(
-              scrollController: _scrollControllerListView4,
-              offset: 150,
-              buttonText: '<-เลื่อน',
-              isLeftButton: true,
-              color: TColors.primary,
-            ),
-            ScrollControlButton(
-              scrollController: _scrollControllerListView4,
-              offset: 150,
-              buttonText: 'เลื่อน->',
-              isLeftButton: false,
-              color: TColors.primary,
-            ),
-          ],
-        ),
-        SizedBox(
-          height: widget.isMobile ? 200 : 230.0,
-          child: ListView.builder(
-            controller: _scrollControllerListView4,
-            scrollDirection: Axis.horizontal,
-            shrinkWrap: true,
-            itemCount: 6,
-            itemBuilder: (BuildContext context, int index) {
-              return Card(
-                margin: const EdgeInsets.all(10),
-                shape: RoundedRectangleBorder(
-                  borderRadius:
-                      BorderRadius.circular(10), // ปรับแต่งตามความต้องการ
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Expanded(
-                      child: Link(
-                        uri: index == 2
-                            ? Uri.parse(
-                                'https://www.tripitaka91.com/pdf/showpdf.php?filename=ebook-${index + 1}-1.pdf')
-                            : Uri.parse(
-                                'https://www.tripitaka91.com/pdf/showpdf.php?filename=ebook-${index + 1}.pdf'),
-                        target: LinkTarget.blank,
-                        builder: (BuildContext ctx, FollowLink? openLink) {
-                          return IconButton(
-                            onPressed: openLink,
-                            icon: Image.asset(
-                                'assets/images/ebook/ebook-${index + 1}.png'), // เปลี่ยนเป็นที่อยู่ของรูปภาพที่คุณต้องการแสดง
-                          );
-                        },
+                  const Expanded(
+                    child: SizedBox(width: 16.0),
+                  ),
+                  ScrollControlButton(
+                    scrollController: _scrollControllerListView4,
+                    offset: 150,
+                    buttonText: '<-เลื่อน',
+                    isLeftButton: true,
+                    color: TColors.primary,
+                  ),
+                  ScrollControlButton(
+                    scrollController: _scrollControllerListView4,
+                    offset: 150,
+                    buttonText: 'เลื่อน->',
+                    isLeftButton: false,
+                    color: TColors.primary,
+                  ),
+                ],
+              )
+            : const SizedBox.shrink(),
+        widget.online
+            ? SizedBox(
+                height: widget.isMobile ? 200 : 230.0,
+                child: ListView.builder(
+                  controller: _scrollControllerListView4,
+                  scrollDirection: Axis.horizontal,
+                  shrinkWrap: true,
+                  itemCount: 6,
+                  itemBuilder: (BuildContext context, int index) {
+                    return Card(
+                      margin: const EdgeInsets.all(10),
+                      shape: RoundedRectangleBorder(
+                        borderRadius:
+                            BorderRadius.circular(10), // ปรับแต่งตามความต้องการ
                       ),
-                      // child: InkWell(
-                      //   onTap: () {},
-                      //   child: ClipRRect(
-                      //     borderRadius: BorderRadius.circular(
-                      //         10), // ปรับแต่งตามความต้องการ
-                      //     child: Image(
-                      //       image: AssetImage(
-                      //           'assets/images/ebook/ebook-${index + 1}.png'),
-                      //       fit: BoxFit.cover, // ปรับตามความต้องการ
-                      //     ),
-                      //   ),
-                      // ),
-                    ),
-                  ],
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Expanded(
+                            child: Link(
+                              uri: index == 2
+                                  ? Uri.parse(
+                                      'https://www.tripitaka91.com/pdf/showpdf.php?filename=ebook-${index + 1}-1.pdf')
+                                  : Uri.parse(
+                                      'https://www.tripitaka91.com/pdf/showpdf.php?filename=ebook-${index + 1}.pdf'),
+                              target: LinkTarget.blank,
+                              builder:
+                                  (BuildContext ctx, FollowLink? openLink) {
+                                return IconButton(
+                                  onPressed: openLink,
+                                  icon: Image.asset(
+                                      'assets/images/ebook/ebook-${index + 1}.png'), // เปลี่ยนเป็นที่อยู่ของรูปภาพที่คุณต้องการแสดง
+                                );
+                              },
+                            ),
+                            // child: InkWell(
+                            //   onTap: () {},
+                            //   child: ClipRRect(
+                            //     borderRadius: BorderRadius.circular(
+                            //         10), // ปรับแต่งตามความต้องการ
+                            //     child: Image(
+                            //       image: AssetImage(
+                            //           'assets/images/ebook/ebook-${index + 1}.png'),
+                            //       fit: BoxFit.cover, // ปรับตามความต้องการ
+                            //     ),
+                            //   ),
+                            // ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
                 ),
-              );
-            },
-          ),
-        ),
+              )
+            : const SizedBox.shrink(),
       ],
     );
   }

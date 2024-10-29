@@ -179,23 +179,25 @@ class ListMenu extends StatelessWidget {
             );
           },
         ),
-        ListTile(
-          title: (!isTablet && !isDesktop)
-              ? const ATextTitleMedium18(text: 'พจนานุกรม ไทย-บาลี')
-              : const ATextTitleMedium(
-                  text: 'พจนานุกรม ไทย-บาลี',
-                ),
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => DictbtShowTitle(
-                  online: online,
-                ),
-              ),
-            );
-          },
-        ),
+        online
+            ? ListTile(
+                title: (!isTablet && !isDesktop)
+                    ? const ATextTitleMedium18(text: 'พจนานุกรม ไทย-บาลี')
+                    : const ATextTitleMedium(
+                        text: 'พจนานุกรม ไทย-บาลี',
+                      ),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => DictbtShowTitle(
+                        online: online,
+                      ),
+                    ),
+                  );
+                },
+              )
+            : const SizedBox.shrink(),
         ClipPath(
           clipper: RightTriangleRectangleClipper(),
           child: Container(

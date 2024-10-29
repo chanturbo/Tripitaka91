@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:share_plus/share_plus.dart';
 import 'package:tripitaka91/utils/constants/api_constants.dart';
+import 'package:tripitaka91/utils/db_helper/db_helper.dart';
 import 'package:tripitaka91/utils/models/users.dart';
 import 'package:tripitaka91/utils/play_audio/audio_manager.dart';
 import 'package:tripitaka91/utils/shared_preferences/shared_user.dart';
@@ -40,7 +41,7 @@ class _ShowPagesDictList2State extends State<ShowPagesDictList2> {
     super.initState();
     textTitleReplace = TextTitleReplace();
     _scrollControllerDict.addListener(_scrollListener);
-    _fetchDataDict();
+    widget.online ? _fetchDataDict() : _fetchDataDictDB();
   }
 
   @override
@@ -53,7 +54,39 @@ class _ShowPagesDictList2State extends State<ShowPagesDictList2> {
     if (_scrollControllerDict.offset >=
             _scrollControllerDict.position.maxScrollExtent &&
         !_scrollControllerDict.position.outOfRange) {
-      _fetchDataDict();
+      widget.online ? _fetchDataDict() : _fetchDataDictDB();
+    }
+  }
+
+  Future<void> _fetchDataDictDB() async {
+    int recordsPerPage = 10; // จำนวนข้อมูลที่ต้องการดึงต่อหน้า
+    if (!loadingDict) {
+      setState(() {
+        loadingDict = true;
+      });
+
+      try {
+        // ดึงข้อมูลจากฐานข้อมูล SQLite โดยใช้ fetchDict
+        List<String> newData = await DatabaseHelper().fetchDictAll(
+          widget.wordSearch.replaceAll(' ', '%'),
+          (pageTitle - 1) * recordsPerPage,
+          recordsPerPage,
+        );
+
+        setState(() {
+          loadedRecordsDict += newData.length;
+          dataDict.addAll(newData);
+          loadingDict = false;
+          pageTitle++;
+        });
+      } catch (e) {
+        // จัดการกรณีเกิดข้อผิดพลาด
+        // ignore: avoid_print
+        print('Database Error: $e');
+        setState(() {
+          loadingDict = false;
+        });
+      }
     }
   }
 
@@ -121,7 +154,7 @@ class _ShowPagesDictList2State extends State<ShowPagesDictList2> {
         onNotification: (ScrollNotification scrollInfo) {
           if (scrollInfo is ScrollEndNotification &&
               scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
-            _fetchDataDict();
+            widget.online ? _fetchDataDict() : _fetchDataDictDB();
           }
           return false;
         },
@@ -180,7 +213,9 @@ class _ShowPagesDictList2State extends State<ShowPagesDictList2> {
                               ),
                             )
                           : const Text(''),
-                      const SizedBox(width: 10),
+                      widget.online
+                          ? const SizedBox(width: 10)
+                          : const SizedBox.shrink(),
                       InkWell(
                         onTap: () async {
                           String txtTitle =

@@ -276,21 +276,23 @@ class ListMenuMobile extends StatelessWidget {
             );
           },
         ),
-        ListTile(
-          title: const ATextTitleMedium18(
-            text: 'พจนานุกรม ไทย-บาลี',
-          ),
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => DictbtShowTitle(
-                  online: online,
+        online
+            ? ListTile(
+                title: const ATextTitleMedium18(
+                  text: 'พจนานุกรม ไทย-บาลี',
                 ),
-              ),
-            );
-          },
-        ),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => DictbtShowTitle(
+                        online: online,
+                      ),
+                    ),
+                  );
+                },
+              )
+            : const SizedBox.shrink(),
         ClipPath(
           clipper: RightTriangleRectangleClipper(),
           child: Container(

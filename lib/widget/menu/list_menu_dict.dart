@@ -48,21 +48,23 @@ class ListMenuDict extends StatelessWidget {
             );
           },
         ),
-        ListTile(
-          title: const ATextTitleMedium(
-            text: 'พจนานุกรม ไทย-บาลี',
-          ),
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => DictbtShowTitle(
-                  online: online,
+        online
+            ? ListTile(
+                title: const ATextTitleMedium(
+                  text: 'พจนานุกรม ไทย-บาลี',
                 ),
-              ),
-            );
-          },
-        ),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => DictbtShowTitle(
+                        online: online,
+                      ),
+                    ),
+                  );
+                },
+              )
+            : const SizedBox.shrink(),
       ],
     );
   }

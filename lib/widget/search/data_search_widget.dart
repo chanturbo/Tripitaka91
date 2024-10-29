@@ -126,7 +126,19 @@ class DataSearch extends SearchDelegate<String> {
                       color: Colors.red, // สีพื้นหลังเมื่อเลื่อน
                       alignment: Alignment.centerRight,
                       padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: const Icon(Icons.delete, color: Colors.white),
+                      child: const Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Icon(Icons.delete, color: Colors.white),
+                          SizedBox(width: 8),
+                          Text(
+                            'ลบ',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
                     ),
                     onDismissed: (direction) {
                       // ประมวลผลลบข้อมูลจากฐานข้อมูล

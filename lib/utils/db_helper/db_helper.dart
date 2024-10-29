@@ -47,6 +47,63 @@ class DatabaseHelper {
     );
   }
 
+  Future<List<String>> fetchDictAll(
+      String wordsearch, int startFrom, int recordsPerPage) async {
+    final db = await database;
+
+    // สร้าง query แบบ dynamic ตามเงื่อนไขของ wordsearch
+    String? whereClause;
+    List<String> whereArgs = [];
+
+    if (wordsearch == '...') {
+      // กรณีไม่มีการค้นหาเฉพาะเจาะจง (เหมือนใน PHP)
+      whereClause = null;
+    } else {
+      // ใช้ WHERE clause พร้อม LIKE filter และเงื่อนไขเพิ่มเติม
+      whereClause = 'buddic_word LIKE ?';
+      whereArgs.add('%$wordsearch%');
+
+      if (wordsearch == 'ฐ') {
+        // กรณีตัวอักษรพิเศษ 'ฐ'
+        whereClause += ' OR buddic_word LIKE ?';
+        whereArgs.add('%');
+      } else if (wordsearch == 'ญ') {
+        // กรณีตัวอักษรพิเศษ 'ญ'
+        whereClause += ' OR buddic_word LIKE ?';
+        whereArgs.add('%');
+      }
+
+      // เพิ่มการค้นหาตามตัวนำหน้าอื่นๆ (เ แ โ ไ ใ)
+      whereClause += ' OR buddic_word LIKE ? OR buddic_word LIKE ? '
+          'OR buddic_word LIKE ? OR buddic_word LIKE ? '
+          'OR buddic_word LIKE ?';
+      whereArgs.addAll([
+        'เ$wordsearch%',
+        'แ$wordsearch%',
+        'โ$wordsearch%',
+        'ไ$wordsearch%',
+        'ใ$wordsearch%',
+      ]);
+    }
+
+    // Query the database with WHERE, ORDER, and LIMIT conditions
+    final List<Map<String, dynamic>> result = await db.query(
+      'tripitaka91_dict',
+      where: whereClause,
+      whereArgs: whereArgs,
+      orderBy: 'buddic_word',
+      limit: recordsPerPage,
+      offset: startFrom,
+    );
+
+    // Convert the result to a list of formatted strings
+    List<String> response = result.map((row) {
+      return '${row['buddic_word']}|${row['buddic_detail']}';
+    }).toList();
+
+    return response;
+  }
+
   Future<List<BookTri91>?> getBookTri91(String bookId, String pageId) async {
     final db = await database;
 
@@ -362,6 +419,60 @@ class DatabaseHelper {
       totalRecords: total,
       detailRecords: formattedString,
     );
+  }
+
+  Future<List<String>> fetchTitlesInBook(
+      String bookid, int startFrom, int recordsPerPage) async {
+    final db = await database;
+
+    // Query with LIKE filter, ORDER, and LIMIT
+    final List<Map<String, dynamic>> result = await db.query(
+      'tripitaka91_91title',
+      where: 'tripitaka91_code = ?',
+      whereArgs: [bookid],
+      orderBy: 'tripitaka91_no',
+      limit: recordsPerPage,
+      offset: startFrom,
+    );
+
+    List<String> response = [];
+    for (var rowTitle in result) {
+      String cleanedString =
+          '${rowTitle['tripitaka91_title']}|${rowTitle['tripitaka91_book']}|${rowTitle['tripitaka91_page']}|'
+          '${rowTitle['tripitaka91_line']}|${rowTitle['tripitaka91_book_red']}|${rowTitle['tripitaka91_code']}|'
+          '${rowTitle['tripitaka91_no']}|${rowTitle['tripitaka91_mark']}|${rowTitle['tripitaka91_group']}|'
+          '${rowTitle['tripitaka91_category']}|${rowTitle['tripitaka91_detail']}';
+      response.add(cleanedString);
+    }
+
+    return response;
+  }
+
+  Future<List<String>> fetchTitlesDetail(
+      String wordsearch, int startFrom, int recordsPerPage) async {
+    final db = await database;
+
+    // Query with LIKE filter, ORDER, and LIMIT
+    final List<Map<String, dynamic>> result = await db.query(
+      'tripitaka91_91title',
+      where: 'tripitaka91_detail LIKE ?',
+      whereArgs: ['%$wordsearch%'],
+      orderBy: 'tripitaka91_book',
+      limit: recordsPerPage,
+      offset: startFrom,
+    );
+
+    List<String> response = [];
+    for (var rowTitle in result) {
+      String cleanedString =
+          '${rowTitle['tripitaka91_title']}|${rowTitle['tripitaka91_book']}|${rowTitle['tripitaka91_page']}|'
+          '${rowTitle['tripitaka91_line']}|${rowTitle['tripitaka91_book_red']}|${rowTitle['tripitaka91_code']}|'
+          '${rowTitle['tripitaka91_no']}|${rowTitle['tripitaka91_mark']}|${rowTitle['tripitaka91_group']}|'
+          '${rowTitle['tripitaka91_category']}|${rowTitle['tripitaka91_detail']}';
+      response.add(cleanedString);
+    }
+
+    return response;
   }
 
   Future<List<String>> fetchTitles(
