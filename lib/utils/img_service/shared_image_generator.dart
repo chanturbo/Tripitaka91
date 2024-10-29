@@ -33,9 +33,9 @@ class SharedImageGenerator {
       width: 360, // กำหนดความกว้างที่คงที่
       child: Card(
         margin: const EdgeInsets.all(5),
-        shadowColor: TColors.primary,
+        shadowColor: TColors.white,
         color: TColors.white,
-        elevation: 50,
+        elevation: 5,
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
