@@ -744,12 +744,16 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
             if (pageChanged == pageids) {
               tmpLine = tribookline.toString();
             }
-            await Share.share(
-                '$tURLmain${widget.triBookid}-$pageChanged-$tmpLine.htm',
-                subject: 'พระไตรปิฎก');
+            await Clipboard.setData(
+              ClipboardData(
+                  text:
+                      '$tURLmain${widget.triBookid}-$pageChanged-$tmpLine.htm'),
+            );
+            // ignore: use_build_context_synchronously
+            _showSnackbar(context, 'คัดลอกข้อมูลเรียบร้อยแล้ว');
           },
           child: Icon(
-            Icons.share,
+            Icons.copy,
             size: widget.isMobile ? 25 : 18,
             color: Colors.white, // Change color as needed
           ),
@@ -761,16 +765,12 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
             if (pageChanged == pageids) {
               tmpLine = tribookline.toString();
             }
-            await Clipboard.setData(
-              ClipboardData(
-                  text:
-                      '$tURLmain${widget.triBookid}-$pageChanged-$tmpLine.htm'),
-            );
-            // ignore: use_build_context_synchronously
-            _showSnackbar(context, 'คัดลอกข้อมูลเรียบร้อยแล้ว');
+            await Share.share(
+                '$tURLmain${widget.triBookid}-$pageChanged-$tmpLine.htm',
+                subject: 'พระไตรปิฎก');
           },
           child: Icon(
-            Icons.copy,
+            Icons.share,
             size: widget.isMobile ? 25 : 18,
             color: Colors.white, // Change color as needed
           ),

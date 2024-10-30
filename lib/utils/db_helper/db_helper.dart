@@ -987,7 +987,7 @@ class DatabaseHelper {
         book_last_line = 1 
     WHERE book_ids = $bookid
   ''';
-
+    // print('SQL => $sql');
     await dbClient.rawUpdate(sql);
   }
 
@@ -1024,7 +1024,30 @@ class DatabaseHelper {
         bookLastAccess:
             int.tryParse(record["book_ids"]?.toString() ?? '1') ?? 1,
         pageLastAccess:
-            int.tryParse(record["book_last_page"]?.toString() ?? '1') ?? 1,
+            int.tryParse(record["book_last_pages"]?.toString() ?? '1') ?? 1,
+      );
+    }).toList();
+  }
+
+  Future<List<LastBookAccess>> getLastReadWithBook(String bookid) async {
+    final db = await database;
+    final result = await db.query(
+      'tripitaka91_91title_1',
+      where: 'book_ids = ?', // กำหนดเงื่อนไขให้เท่ากับ bookid
+      whereArgs: [bookid], // ส่งค่า bookid เป็น whereArgs
+      orderBy: 'book_last_access DESC',
+    );
+
+    return result.map((record) {
+      return LastBookAccess(
+        username: "guest", // ใช้ค่า default เป็น "guest"
+        timeLastAccess:
+            DateTime.tryParse(record["book_last_access"]?.toString() ?? "") ??
+                DateTime.now(),
+        bookLastAccess:
+            int.tryParse(record["book_ids"]?.toString() ?? '1') ?? 1,
+        pageLastAccess:
+            int.tryParse(record["book_last_pages"]?.toString() ?? '1') ?? 1,
       );
     }).toList();
   }

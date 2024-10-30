@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:tripitaka91/utils/api_connect/remote_service.dart';
 import 'package:tripitaka91/utils/constants/api_constants.dart';
+import 'package:tripitaka91/utils/db_helper/db_helper.dart';
 import 'package:tripitaka91/utils/models/last_book_access.dart';
 import 'package:tripitaka91/utils/models/rand_title.dart';
 import 'package:tripitaka91/utils/models/tri91_bookall.dart';
@@ -43,6 +44,8 @@ class _BookShowTitleState extends State<BookShowTitle> {
   late String bookid = widget.triBookid;
   Users? users;
 
+  final dbHelper = DatabaseHelper();
+
   @override
   void initState() {
     super.initState();
@@ -56,20 +59,26 @@ class _BookShowTitleState extends State<BookShowTitle> {
   }
 
   Future<void> _getLastBook() async {
-    GetLastRead getLastRead = GetLastRead();
-    List<LastBookAccess> result = await getLastRead.fetchLastBookAccessList();
-    int targetBookAccess =
-        int.parse(widget.triBookid); // เปลี่ยนตามที่คุณต้องการ
-    List<LastBookAccess> filteredResult = result
-        .where((lastBookAccess) =>
-            lastBookAccess.bookLastAccess == targetBookAccess)
-        .toList();
+    if (widget.online) {
+      GetLastRead getLastRead = GetLastRead();
+      List<LastBookAccess> result = await getLastRead.fetchLastBookAccessList();
+      int targetBookAccess =
+          int.parse(widget.triBookid); // เปลี่ยนตามที่คุณต้องการ
+      List<LastBookAccess> filteredResult = result
+          .where((lastBookAccess) =>
+              lastBookAccess.bookLastAccess == targetBookAccess)
+          .toList();
 
-    lastBookAccess = filteredResult;
-    // print(lastBookAccess[0].bookLastAccess);
-    // print(lastBookAccess[0].pageLastAccess);
-    // print(lastBookAccess[0].timeLastAccess);
-    // print(lastBookAccess[0].username);
+      lastBookAccess = filteredResult;
+      // print(lastBookAccess[0].bookLastAccess);
+      // print(lastBookAccess[0].pageLastAccess);
+      // print(lastBookAccess[0].timeLastAccess);
+      // print(lastBookAccess[0].username);
+    } else {
+      List<LastBookAccess> dbLastBookAccess =
+          await dbHelper.getLastReadWithBook(widget.triBookid);
+      lastBookAccess = dbLastBookAccess;
+    }
   }
 
   Future<void> checkLoginStatus(BuildContext context) async {
@@ -102,18 +111,13 @@ class _BookShowTitleState extends State<BookShowTitle> {
     );
   }
 
-  Future<List<RandTitle?>> fetchDataTitle() async {
-    randTitle =
-        (await RemoteServiceTitle().getTitle(widget.triBookid, tSecretAPIKey))!;
-
-    return randTitle;
-  }
-
   void getDataTri91() async {
     try {
-      tri91BookAll = await RemoteServiceBookTri91All()
-              .getBookTri91All(widget.triBookid, tSecretAPIKey) ??
-          [];
+      tri91BookAll = (widget.online
+          ? await RemoteServiceBookTri91All()
+                  .getBookTri91All(widget.triBookid, tSecretAPIKey) ??
+              []
+          : await dbHelper.getBookTri91All(widget.triBookid))!;
       if (tri91BookAll.isNotEmpty) {
         setState(() {
           numPageAll = tri91BookAll[0].bookPagesTotal;
