@@ -47,6 +47,22 @@ class DatabaseHelper {
     );
   }
 
+  Future<void> replaceMultipleWordsInTitle(
+      Map<String, String> replacements) async {
+    final db = await database;
+
+    for (var entry in replacements.entries) {
+      await db.rawUpdate(
+        '''
+      UPDATE tripitaka91_91title
+      SET tripitaka91_title = REPLACE(tripitaka91_title, ?, ?)
+      WHERE tripitaka91_title LIKE ?
+      ''',
+        [entry.key, entry.value, '%${entry.key}%'], // แทนที่คำเก่าด้วยคำใหม่
+      );
+    }
+  }
+
   Future<List<String>> fetchDictAll(
       String wordsearch, int startFrom, int recordsPerPage) async {
     final db = await database;
@@ -992,6 +1008,14 @@ class DatabaseHelper {
   }
 
   Future<List<RandTitle>?> getRandTitleDB() async {
+    // เรียกใช้ฟังก์ชัน โดยกำหนดหลายคำที่ต้องการแทนที่
+    Map<String, String> replacements = {
+      "": "-",
+      "": "\"",
+      "": "\"",
+    };
+    await replaceMultipleWordsInTitle(replacements);
+
     final db = await database;
     final result = await db.query(
       'tripitaka91_91title',

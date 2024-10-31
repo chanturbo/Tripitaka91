@@ -150,6 +150,55 @@ class _SearchPagesState extends State<SearchPages> {
     return randTri;
   }
 
+  Widget buildFutureBuilder(
+      Future<TotalTitleSearchTri?> future, String title, int indexShow) {
+    return Container(
+      padding: const EdgeInsets.all(5),
+      alignment: Alignment.bottomLeft,
+      child: FutureBuilder<TotalTitleSearchTri?>(
+        future: future,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          } else {
+            TotalTitleSearchTri? totalTitleSearch = snapshot.data;
+            int total = totalTitleSearch?.totalRecords ?? 0;
+
+            // สร้าง ListTile สำหรับกรณีพบข้อมูลและไม่พบข้อมูล
+            return ListTile(
+              leading: CircleAvatar(
+                backgroundColor: total > 0 ? Colors.blue[900] : Colors.grey,
+                foregroundColor: Colors.white,
+                child: Text(total.toString()),
+              ),
+              title: widget.isM
+                  ? ATextTitleMedium18(text: '$title พบจำนวน $total รายการ')
+                  : ATextTitleLarge(text: '$title พบจำนวน $total รายการ'),
+              onTap: total > 0
+                  ? () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => SearchTabShow(
+                            title: widget.title,
+                            result: titleMenu,
+                            indexShow: indexShow,
+                            isM: widget.isM,
+                            online: widget.online,
+                          ),
+                        ),
+                      );
+                    }
+                  : null, // ปิดการใช้งาน onTap ถ้าไม่มีข้อมูล
+            );
+          }
+        },
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     String wordSearch = widget.title;
@@ -246,243 +295,11 @@ class _SearchPagesState extends State<SearchPages> {
                         ),
                       ),
                       const Divider(),
-                      Container(
-                        padding: const EdgeInsets.all(5),
-                        alignment: Alignment.bottomLeft,
-                        child: FutureBuilder<TotalTitleSearchTri?>(
-                          future: fetchDataTri1(),
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              // กำลังโหลดข้อมูล
-                              return const Center(
-                                  child: CircularProgressIndicator());
-                            } else if (snapshot.hasError) {
-                              // กรณีเกิดข้อผิดพลาด
-                              return Text('Error: ${snapshot.error}');
-                            } else {
-                              TotalTitleSearchTri? totalTitleSearch =
-                                  snapshot.data;
-                              int total = totalTitleSearch!.totalRecords;
-
-                              // String detail = totalTitleSearch.detailRecords;
-                              // List<String> detailList = detail.split('|');
-                              // List<String> modifiedList =
-                              //     detailList.map((item) {
-                              //   // ใช้ replaceAll เพื่อแทนที่คำ # ด้วย 'พบจำนวน'
-                              //   return '[เล่ม ${item.replaceAll('#', ' จำนวน ')} รายการ]';
-                              // }).toList();
-                              // String result = modifiedList.join('\n');
-                              if (total > 0) {
-                                return ListTile(
-                                  leading: CircleAvatar(
-                                    backgroundColor: Colors.blue[900],
-                                    foregroundColor: Colors.white,
-                                    child: Text(
-                                      total.toString(),
-                                    ),
-                                  ),
-                                  title: widget.isM
-                                      ? ATextTitleMedium18(
-                                          text:
-                                              'พระวินัยปิฎก พบจำนวน $total รายการ',
-                                        )
-                                      : ATextTitleLarge(
-                                          text:
-                                              'พระวินัยปิฎก พบจำนวน $total รายการ',
-                                        ),
-                                  onTap: () {
-                                    Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => SearchTabShow(
-                                          title: wordSearch,
-                                          result: titleMenu,
-                                          indexShow: 1,
-                                          isM: widget.isM,
-                                          online: widget.online,
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                );
-                              } else {
-                                return ListTile(
-                                  leading: CircleAvatar(
-                                    backgroundColor: Colors.grey,
-                                    foregroundColor: Colors.white,
-                                    child: Text(
-                                      total.toString(),
-                                    ),
-                                  ),
-                                  title: widget.isM
-                                      ? ATextTitleMedium18(
-                                          text:
-                                              'พระวินัยปิฎก พบจำนวน $total รายการ',
-                                        )
-                                      : ATextTitleMedium(
-                                          text:
-                                              'พระวินัยปิฎก พบจำนวน $total รายการ',
-                                        ),
-                                );
-                              }
-                            }
-                          },
-                        ),
-                      ),
+                      buildFutureBuilder(fetchDataTri1(), 'พระวินัยปิฎก', 1),
                       const Divider(),
-                      Container(
-                        padding: const EdgeInsets.all(5),
-                        alignment: Alignment.bottomLeft,
-                        child: FutureBuilder<TotalTitleSearchTri?>(
-                          future: fetchDataTri2(),
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              // กำลังโหลดข้อมูล
-                              return const Center(
-                                  child: CircularProgressIndicator());
-                            } else if (snapshot.hasError) {
-                              // กรณีเกิดข้อผิดพลาด
-                              return Text('Error: ${snapshot.error}');
-                            } else {
-                              TotalTitleSearchTri? totalTitleSearch =
-                                  snapshot.data;
-                              int total = totalTitleSearch!.totalRecords;
-
-                              if (total > 0) {
-                                return ListTile(
-                                  leading: CircleAvatar(
-                                    backgroundColor: Colors.blue[900],
-                                    foregroundColor: Colors.white,
-                                    child: Text(
-                                      total.toString(),
-                                    ),
-                                  ),
-                                  title: widget.isM
-                                      ? ATextTitleMedium18(
-                                          text:
-                                              'พระสุตตันตปิฎก พบจำนวน $total รายการ',
-                                        )
-                                      : ATextTitleLarge(
-                                          text:
-                                              'พระสุตตันตปิฎก พบจำนวน $total รายการ',
-                                        ),
-                                  onTap: () {
-                                    Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => SearchTabShow(
-                                          title: wordSearch,
-                                          result: titleMenu,
-                                          indexShow: 2,
-                                          isM: widget.isM,
-                                          online: widget.online,
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                );
-                              } else {
-                                return ListTile(
-                                  leading: CircleAvatar(
-                                    backgroundColor: Colors.grey,
-                                    foregroundColor: Colors.white,
-                                    child: Text(
-                                      total.toString(),
-                                    ),
-                                  ),
-                                  title: widget.isM
-                                      ? ATextTitleMedium18(
-                                          text:
-                                              'พระสุตตันตปิฎก พบจำนวน $total รายการ',
-                                        )
-                                      : ATextTitleMedium(
-                                          text:
-                                              'พระสุตตันตปิฎก พบจำนวน $total รายการ',
-                                        ),
-                                );
-                              }
-                            }
-                          },
-                        ),
-                      ),
+                      buildFutureBuilder(fetchDataTri2(), 'พระสุตตันตปิฎก', 2),
                       const Divider(),
-                      Container(
-                        padding: const EdgeInsets.all(5),
-                        alignment: Alignment.bottomLeft,
-                        child: FutureBuilder<TotalTitleSearchTri?>(
-                          future: fetchDataTri3(),
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              // กำลังโหลดข้อมูล
-                              return const Center(
-                                  child: CircularProgressIndicator());
-                            } else if (snapshot.hasError) {
-                              // กรณีเกิดข้อผิดพลาด
-                              return Text('Error: ${snapshot.error}');
-                            } else {
-                              TotalTitleSearchTri? totalTitleSearch =
-                                  snapshot.data;
-                              int total = totalTitleSearch!.totalRecords;
-
-                              if (total > 0) {
-                                return ListTile(
-                                  leading: CircleAvatar(
-                                    backgroundColor: Colors.blue[900],
-                                    foregroundColor: Colors.white,
-                                    child: Text(
-                                      total.toString(),
-                                    ),
-                                  ),
-                                  title: widget.isM
-                                      ? ATextTitleMedium18(
-                                          text:
-                                              'พระอภิธรรมปิฎก พบจำนวน $total รายการ',
-                                        )
-                                      : ATextTitleLarge(
-                                          text:
-                                              'พระอภิธรรมปิฎก พบจำนวน $total รายการ',
-                                        ),
-                                  onTap: () {
-                                    Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => SearchTabShow(
-                                            title: wordSearch,
-                                            result: titleMenu,
-                                            indexShow: 3,
-                                            isM: widget.isM,
-                                            online: widget.online),
-                                      ),
-                                    );
-                                  },
-                                );
-                              } else {
-                                return ListTile(
-                                  leading: CircleAvatar(
-                                    backgroundColor: Colors.grey,
-                                    foregroundColor: Colors.white,
-                                    child: Text(
-                                      total.toString(),
-                                    ),
-                                  ),
-                                  title: widget.isM
-                                      ? ATextTitleMedium18(
-                                          text:
-                                              'พระอภิธรรมปิฎก พบจำนวน $total รายการ',
-                                        )
-                                      : ATextTitleMedium(
-                                          text:
-                                              'พระอภิธรรมปิฎก พบจำนวน $total รายการ',
-                                        ),
-                                );
-                              }
-                            }
-                          },
-                        ),
-                      ),
+                      buildFutureBuilder(fetchDataTri3(), 'พระอภิธรรมปิฎก', 3),
                       const Divider(),
                       Container(
                         padding: const EdgeInsets.all(5),
