@@ -385,7 +385,7 @@ class _ShowBookSlideState extends State<ShowBookSlide> {
           ],
         ),
         SizedBox(
-          height: widget.isMobile ? 200 : 230.0,
+          height: widget.isMobile ? 180 : 200.0,
           child: ListView.builder(
             controller: _scrollControllerListView5,
             scrollDirection: Axis.horizontal,

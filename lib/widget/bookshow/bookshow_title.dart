@@ -99,18 +99,6 @@ class _BookShowTitleState extends State<BookShowTitle> {
           recordsPerPage,
         );
 
-        if ((newData.isEmpty) && (pageTitle == 1)) {
-          // หากไม่มีข้อมูลเพิ่มเติมให้โหลด
-          setState(() {
-            hasMoreData = false; // ตั้งค่าให้ไม่มีข้อมูลเพิ่มเติม
-            loadingTitle = false;
-          });
-          // ignore: use_build_context_synchronously
-          _showSnackbar(context,
-              'ไม่พบหัวข้อธรรมสำหรับแสดง\nกรุณากดปุ่มเปิดอ่านล่าสุดเพื่ออ่านพระไตรปิฎก');
-          return; // ออกจากฟังก์ชัน
-        }
-
         if (newData.isEmpty) {
           // หากไม่มีข้อมูลเพิ่มเติมให้โหลด
           setState(() {
@@ -164,17 +152,6 @@ class _BookShowTitleState extends State<BookShowTitle> {
 
         if (jsonResponse['success'] == true) {
           List<String> newData = List<String>.from(jsonResponse['message']);
-          if ((newData.isEmpty) && (pageTitle == 1)) {
-            setState(() {
-              hasMoreData = false; // ตั้งค่าให้ไม่มีข้อมูลเพิ่มเติม
-              loadingTitle = false;
-            });
-            // ignore: use_build_context_synchronously
-            _showSnackbar(context,
-                'ไม่พบหัวข้อธรรมสำหรับแสดง\nกรุณากดปุ่มเปิดอ่านล่าสุดเพื่ออ่านพระไตรปิฎก');
-            // หากไม่มีข้อมูลเพิ่มเติมให้โหลด
-            return; // ออกจากฟังก์ชัน
-          }
 
           if (newData.isEmpty) {
             // หากไม่มีข้อมูลเพิ่มเติมให้โหลด
@@ -837,6 +814,29 @@ class _BookShowTitleState extends State<BookShowTitle> {
                           return const Center(
                               child: CircularProgressIndicator());
                         } else {
+                          if (pageTitle == 1) {
+                            // print('pageTitle == $pageTitle');
+                            return SizedBox(
+                              child: Column(
+                                children: [
+                                  Center(
+                                    child: ATextTitleLarge(
+                                        text:
+                                            'เล่ม ${widget.triBookid} ไม่พบหัวข้อธรรมสำหรับแสดงผล'),
+                                  ),
+                                  const SizedBox(
+                                    height: 15,
+                                  ),
+                                  const Center(
+                                    child: ATextTitleLarge(
+                                        text:
+                                            'กรุณาคลิกที่ปุ่มเปิดหน้าที่อ่านล่าสุด'),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }
+
                           return const SizedBox(); // ไม่แสดงอะไรเมื่อไม่มีข้อมูลเพิ่มเติม
                         }
                       }
