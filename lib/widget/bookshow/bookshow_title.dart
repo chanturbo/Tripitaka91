@@ -99,6 +99,18 @@ class _BookShowTitleState extends State<BookShowTitle> {
           recordsPerPage,
         );
 
+        if ((newData.isEmpty) && (pageTitle == 1)) {
+          // หากไม่มีข้อมูลเพิ่มเติมให้โหลด
+          setState(() {
+            hasMoreData = false; // ตั้งค่าให้ไม่มีข้อมูลเพิ่มเติม
+            loadingTitle = false;
+          });
+          // ignore: use_build_context_synchronously
+          _showSnackbar(context,
+              'ไม่พบหัวข้อธรรมสำหรับแสดง\nกรุณากดปุ่มเปิดอ่านล่าสุดเพื่ออ่านพระไตรปิฎก');
+          return; // ออกจากฟังก์ชัน
+        }
+
         if (newData.isEmpty) {
           // หากไม่มีข้อมูลเพิ่มเติมให้โหลด
           setState(() {
@@ -152,6 +164,18 @@ class _BookShowTitleState extends State<BookShowTitle> {
 
         if (jsonResponse['success'] == true) {
           List<String> newData = List<String>.from(jsonResponse['message']);
+          if ((newData.isEmpty) && (pageTitle == 1)) {
+            setState(() {
+              hasMoreData = false; // ตั้งค่าให้ไม่มีข้อมูลเพิ่มเติม
+              loadingTitle = false;
+            });
+            // ignore: use_build_context_synchronously
+            _showSnackbar(context,
+                'ไม่พบหัวข้อธรรมสำหรับแสดง\nกรุณากดปุ่มเปิดอ่านล่าสุดเพื่ออ่านพระไตรปิฎก');
+            // หากไม่มีข้อมูลเพิ่มเติมให้โหลด
+            return; // ออกจากฟังก์ชัน
+          }
+
           if (newData.isEmpty) {
             // หากไม่มีข้อมูลเพิ่มเติมให้โหลด
             setState(() {
