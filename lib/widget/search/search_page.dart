@@ -29,9 +29,14 @@ class SearchPages extends StatefulWidget {
 
 class _SearchPagesState extends State<SearchPages> {
   TotalTitleSearch? randTitle;
+  TotalTitleSearch? randTitle1;
   TotalTitleSearch? randDict;
+  TotalTitleSearch? randDict1;
   TotalTitleSearch? randDictbt;
   TotalTitleSearchTri? randTri;
+  TotalTitleSearchTri? randTri1;
+  TotalTitleSearchTri? randTri2;
+  TotalTitleSearchTri? randTri3;
   List<String> titleMenu = ["0", "0", "0", "0", "0", "0"];
   final dbhelper = DatabaseHelper();
   Map<String, dynamic> jsonData = {"set1": {}, "set2": {}, "set3": {}};
@@ -52,6 +57,142 @@ class _SearchPagesState extends State<SearchPages> {
     widget.online
         ? fetchSearchHistoryFromAPI()
         : dbhelper.saveHisSearch(widget.title, jsonData);
+
+    loadSequentially();
+  }
+
+  Future<void> loadSequentially() async {
+    // Load each Future in sequence and update state after each completes
+    randTitle1 = await fetchDataTitle();
+    setState(() {});
+    randTri1 = await fetchDataTri1();
+    setState(() {}); // Update UI for data1
+    randTri2 = await fetchDataTri2();
+    setState(() {}); // Update UI for data2
+    randTri3 = await fetchDataTri3();
+    setState(() {}); // Update UI for data3
+    randDict1 = await fetchDict();
+    setState(() {});
+  }
+
+  Widget buildListTri(
+      TotalTitleSearchTri? data, String titleTri, int indexShow) {
+    if (data == null) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    int total = data.totalRecords;
+
+    return Container(
+      padding: const EdgeInsets.all(5),
+      alignment: Alignment.bottomLeft,
+      child: ListTile(
+        leading: CircleAvatar(
+          backgroundColor: total > 0 ? Colors.blue[900] : Colors.grey,
+          foregroundColor: Colors.white,
+          child: Text(total.toString()),
+        ),
+        title: widget.isM
+            ? ATextTitleMedium18(text: '$titleTri พบจำนวน $total รายการ')
+            : ATextTitleLarge(text: '$titleTri พบจำนวน $total รายการ'),
+        onTap: total > 0
+            ? () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => SearchTabShow(
+                      title: widget.title,
+                      result: titleMenu,
+                      indexShow: indexShow,
+                      isM: widget.isM,
+                      online: widget.online,
+                    ),
+                  ),
+                );
+              }
+            : null,
+      ),
+    );
+  }
+
+  Widget buildListTitle(
+      TotalTitleSearch? data, String titleTri, int indexShow) {
+    if (data == null) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    int total = data.totalRecords;
+
+    return Container(
+      padding: const EdgeInsets.all(5),
+      alignment: Alignment.bottomLeft,
+      child: ListTile(
+        leading: CircleAvatar(
+          backgroundColor: total > 0 ? Colors.blue[900] : Colors.grey,
+          foregroundColor: Colors.white,
+          child: Text(total.toString()),
+        ),
+        title: widget.isM
+            ? ATextTitleMedium18(text: '$titleTri พบจำนวน $total รายการ')
+            : ATextTitleLarge(text: '$titleTri พบจำนวน $total รายการ'),
+        onTap: total > 0
+            ? () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => SearchTabShow(
+                      title: widget.title,
+                      result: titleMenu,
+                      indexShow: indexShow,
+                      isM: widget.isM,
+                      online: widget.online,
+                    ),
+                  ),
+                );
+              }
+            : null, // ปิดการใช้งาน onTap ถ้าไม่มีข้อมูล
+      ),
+    );
+  }
+
+  Widget buildListDict(
+      TotalTitleSearch? data, String titleDict, int indexShow) {
+    if (data == null) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    int total = data.totalRecords;
+
+    return Container(
+      padding: const EdgeInsets.all(5),
+      alignment: Alignment.bottomLeft,
+      child: ListTile(
+        leading: CircleAvatar(
+          backgroundColor: total > 0 ? Colors.blue[900] : Colors.grey,
+          foregroundColor: Colors.white,
+          child: Text(total.toString()),
+        ),
+        title: widget.isM
+            ? ATextTitleMedium18(text: '$titleDict พบจำนวน $total รายการ')
+            : ATextTitleLarge(text: '$titleDict พบจำนวน $total รายการ'),
+        onTap: total > 0
+            ? () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => SearchTabShow(
+                      title: widget.title,
+                      result: titleMenu,
+                      indexShow: indexShow,
+                      isM: widget.isM,
+                      online: widget.online,
+                    ),
+                  ),
+                );
+              }
+            : null,
+      ),
+    );
   }
 
   Future<bool> fetchSearchHistoryFromAPI() async {
@@ -150,55 +291,6 @@ class _SearchPagesState extends State<SearchPages> {
     return randTri;
   }
 
-  Widget buildFutureBuilder(
-      Future<TotalTitleSearchTri?> future, String title, int indexShow) {
-    return Container(
-      padding: const EdgeInsets.all(5),
-      alignment: Alignment.bottomLeft,
-      child: FutureBuilder<TotalTitleSearchTri?>(
-        future: future,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Text('Error: ${snapshot.error}');
-          } else {
-            TotalTitleSearchTri? totalTitleSearch = snapshot.data;
-            int total = totalTitleSearch?.totalRecords ?? 0;
-
-            // สร้าง ListTile สำหรับกรณีพบข้อมูลและไม่พบข้อมูล
-            return ListTile(
-              leading: CircleAvatar(
-                backgroundColor: total > 0 ? Colors.blue[900] : Colors.grey,
-                foregroundColor: Colors.white,
-                child: Text(total.toString()),
-              ),
-              title: widget.isM
-                  ? ATextTitleMedium18(text: '$title พบจำนวน $total รายการ')
-                  : ATextTitleLarge(text: '$title พบจำนวน $total รายการ'),
-              onTap: total > 0
-                  ? () {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => SearchTabShow(
-                            title: widget.title,
-                            result: titleMenu,
-                            indexShow: indexShow,
-                            isM: widget.isM,
-                            online: widget.online,
-                          ),
-                        ),
-                      );
-                    }
-                  : null, // ปิดการใช้งาน onTap ถ้าไม่มีข้อมูล
-            );
-          }
-        },
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     String wordSearch = widget.title;
@@ -222,158 +314,15 @@ class _SearchPagesState extends State<SearchPages> {
                 Expanded(
                   child: ListView(
                     children: [
-                      Container(
-                        padding: const EdgeInsets.all(5),
-                        alignment: Alignment.bottomLeft,
-                        child: FutureBuilder<TotalTitleSearch?>(
-                          future: fetchDataTitle(),
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              // กำลังโหลดข้อมูล
-                              return const CircularProgressIndicator();
-                            } else if (snapshot.hasError) {
-                              // กรณีเกิดข้อผิดพลาด
-                              return Text('Error: ${snapshot.error}');
-                            } else {
-                              TotalTitleSearch? totalTitleSearch =
-                                  snapshot.data;
-                              int total = totalTitleSearch!.totalRecords;
-                              if (total > 0) {
-                                return ListTile(
-                                  leading: CircleAvatar(
-                                    backgroundColor: Colors.blue[900],
-                                    foregroundColor: Colors.white,
-                                    child: Text(
-                                      total.toString(),
-                                    ),
-                                  ),
-                                  title: widget.isM
-                                      ? ATextTitleMedium18(
-                                          text:
-                                              'หัวข้อธรรมสำคัญ พบจำนวน $total รายการ')
-                                      : ATextTitleLarge(
-                                          text:
-                                              'หัวข้อธรรมสำคัญ พบจำนวน $total รายการ'),
-                                  onTap: () {
-                                    Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => SearchTabShow(
-                                          title: wordSearch,
-                                          result: titleMenu,
-                                          indexShow: 0,
-                                          isM: widget.isM,
-                                          online: widget.online,
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                );
-                              } else {
-                                return ListTile(
-                                  leading: CircleAvatar(
-                                    backgroundColor: Colors.grey,
-                                    foregroundColor: Colors.white,
-                                    child: Text(
-                                      total.toString(),
-                                    ),
-                                  ),
-                                  title: widget.isM
-                                      ? ATextTitleMedium18(
-                                          text:
-                                              'หัวข้อธรรมสำคัญ พบจำนวน $total รายการ',
-                                        )
-                                      : ATextTitleMedium(
-                                          text:
-                                              'หัวข้อธรรมสำคัญ พบจำนวน $total รายการ',
-                                        ),
-                                );
-                              }
-                            }
-                          },
-                        ),
-                      ),
+                      buildListTitle(randTitle1, 'หัวข้อธรรมสำคัญ', 0),
                       const Divider(),
-                      buildFutureBuilder(fetchDataTri1(), 'พระวินัยปิฎก', 1),
+                      buildListTri(randTri1, 'พระวินัยปิฎก', 1),
                       const Divider(),
-                      buildFutureBuilder(fetchDataTri2(), 'พระสุตตันตปิฎก', 2),
+                      buildListTri(randTri2, 'พระสุตตันตปิฎก', 2),
                       const Divider(),
-                      buildFutureBuilder(fetchDataTri3(), 'พระอภิธรรมปิฎก', 3),
+                      buildListTri(randTri3, 'พระอภิธรรมปิฎก', 3),
                       const Divider(),
-                      Container(
-                        padding: const EdgeInsets.all(5),
-                        alignment: Alignment.bottomLeft,
-                        child: FutureBuilder<TotalTitleSearch?>(
-                          future: fetchDict(),
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              // กำลังโหลดข้อมูล
-                              return const CircularProgressIndicator();
-                            } else if (snapshot.hasError) {
-                              // กรณีเกิดข้อผิดพลาด
-                              return Text('Error: ${snapshot.error}');
-                            } else {
-                              TotalTitleSearch? totalTitleSearch =
-                                  snapshot.data;
-                              int total = totalTitleSearch!.totalRecords;
-                              if (total > 0) {
-                                return ListTile(
-                                  leading: CircleAvatar(
-                                    backgroundColor: Colors.blue[900],
-                                    foregroundColor: Colors.white,
-                                    child: Text(
-                                      total.toString(),
-                                    ),
-                                  ),
-                                  title: widget.isM
-                                      ? ATextTitleMedium18(
-                                          text:
-                                              'พจนานุกรม ฉบับประมวลศัพท์ พบจำนวน $total รายการ')
-                                      : ATextTitleLarge(
-                                          text:
-                                              'พจนานุกรม ฉบับประมวลศัพท์ พบจำนวน $total รายการ',
-                                        ),
-                                  onTap: () {
-                                    Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => SearchTabShow(
-                                          title: wordSearch,
-                                          result: titleMenu,
-                                          indexShow: 4,
-                                          isM: widget.isM,
-                                          online: widget.online,
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                );
-                              } else {
-                                return ListTile(
-                                  leading: CircleAvatar(
-                                    backgroundColor: Colors.grey,
-                                    foregroundColor: Colors.white,
-                                    child: Text(
-                                      total.toString(),
-                                    ),
-                                  ),
-                                  title: widget.isM
-                                      ? ATextTitleMedium18(
-                                          text:
-                                              'พจนานุกรม ฉบับประมวลศัพท์ พบจำนวน $total รายการ',
-                                        )
-                                      : ATextTitleMedium(
-                                          text:
-                                              'พจนานุกรม ฉบับประมวลศัพท์ พบจำนวน $total รายการ',
-                                        ),
-                                );
-                              }
-                            }
-                          },
-                        ),
-                      ),
+                      buildListDict(randDict1, 'พจนานุกรม ฉบับประมวลศัพท์', 4),
                       const Divider(),
                       Container(
                         padding: const EdgeInsets.all(5),

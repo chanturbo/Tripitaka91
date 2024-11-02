@@ -405,6 +405,8 @@ class DatabaseHelper {
     // สร้าง List สำหรับเก็บข้อมูลของแต่ละเล่ม
     Map<String, int> bookDetails = {};
 
+    // print('set 1 x = ${x.length}');
+
     if (x.isNotEmpty) {
       // แปลงข้อมูล tmp_1 จาก String เป็น Map
       Map<String, dynamic> jsonData = jsonDecode(x[0]["tmp_1"]);

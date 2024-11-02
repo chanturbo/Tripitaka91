@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:tripitaka91/utils/api_connect/remote_service.dart';
 import 'package:tripitaka91/utils/constants/api_constants.dart';
+import 'package:tripitaka91/utils/constants/colors.dart';
 import 'package:tripitaka91/utils/db_helper/db_helper.dart';
 import 'package:tripitaka91/utils/models/last_book_access.dart';
 import 'package:tripitaka91/utils/models/rand_title.dart';
@@ -52,6 +53,11 @@ class _BookShowTitleState extends State<BookShowTitle> {
     _getUser();
     _getLastBook();
     getDataTri91();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   Future<void> _getUser() async {
@@ -141,185 +147,326 @@ class _BookShowTitleState extends State<BookShowTitle> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: ATextDiskplayMedium(
-          text: 'เล่ม $bookid $bookTitleTri91',
-        ),
-      ),
-      body: SizedBox(
-        //color: Colors.grey[200],
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            Expanded(
-              flex: widget.isMobile ? 2 : 1, //_size.width >= 750 ? 2 : 1,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(8.0),
-                      child: Image.asset(
-                        'assets/images/bookcover/tripitaka91_book${widget.triBookid}.png',
-                      ),
+    return widget.isMobile
+        ? Scaffold(
+            body: CustomScrollView(
+              slivers: [
+                SliverAppBar(
+                  expandedHeight: 120.0,
+                  floating: false,
+                  pinned: true,
+                  flexibleSpace: FlexibleSpaceBar(
+                    title: ATextTitleMediumColor(
+                      text: 'เล่ม $bookid $bookTitleTri91',
+                      color: TColors.white,
                     ),
                   ),
+                ),
+                SliverToBoxAdapter(
+                  child: SizedBox(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(8.0),
+                                child: Image.asset(
+                                  'assets/images/bookcover/tripitaka91_book${widget.triBookid}.png',
+                                  width: 100,
+                                ),
+                              ),
+                              const SizedBox(width: 8.0),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    ATextTitleMedium(text: '[ $triCatage ]'),
+                                    ATextTitleMedium(
+                                        text: 'มีทั้งหมด $numPageAll หน้า'),
+                                    if (lastBookAccess.isNotEmpty)
+                                      TextButton(
+                                        style: ButtonStyle(
+                                          backgroundColor:
+                                              MaterialStateProperty.all<Color>(
+                                                  Colors.orange),
+                                        ),
+                                        onPressed: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  Tri91PageViewHtml(
+                                                triBookid: widget.triBookid,
+                                                triPageid: int.parse(
+                                                  lastBookAccess[0]
+                                                      .pageLastAccess
+                                                      .toString(),
+                                                ),
+                                                triBookline: '1',
+                                                chkSearch: '',
+                                                isMobile: widget.isMobile,
+                                                online: widget.online,
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                        child: ATextDiskplayMedium(
+                                          text:
+                                              'เปิดหน้าที่อ่านล่าสุด เล่ม ${lastBookAccess[0].bookLastAccess} หน้า ${lastBookAccess[0].pageLastAccess}',
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Row(
+                          children: <Widget>[
+                            const Icon(
+                              Icons.book,
+                              size: 20,
+                              color: Colors.blue,
+                            ),
+                            const ATextBodyMedium(text: ' สารบัญหัวข้อธรรม'),
+                            const SizedBox(width: 10),
+                            IconButton(
+                              color: Colors.black,
+                              icon: const Icon(Icons.copy),
+                              onPressed: () {
+                                String code = widget.triBookid;
+                                String linkPhp = 'tripitaka91_1.php';
+                                Clipboard.setData(
+                                  ClipboardData(
+                                      text:
+                                          '$tURLmain$linkPhp?book_code=$code'),
+                                );
+                                _showSnackbar(
+                                    context, 'คัดลอกข้อมูลเรียบร้อยแล้ว');
+                              },
+                            ),
+                            IconButton(
+                              color: Colors.black,
+                              icon: const Icon(Icons.share),
+                              onPressed: () {
+                                Share.share(
+                                  'tripitaka91_1.php?book_code=${widget.triBookid}',
+                                  subject:
+                                      'สารบัญหัวข้อธรรม เล่ม ${widget.triBookid}',
+                                );
+                              },
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 10),
+                      ],
+                    ),
+                  ),
+                ),
+                SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (BuildContext context, int index) {
+                      return ListTile(
+                        title: Text("Item #$index"),
+                        leading: const Icon(Icons.star),
+                      );
+                    },
+                    childCount: 20, // จำนวนรายการใน SliverList
+                  ),
+                ),
+              ],
+            ),
+          )
+        : Scaffold(
+            appBar: AppBar(
+              title: ATextDiskplayMedium(
+                text: 'เล่ม $bookid $bookTitleTri91',
+              ),
+            ),
+            body: SizedBox(
+              //color: Colors.grey[200],
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
                   Expanded(
-                    flex: 1,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Expanded(
-                            flex: widget.isMobile ? 2 : 1,
-                            child: ATextTitleLarge(
-                                text: 'เล่ม $bookid $bookTitleTri91'),
-                          ),
-                          Expanded(
-                            flex: widget.isMobile ? 4 : 2,
-                            child: ATextTitleMedium(text: '[ $triCatage ]'),
-                          ),
-                          Expanded(
-                            flex: 1,
-                            child: ATextTitleMedium(
-                              text:
-                                  'มีทั้งหมด $numPageAll หน้า', // อ่านแล้ว $bookReadall หน้า',
+                    flex: widget.isMobile ? 2 : 1, //_size.width >= 750 ? 2 : 1,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(8.0),
+                            child: Image.asset(
+                              'assets/images/bookcover/tripitaka91_book${widget.triBookid}.png',
                             ),
                           ),
-                          widget.isMobile
-                              ? const SizedBox.shrink()
-                              : Expanded(
+                        ),
+                        Expanded(
+                          flex: 1,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Expanded(
+                                  flex: widget.isMobile ? 2 : 1,
+                                  child: ATextTitleLarge(
+                                      text: 'เล่ม $bookid $bookTitleTri91'),
+                                ),
+                                Expanded(
+                                  flex: widget.isMobile ? 4 : 2,
+                                  child:
+                                      ATextTitleMedium(text: '[ $triCatage ]'),
+                                ),
+                                Expanded(
                                   flex: 1,
-                                  child: lastBookAccess.isEmpty
-                                      ? const SizedBox.shrink()
-                                      : TextButton(
-                                          style: ButtonStyle(
-                                            backgroundColor:
-                                                MaterialStateProperty.all<
-                                                    Color>(Colors.orange),
-                                          ),
-                                          onPressed: () {
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) =>
-                                                    Tri91PageViewHtml(
-                                                  triBookid: widget.triBookid,
-                                                  triPageid: int.parse(
-                                                    lastBookAccess[0]
-                                                        .pageLastAccess
-                                                        .toString(),
-                                                  ),
-                                                  triBookline: '1',
-                                                  chkSearch: '',
-                                                  isMobile: widget.isMobile,
-                                                  online: widget.online,
+                                  child: ATextTitleMedium(
+                                    text:
+                                        'มีทั้งหมด $numPageAll หน้า', // อ่านแล้ว $bookReadall หน้า',
+                                  ),
+                                ),
+                                widget.isMobile
+                                    ? const SizedBox.shrink()
+                                    : Expanded(
+                                        flex: 1,
+                                        child: lastBookAccess.isEmpty
+                                            ? const SizedBox.shrink()
+                                            : TextButton(
+                                                style: ButtonStyle(
+                                                  backgroundColor:
+                                                      MaterialStateProperty.all<
+                                                          Color>(Colors.orange),
+                                                ),
+                                                onPressed: () {
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          Tri91PageViewHtml(
+                                                        triBookid:
+                                                            widget.triBookid,
+                                                        triPageid: int.parse(
+                                                          lastBookAccess[0]
+                                                              .pageLastAccess
+                                                              .toString(),
+                                                        ),
+                                                        triBookline: '1',
+                                                        chkSearch: '',
+                                                        isMobile:
+                                                            widget.isMobile,
+                                                        online: widget.online,
+                                                      ),
+                                                    ),
+                                                  );
+                                                },
+                                                child: ATextDiskplayMedium(
+                                                  text:
+                                                      'เปิดหน้าที่อ่านล่าสุด เล่ม ${lastBookAccess[0].bookLastAccess} หน้า ${lastBookAccess[0].pageLastAccess}',
                                                 ),
                                               ),
-                                            );
-                                          },
-                                          child: ATextDiskplayMedium(
-                                            text:
-                                                'เปิดหน้าที่อ่านล่าสุด เล่ม ${lastBookAccess[0].bookLastAccess} หน้า ${lastBookAccess[0].pageLastAccess}',
-                                          ),
-                                        ),
-                                ),
-                        ],
+                                      ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  widget.isMobile
+                      ? const SizedBox(width: 10)
+                      : const SizedBox.shrink(),
+                  widget.isMobile
+                      ? lastBookAccess.isEmpty
+                          ? const SizedBox.shrink()
+                          : TextButton(
+                              style: ButtonStyle(
+                                backgroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                        Colors.orange),
+                              ),
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => Tri91PageViewHtml(
+                                      triBookid: widget.triBookid,
+                                      triPageid: int.parse(
+                                        lastBookAccess[0]
+                                            .pageLastAccess
+                                            .toString(),
+                                      ),
+                                      triBookline: '1',
+                                      chkSearch: '',
+                                      isMobile: widget.isMobile,
+                                      online: widget.online,
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: ATextDiskplayMedium(
+                                text:
+                                    'เปิดหน้าที่อ่านล่าสุด เล่ม ${lastBookAccess[0].bookLastAccess} หน้า ${lastBookAccess[0].pageLastAccess}',
+                              ),
+                            )
+                      : const SizedBox.shrink(),
+                  widget.isMobile
+                      ? const SizedBox(height: 10)
+                      : const SizedBox.shrink(),
+                  Row(
+                    children: <Widget>[
+                      const Icon(
+                        Icons.book,
+                        size: 20,
+                        color: Colors.blue,
                       ),
+                      const ATextBodyMedium(text: ' สารบัญหัวข้อธรรม'),
+                      const SizedBox(width: 10),
+                      IconButton(
+                        color: Colors.black,
+                        icon: const Icon(Icons.copy),
+                        onPressed: () {
+                          String code = widget.triBookid;
+                          String linkPhp = 'tripitaka91_1.php';
+                          Clipboard.setData(
+                            ClipboardData(
+                                text: '$tURLmain$linkPhp?book_code=$code'),
+                          );
+                          _showSnackbar(context, 'คัดลอกข้อมูลเรียบร้อยแล้ว');
+                        },
+                      ),
+                      const SizedBox(width: 5),
+                      IconButton(
+                        color: Colors.black,
+                        icon: const Icon(Icons.share),
+                        onPressed: () async {
+                          String code = widget.triBookid;
+                          String linkPhp = 'tripitaka91_1.php';
+                          await Share.share('$tURLmain$linkPhp?book_code=$code',
+                              subject: 'สารบัญหัวข้อธรรม เล่ม $code');
+                        },
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Expanded(
+                    flex: widget.isMobile ? 4 : 3,
+                    child: SearchShowPagesTitleList(
+                      bookid: widget.triBookid,
+                      isMobile: widget.isMobile,
+                      online: widget.online,
                     ),
                   ),
                 ],
               ),
             ),
-            widget.isMobile
-                ? const SizedBox(width: 10)
-                : const SizedBox.shrink(),
-            widget.isMobile
-                ? lastBookAccess.isEmpty
-                    ? const SizedBox.shrink()
-                    : TextButton(
-                        style: ButtonStyle(
-                          backgroundColor:
-                              MaterialStateProperty.all<Color>(Colors.orange),
-                        ),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => Tri91PageViewHtml(
-                                triBookid: widget.triBookid,
-                                triPageid: int.parse(
-                                  lastBookAccess[0].pageLastAccess.toString(),
-                                ),
-                                triBookline: '1',
-                                chkSearch: '',
-                                isMobile: widget.isMobile,
-                                online: widget.online,
-                              ),
-                            ),
-                          );
-                        },
-                        child: ATextDiskplayMedium(
-                          text:
-                              'เปิดหน้าที่อ่านล่าสุด เล่ม ${lastBookAccess[0].bookLastAccess} หน้า ${lastBookAccess[0].pageLastAccess}',
-                        ),
-                      )
-                : const SizedBox.shrink(),
-            widget.isMobile
-                ? const SizedBox(height: 10)
-                : const SizedBox.shrink(),
-            Row(
-              children: <Widget>[
-                const Icon(
-                  Icons.book,
-                  size: 20,
-                  color: Colors.blue,
-                ),
-                const ATextBodyMedium(text: ' สารบัญหัวข้อธรรม'),
-                const SizedBox(width: 10),
-                IconButton(
-                  color: Colors.black,
-                  icon: const Icon(Icons.copy),
-                  onPressed: () {
-                    String code = widget.triBookid;
-                    String linkPhp = 'tripitaka91_1.php';
-                    Clipboard.setData(
-                      ClipboardData(text: '$tURLmain$linkPhp?book_code=$code'),
-                    );
-                    _showSnackbar(context, 'คัดลอกข้อมูลเรียบร้อยแล้ว');
-                  },
-                ),
-                const SizedBox(width: 5),
-                IconButton(
-                  color: Colors.black,
-                  icon: const Icon(Icons.share),
-                  onPressed: () async {
-                    String code = widget.triBookid;
-                    String linkPhp = 'tripitaka91_1.php';
-                    await Share.share('$tURLmain$linkPhp?book_code=$code',
-                        subject: 'สารบัญหัวข้อธรรม เล่ม $code');
-                  },
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            Expanded(
-              flex: widget.isMobile ? 4 : 3,
-              child: SearchShowPagesTitleList(
-                bookid: widget.triBookid,
-                isMobile: widget.isMobile,
-                online: widget.online,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
+          );
   }
 
   void _showSnackbar(BuildContext context, String info) {
