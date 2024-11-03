@@ -6,6 +6,7 @@ import 'package:tripitaka91/utils/play_audio/audio_manager.dart';
 import 'package:tripitaka91/utils/shared_preferences/shared_user.dart';
 import 'package:tripitaka91/utils/text_title_replace/text_title_replace.dart';
 import 'package:http/http.dart' as http;
+import 'package:tripitaka91/utils/volume_helper/volume_helper.dart';
 import 'package:tripitaka91/widget/auto_text/auto_text.dart';
 import 'package:tripitaka91/widget/login/loading_dialog.dart';
 import 'package:tripitaka91/widget/right_clipper/center_clipper.dart';
@@ -646,30 +647,35 @@ class _ShowSpeechSaveState extends State<ShowSpeechSave> {
                       opt == '0'
                           ? Row(
                               children: [
-                                InkWell(
-                                  onTap: () async {
-                                    LoadingDialog.show(context);
-                                    String txtTitle =
-                                        '${dataTitle[index]['words_speak']}';
-                                    String namesave =
-                                        '${dataTitle[index]['words']}'
-                                            .trim()
-                                            .replaceAll(RegExp(r'\s+'), '');
+                                VolumeHelper().showVolume
+                                    ? InkWell(
+                                        onTap: () async {
+                                          LoadingDialog.show(context);
+                                          String txtTitle =
+                                              '${dataTitle[index]['words_speak']}';
+                                          String namesave =
+                                              '${dataTitle[index]['words']}'
+                                                  .trim()
+                                                  .replaceAll(
+                                                      RegExp(r'\s+'), '');
 
-                                    String filename = 'tmp-$namesave';
-                                    await audioPlayerManager.playAudio(
-                                        '4', filename, txtTitle);
-                                    // ignore: use_build_context_synchronously
-                                    LoadingDialog.hide(context);
-                                  },
-                                  child: Icon(
-                                    Icons.volume_up,
-                                    size: 20,
-                                    color: Colors
-                                        .blue[300], // Change color as needed
-                                  ),
-                                ),
-                                const SizedBox(width: 10),
+                                          String filename = 'tmp-$namesave';
+                                          await audioPlayerManager.playAudio(
+                                              '4', filename, txtTitle);
+                                          // ignore: use_build_context_synchronously
+                                          LoadingDialog.hide(context);
+                                        },
+                                        child: Icon(
+                                          Icons.volume_up,
+                                          size: 20,
+                                          color: Colors.blue[
+                                              300], // Change color as needed
+                                        ),
+                                      )
+                                    : const Text(''),
+                                VolumeHelper().showVolume
+                                    ? const SizedBox(width: 10)
+                                    : const SizedBox.shrink(),
                                 InkWell(
                                   onTap: () async {
                                     bool? confirm =
@@ -721,30 +727,36 @@ class _ShowSpeechSaveState extends State<ShowSpeechSave> {
                           : opt == '1'
                               ? Row(
                                   children: [
-                                    InkWell(
-                                      onTap: () async {
-                                        LoadingDialog.show(context);
-                                        String txtTitle =
-                                            '${dataTitle[index]['words_speak']}';
-                                        String namesave =
-                                            '${dataTitle[index]['words']}'
-                                                .trim()
-                                                .replaceAll(RegExp(r'\s+'), '');
+                                    VolumeHelper().showVolume
+                                        ? InkWell(
+                                            onTap: () async {
+                                              LoadingDialog.show(context);
+                                              String txtTitle =
+                                                  '${dataTitle[index]['words_speak']}';
+                                              String namesave =
+                                                  '${dataTitle[index]['words']}'
+                                                      .trim()
+                                                      .replaceAll(
+                                                          RegExp(r'\s+'), '');
 
-                                        String filename = 'tmp-$namesave';
-                                        await audioPlayerManager.playAudio(
-                                            '4', filename, txtTitle);
-                                        // ignore: use_build_context_synchronously
-                                        LoadingDialog.hide(context);
-                                      },
-                                      child: Icon(
-                                        Icons.volume_up,
-                                        size: 20,
-                                        color: Colors.blue[
-                                            300], // Change color as needed
-                                      ),
-                                    ),
-                                    const SizedBox(width: 10),
+                                              String filename = 'tmp-$namesave';
+                                              await audioPlayerManager
+                                                  .playAudio(
+                                                      '4', filename, txtTitle);
+                                              // ignore: use_build_context_synchronously
+                                              LoadingDialog.hide(context);
+                                            },
+                                            child: Icon(
+                                              Icons.volume_up,
+                                              size: 20,
+                                              color: Colors.blue[
+                                                  300], // Change color as needed
+                                            ),
+                                          )
+                                        : const Text(''),
+                                    VolumeHelper().showVolume
+                                        ? const SizedBox(width: 10)
+                                        : const SizedBox.shrink(),
                                     InkWell(
                                       onTap: () {
                                         _showDialogUser(
@@ -771,30 +783,36 @@ class _ShowSpeechSaveState extends State<ShowSpeechSave> {
                                 )
                               : Row(
                                   children: [
-                                    InkWell(
-                                      onTap: () async {
-                                        LoadingDialog.show(context);
-                                        String txtTitle =
-                                            '${dataTitle[index]['words_speak']}';
-                                        String namesave =
-                                            '${dataTitle[index]['words']}'
-                                                .trim()
-                                                .replaceAll(RegExp(r'\s+'), '');
+                                    VolumeHelper().showVolume
+                                        ? InkWell(
+                                            onTap: () async {
+                                              LoadingDialog.show(context);
+                                              String txtTitle =
+                                                  '${dataTitle[index]['words_speak']}';
+                                              String namesave =
+                                                  '${dataTitle[index]['words']}'
+                                                      .trim()
+                                                      .replaceAll(
+                                                          RegExp(r'\s+'), '');
 
-                                        String filename = 'tmp-$namesave';
-                                        await audioPlayerManager.playAudio(
-                                            '4', filename, txtTitle);
-                                        // ignore: use_build_context_synchronously
-                                        LoadingDialog.hide(context);
-                                      },
-                                      child: Icon(
-                                        Icons.volume_up,
-                                        size: 20,
-                                        color: Colors.blue[
-                                            300], // Change color as needed
-                                      ),
-                                    ),
-                                    const SizedBox(width: 10),
+                                              String filename = 'tmp-$namesave';
+                                              await audioPlayerManager
+                                                  .playAudio(
+                                                      '4', filename, txtTitle);
+                                              // ignore: use_build_context_synchronously
+                                              LoadingDialog.hide(context);
+                                            },
+                                            child: Icon(
+                                              Icons.volume_up,
+                                              size: 20,
+                                              color: Colors.blue[
+                                                  300], // Change color as needed
+                                            ),
+                                          )
+                                        : const Text(''),
+                                    VolumeHelper().showVolume
+                                        ? const SizedBox(width: 10)
+                                        : const SizedBox.shrink(),
                                     dataTitle[index]['speak_suscess'] == 1
                                         ? Align(
                                             alignment: Alignment.centerLeft,

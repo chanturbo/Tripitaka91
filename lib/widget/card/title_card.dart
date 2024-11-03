@@ -8,6 +8,7 @@ import 'package:tripitaka91/utils/models/users.dart';
 import 'package:tripitaka91/utils/play_audio/audio_manager.dart';
 import 'package:tripitaka91/utils/shared_preferences/shared_user.dart';
 import 'package:tripitaka91/utils/text_title_replace/text_title_replace.dart';
+import 'package:tripitaka91/utils/volume_helper/volume_helper.dart';
 import 'package:tripitaka91/widget/auto_text/auto_text.dart';
 import 'package:tripitaka91/widget/login/loading_dialog.dart';
 import 'package:tripitaka91/widget/pageviews/pageviews_html.dart';
@@ -231,26 +232,32 @@ class _TitleCardState extends State<TitleCard> {
             Row(
               children: [
                 const SizedBox(width: 15),
-                InkWell(
-                  onTap: () async {
-                    LoadingDialog.show(context);
-                    String txtTitle = textReplacer.replaceText(
-                        widget.triTitle, widget.bookBlue);
+                VolumeHelper().showVolume
+                    ? InkWell(
+                        onTap: () async {
+                          LoadingDialog.show(context);
+                          String txtTitle = textReplacer.replaceText(
+                              widget.triTitle, widget.bookBlue);
 
-                    String filename = widget.noTitleCate.replaceAll('.', '');
-                    filename =
-                        '$filename-${widget.noTitle}-${widget.bookIds}-${widget.pageId}-${widget.bookLine}';
-                    await audioPlayerManager.playAudio('1', filename, txtTitle);
-                    // ignore: use_build_context_synchronously
-                    LoadingDialog.hide(context);
-                  },
-                  child: Icon(
-                    Icons.volume_up,
-                    size: widget.isMobile ? 25 : 20,
-                    color: Colors.blue[300], // Change color as needed
-                  ),
-                ),
-                const SizedBox(width: 10),
+                          String filename =
+                              widget.noTitleCate.replaceAll('.', '');
+                          filename =
+                              '$filename-${widget.noTitle}-${widget.bookIds}-${widget.pageId}-${widget.bookLine}';
+                          await audioPlayerManager.playAudio(
+                              '1', filename, txtTitle);
+                          // ignore: use_build_context_synchronously
+                          LoadingDialog.hide(context);
+                        },
+                        child: Icon(
+                          Icons.volume_up,
+                          size: widget.isMobile ? 25 : 20,
+                          color: Colors.blue[300], // Change color as needed
+                        ),
+                      )
+                    : const Text(''),
+                VolumeHelper().showVolume
+                    ? const SizedBox(width: 10)
+                    : const SizedBox.shrink(),
                 InkWell(
                   onTap: () async {
                     // String txtTitle = textReplacer.replaceText(

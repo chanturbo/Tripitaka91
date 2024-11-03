@@ -10,6 +10,7 @@ import 'package:tripitaka91/utils/models/users.dart';
 import 'package:tripitaka91/utils/play_audio/audio_manager.dart';
 import 'package:tripitaka91/utils/shared_preferences/shared_user.dart';
 import 'package:tripitaka91/utils/text_title_replace/text_title_replace.dart';
+import 'package:tripitaka91/utils/volume_helper/volume_helper.dart';
 import 'package:tripitaka91/widget/auto_text/auto_text.dart';
 import 'package:tripitaka91/widget/login/loading_dialog.dart';
 
@@ -164,29 +165,33 @@ class _SearchShowPagesDictState extends State<SearchShowPagesDict> {
                   ),
                   subtitle: Row(
                     children: [
-                      InkWell(
-                        onTap: () async {
-                          LoadingDialog.show(context);
-                          String txtTitle =
-                              '${textTitleReplace.getWordDict(dataDict[index])} - ${textTitleReplace.getWordDictDetail(dataDict[index])}';
-                          String namesave = textTitleReplace
-                              .getWordDict(dataDict[index])
-                              .trim()
-                              .replaceAll(RegExp(r'\s+'), '');
+                      VolumeHelper().showVolume
+                          ? InkWell(
+                              onTap: () async {
+                                LoadingDialog.show(context);
+                                String txtTitle =
+                                    '${textTitleReplace.getWordDict(dataDict[index])} - ${textTitleReplace.getWordDictDetail(dataDict[index])}';
+                                String namesave = textTitleReplace
+                                    .getWordDict(dataDict[index])
+                                    .trim()
+                                    .replaceAll(RegExp(r'\s+'), '');
 
-                          String filename = 'dict-$namesave';
-                          await audioPlayerManager.playAudio(
-                              '3', filename, txtTitle);
-                          // ignore: use_build_context_synchronously
-                          LoadingDialog.hide(context);
-                        },
-                        child: Icon(
-                          Icons.volume_up,
-                          size: widget.isM ? 25 : 20,
-                          color: Colors.blue[300],
-                        ),
-                      ),
-                      const SizedBox(width: 10),
+                                String filename = 'dict-$namesave';
+                                await audioPlayerManager.playAudio(
+                                    '3', filename, txtTitle);
+                                // ignore: use_build_context_synchronously
+                                LoadingDialog.hide(context);
+                              },
+                              child: Icon(
+                                Icons.volume_up,
+                                size: widget.isM ? 25 : 20,
+                                color: Colors.blue[300],
+                              ),
+                            )
+                          : const Text(''),
+                      VolumeHelper().showVolume
+                          ? const SizedBox(width: 10)
+                          : const SizedBox.shrink(),
                       InkWell(
                         onTap: () async {
                           String txtTitle =

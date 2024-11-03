@@ -6,6 +6,7 @@ import 'package:tripitaka91/utils/models/users.dart';
 import 'package:tripitaka91/utils/play_audio/audio_manager.dart';
 import 'package:tripitaka91/utils/shared_preferences/shared_user.dart';
 import 'package:tripitaka91/utils/shared_preferences/shared_value.dart';
+import 'package:tripitaka91/utils/volume_helper/volume_helper.dart';
 import 'package:tripitaka91/widget/auto_text/auto_text.dart';
 import 'package:tripitaka91/widget/login/loading_dialog.dart';
 
@@ -144,29 +145,31 @@ class _LogSpeechScreenState extends State<LogSpeechScreen> {
                                   color: Colors.red, text: ' -')),
                           const ATextTitleMedium(text: 'อ่าน: '),
                           Expanded(
-                            child: InkWell(
-                              onTap: () async {
-                                LoadingDialog.show(context);
-                                String txtTitle =
-                                    '${snapshot.data![index]['words_speak']}';
-                                String namesave =
-                                    '${snapshot.data![index]['words']}'
-                                        .trim()
-                                        .replaceAll(RegExp(r'\s+'), '');
+                            child: VolumeHelper().showVolume
+                                ? InkWell(
+                                    onTap: () async {
+                                      LoadingDialog.show(context);
+                                      String txtTitle =
+                                          '${snapshot.data![index]['words_speak']}';
+                                      String namesave =
+                                          '${snapshot.data![index]['words']}'
+                                              .trim()
+                                              .replaceAll(RegExp(r'\s+'), '');
 
-                                String filename = 'tmp-$namesave';
-                                await audioPlayerManager.playAudio(
-                                    '4', filename, txtTitle);
-                                // ignore: use_build_context_synchronously
-                                LoadingDialog.hide(context);
-                              },
-                              child: Icon(
-                                Icons.volume_up,
-                                size: 20,
-                                color:
-                                    Colors.blue[300], // Change color as needed
-                              ),
-                            ),
+                                      String filename = 'tmp-$namesave';
+                                      await audioPlayerManager.playAudio(
+                                          '4', filename, txtTitle);
+                                      // ignore: use_build_context_synchronously
+                                      LoadingDialog.hide(context);
+                                    },
+                                    child: Icon(
+                                      Icons.volume_up,
+                                      size: 20,
+                                      color: Colors
+                                          .blue[300], // Change color as needed
+                                    ),
+                                  )
+                                : const Text(''),
                           ),
                         ],
                       ),

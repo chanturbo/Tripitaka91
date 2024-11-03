@@ -6,12 +6,14 @@ class SubShowTitle extends StatefulWidget {
   final String titleText;
   final String menuMain;
   final List<List<String>> menuList;
+  final bool isMobile;
 
   const SubShowTitle(
       {super.key,
       required this.titleText,
       required this.menuList,
-      required this.menuMain});
+      required this.menuMain,
+      required this.isMobile});
 
   @override
   State<SubShowTitle> createState() => _SubShowTitleState();
@@ -38,7 +40,7 @@ class _SubShowTitleState extends State<SubShowTitle> {
                   MaterialPageRoute(
                     builder: (context) => ShowTitlePages(
                       wordSearch: widget.menuList[innerIndex][0],
-                      isM: true,
+                      isM: false,
                       menuList: widget.menuList,
                       menuMain: widget.menuMain,
                     ),

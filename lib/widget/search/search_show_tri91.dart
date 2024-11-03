@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:tripitaka91/utils/models/users.dart';
 import 'package:tripitaka91/utils/shared_preferences/shared_user.dart';
 import 'package:tripitaka91/utils/text_title_replace/text_title_replace.dart';
+import 'package:tripitaka91/utils/volume_helper/volume_helper.dart';
 import 'package:tripitaka91/widget/auto_text/auto_text.dart';
 import 'package:tripitaka91/widget/login/loading_dialog.dart';
 import 'package:tripitaka91/widget/pageviews/pageviews_html.dart';
@@ -181,39 +182,34 @@ class _SearchShowPagesState extends State<SearchShowPages> {
                   ),
                   subtitle: Row(
                     children: [
-                      InkWell(
-                        onTap: () async {
-                          LoadingDialog.show(context);
-                          String bookIds =
-                              textTitleReplace.getBookId(data[index]);
-                          String pageId =
-                              textTitleReplace.getPageId(data[index]);
-                          String bookLine =
-                              textTitleReplace.getLineId(data[index]);
-                          String txtTitle =
-                              textTitleReplace.extractText(data[index]);
-                          String filename = '$bookIds-$pageId-$bookLine';
-                          await audioPlayerManager.playAudio(
-                              '2', filename, txtTitle);
-                          // ignore: use_build_context_synchronously
-                          LoadingDialog.hide(context);
-                        },
-                        child: Icon(
-                          Icons.volume_up,
-                          size: widget.isM ? 25 : 20,
-                          color: Colors.blue[300],
-                        ),
-                      ),
-                      // const SizedBox(width: 10),
-                      // InkWell(
-                      //   onTap: () async {},
-                      //   child: Icon(
-                      //     Icons.share,
-                      //     size: 16,
-                      //     color: Colors.blue[300],
-                      //   ),
-                      // ),
-                      const SizedBox(width: 10),
+                      VolumeHelper().showVolume
+                          ? InkWell(
+                              onTap: () async {
+                                LoadingDialog.show(context);
+                                String bookIds =
+                                    textTitleReplace.getBookId(data[index]);
+                                String pageId =
+                                    textTitleReplace.getPageId(data[index]);
+                                String bookLine =
+                                    textTitleReplace.getLineId(data[index]);
+                                String txtTitle =
+                                    textTitleReplace.extractText(data[index]);
+                                String filename = '$bookIds-$pageId-$bookLine';
+                                await audioPlayerManager.playAudio(
+                                    '2', filename, txtTitle);
+                                // ignore: use_build_context_synchronously
+                                LoadingDialog.hide(context);
+                              },
+                              child: Icon(
+                                Icons.volume_up,
+                                size: widget.isM ? 25 : 20,
+                                color: Colors.blue[300],
+                              ),
+                            )
+                          : const Text(''),
+                      VolumeHelper().showVolume
+                          ? const SizedBox(width: 10)
+                          : const SizedBox.shrink(),
                       InkWell(
                         onTap: () async {
                           String bookIds =
