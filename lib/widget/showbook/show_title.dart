@@ -47,7 +47,7 @@ class _SubShowTitleState extends State<SubShowTitle> {
                   MaterialPageRoute(
                     builder: (context) => ShowTitlePages(
                       wordSearch: widget.menuList[innerIndex][0],
-                      isM: false,
+                      isM: widget.isMobile,
                       menuList: widget.menuList,
                       menuMain: widget.menuMain,
                     ),
