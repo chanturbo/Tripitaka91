@@ -171,6 +171,7 @@ class _BookShowTitleState extends State<BookShowTitle> {
           // ignore: use_build_context_synchronously
           _showSnackbar(context, '${jsonResponse['message']}');
           setState(() {
+            hasMoreData = false;
             loadingTitle = false;
           });
         }
