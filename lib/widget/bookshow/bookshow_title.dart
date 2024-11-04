@@ -118,6 +118,7 @@ class _BookShowTitleState extends State<BookShowTitle> {
         // ignore: avoid_print
         print('Database Error: $e');
         setState(() {
+          hasMoreData = false;
           loadingTitle = false;
         });
       }
