@@ -17,6 +17,7 @@ import 'package:tripitaka91/utils/models/users.dart';
 import 'package:tripitaka91/utils/play_audio/audio_manager.dart';
 import 'package:tripitaka91/utils/shared_preferences/shared_user.dart';
 import 'package:tripitaka91/utils/text_title_replace/text_title_replace.dart';
+import 'package:tripitaka91/utils/volume_helper/volume_helper.dart';
 import 'package:tripitaka91/widget/auto_text/auto_text.dart';
 import 'package:tripitaka91/widget/bookshow/show_title_list.dart';
 import 'package:tripitaka91/widget/login/loading_dialog.dart';
@@ -502,7 +503,7 @@ class _BookShowTitleState extends State<BookShowTitle> {
                             children: [
                               Row(
                                 children: [
-                                  widget.isMobile
+                                  VolumeHelper().showVolume
                                       ? InkWell(
                                           onTap: () async {
                                             LoadingDialog.show(context);
@@ -544,7 +545,7 @@ class _BookShowTitleState extends State<BookShowTitle> {
                                           ),
                                         )
                                       : const Text(''),
-                                  widget.isMobile
+                                  VolumeHelper().showVolume
                                       ? const SizedBox(width: 10)
                                       : const SizedBox.shrink(),
                                   InkWell(
