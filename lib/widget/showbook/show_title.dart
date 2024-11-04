@@ -27,7 +27,14 @@ class _SubShowTitleState extends State<SubShowTitle> {
         title: ATextDiskplayMedium(text: widget.titleText),
       ),
       body: Container(
-        padding: const EdgeInsets.all(0),
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: Colors.blue,
+            width: 1.0,
+          ),
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        padding: const EdgeInsets.all(5),
         child: ListView.builder(
           shrinkWrap: true,
           itemCount: widget.menuList.length,

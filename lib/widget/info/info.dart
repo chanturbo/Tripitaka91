@@ -47,45 +47,60 @@ class TripitakaInfoWidget extends StatelessWidget {
                 text: 'ข้อมูลอ้างอิงเว็บไซต์',
               ),
               const SizedBox(height: 8.0),
-              GestureDetector(
-                onTap: () => _launchURL('http://etipitaka.com/'),
-                child: const ATextTitleMedium(
-                  text:
-                      '          สำหรับฐานข้อมูลพระไตรปิฎกได้มาจากโปรแกรม E-Tipitaka เว็บไซต์ http://etipitaka.com/ ซึ่งอนุญาตแจกจ่ายได้ ฟรี ภายใต้สัญญา Apache License, Version 2.0',
+              MouseRegion(
+                cursor: SystemMouseCursors.click,
+                child: GestureDetector(
+                  onTap: () => _launchURL('http://etipitaka.com/'),
+                  child: const ATextTitleMedium(
+                    text:
+                        '          สำหรับฐานข้อมูลพระไตรปิฎกได้มาจากโปรแกรม E-Tipitaka เว็บไซต์ http://etipitaka.com/ ซึ่งอนุญาตแจกจ่ายได้ ฟรี ภายใต้สัญญา Apache License, Version 2.0',
+                  ),
                 ),
               ),
               const SizedBox(height: 8.0),
-              GestureDetector(
-                onTap: () => _launchURL('http://www.samyaek.com'),
-                child: const ATextTitleMedium(
-                  text:
-                      '          หัวข้อธรรม -> เป็นหัวข้อธรรมที่รวบรวมโดยคณะวัดสามแยก http://www.samyaek.com',
+              MouseRegion(
+                cursor: SystemMouseCursors.click,
+                child: GestureDetector(
+                  onTap: () => _launchURL('http://www.samyaek.com'),
+                  child: const ATextTitleMedium(
+                    text:
+                        '          หัวข้อธรรม -> เป็นหัวข้อธรรมที่รวบรวมโดยคณะวัดสามแยก http://www.samyaek.com',
+                  ),
                 ),
               ),
               const SizedBox(height: 8.0),
-              GestureDetector(
-                onTap: () => _launchURL(
-                    'http://www.mahamodo.com/downloads/programsdetail.aspx?id=999995'),
-                child: const ATextTitleMedium(
-                  text:
-                      '          พจนานุกรม ฉบับประมวลศัพท์ -> รวบรวมโดย พระพรหมคุณาภรณ์ (ป.อ. ปยุตฺโต) ฐานข้อมูลได้มาจาก เว็บไซต์ http://www.mahamodo.com/downloads/programsdetail.aspx?id=999995',
+              MouseRegion(
+                cursor: SystemMouseCursors.click,
+                child: GestureDetector(
+                  onTap: () => _launchURL(
+                      'http://www.mahamodo.com/downloads/programsdetail.aspx?id=999995'),
+                  child: const ATextTitleMedium(
+                    text:
+                        '          พจนานุกรม ฉบับประมวลศัพท์ -> รวบรวมโดย พระพรหมคุณาภรณ์ (ป.อ. ปยุตฺโต) ฐานข้อมูลได้มาจาก เว็บไซต์ http://www.mahamodo.com/downloads/programsdetail.aspx?id=999995',
+                  ),
                 ),
               ),
               const SizedBox(height: 8.0),
-              GestureDetector(
-                onTap: () => _launchURL('http://etipitaka.com/'),
-                child: const ATextTitleMedium(
-                  text:
-                      '          พจนานุกรม ไทย-บาลี -> ฐานข้อมูลได้มาจากโปรแกรม E-Tipitaka เว็บไซต์ http://etipitaka.com/ ซึ่งอนุญาตแจกจ่ายได้ ฟรี ภายใต้สัญญา Apache License, Version 2.0',
+              MouseRegion(
+                cursor: SystemMouseCursors.click,
+                child: GestureDetector(
+                  onTap: () => _launchURL('http://etipitaka.com/'),
+                  child: const ATextTitleMedium(
+                    text:
+                        '          พจนานุกรม ไทย-บาลี -> ฐานข้อมูลได้มาจากโปรแกรม E-Tipitaka เว็บไซต์ http://etipitaka.com/ ซึ่งอนุญาตแจกจ่ายได้ ฟรี ภายใต้สัญญา Apache License, Version 2.0',
+                  ),
                 ),
               ),
               const SizedBox(height: 8.0),
-              GestureDetector(
-                onTap: () => _launchURL(
-                    'https://www.facebook.com/groups/719264214834970/'),
-                child: const ATextTitleMedium(
-                  text:
-                      '          คำที่น่าจะพิมพ์ผิด (พิมพ์ตก, พิมพ์หล่น) -> ดำเนินการตรวจสอบและแจ้งโดยกลุ่ม ตรวจสอบคำที่น่าจะผิด (พิมพ์ตก, พิมพ์หล่น) และแจ้งคำที่ถูก เฉพาะคำที่เป็นภาษาไทย  Facebook Tripitaka91 และขณะนี้ยังไม่ได้มีการแก้ไขไฟล์ต้นฉบับแต่อย่างใด',
+              MouseRegion(
+                cursor: SystemMouseCursors.click,
+                child: GestureDetector(
+                  onTap: () => _launchURL(
+                      'https://www.facebook.com/groups/719264214834970/'),
+                  child: const ATextTitleMedium(
+                    text:
+                        '          คำที่น่าจะพิมพ์ผิด (พิมพ์ตก, พิมพ์หล่น) -> ดำเนินการตรวจสอบและแจ้งโดยกลุ่ม ตรวจสอบคำที่น่าจะผิด (พิมพ์ตก, พิมพ์หล่น) และแจ้งคำที่ถูก เฉพาะคำที่เป็นภาษาไทย  Facebook Tripitaka91 และขณะนี้ยังไม่ได้มีการแก้ไขไฟล์ต้นฉบับแต่อย่างใด',
+                  ),
                 ),
               ),
               const SizedBox(height: 16.0),
