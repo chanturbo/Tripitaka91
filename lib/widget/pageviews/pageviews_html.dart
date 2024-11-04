@@ -65,7 +65,7 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
   late String bookRed = 'โหลดข้อมูล...';
   late int numRecord = 0;
   late int numPageAll = 1;
-  late int bookid = 1;
+  late int bookid = int.parse(widget.triBookid);
   late int pageids = widget.triPageid;
   late int bookLine = 1;
   late String bookTitleTri91 = '';
