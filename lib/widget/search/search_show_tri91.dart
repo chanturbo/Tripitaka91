@@ -14,6 +14,7 @@ import 'package:tripitaka91/widget/login/loading_dialog.dart';
 import 'package:tripitaka91/widget/pageviews/pageviews_html.dart';
 import 'package:tripitaka91/widget/right_clipper/center_clipper.dart';
 import 'package:tripitaka91/utils/play_audio/audio_manager.dart';
+import 'package:tripitaka91/utils/img_service/shared_image_book.dart';
 
 class SearchShowPages extends StatefulWidget {
   final String title;
@@ -46,6 +47,7 @@ class _SearchShowPagesState extends State<SearchShowPages> {
   final ScrollController _scrollController = ScrollController();
 
   AudioPlayerManager audioPlayerManager = AudioPlayerManager();
+  final SharedImageBook sharedImageGenerator = SharedImageBook();
 
   @override
   void initState() {
@@ -242,15 +244,33 @@ class _SearchShowPagesState extends State<SearchShowPages> {
                               ),
                             )
                           : const Text(''),
-                      // const SizedBox(width: 10),
-                      // InkWell(
-                      //   onTap: () async {},
-                      //   child: Icon(
-                      //     Icons.share,
-                      //     size: 16,
-                      //     color: Colors.blue[300],
-                      //   ),
-                      // ),
+                      widget.online
+                          ? const SizedBox(width: 10)
+                          : const SizedBox.shrink(),
+                      InkWell(
+                        onTap: () async {
+                          String bookIds =
+                              textTitleReplace.getBookId(data[index]);
+                          String pageId =
+                              textTitleReplace.getPageId(data[index]);
+                          String bookLine =
+                              textTitleReplace.getLineId(data[index]);
+                          String txtTitle =
+                              textTitleReplace.extractText(data[index]);
+                          sharedImageGenerator.generateAndShare(
+                            context: context,
+                            bookTitle: txtTitle.replaceAll('', ''),
+                            bookid: bookIds,
+                            pageid: pageId.toString(),
+                            lineid: bookLine,
+                          );
+                        },
+                        child: Icon(
+                          Icons.share,
+                          size: widget.isM ? 21 : 16,
+                          color: Colors.blue[300],
+                        ),
+                      ),
                       widget.online
                           ? const SizedBox(width: 10)
                           : const SizedBox.shrink(),

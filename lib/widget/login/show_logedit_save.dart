@@ -496,6 +496,26 @@ class _ShowCorrectSaveState extends State<ShowCorrectSave> {
     );
   }
 
+  void showPermissionDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("แจ้งเตือน"),
+          content: const Text("คุณยังไม่ได้รับสิทธิ์การยืนยันการแก้ไขข้อมูล"),
+          actions: <Widget>[
+            TextButton(
+              child: const Text("ตกลง"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -807,15 +827,22 @@ class _ShowCorrectSaveState extends State<ShowCorrectSave> {
                                   children: [
                                     InkWell(
                                       onTap: () async {
-                                        bool? confirm =
-                                            await _showConfirmationDialog(
-                                                context);
-                                        if (confirm!) {
-                                          // print('ยืนยันข้อมูล');
-                                          await _fetchUpdateInsertDataCorrectConfirm(
-                                              '${dataTitle[index]['tripitaka91_book']}',
-                                              '${dataTitle[index]['tripitaka91_page']}',
-                                              '${dataTitle[index]['tripitaka91_line']}');
+                                        Users? users = await getUsersList();
+                                        if (users?.permissionLogEdit == '0') {
+                                          // ignore: use_build_context_synchronously
+                                          showPermissionDialog(context);
+                                        } else {
+                                          bool? confirm =
+                                              // ignore: use_build_context_synchronously
+                                              await _showConfirmationDialog(
+                                                  context);
+                                          if (confirm!) {
+                                            // print('ยืนยันข้อมูล');
+                                            await _fetchUpdateInsertDataCorrectConfirm(
+                                                '${dataTitle[index]['tripitaka91_book']}',
+                                                '${dataTitle[index]['tripitaka91_page']}',
+                                                '${dataTitle[index]['tripitaka91_line']}');
+                                          }
                                         }
                                       },
                                       child: Align(

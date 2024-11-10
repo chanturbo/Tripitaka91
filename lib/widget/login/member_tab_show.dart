@@ -107,12 +107,12 @@ class _MyPageMemberTabDetailState extends State<MyPageMemberTabDetail>
         child: widget.indexLocal == 0
             ? const MemberDisplay()
             : widget.indexLocal == 1
-                ? const ShowCorrect()
+                ? const ShowSpeech()
                 : widget.indexLocal == 2
-                    ? const ShowSpeech()
+                    ? const ShowSpeechSave()
                     : widget.indexLocal == 3
-                        ? const ShowCorrectSave()
-                        : const ShowSpeechSave(),
+                        ? const ShowCorrect()
+                        : const ShowCorrectSave(),
       ),
     );
   }

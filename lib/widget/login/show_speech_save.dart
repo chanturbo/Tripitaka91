@@ -73,6 +73,7 @@ class _ShowSpeechSaveState extends State<ShowSpeechSave> {
       if (users != null) {
         tmpUser = users.username;
       }
+
       final response = await http.post(
         Uri.parse(tURLshowlogSpeechWithAll),
         body: {
@@ -354,6 +355,26 @@ class _ShowSpeechSaveState extends State<ShowSpeechSave> {
     );
 
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
+  void showPermissionDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("แจ้งเตือน"),
+          content: const Text("คุณยังไม่ได้รับสิทธิ์การยืนยันการอ่านออกเสียง"),
+          actions: <Widget>[
+            TextButton(
+              child: const Text("ตกลง"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   Future<bool?> _showConfirmationDialog(BuildContext context) {
@@ -672,13 +693,21 @@ class _ShowSpeechSaveState extends State<ShowSpeechSave> {
                                 const SizedBox(width: 10),
                                 InkWell(
                                   onTap: () async {
-                                    bool? confirm =
-                                        await _showConfirmationDialog(context);
-                                    if (confirm!) {
-                                      // print('ยืนยันข้อมูล');
-                                      // print('${dataTitle[index]['words']}');
-                                      await _fetchUpdateInsertDataSpeakConfirm(
-                                          '${dataTitle[index]['words']}');
+                                    Users? users = await getUsersList();
+                                    if (users?.permissionVoice == '0') {
+                                      // ignore: use_build_context_synchronously
+                                      showPermissionDialog(context);
+                                    } else {
+                                      bool? confirm =
+                                          // ignore: use_build_context_synchronously
+                                          await _showConfirmationDialog(
+                                              context);
+                                      if (confirm!) {
+                                        // print('ยืนยันข้อมูล');
+                                        // print('${dataTitle[index]['words']}');
+                                        await _fetchUpdateInsertDataSpeakConfirm(
+                                            '${dataTitle[index]['words']}');
+                                      }
                                     }
                                   },
                                   child: Align(

@@ -254,9 +254,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
       birthDate: DateTime.parse(
           _dobController.text), // ตัวอย่าง, ให้แปลงจาก String เป็น DateTime
       email: _emailController.text,
+      voiceChoice: "เสียงผู้ชาย",
       active: '0',
       levelAccess: "2",
+      permissionVoice: '0',
       counterWordcorrec: "0",
+      permissionLogEdit: '0',
     );
   }
 
