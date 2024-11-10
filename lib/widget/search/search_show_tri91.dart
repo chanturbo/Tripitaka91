@@ -5,6 +5,7 @@ import 'package:substring_highlight/substring_highlight.dart';
 import 'package:flutter/material.dart';
 import 'package:tripitaka91/utils/constants/api_constants.dart';
 import 'package:http/http.dart' as http;
+import 'package:tripitaka91/utils/img_service/shared_image_book.dart';
 import 'package:tripitaka91/utils/models/users.dart';
 import 'package:tripitaka91/utils/shared_preferences/shared_user.dart';
 import 'package:tripitaka91/utils/text_title_replace/text_title_replace.dart';
@@ -44,6 +45,7 @@ class _SearchShowPagesState extends State<SearchShowPages> {
   final ScrollController _scrollController = ScrollController();
 
   AudioPlayerManager audioPlayerManager = AudioPlayerManager();
+  final SharedImageBook sharedImageGenerator = SharedImageBook();
 
   @override
   void initState() {
@@ -210,6 +212,31 @@ class _SearchShowPagesState extends State<SearchShowPages> {
                       VolumeHelper().showVolume
                           ? const SizedBox(width: 10)
                           : const SizedBox.shrink(),
+                      InkWell(
+                        onTap: () async {
+                          String bookIds =
+                              textTitleReplace.getBookId(data[index]);
+                          String pageId =
+                              textTitleReplace.getPageId(data[index]);
+                          String bookLine =
+                              textTitleReplace.getLineId(data[index]);
+                          String txtTitle =
+                              textTitleReplace.extractText(data[index]);
+                          sharedImageGenerator.generateAndShare(
+                            context: context,
+                            bookTitle: txtTitle.replaceAll('', ''),
+                            bookid: bookIds,
+                            pageid: pageId.toString(),
+                            lineid: bookLine,
+                          );
+                        },
+                        child: Icon(
+                          Icons.share,
+                          size: widget.isM ? 21 : 16,
+                          color: Colors.blue[300],
+                        ),
+                      ),
+                      const SizedBox(width: 10),
                       InkWell(
                         onTap: () async {
                           String bookIds =

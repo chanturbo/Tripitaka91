@@ -9,15 +9,15 @@ import 'package:tripitaka91/widget/auto_text/auto_text.dart';
 import 'package:tripitaka91/widget/auto_text/text_span.dart';
 import 'package:tripitaka91/widget/right_clipper/center_clipper.dart';
 
-class LogEditScreen extends StatefulWidget {
+class LogEditScreenBackup extends StatefulWidget {
   final String username;
-  const LogEditScreen({super.key, required this.username});
+  const LogEditScreenBackup({super.key, required this.username});
 
   @override
-  State<LogEditScreen> createState() => _LogEditScreenState();
+  State<LogEditScreenBackup> createState() => _LogEditScreenBackupState();
 }
 
-class _LogEditScreenState extends State<LogEditScreen> {
+class _LogEditScreenBackupState extends State<LogEditScreenBackup> {
   late int _currentPage;
   int values = 0;
   int pageSplit = 50;

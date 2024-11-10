@@ -28,17 +28,17 @@ class Users {
   // String memberPost;
   // String codeCountry;
   // String country;
-  // String thumbPath;
+  String voiceChoice;
   // String imgPath;
   String active;
   String levelAccess;
-  // String actKey;
+  String permissionVoice;
   // DateTime regDate;
   // String lastActive;
   // String ip;
   // DateTime regConfirm;
-  // String userBan;
   String counterWordcorrec;
+  String permissionLogEdit;
 
   Users({
     required this.username,
@@ -60,17 +60,17 @@ class Users {
     // required this.memberPost,
     // required this.codeCountry,
     // required this.country,
-    // required this.thumbPath,
+    required this.voiceChoice,
     // required this.imgPath,
     required this.active,
     required this.levelAccess,
-    // required this.actKey,
+    required this.permissionVoice,
     // required this.regDate,
     // required this.lastActive,
     // required this.ip,
     // required this.regConfirm,
-    // required this.userBan,
     required this.counterWordcorrec,
+    required this.permissionLogEdit,
   });
 
   factory Users.fromJson(Map<String, dynamic> json) {
@@ -96,11 +96,11 @@ class Users {
       // memberPost: json["member_post"] ?? "",
       // codeCountry: json["code_country"] ?? "",
       // country: json["country"] ?? "",
-      // thumbPath: json["thumb_path"] ?? "",
+      voiceChoice: json["voice_choice"] ?? "เสียงผู้ชาย",
       // imgPath: json["img_path"] ?? "",
       active: json["active"] ?? "0",
       levelAccess: json["level_access"] ?? "",
-      // actKey: json["act_key"] ?? "",
+      permissionVoice: json["permission_voice"] ?? "0",
       // regDate: json["reg_date"] != null
       //     ? DateTime.parse(json["reg_date"])
       //     : DateTime.now(),
@@ -109,8 +109,8 @@ class Users {
       // regConfirm: json["reg_confirm"] != null
       //     ? DateTime.parse(json["reg_confirm"])
       //     : DateTime.now(),
-      // userBan: json["user_ban"] ?? "",
       counterWordcorrec: json["counter_wordcorrec"] ?? "",
+      permissionLogEdit: json["permission_logedit"] ?? "",
     );
   }
 
@@ -135,16 +135,16 @@ class Users {
         // "member_post": memberPost,
         // "code_country": codeCountry,
         // "country": country,
-        // "thumb_path": thumbPath,
+        "voice_choice": voiceChoice,
         // "img_path": imgPath,
         "active": active,
         "level_access": levelAccess,
-        // "act_key": actKey,
+        "permission_voice": permissionVoice,
         // "reg_date": regDate.toIso8601String(),
         // "last_active": lastActive,
         // "ip": ip,
         // "reg_confirm": regConfirm.toIso8601String(),
-        // "user_ban": userBan,
         "counter_wordcorrec": counterWordcorrec,
+        "permission_logedit": permissionLogEdit,
       };
 }

@@ -317,7 +317,11 @@ class RemoteServiceSoundsGetLink {
   Future<List<SoundsGetLink>?> getLink(
       String title, String filename, String speechText, String token) async {
     var client = http.Client();
-    var uri = Uri.parse(tURLSoundsGetLink);
+    Users? users = await getUsersList();
+
+    var uri = users?.voiceChoice == 'เสียงผู้หญิง'
+        ? Uri.parse(tURLSoundsGetLink)
+        : Uri.parse(tURLSoundsGetLinkM);
 
     // สร้าง Map ที่มีข้อมูลที่ต้องการส่งไปด้วย
     var data = {

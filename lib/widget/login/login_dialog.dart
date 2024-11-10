@@ -196,9 +196,12 @@ class _LoginPageDialogState extends State<LoginPageDialog> {
       lastName: usersLogin.user.lastName,
       birthDate: DateTime.parse(usersLogin.user.birthDate.toString()),
       email: usersLogin.user.email,
+      voiceChoice: usersLogin.user.voiceChoice,
       active: usersLogin.user.active.toString(),
       levelAccess: usersLogin.user.levelAccess.toString(),
+      permissionVoice: usersLogin.user.permissionVoice.toString(),
       counterWordcorrec: usersLogin.user.counterWordcorrec,
+      permissionLogEdit: usersLogin.user.permissionLogEdit.toString(),
     );
   }
 

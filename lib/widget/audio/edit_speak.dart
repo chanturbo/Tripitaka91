@@ -69,6 +69,24 @@ class _EditSpeakScreenState extends State<EditSpeakScreen> {
     );
   }
 
+  Future<bool> checkWordInDatabase(String word) async {
+    final response = await http.post(
+      Uri.parse(tURLwords),
+      headers: {"Content-Type": "application/x-www-form-urlencoded"},
+      body: {
+        'searchWord': word,
+        'token': tSecretAPIKey,
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      return data['success'];
+    } else {
+      throw Exception('Failed to load data');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -98,6 +116,25 @@ class _EditSpeakScreenState extends State<EditSpeakScreen> {
                       color: Colors.grey,
                     ),
                   ),
+                  onChanged: (value) async {
+                    // เรียกใช้ API เมื่อผู้ใช้กด Enter
+                    String searchWord = text1Controller.text.trim();
+
+                    // ตรวจสอบว่ามีการป้อนคำค้นหา
+                    if (searchWord.isNotEmpty) {
+                      // เรียกใช้ API ค้นหาคำในฐานข้อมูล
+                      bool exists = await checkWordInDatabase(searchWord);
+
+                      if (exists) {
+                        // ignore: use_build_context_synchronously
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('คำนี้มีการบันทึกไว้แล้วในระบบ'),
+                          ),
+                        );
+                      }
+                    }
+                  },
                 ),
                 TextFormField(
                   style: const TextStyle(
@@ -172,28 +209,48 @@ class _EditSpeakScreenState extends State<EditSpeakScreen> {
                             BorderSide.none),
                       ),
                       onPressed: () async {
-                        if (_formKey.currentState!.validate()) {
-                          bool? confirm =
-                              await _showConfirmationDialog(context);
-                          if (confirm!) {
-                            bool saveLogSpeechSuscess = await saveLogSpeech();
-                            if (saveLogSpeechSuscess) {
-                              // ignore: use_build_context_synchronously
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('บันทึกข้อมูลเรียบร้อยแล้ว'),
-                                ),
-                              );
-                              // ignore: use_build_context_synchronously
-                              Navigator.pop(context);
-                            } else {
-                              // ignore: use_build_context_synchronously
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content:
-                                      Text('เกิดข้อผิดพลาด $messageFromApi'),
-                                ),
-                              );
+                        String searchWord = text1Controller.text.trim();
+
+                        // ตรวจสอบว่ามีการป้อนคำค้นหา
+                        if (searchWord.isNotEmpty) {
+                          // เรียกใช้ API ค้นหาคำในฐานข้อมูล
+                          bool exists = await checkWordInDatabase(searchWord);
+
+                          if (exists) {
+                            // ignore: use_build_context_synchronously
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('คำนี้มีการบันทึกไว้แล้วในระบบ'),
+                              ),
+                            );
+                          } else {
+                            if (_formKey.currentState!.validate()) {
+                              bool? confirm =
+                                  // ignore: use_build_context_synchronously
+                                  await _showConfirmationDialog(context);
+                              if (confirm!) {
+                                bool saveLogSpeechSuscess =
+                                    await saveLogSpeech();
+                                if (saveLogSpeechSuscess) {
+                                  // ignore: use_build_context_synchronously
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content:
+                                          Text('บันทึกข้อมูลเรียบร้อยแล้ว'),
+                                    ),
+                                  );
+                                  // ignore: use_build_context_synchronously
+                                  Navigator.pop(context);
+                                } else {
+                                  // ignore: use_build_context_synchronously
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                          'เกิดข้อผิดพลาด $messageFromApi'),
+                                    ),
+                                  );
+                                }
+                              }
                             }
                           }
                         }

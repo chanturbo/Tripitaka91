@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:tripitaka91/main.dart';
 import 'package:tripitaka91/utils/constants/api_constants.dart';
 import 'package:tripitaka91/utils/format_date/format_date.dart';
 import 'package:tripitaka91/utils/models/users.dart';
@@ -12,7 +13,9 @@ import 'package:tripitaka91/widget/login/profile_menu_future.dart';
 import 'package:tripitaka91/widget/login/profile_menu_speech.dart';
 import 'package:tripitaka91/widget/login/section_heading.dart';
 import 'package:http/http.dart' as http;
+import 'package:tripitaka91/widget/login/set_voice.dart';
 import 'package:tripitaka91/widget/login/show_userall.dart';
+import 'package:tripitaka91/widget/login/user_activity_log.dart';
 
 class MemberDisplay extends StatefulWidget {
   const MemberDisplay({super.key});
@@ -25,6 +28,7 @@ class _MemberDisplayState extends State<MemberDisplay> {
   late Future<Users?> _usersFuture;
   late FormatDate formatDate;
   int values = 0;
+  String totalMembers = '0';
 
   @override
   void initState() {
@@ -98,6 +102,33 @@ class _MemberDisplayState extends State<MemberDisplay> {
       } else {
         // ถ้าไม่สำเร็จ คืนค่าว่าง
         return '';
+      }
+    } else {
+      // ถ้าเกิด HTTP Error จะ throw Exception
+      throw Exception('HTTP Error: ${response.statusCode}');
+    }
+  }
+
+  Future<String> _logUserSum() async {
+    final response = await http.post(
+      Uri.parse(tURLshowUserSum),
+      body: {
+        'token': tSecretAPIKey,
+      },
+    );
+
+    if (response.statusCode == 200) {
+      var json = response.body;
+      var jsonResponse = jsonDecode(utf8.decode(json.runes.toList()));
+
+      if (jsonResponse['success'] == true) {
+        // ถ้าสำเร็จ คืนค่าจำนวนรายการที่ได้จาก API
+        totalMembers = jsonResponse['total_logs'].toString();
+        return jsonResponse['total_logs'].toString();
+      } else {
+        // ถ้าไม่สำเร็จ คืนค่าว่าง
+        totalMembers = '0';
+        return '0';
       }
     } else {
       // ถ้าเกิด HTTP Error จะ throw Exception
@@ -195,6 +226,54 @@ class _MemberDisplayState extends State<MemberDisplay> {
                   title: 'รายการแจ้งคำอ่าน',
                   valueFuture: _logSpeechFutureSum(),
                 ),
+                users.levelAccess == '1'
+                    ? TProfileMenuFuture(
+                        onPressed: () {},
+                        title: 'จำนวนสมาชิกทั้งหมด [User]',
+                        valueFuture: _logUserSum(),
+                      )
+                    : const SizedBox.shrink(),
+                TProfileMenu(
+                    onPressed: () {},
+                    title: 'เสียงอ่าน',
+                    value: users.voiceChoice),
+                const SizedBox(height: 10),
+                TextButton(
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.orange),
+                  ),
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return SetVoice(
+                            tmpUser:
+                                users.username); // ส่งค่า tmpUser ไปที่ dialog
+                      },
+                    ).then((value) async {
+                      if (value == true) {
+                        // ทำงาน async นอก setState()
+                        await _logOut();
+                        clearUsersList();
+
+                        // ปิดหน้าจอหลังจากทำงานเสร็จ
+                        // ignore: use_build_context_synchronously
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  const MyApp()), // แทนที่หน้าเดิม
+                        );
+                      }
+                    });
+                  },
+                  child: const ATextDiskplayMedium(
+                    text: 'กำหนดเสียงอ่าน',
+                  ),
+                ),
+
+                const SizedBox(height: 10),
                 TextButton(
                   style: ButtonStyle(
                     backgroundColor:
@@ -216,92 +295,127 @@ class _MemberDisplayState extends State<MemberDisplay> {
                     text: 'เปลี่ยนรหัสผ่าน',
                   ),
                 ),
-
                 users.levelAccess == '1'
-                    ? Column(
-                        children: [
-                          const SizedBox(height: 10),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              const SizedBox(
-                                width: 10,
+                    ? const SizedBox(height: 10)
+                    : const SizedBox.shrink(),
+                users.levelAccess == '1'
+                    ? TextButton(
+                        style: ButtonStyle(
+                          backgroundColor:
+                              MaterialStateProperty.all<Color>(Colors.orange),
+                        ),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => MyUserPage(
+                                totalMember: totalMembers,
+                                filterType: 'ชื่อทั้งหมด',
                               ),
-                              ElevatedButton(
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const MyUserPage()),
-                                  );
-                                },
-                                style: ButtonStyle(
-                                  backgroundColor:
-                                      MaterialStateProperty.all<Color>(Colors
-                                          .white), // กำหนดสีพื้นหลังเป็นสีขาว
-                                  shape: MaterialStateProperty.all<
-                                      RoundedRectangleBorder>(
-                                    RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(
-                                          18.0), // กำหนดขนาดของเส้นขอบ
-                                      side: const BorderSide(
-                                          color: Colors
-                                              .black), // กำหนดสีของเส้นขอบ
-                                    ),
-                                  ),
-                                ),
-                                child: const ShowButtonMember(),
-                              ),
-                              const SizedBox(width: 20),
-                              // ElevatedButton(
-                              //   onPressed: () {},
-                              //   style: ButtonStyle(
-                              //     backgroundColor:
-                              //         MaterialStateProperty.all<Color>(Colors
-                              //             .white), // กำหนดสีพื้นหลังเป็นสีขาว
-                              //     shape: MaterialStateProperty.all<
-                              //         RoundedRectangleBorder>(
-                              //       RoundedRectangleBorder(
-                              //         borderRadius: BorderRadius.circular(
-                              //             18.0), // กำหนดขนาดของเส้นขอบ
-                              //         side: const BorderSide(
-                              //             color: Colors
-                              //                 .black), // กำหนดสีของเส้นขอบ
-                              //       ),
-                              //     ),
-                              //   ),
-                              //   child: const ATextLabelMedium(
-                              //       text: ' แสดงข้อมูลที่ยืนยันแล้ว '),
-                              // ),
-                              // const SizedBox(width: 20),
-                              // ElevatedButton(
-                              //   onPressed: () {},
-                              //   style: ButtonStyle(
-                              //     backgroundColor:
-                              //         MaterialStateProperty.all<Color>(Colors
-                              //             .white), // กำหนดสีพื้นหลังเป็นสีขาว
-                              //     shape: MaterialStateProperty.all<
-                              //         RoundedRectangleBorder>(
-                              //       RoundedRectangleBorder(
-                              //         borderRadius: BorderRadius.circular(
-                              //             18.0), // กำหนดขนาดของเส้นขอบ
-                              //         side: const BorderSide(
-                              //             color: Colors
-                              //                 .black), // กำหนดสีของเส้นขอบ
-                              //       ),
-                              //     ),
-                              //   ),
-                              //   child: const ATextLabelMedium(
-                              //       text: ' แสดงข้อมูลที่แก้ไขแล้ว '),
-                              // ),
-                            ],
-                          ),
-                        ],
+                            ),
+                          );
+                        },
+                        child: const ATextDiskplayMedium(
+                          text: 'แสดงสมาชิกทั้งหมด',
+                        ),
                       )
-                    : const Text(''),
+                    : const SizedBox.shrink(),
+                users.levelAccess == '1'
+                    ? const SizedBox(height: 10)
+                    : const SizedBox.shrink(),
+                users.levelAccess == '1'
+                    ? TextButton(
+                        style: ButtonStyle(
+                          backgroundColor:
+                              MaterialStateProperty.all<Color>(Colors.orange),
+                        ),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => MyUserPage(
+                                totalMember: totalMembers,
+                                filterType: 'Admin',
+                              ),
+                            ),
+                          );
+                        },
+                        child: const ATextDiskplayMedium(
+                          text: 'แสดงรายชื่อ Admin',
+                        ),
+                      )
+                    : const SizedBox.shrink(),
+                users.levelAccess == '1'
+                    ? const SizedBox(height: 10)
+                    : const SizedBox.shrink(),
+                users.levelAccess == '1'
+                    ? TextButton(
+                        style: ButtonStyle(
+                          backgroundColor:
+                              MaterialStateProperty.all<Color>(Colors.orange),
+                        ),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => MyUserPage(
+                                totalMember: totalMembers,
+                                filterType: 'ผู้มีสิทธิ์ยืนยันเสียงอ่าน',
+                              ),
+                            ),
+                          );
+                        },
+                        child: const ATextDiskplayMedium(
+                          text: 'กำหนดผู้มีสิทธิ์ยืนยันการแก้ไขเสียงอ่าน',
+                        ),
+                      )
+                    : const SizedBox.shrink(),
+                users.levelAccess == '1'
+                    ? const SizedBox(height: 10)
+                    : const SizedBox.shrink(),
+                users.levelAccess == '1'
+                    ? TextButton(
+                        style: ButtonStyle(
+                          backgroundColor:
+                              MaterialStateProperty.all<Color>(Colors.orange),
+                        ),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => MyUserPage(
+                                totalMember: totalMembers,
+                                filterType: 'รอการยืนยัน',
+                              ),
+                            ),
+                          );
+                        },
+                        child: const ShowButtonMember())
+                    : const SizedBox.shrink(),
+                users.levelAccess == '1'
+                    ? const SizedBox(height: 10)
+                    : const SizedBox.shrink(),
+                users.levelAccess == '1'
+                    ? TextButton(
+                        style: ButtonStyle(
+                          backgroundColor:
+                              MaterialStateProperty.all<Color>(Colors.orange),
+                        ),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const UserActivityLogPage(),
+                            ),
+                          );
+                        },
+                        child: const ATextDiskplayMedium(
+                          text: 'แสดง Log Admin',
+                        ),
+                      )
+                    : const SizedBox.shrink(),
                 const Divider(),
-                const SizedBox(height: 16),
+                const SizedBox(height: 10),
                 Center(
                   child: TextButton(
                     style: ButtonStyle(
@@ -312,7 +426,12 @@ class _MemberDisplayState extends State<MemberDisplay> {
                       await _logOut();
                       clearUsersList();
                       // ignore: use_build_context_synchronously
-                      Navigator.pop(context); // ปิดหน้าจอ
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                const MyApp()), // แทนที่หน้าเดิม
+                      );
                     },
                     child: const ATextDiskplayMedium(
                       text: 'ออกจากระบบ',
@@ -367,9 +486,9 @@ class ShowButtonMember extends StatelessWidget {
           if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
           } else {
-            return ATextLabelMedium(
+            return ATextDiskplayMedium(
                 text:
-                    '   แสดงข้อมูลสมาชิก รอยืนยัน ${snapshot.data} ท่าน   '); // ใช้ค่าที่ได้จาก Future
+                    '   แสดงข้อมูลสมาชิก [รอยืนยัน ${snapshot.data} ท่าน]   '); // ใช้ค่าที่ได้จาก Future
           }
         }
       },

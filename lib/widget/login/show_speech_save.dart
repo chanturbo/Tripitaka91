@@ -6,7 +6,6 @@ import 'package:tripitaka91/utils/play_audio/audio_manager.dart';
 import 'package:tripitaka91/utils/shared_preferences/shared_user.dart';
 import 'package:tripitaka91/utils/text_title_replace/text_title_replace.dart';
 import 'package:http/http.dart' as http;
-import 'package:tripitaka91/utils/volume_helper/volume_helper.dart';
 import 'package:tripitaka91/widget/auto_text/auto_text.dart';
 import 'package:tripitaka91/widget/login/loading_dialog.dart';
 import 'package:tripitaka91/widget/right_clipper/center_clipper.dart';
@@ -74,6 +73,7 @@ class _ShowSpeechSaveState extends State<ShowSpeechSave> {
       if (users != null) {
         tmpUser = users.username;
       }
+
       final response = await http.post(
         Uri.parse(tURLshowlogSpeechWithAll),
         body: {
@@ -355,6 +355,26 @@ class _ShowSpeechSaveState extends State<ShowSpeechSave> {
     );
 
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
+  void showPermissionDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("แจ้งเตือน"),
+          content: const Text("คุณยังไม่ได้รับสิทธิ์การยืนยันการอ่านออกเสียง"),
+          actions: <Widget>[
+            TextButton(
+              child: const Text("ตกลง"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   Future<bool?> _showConfirmationDialog(BuildContext context) {
@@ -647,44 +667,47 @@ class _ShowSpeechSaveState extends State<ShowSpeechSave> {
                       opt == '0'
                           ? Row(
                               children: [
-                                VolumeHelper().showVolume
-                                    ? InkWell(
-                                        onTap: () async {
-                                          LoadingDialog.show(context);
-                                          String txtTitle =
-                                              '${dataTitle[index]['words_speak']}';
-                                          String namesave =
-                                              '${dataTitle[index]['words']}'
-                                                  .trim()
-                                                  .replaceAll(
-                                                      RegExp(r'\s+'), '');
-
-                                          String filename = 'tmp-$namesave';
-                                          await audioPlayerManager.playAudio(
-                                              '4', filename, txtTitle);
-                                          // ignore: use_build_context_synchronously
-                                          LoadingDialog.hide(context);
-                                        },
-                                        child: Icon(
-                                          Icons.volume_up,
-                                          size: 20,
-                                          color: Colors.blue[
-                                              300], // Change color as needed
-                                        ),
-                                      )
-                                    : const Text(''),
-                                VolumeHelper().showVolume
-                                    ? const SizedBox(width: 10)
-                                    : const SizedBox.shrink(),
                                 InkWell(
                                   onTap: () async {
-                                    bool? confirm =
-                                        await _showConfirmationDialog(context);
-                                    if (confirm!) {
-                                      // print('ยืนยันข้อมูล');
-                                      // print('${dataTitle[index]['words']}');
-                                      await _fetchUpdateInsertDataSpeakConfirm(
-                                          '${dataTitle[index]['words']}');
+                                    LoadingDialog.show(context);
+                                    String txtTitle =
+                                        '${dataTitle[index]['words_speak']}';
+                                    String namesave =
+                                        '${dataTitle[index]['words']}'
+                                            .trim()
+                                            .replaceAll(RegExp(r'\s+'), '');
+
+                                    String filename = 'tmp-$namesave';
+                                    await audioPlayerManager.playAudio(
+                                        '4', filename, txtTitle);
+                                    // ignore: use_build_context_synchronously
+                                    LoadingDialog.hide(context);
+                                  },
+                                  child: Icon(
+                                    Icons.volume_up,
+                                    size: 20,
+                                    color: Colors
+                                        .blue[300], // Change color as needed
+                                  ),
+                                ),
+                                const SizedBox(width: 10),
+                                InkWell(
+                                  onTap: () async {
+                                    Users? users = await getUsersList();
+                                    if (users?.permissionVoice == '0') {
+                                      // ignore: use_build_context_synchronously
+                                      showPermissionDialog(context);
+                                    } else {
+                                      bool? confirm =
+                                          // ignore: use_build_context_synchronously
+                                          await _showConfirmationDialog(
+                                              context);
+                                      if (confirm!) {
+                                        // print('ยืนยันข้อมูล');
+                                        // print('${dataTitle[index]['words']}');
+                                        await _fetchUpdateInsertDataSpeakConfirm(
+                                            '${dataTitle[index]['words']}');
+                                      }
                                     }
                                   },
                                   child: Align(
@@ -727,36 +750,30 @@ class _ShowSpeechSaveState extends State<ShowSpeechSave> {
                           : opt == '1'
                               ? Row(
                                   children: [
-                                    VolumeHelper().showVolume
-                                        ? InkWell(
-                                            onTap: () async {
-                                              LoadingDialog.show(context);
-                                              String txtTitle =
-                                                  '${dataTitle[index]['words_speak']}';
-                                              String namesave =
-                                                  '${dataTitle[index]['words']}'
-                                                      .trim()
-                                                      .replaceAll(
-                                                          RegExp(r'\s+'), '');
+                                    InkWell(
+                                      onTap: () async {
+                                        LoadingDialog.show(context);
+                                        String txtTitle =
+                                            '${dataTitle[index]['words_speak']}';
+                                        String namesave =
+                                            '${dataTitle[index]['words']}'
+                                                .trim()
+                                                .replaceAll(RegExp(r'\s+'), '');
 
-                                              String filename = 'tmp-$namesave';
-                                              await audioPlayerManager
-                                                  .playAudio(
-                                                      '4', filename, txtTitle);
-                                              // ignore: use_build_context_synchronously
-                                              LoadingDialog.hide(context);
-                                            },
-                                            child: Icon(
-                                              Icons.volume_up,
-                                              size: 20,
-                                              color: Colors.blue[
-                                                  300], // Change color as needed
-                                            ),
-                                          )
-                                        : const Text(''),
-                                    VolumeHelper().showVolume
-                                        ? const SizedBox(width: 10)
-                                        : const SizedBox.shrink(),
+                                        String filename = 'tmp-$namesave';
+                                        await audioPlayerManager.playAudio(
+                                            '4', filename, txtTitle);
+                                        // ignore: use_build_context_synchronously
+                                        LoadingDialog.hide(context);
+                                      },
+                                      child: Icon(
+                                        Icons.volume_up,
+                                        size: 20,
+                                        color: Colors.blue[
+                                            300], // Change color as needed
+                                      ),
+                                    ),
+                                    const SizedBox(width: 10),
                                     InkWell(
                                       onTap: () {
                                         _showDialogUser(
@@ -783,36 +800,30 @@ class _ShowSpeechSaveState extends State<ShowSpeechSave> {
                                 )
                               : Row(
                                   children: [
-                                    VolumeHelper().showVolume
-                                        ? InkWell(
-                                            onTap: () async {
-                                              LoadingDialog.show(context);
-                                              String txtTitle =
-                                                  '${dataTitle[index]['words_speak']}';
-                                              String namesave =
-                                                  '${dataTitle[index]['words']}'
-                                                      .trim()
-                                                      .replaceAll(
-                                                          RegExp(r'\s+'), '');
+                                    InkWell(
+                                      onTap: () async {
+                                        LoadingDialog.show(context);
+                                        String txtTitle =
+                                            '${dataTitle[index]['words_speak']}';
+                                        String namesave =
+                                            '${dataTitle[index]['words']}'
+                                                .trim()
+                                                .replaceAll(RegExp(r'\s+'), '');
 
-                                              String filename = 'tmp-$namesave';
-                                              await audioPlayerManager
-                                                  .playAudio(
-                                                      '4', filename, txtTitle);
-                                              // ignore: use_build_context_synchronously
-                                              LoadingDialog.hide(context);
-                                            },
-                                            child: Icon(
-                                              Icons.volume_up,
-                                              size: 20,
-                                              color: Colors.blue[
-                                                  300], // Change color as needed
-                                            ),
-                                          )
-                                        : const Text(''),
-                                    VolumeHelper().showVolume
-                                        ? const SizedBox(width: 10)
-                                        : const SizedBox.shrink(),
+                                        String filename = 'tmp-$namesave';
+                                        await audioPlayerManager.playAudio(
+                                            '4', filename, txtTitle);
+                                        // ignore: use_build_context_synchronously
+                                        LoadingDialog.hide(context);
+                                      },
+                                      child: Icon(
+                                        Icons.volume_up,
+                                        size: 20,
+                                        color: Colors.blue[
+                                            300], // Change color as needed
+                                      ),
+                                    ),
+                                    const SizedBox(width: 10),
                                     dataTitle[index]['speak_suscess'] == 1
                                         ? Align(
                                             alignment: Alignment.centerLeft,
