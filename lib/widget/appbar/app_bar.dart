@@ -117,12 +117,10 @@ class _AppBarCustomState extends State<AppBarCustom> {
                     ),
             ),
             const Spacer(),
-            widget.online
-                ? IconButton(
-                    icon: const Icon(Icons.person),
-                    onPressed: _checkLoginStatus,
-                  )
-                : const Text(''),
+            IconButton(
+              icon: const Icon(Icons.person),
+              onPressed: _checkLoginStatus,
+            ),
           ],
         ),
       ],

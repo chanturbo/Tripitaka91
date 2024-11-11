@@ -271,9 +271,7 @@ class _SearchShowPagesState extends State<SearchShowPages> {
                           color: Colors.blue[300],
                         ),
                       ),
-                      widget.online
-                          ? const SizedBox(width: 10)
-                          : const SizedBox.shrink(),
+                      const SizedBox(width: 10),
                       InkWell(
                         onTap: () async {
                           String bookIds =
