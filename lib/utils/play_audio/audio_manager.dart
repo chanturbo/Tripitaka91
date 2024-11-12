@@ -14,6 +14,30 @@ class AudioPlayerManager {
     _audioPlayer = AudioPlayer();
   }
 
+  Future<String?> createAudio(
+      String title, String filename, String txtTitle) async {
+    txtTitle = txtTitle.replaceAll('', 'ฐ');
+    txtTitle = txtTitle.replaceAll('', 'ญ');
+    txtTitle = txtTitle.replaceAll(':-', ' ');
+    return await _urlAudio(title, filename, txtTitle);
+  }
+
+  Future<String?> _urlAudio(
+      String title, String filename, String speechText) async {
+    List<SoundsGetLink>? soundLink = await remoteService.getLink(
+      title,
+      filename,
+      speechText,
+      tSecretAPIKey, // แทนที่ด้วย token จริง
+    );
+
+    if (soundLink != null && soundLink.isNotEmpty) {
+      String url = tURL + soundLink[0].message;
+      return url;
+    }
+    return null;
+  }
+
   Future<void> playAudio(String title, String filename, String txtTitle) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     txtTitle = txtTitle.replaceAll('', 'ฐ');

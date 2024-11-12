@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tripitaka91/utils/models/users.dart';
+import 'package:tripitaka91/utils/shared_preferences/shared_user.dart';
 import 'package:tripitaka91/utils/theme/theme.dart';
 import 'package:tripitaka91/widget/my_home_page.dart';
 
@@ -55,6 +57,8 @@ class UnzipScreen extends StatefulWidget {
 class _UnzipScreenState extends State<UnzipScreen> {
   bool isLoading = false;
   String unzipStatus = 'Idle';
+  Users? usersChk;
+  bool online = false;
 
   @override
   void initState() {
@@ -71,16 +75,20 @@ class _UnzipScreenState extends State<UnzipScreen> {
     try {
       // Call the loadFromFuture function
       await loadFromFuture();
-
+      usersChk = await getUsersList();
+      // print('คือ $usersChk');
       setState(() {
+        if (usersChk != null) {
+          online = true;
+        }
         unzipStatus = 'ประมวลผลสำเร็จ!';
       });
-
+      // print(online);
       // Navigate to MyHomePage after unzip is complete
       // ignore: use_build_context_synchronously
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const MyHomePage()),
+        MaterialPageRoute(builder: (context) => MyHomePage(online: online)),
       );
     } catch (e) {
       setState(() {

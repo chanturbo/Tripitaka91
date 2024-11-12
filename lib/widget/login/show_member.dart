@@ -430,8 +430,8 @@ class _MemberDisplayState extends State<MemberDisplay> {
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                            builder: (context) =>
-                                const MyHomePage()), // แทนที่หน้าเดิม
+                            builder: (context) => const MyHomePage(
+                                online: false)), // แทนที่หน้าเดิม
                       );
                     },
                     child: const ATextDiskplayMedium(

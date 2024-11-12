@@ -54,4 +54,24 @@ class ImageCaptureService {
       print('Error in ImageCaptureService: $e');
     }
   }
+
+  Future<String?> captureAndSavePng(Uint8List capturedImage, String bookid,
+      String pageid, String lineid) async {
+    try {
+      // สร้างไฟล์รูปภาพใน ApplicationDocumentsDirectory
+      final directory = await getApplicationDocumentsDirectory();
+      final imgFilePath = '${directory.path}/tripitaka91_img.png';
+      io.File imgFile = io.File(imgFilePath);
+      await imgFile.writeAsBytes(capturedImage);
+
+      // คืนค่า path ของไฟล์ที่บันทึก
+      return imgFilePath;
+    } catch (e) {
+      // จัดการข้อผิดพลาด
+      // ignore: avoid_print
+      print('Error in ImageCaptureService: $e');
+
+      return null;
+    }
+  }
 }
