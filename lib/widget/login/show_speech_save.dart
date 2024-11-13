@@ -427,102 +427,105 @@ class _ShowSpeechSaveState extends State<ShowSpeechSave> {
                       ? Column(
                           children: [
                             const SizedBox(height: 10),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                const SizedBox(
-                                  width: 10,
-                                ),
-                                ElevatedButton(
-                                  onPressed: () {
-                                    opt = '0';
-                                    _handleAddData();
-                                  },
-                                  style: ButtonStyle(
-                                    backgroundColor: MaterialStateProperty.all<
-                                        Color>(opt ==
-                                            '0'
-                                        ? Colors.orange
-                                        : Colors
-                                            .white), // กำหนดสีพื้นหลังเป็นสีขาว
-                                    shape: MaterialStateProperty.all<
-                                        RoundedRectangleBorder>(
-                                      RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(
-                                            18.0), // กำหนดขนาดของเส้นขอบ
-                                        side: const BorderSide(
-                                            color: Colors
-                                                .black), // กำหนดสีของเส้นขอบ
+                            SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      opt = '0';
+                                      _handleAddData();
+                                    },
+                                    style: ButtonStyle(
+                                      backgroundColor: MaterialStateProperty.all<
+                                          Color>(opt ==
+                                              '0'
+                                          ? Colors.orange
+                                          : Colors
+                                              .white), // กำหนดสีพื้นหลังเป็นสีขาว
+                                      shape: MaterialStateProperty.all<
+                                          RoundedRectangleBorder>(
+                                        RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                              18.0), // กำหนดขนาดของเส้นขอบ
+                                          side: const BorderSide(
+                                              color: Colors
+                                                  .black), // กำหนดสีของเส้นขอบ
+                                        ),
                                       ),
                                     ),
+                                    child: ATextLabelMediumColor(
+                                        color: opt == '0'
+                                            ? Colors.white
+                                            : Colors.grey,
+                                        text: ' แสดงข้อมูลที่ยังไม่ยืนยัน '),
                                   ),
-                                  child: ATextLabelMediumColor(
-                                      color: opt == '0'
-                                          ? Colors.white
-                                          : Colors.grey,
-                                      text: ' แสดงข้อมูลที่ยังไม่ยืนยัน '),
-                                ),
-                                const SizedBox(width: 20),
-                                ElevatedButton(
-                                  onPressed: () {
-                                    opt = '1';
-                                    _handleAddData();
-                                  },
-                                  style: ButtonStyle(
-                                    backgroundColor: MaterialStateProperty.all<
-                                        Color>(opt ==
-                                            '1'
-                                        ? Colors.orange
-                                        : Colors
-                                            .white), // กำหนดสีพื้นหลังเป็นสีขาว
-                                    shape: MaterialStateProperty.all<
-                                        RoundedRectangleBorder>(
-                                      RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(
-                                            18.0), // กำหนดขนาดของเส้นขอบ
-                                        side: const BorderSide(
-                                            color: Colors
-                                                .black), // กำหนดสีของเส้นขอบ
+                                  const SizedBox(width: 20),
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      opt = '1';
+                                      _handleAddData();
+                                    },
+                                    style: ButtonStyle(
+                                      backgroundColor: MaterialStateProperty.all<
+                                          Color>(opt ==
+                                              '1'
+                                          ? Colors.orange
+                                          : Colors
+                                              .white), // กำหนดสีพื้นหลังเป็นสีขาว
+                                      shape: MaterialStateProperty.all<
+                                          RoundedRectangleBorder>(
+                                        RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                              18.0), // กำหนดขนาดของเส้นขอบ
+                                          side: const BorderSide(
+                                              color: Colors
+                                                  .black), // กำหนดสีของเส้นขอบ
+                                        ),
                                       ),
                                     ),
+                                    child: ATextLabelMediumColor(
+                                        color: opt == '1'
+                                            ? Colors.white
+                                            : Colors.grey,
+                                        text: ' แสดงข้อมูลที่ยืนยันแล้ว '),
                                   ),
-                                  child: ATextLabelMediumColor(
-                                      color: opt == '1'
-                                          ? Colors.white
-                                          : Colors.grey,
-                                      text: ' แสดงข้อมูลที่ยืนยันแล้ว '),
-                                ),
-                                const SizedBox(width: 20),
-                                ElevatedButton(
-                                  onPressed: () {
-                                    opt = '2';
-                                    _handleAddData();
-                                  },
-                                  style: ButtonStyle(
-                                    backgroundColor: MaterialStateProperty.all<
-                                        Color>(opt ==
-                                            '2'
-                                        ? Colors.orange
-                                        : Colors
-                                            .white), // กำหนดสีพื้นหลังเป็นสีขาว
-                                    shape: MaterialStateProperty.all<
-                                        RoundedRectangleBorder>(
-                                      RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(
-                                            18.0), // กำหนดขนาดของเส้นขอบ
-                                        side: const BorderSide(
-                                            color: Colors
-                                                .black), // กำหนดสีของเส้นขอบ
+                                  const SizedBox(width: 20),
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      opt = '2';
+                                      _handleAddData();
+                                    },
+                                    style: ButtonStyle(
+                                      backgroundColor: MaterialStateProperty.all<
+                                          Color>(opt ==
+                                              '2'
+                                          ? Colors.orange
+                                          : Colors
+                                              .white), // กำหนดสีพื้นหลังเป็นสีขาว
+                                      shape: MaterialStateProperty.all<
+                                          RoundedRectangleBorder>(
+                                        RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                              18.0), // กำหนดขนาดของเส้นขอบ
+                                          side: const BorderSide(
+                                              color: Colors
+                                                  .black), // กำหนดสีของเส้นขอบ
+                                        ),
                                       ),
                                     ),
+                                    child: ATextLabelMediumColor(
+                                        color: opt == '2'
+                                            ? Colors.white
+                                            : Colors.grey,
+                                        text: ' แสดงข้อมูลที่แก้ไขแล้ว '),
                                   ),
-                                  child: ATextLabelMediumColor(
-                                      color: opt == '2'
-                                          ? Colors.white
-                                          : Colors.grey,
-                                      text: ' แสดงข้อมูลที่แก้ไขแล้ว '),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ],
                         )
@@ -533,87 +536,90 @@ class _ShowSpeechSaveState extends State<ShowSpeechSave> {
               children: [
                 if (index == 0) const SizedBox(height: 10),
                 if (index == 0)
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      ElevatedButton(
-                        onPressed: () {
-                          opt = '0';
-                          _handleAddData();
-                        },
-                        style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all<Color>(
-                              opt == '0'
-                                  ? Colors.orange
-                                  : Colors.white), // กำหนดสีพื้นหลังเป็นสีขาว
-                          shape:
-                              MaterialStateProperty.all<RoundedRectangleBorder>(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(
-                                  18.0), // กำหนดขนาดของเส้นขอบ
-                              side: const BorderSide(
-                                  color: Colors.black), // กำหนดสีของเส้นขอบ
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            opt = '0';
+                            _handleAddData();
+                          },
+                          style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all<Color>(
+                                opt == '0'
+                                    ? Colors.orange
+                                    : Colors.white), // กำหนดสีพื้นหลังเป็นสีขาว
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(
+                                    18.0), // กำหนดขนาดของเส้นขอบ
+                                side: const BorderSide(
+                                    color: Colors.black), // กำหนดสีของเส้นขอบ
+                              ),
                             ),
                           ),
+                          child: ATextLabelMediumColor(
+                              color: opt == '0' ? Colors.white : Colors.grey,
+                              text: ' แสดงข้อมูลที่ยังไม่ยืนยัน '),
                         ),
-                        child: ATextLabelMediumColor(
-                            color: opt == '0' ? Colors.white : Colors.grey,
-                            text: ' แสดงข้อมูลที่ยังไม่ยืนยัน '),
-                      ),
-                      const SizedBox(width: 20),
-                      ElevatedButton(
-                        onPressed: () {
-                          opt = '1';
-                          _handleAddData();
-                        },
-                        style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all<Color>(
-                              opt == '1'
-                                  ? Colors.orange
-                                  : Colors.white), // กำหนดสีพื้นหลังเป็นสีขาว
-                          shape:
-                              MaterialStateProperty.all<RoundedRectangleBorder>(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(
-                                  18.0), // กำหนดขนาดของเส้นขอบ
-                              side: const BorderSide(
-                                  color: Colors.black), // กำหนดสีของเส้นขอบ
+                        const SizedBox(width: 20),
+                        ElevatedButton(
+                          onPressed: () {
+                            opt = '1';
+                            _handleAddData();
+                          },
+                          style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all<Color>(
+                                opt == '1'
+                                    ? Colors.orange
+                                    : Colors.white), // กำหนดสีพื้นหลังเป็นสีขาว
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(
+                                    18.0), // กำหนดขนาดของเส้นขอบ
+                                side: const BorderSide(
+                                    color: Colors.black), // กำหนดสีของเส้นขอบ
+                              ),
                             ),
                           ),
+                          child: ATextLabelMediumColor(
+                              color: opt == '1' ? Colors.white : Colors.grey,
+                              text: ' แสดงข้อมูลที่ยืนยันแล้ว '),
                         ),
-                        child: ATextLabelMediumColor(
-                            color: opt == '1' ? Colors.white : Colors.grey,
-                            text: ' แสดงข้อมูลที่ยืนยันแล้ว '),
-                      ),
-                      const SizedBox(width: 20),
-                      ElevatedButton(
-                        onPressed: () {
-                          opt = '2';
-                          _handleAddData();
-                        },
-                        style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all<Color>(
-                              opt == '2'
-                                  ? Colors.orange
-                                  : Colors.white), // กำหนดสีพื้นหลังเป็นสีขาว
-                          shape:
-                              MaterialStateProperty.all<RoundedRectangleBorder>(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(
-                                  18.0), // กำหนดขนาดของเส้นขอบ
-                              side: const BorderSide(
-                                  color: Colors.black), // กำหนดสีของเส้นขอบ
+                        const SizedBox(width: 20),
+                        ElevatedButton(
+                          onPressed: () {
+                            opt = '2';
+                            _handleAddData();
+                          },
+                          style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all<Color>(
+                                opt == '2'
+                                    ? Colors.orange
+                                    : Colors.white), // กำหนดสีพื้นหลังเป็นสีขาว
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(
+                                    18.0), // กำหนดขนาดของเส้นขอบ
+                                side: const BorderSide(
+                                    color: Colors.black), // กำหนดสีของเส้นขอบ
+                              ),
                             ),
                           ),
+                          child: ATextLabelMediumColor(
+                              color: opt == '2' ? Colors.white : Colors.grey,
+                              text: ' แสดงข้อมูลที่แก้ไขแล้ว '),
                         ),
-                        child: ATextLabelMediumColor(
-                            color: opt == '2' ? Colors.white : Colors.grey,
-                            text: ' แสดงข้อมูลที่แก้ไขแล้ว '),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 if (index == 0) const SizedBox(height: 10),
                 ListTile(
@@ -798,86 +804,107 @@ class _ShowSpeechSaveState extends State<ShowSpeechSave> {
                                     ),
                                   ],
                                 )
-                              : Row(
-                                  children: [
-                                    InkWell(
-                                      onTap: () async {
-                                        LoadingDialog.show(context);
-                                        String txtTitle =
-                                            '${dataTitle[index]['words_speak']}';
-                                        String namesave =
-                                            '${dataTitle[index]['words']}'
-                                                .trim()
-                                                .replaceAll(RegExp(r'\s+'), '');
+                              : SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: Row(
+                                    children: [
+                                      InkWell(
+                                        onTap: () async {
+                                          LoadingDialog.show(context);
+                                          String txtTitle =
+                                              '${dataTitle[index]['words_speak']}';
+                                          String namesave =
+                                              '${dataTitle[index]['words']}'
+                                                  .trim()
+                                                  .replaceAll(
+                                                      RegExp(r'\s+'), '');
 
-                                        String filename = 'tmp-$namesave';
-                                        await audioPlayerManager.playAudio(
-                                            '4', filename, txtTitle);
-                                        // ignore: use_build_context_synchronously
-                                        LoadingDialog.hide(context);
-                                      },
-                                      child: Icon(
-                                        Icons.volume_up,
-                                        size: 20,
-                                        color: Colors.blue[
-                                            300], // Change color as needed
+                                          String filename = 'tmp-$namesave';
+                                          await audioPlayerManager.playAudio(
+                                              '4', filename, txtTitle);
+                                          // ignore: use_build_context_synchronously
+                                          LoadingDialog.hide(context);
+                                        },
+                                        child: Icon(
+                                          Icons.volume_up,
+                                          size: 20,
+                                          color: Colors.blue[
+                                              300], // Change color as needed
+                                        ),
                                       ),
-                                    ),
-                                    const SizedBox(width: 10),
-                                    dataTitle[index]['speak_suscess'] == 1
-                                        ? Align(
-                                            alignment: Alignment.centerLeft,
-                                            child: ClipPath(
-                                              clipper:
-                                                  DoubleTriangleRectangleClipper(),
-                                              child: Container(
-                                                padding:
-                                                    const EdgeInsets.all(3.0),
-                                                color: Colors.green,
-                                                child: const ATextLabelMediumColor(
-                                                    color: Colors.white,
-                                                    text:
-                                                        ' ข้อมูลถูกแก้ไขเรียบร้อยแล้ว '),
+                                      const SizedBox(width: 10),
+                                      dataTitle[index]['speak_suscess'] == 1
+                                          ? Align(
+                                              alignment: Alignment.centerLeft,
+                                              child: ClipPath(
+                                                clipper:
+                                                    DoubleTriangleRectangleClipper(),
+                                                child: Container(
+                                                  padding:
+                                                      const EdgeInsets.all(3.0),
+                                                  color: Colors.green,
+                                                  child: const ATextLabelMediumColor(
+                                                      color: Colors.white,
+                                                      text:
+                                                          ' ข้อมูลถูกแก้ไขเรียบร้อยแล้ว '),
+                                                ),
                                               ),
-                                            ),
-                                          )
-                                        : dataTitle[index]['words_comfirm'] >=
-                                                tSpeakNum
-                                            ? InkWell(
-                                                onTap: () async {
-                                                  Users? users =
-                                                      await getUsersList();
-                                                  String tmpLevel = '2';
-                                                  if (users != null) {
-                                                    tmpLevel =
-                                                        users.levelAccess;
-                                                  }
-                                                  if (tmpLevel == '1') {
-                                                    bool? confirm =
-                                                        // ignore: use_build_context_synchronously
-                                                        await _showConfirmationDialog(
-                                                            context);
-                                                    if (confirm!) {
-                                                      // ignore: use_build_context_synchronously
-                                                      LoadingDialog.show(
-                                                          context);
-                                                      await _fetchSpeakConfirmSuscess(
-                                                          '${dataTitle[index]['words']}',
-                                                          '${dataTitle[index]['words_speak']}');
-                                                      // ignore: use_build_context_synchronously
-                                                      LoadingDialog.hide(
-                                                          context);
-                                                      // print(
-                                                      //     'ยืนยันการยืนแก้ไขข้อมูล');
-                                                      // print('${dataTitle[index]['words']}');
+                                            )
+                                          : dataTitle[index]['words_comfirm'] >=
+                                                  tSpeakNum
+                                              ? InkWell(
+                                                  onTap: () async {
+                                                    Users? users =
+                                                        await getUsersList();
+                                                    String tmpLevel = '2';
+                                                    if (users != null) {
+                                                      tmpLevel =
+                                                          users.levelAccess;
                                                     }
-                                                  } else {
-                                                    // ignore: use_build_context_synchronously
-                                                    _showSnackbar(context,
-                                                        'คุณยังไม่ได้รับสิทธิ์ยืนยันการแก้ไขข้อมูล');
-                                                  }
-                                                },
-                                                child: Align(
+                                                    if (tmpLevel == '1') {
+                                                      bool? confirm =
+                                                          // ignore: use_build_context_synchronously
+                                                          await _showConfirmationDialog(
+                                                              context);
+                                                      if (confirm!) {
+                                                        // ignore: use_build_context_synchronously
+                                                        LoadingDialog.show(
+                                                            context);
+                                                        await _fetchSpeakConfirmSuscess(
+                                                            '${dataTitle[index]['words']}',
+                                                            '${dataTitle[index]['words_speak']}');
+                                                        // ignore: use_build_context_synchronously
+                                                        LoadingDialog.hide(
+                                                            context);
+                                                        // print(
+                                                        //     'ยืนยันการยืนแก้ไขข้อมูล');
+                                                        // print('${dataTitle[index]['words']}');
+                                                      }
+                                                    } else {
+                                                      // ignore: use_build_context_synchronously
+                                                      _showSnackbar(context,
+                                                          'คุณยังไม่ได้รับสิทธิ์ยืนยันการแก้ไขข้อมูล');
+                                                    }
+                                                  },
+                                                  child: Align(
+                                                    alignment:
+                                                        Alignment.centerLeft,
+                                                    child: ClipPath(
+                                                      clipper:
+                                                          DoubleTriangleRectangleClipper(),
+                                                      child: Container(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(3.0),
+                                                        color: Colors.red,
+                                                        child: const ATextDiskplaySmall(
+                                                            text:
+                                                                'ยืนยันการยืนแก้ไขข้อมูล'),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                )
+                                              : Align(
                                                   alignment:
                                                       Alignment.centerLeft,
                                                   child: ClipPath(
@@ -887,55 +914,40 @@ class _ShowSpeechSaveState extends State<ShowSpeechSave> {
                                                       padding:
                                                           const EdgeInsets.all(
                                                               3.0),
-                                                      color: Colors.red,
-                                                      child: const ATextDiskplaySmall(
+                                                      color: Colors.yellow,
+                                                      child: const ATextLabelMediumColor(
+                                                          color: Colors.black,
                                                           text:
-                                                              'ยืนยันการยืนแก้ไขข้อมูล'),
+                                                              ' รอสมาชิกยืนยันครบ $tSpeakNum ท่าน '),
                                                     ),
                                                   ),
                                                 ),
-                                              )
-                                            : Align(
-                                                alignment: Alignment.centerLeft,
-                                                child: ClipPath(
-                                                  clipper:
-                                                      DoubleTriangleRectangleClipper(),
-                                                  child: Container(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            3.0),
-                                                    color: Colors.yellow,
-                                                    child: const ATextLabelMediumColor(
-                                                        color: Colors.black,
-                                                        text:
-                                                            ' รอสมาชิกยืนยันครบ $tSpeakNum ท่าน '),
-                                                  ),
-                                                ),
-                                              ),
-                                    const SizedBox(width: 10),
-                                    InkWell(
-                                      onTap: () {
-                                        _showDialogUser(
-                                            context,
-                                            'รายชื่อสมาชิกที่ยืนยันแล้ว',
-                                            '${dataTitle[index]['words']}');
-                                      },
-                                      child: Align(
-                                        alignment: Alignment.centerLeft,
-                                        child: ClipPath(
-                                          clipper:
-                                              DoubleTriangleRectangleClipper(),
-                                          child: Container(
-                                            padding: const EdgeInsets.all(3.0),
-                                            color: Colors.green,
-                                            child: ATextDiskplaySmall(
-                                                text:
-                                                    'สมาชิกที่ยืนยัน ${dataTitle[index]['words_comfirm']} ท่าน'),
+                                      const SizedBox(width: 10),
+                                      InkWell(
+                                        onTap: () {
+                                          _showDialogUser(
+                                              context,
+                                              'รายชื่อสมาชิกที่ยืนยันแล้ว',
+                                              '${dataTitle[index]['words']}');
+                                        },
+                                        child: Align(
+                                          alignment: Alignment.centerLeft,
+                                          child: ClipPath(
+                                            clipper:
+                                                DoubleTriangleRectangleClipper(),
+                                            child: Container(
+                                              padding:
+                                                  const EdgeInsets.all(3.0),
+                                              color: Colors.green,
+                                              child: ATextDiskplaySmall(
+                                                  text:
+                                                      'สมาชิกที่ยืนยัน ${dataTitle[index]['words_comfirm']} ท่าน'),
+                                            ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
                       const Divider(),
                       ATextTitleSmallTHColor(

@@ -363,6 +363,7 @@ class _LogSpeechScreenState extends State<LogSpeechScreen> {
                         // Text("Comments: ${record['comments'] ?? 'ไม่มี'}"),
                         // Text(
                         //     "Success: ${record['speak_suscess'] == 1 ? 'Yes' : 'No'}"),
+                        const Divider(),
                       ],
                     ),
                   );

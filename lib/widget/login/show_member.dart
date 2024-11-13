@@ -486,9 +486,13 @@ class ShowButtonMember extends StatelessWidget {
           if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
           } else {
-            return ATextDiskplayMedium(
-                text:
-                    '   แสดงข้อมูลสมาชิก [รอยืนยัน ${snapshot.data} ท่าน]   '); // ใช้ค่าที่ได้จาก Future
+            return snapshot.data == '0'
+                ? ATextDiskplayMedium(
+                    text:
+                        '   แสดงข้อมูลสมาชิก [รอยืนยัน ${snapshot.data} ท่าน]   ')
+                : ATextTitleMedium(
+                    text:
+                        '   แสดงข้อมูลสมาชิก [รอยืนยัน ${snapshot.data} ท่าน]   '); // ใช้ค่าที่ได้จาก Future
           }
         }
       },
