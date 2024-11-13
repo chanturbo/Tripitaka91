@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tripitaka91/widget/screen/respond_screen.dart';
 import 'package:tripitaka91/utils/constants/text_strings.dart';
 import 'package:tripitaka91/widget/my_home_desktop.dart';
@@ -14,6 +16,36 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  @override
+  void initState() {
+    super.initState();
+    _requestPermissionsIfFirstRun();
+  }
+
+  Future<void> _requestPermissionsIfFirstRun() async {
+    // เข้าถึง SharedPreferences
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    // เช็คว่ามีการบันทึกว่ารันครั้งแรกหรือไม่
+    bool isFirstRun = prefs.getBool('isFirstRun') ?? true;
+
+    if (isFirstRun) {
+      // ขอ permission สำหรับการเขียน storage
+      PermissionStatus status = await Permission.storage.request();
+
+      if (status.isGranted) {
+        // ignore: avoid_print
+        print("Storage permission granted");
+      } else {
+        // ignore: avoid_print
+        print("Storage permission denied");
+      }
+
+      // บันทึกว่าแอปนี้ได้รันครั้งแรกไปแล้ว
+      await prefs.setBool('isFirstRun', false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
