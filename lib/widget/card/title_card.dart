@@ -9,6 +9,7 @@ import 'package:tripitaka91/utils/play_audio/audio_manager.dart';
 import 'package:tripitaka91/utils/shared_preferences/shared_user.dart';
 import 'package:tripitaka91/utils/text_title_replace/text_title_replace.dart';
 import 'package:tripitaka91/utils/video/video_utils.dart';
+import 'package:tripitaka91/widget/audio/edit_speak.dart';
 import 'package:tripitaka91/widget/auto_text/auto_text.dart';
 import 'package:tripitaka91/widget/login/loading_dialog.dart';
 import 'package:tripitaka91/widget/pageviews/pageviews_html.dart';
@@ -384,6 +385,43 @@ class _TitleCardState extends State<TitleCard> {
                         },
                         child: Icon(
                           Icons.edit,
+                          size: widget.isMobile ? 21 : 16,
+                          color: Colors.blue[300],
+                        ),
+                      )
+                    : const SizedBox.shrink(),
+                (usersChk != null)
+                    ? const SizedBox(width: 10)
+                    : const SizedBox.shrink(),
+                (usersChk != null)
+                    ? InkWell(
+                        onTap: () async {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                contentPadding: const EdgeInsets.all(5),
+                                title: const Text('แจ้งการอ่านออกเสียง'),
+                                content: const SizedBox(
+                                  width: double.maxFinite,
+                                  child: EditSpeakScreen(
+                                    comments: '-',
+                                  ),
+                                ),
+                                actions: <Widget>[
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: const Text('ปิดหน้าจอ'),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        },
+                        child: Icon(
+                          Icons.edit_document,
                           size: widget.isMobile ? 21 : 16,
                           color: Colors.blue[300],
                         ),
