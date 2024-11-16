@@ -591,7 +591,7 @@ class _ShowTitlePagesState extends State<ShowTitlePages> {
                                     );
                                   },
                                   child: Icon(
-                                    Icons.edit_document,
+                                    Icons.record_voice_over,
                                     size: widget.isM ? 21 : 16,
                                     color: Colors.blue[300],
                                   ),
