@@ -33,6 +33,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       TextEditingController();
   final _formKey = GlobalKey<FormState>();
   late Users users;
+  bool _isChecked = false; // เพิ่มตัวแปรสถานะสำหรับ Checkbox
 
   @override
   void initState() {
@@ -192,9 +193,29 @@ class _SignUpScreenState extends State<SignUpScreen> {
             obscureText: true,
           ),
           const SizedBox(height: 10),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Checkbox(
+                value: _isChecked,
+                onChanged: (value) {
+                  setState(() {
+                    _isChecked = value ?? false;
+                  });
+                },
+              ),
+              const Expanded(
+                child: Text(
+                  'ข้าพเจ้ารับทราบว่าโหมดการอ่านออกเสียงหัวข้อธรรมและพระไตรปิฎกใช้โปรแกรมอัตโนมัติในการอ่าน ซึ่งอาจทำให้การอ่านออกเสียงไม่ถูกต้องหรือครบถ้วน โดยข้าพเจ้าจะใช้วิจารณญาณในการไตร่ตรองและตรวจสอบความถูกต้องของข้อมูลอีกครั้งหนึ่ง',
+                  style: TextStyle(fontSize: 14),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
           ElevatedButton(
             onPressed: () async {
-              if (_formKey.currentState!.validate()) {
+              if (_formKey.currentState!.validate() && _isChecked) {
                 // Perform data submission
                 bool loginResult =
                     await loginUser(_userNameController.text, tSecretAPIKey);
@@ -227,6 +248,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               )),
                     );
                   }
+                }
+              } else {
+                // แสดงข้อความแจ้งเตือนให้กด Checkbox
+                if (!_isChecked) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content:
+                          Text('กรุณาคลิกยอมรับข้อความรับทราบก่อนดำเนินการต่อ'),
+                    ),
+                  );
                 }
               }
             },
