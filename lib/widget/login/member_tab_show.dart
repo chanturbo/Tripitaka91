@@ -55,12 +55,12 @@ class MyTabMemberPage extends StatelessWidget {
             isScrollable: true,
             tabs: [
               Tab(child: ATextDiskplaySmall(text: 'ข้อมูลทั่วไป')),
-              Tab(child: ATextDiskplaySmall(text: 'รายการแจ้งคำผิดคำถูก')),
               Tab(child: ATextDiskplaySmall(text: 'รายการแจ้งการอ่านออกเสียง')),
-              Tab(child: ATextDiskplaySmall(text: 'ยืนยันการแก้ไขคำผิดคำถูก')),
               Tab(
                   child: ATextDiskplaySmall(
                       text: 'ยืนยันการแก้ไขการอ่านออกเสียง')),
+              Tab(child: ATextDiskplaySmall(text: 'รายการแจ้งคำผิดคำถูก')),
+              Tab(child: ATextDiskplaySmall(text: 'ยืนยันการแก้ไขคำผิดคำถูก')),
             ],
           ),
         ),

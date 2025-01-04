@@ -2001,6 +2001,23 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
                 String lastName = log.lastName;
                 lineOld = log.bookDetailOld;
                 lineNew = log.bookDetailNew;
+
+                DateTime dateAdd = log.tripitaka91Dateadd;
+                DateTime targetDate = DateTime(2023, 11, 13);
+                // ตรวจสอบว่าค่า dateAdd มากกว่าหรือเท่ากับ targetDate หรือไม่
+                if (dateAdd.isAfter(targetDate) ||
+                    dateAdd.isAtSameMomentAs(targetDate)) {
+                  // print("วันที่มากกว่าหรือเท่ากับ 13 พฤศจิกายน 2013");
+                  // print('dateAdd $dateAdd');
+                  // print(targetDate);
+                } else {
+                  if (log.tripitaka91User == 'Rotor206') {
+                    nameid = 'นาย';
+                  }
+                  // print(nameid);
+                  // print("วันที่น้อยกว่า 13 พฤศจิกายน 2013");
+                }
+
                 String tmpLog =
                     'คำที่น่าจะผิด: [$wordIncorrect] คำที่น่าจะถูก: [$wordCorrect] แจ้งโดย: $nameid$firestName $lastName\n';
                 logEdit = '$logEdit$tmpLog';
