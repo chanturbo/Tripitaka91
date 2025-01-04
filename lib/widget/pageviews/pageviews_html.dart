@@ -1808,7 +1808,9 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
                   // print('dateAdd $dateAdd');
                   // print(targetDate);
                 } else {
-                  nameid = 'นาย';
+                  if (log.tripitaka91User == 'Rotor206') {
+                    nameid = 'นาย';
+                  }
                   // print(nameid);
                   // print("วันที่น้อยกว่า 13 พฤศจิกายน 2013");
                 }

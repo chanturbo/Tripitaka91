@@ -1,7 +1,9 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
+import 'package:substring_highlight/substring_highlight.dart';
 import 'package:tripitaka91/utils/constants/api_constants.dart';
 import 'package:tripitaka91/utils/img_service/shared_image_generator.dart';
 import 'package:tripitaka91/utils/models/users.dart';
@@ -124,18 +126,49 @@ class _SearchShowPagesTitleListState extends State<SearchShowPagesTitleList> {
 
   Widget _showText(String title, String mark) {
     if (mark == 'TRUE') {
-      return Text(
-        title,
-        style:
-            TextStyle(fontSize: widget.isMobile ? 18 : 16, color: Colors.red),
+      return SubstringHighlight(
+        text: widget.isMobile
+            ? title
+            // : '[เล่ม $bookid หน้า $pageid บรรทัด $lineid] \n$title',
+            : title,
+        term: title,
+        textStyle: TextStyle(
+          fontFamily: widget.isMobile
+              ? 'Roboto'
+              : kIsWeb
+                  ? 'THSarabunNew'
+                  : 'Roboto',
+          fontSize: widget.isMobile
+              ? 18.0
+              : kIsWeb
+                  ? 24.0
+                  : 16.0,
+        ),
       );
     } else {
       return widget.isMobile
-          ? ATextTitleMedium18(
-              text: title,
+          ? Text(
+              title,
+              style: const TextStyle(
+                fontFamily: 'Roboto',
+                fontSize: 18.0,
+              ),
             )
-          : ATextTitleMedium(
-              text: title,
+          : Text(
+              // '[เล่ม $bookid หน้า $pageid บรรทัด $lineid] \n$title',
+              title,
+              style: TextStyle(
+                fontFamily: widget.isMobile
+                    ? 'Roboto'
+                    : kIsWeb
+                        ? 'THSarabunNew'
+                        : 'Roboto',
+                fontSize: widget.isMobile
+                    ? 18.0
+                    : kIsWeb
+                        ? 24.0
+                        : 16.0,
+              ),
             );
     }
   }

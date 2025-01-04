@@ -136,7 +136,8 @@ class _ShowTitlePagesState extends State<ShowTitlePages> {
       return SubstringHighlight(
         text: widget.isM
             ? title
-            : '[เล่ม $bookid หน้า $pageid บรรทัด $lineid] \n$title',
+            // : '[เล่ม $bookid หน้า $pageid บรรทัด $lineid] \n$title',
+            : title,
         term: title,
         textStyle: TextStyle(
           fontFamily: widget.isM
@@ -161,7 +162,8 @@ class _ShowTitlePagesState extends State<ShowTitlePages> {
               ),
             )
           : Text(
-              '[เล่ม $bookid หน้า $pageid บรรทัด $lineid] \n$title',
+              // '[เล่ม $bookid หน้า $pageid บรรทัด $lineid] \n$title',
+              title,
               style: TextStyle(
                 fontFamily: widget.isM
                     ? 'Roboto'
