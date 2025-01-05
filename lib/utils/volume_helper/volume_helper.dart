@@ -1,4 +1,20 @@
+import 'package:tripitaka91/utils/models/users.dart';
+import 'package:tripitaka91/utils/shared_preferences/shared_user.dart';
+
 class VolumeHelper {
-  // กำหนดค่าเริ่มต้นหรือปรับเปลี่ยนตามเงื่อนไขที่คุณต้องการ
-  bool get showVolume => true; // หรือสามารถกำหนดให้เป็น false ได้
+  Users? users;
+  bool showVolume = false;
+
+  VolumeHelper() {
+    _initialize();
+  }
+
+  Future<void> _initialize() async {
+    users = await getUsersList();
+    if (users != null) {
+      showVolume = true; // ตั้งค่าตามเงื่อนไขที่คุณต้องการ
+    } else {
+      showVolume = false; // หรือค่าอื่นที่เหมาะสม
+    }
+  }
 }

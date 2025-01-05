@@ -34,7 +34,7 @@ class _SearchShowPagesDictbtState extends State<SearchShowPagesDictbt> {
   final ScrollController _scrollControllerDictbt = ScrollController();
 
   AudioPlayerManager audioPlayerManager = AudioPlayerManager();
-
+  final volumeHelper = VolumeHelper();
   @override
   void initState() {
     super.initState();
@@ -165,7 +165,7 @@ class _SearchShowPagesDictbtState extends State<SearchShowPagesDictbt> {
                   ),
                   subtitle: Row(
                     children: [
-                      VolumeHelper().showVolume
+                      volumeHelper.showVolume
                           ? InkWell(
                               onTap: () async {
                                 LoadingDialog.show(context);
@@ -188,7 +188,7 @@ class _SearchShowPagesDictbtState extends State<SearchShowPagesDictbt> {
                               ),
                             )
                           : const Text(''),
-                      VolumeHelper().showVolume
+                      volumeHelper.showVolume
                           ? const SizedBox(width: 10)
                           : const SizedBox.shrink(),
                       InkWell(

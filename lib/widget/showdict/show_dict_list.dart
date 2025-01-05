@@ -30,7 +30,7 @@ class _ShowPagesDictListState extends State<ShowPagesDictList> {
   final ScrollController _scrollControllerDict = ScrollController();
 
   AudioPlayerManager audioPlayerManager = AudioPlayerManager();
-
+  final volumeHelper = VolumeHelper();
   @override
   void initState() {
     super.initState();
@@ -152,7 +152,7 @@ class _ShowPagesDictListState extends State<ShowPagesDictList> {
                   ),
                   subtitle: Row(
                     children: [
-                      VolumeHelper().showVolume
+                      volumeHelper.showVolume
                           ? InkWell(
                               onTap: () async {
                                 LoadingDialog.show(context);
@@ -176,7 +176,7 @@ class _ShowPagesDictListState extends State<ShowPagesDictList> {
                               ),
                             )
                           : const Text(''),
-                      VolumeHelper().showVolume
+                      volumeHelper.showVolume
                           ? const SizedBox(width: 10)
                           : const SizedBox.shrink(),
                       InkWell(

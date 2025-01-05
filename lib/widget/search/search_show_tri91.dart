@@ -46,7 +46,7 @@ class _SearchShowPagesState extends State<SearchShowPages> {
 
   AudioPlayerManager audioPlayerManager = AudioPlayerManager();
   final SharedImageBook sharedImageGenerator = SharedImageBook();
-
+  final volumeHelper = VolumeHelper();
   @override
   void initState() {
     super.initState();
@@ -184,7 +184,7 @@ class _SearchShowPagesState extends State<SearchShowPages> {
                   ),
                   subtitle: Row(
                     children: [
-                      VolumeHelper().showVolume
+                      volumeHelper.showVolume
                           ? InkWell(
                               onTap: () async {
                                 LoadingDialog.show(context);
@@ -209,7 +209,7 @@ class _SearchShowPagesState extends State<SearchShowPages> {
                               ),
                             )
                           : const Text(''),
-                      VolumeHelper().showVolume
+                      volumeHelper.showVolume
                           ? const SizedBox(width: 10)
                           : const SizedBox.shrink(),
                       InkWell(

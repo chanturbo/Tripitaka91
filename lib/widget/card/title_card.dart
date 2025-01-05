@@ -51,6 +51,7 @@ class _TitleCardState extends State<TitleCard> {
   Users? usersChk;
 
   final SharedImageGenerator sharedImageGenerator = SharedImageGenerator();
+  final volumeHelper = VolumeHelper();
 
   @override
   void initState() {
@@ -233,7 +234,7 @@ class _TitleCardState extends State<TitleCard> {
             Row(
               children: [
                 const SizedBox(width: 15),
-                VolumeHelper().showVolume
+                volumeHelper.showVolume
                     ? InkWell(
                         onTap: () async {
                           LoadingDialog.show(context);
@@ -256,7 +257,7 @@ class _TitleCardState extends State<TitleCard> {
                         ),
                       )
                     : const Text(''),
-                VolumeHelper().showVolume
+                volumeHelper.showVolume
                     ? const SizedBox(width: 10)
                     : const SizedBox.shrink(),
                 InkWell(

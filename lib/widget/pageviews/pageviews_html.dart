@@ -94,6 +94,7 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
   late InAppWebViewController webViewController;
 
   final SharedImageGenerator sharedImageGenerator = SharedImageGenerator();
+  final volumeHelper = VolumeHelper();
 
   @override
   void initState() {
@@ -360,7 +361,7 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
                                       ),
                                 subtitle: Row(
                                   children: [
-                                    VolumeHelper().showVolume
+                                    volumeHelper.showVolume
                                         ? InkWell(
                                             onTap: () async {
                                               LoadingDialog.show(context);
@@ -387,7 +388,7 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
                                             ),
                                           )
                                         : const Text(''),
-                                    VolumeHelper().showVolume
+                                    volumeHelper.showVolume
                                         ? const SizedBox(width: 10)
                                         : const SizedBox.shrink(),
                                     InkWell(
@@ -747,7 +748,7 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
           ),
         ),
         const Text('   '),
-        VolumeHelper().showVolume
+        volumeHelper.showVolume
             ? PopupMenuButton(
                 icon: const Icon(
                   color: TColors.white,
@@ -1040,7 +1041,7 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
                     ),
               subtitle: Row(
                 children: [
-                  VolumeHelper().showVolume
+                  volumeHelper.showVolume
                       ? InkWell(
                           onTap: () async {
                             LoadingDialog.show(context);
@@ -1063,7 +1064,7 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
                           ),
                         )
                       : const Text(''),
-                  VolumeHelper().showVolume
+                  volumeHelper.showVolume
                       ? const SizedBox(width: 10)
                       : const SizedBox.shrink(),
                   InkWell(
@@ -1180,7 +1181,7 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
             children: [
               pageChanged == 0
                   ? const Text('')
-                  : VolumeHelper().showVolume
+                  : volumeHelper.showVolume
                       ? IconButton(
                           tooltip: 'อ่านออกเสียง',
                           icon: const Icon(Icons.volume_up),
@@ -1295,7 +1296,7 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
                   ? const ATextLabelMedium(text: '   หน้า')
                   : const Text(''),
               pageChanged == 0
-                  ? VolumeHelper().showVolume
+                  ? volumeHelper.showVolume
                       ? Stack(
                           alignment: Alignment.center,
                           children: [
@@ -1326,7 +1327,7 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
                       : const Text('')
                   : const Text(''),
               pageChanged == 0
-                  ? VolumeHelper().showVolume
+                  ? volumeHelper.showVolume
                       ? Stack(
                           alignment: Alignment.center,
                           children: [
@@ -1357,7 +1358,7 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
                       : const Text('')
                   : const Text(''),
               pageChanged == 0
-                  ? VolumeHelper().showVolume
+                  ? volumeHelper.showVolume
                       ? Stack(
                           alignment: Alignment.center,
                           children: [
@@ -1388,7 +1389,7 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
                       : const Text('')
                   : const Text(''),
               pageChanged == 0
-                  ? VolumeHelper().showVolume
+                  ? volumeHelper.showVolume
                       ? Stack(
                           alignment: Alignment.center,
                           children: [
@@ -1419,7 +1420,7 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
                       : const Text('')
                   : const Text(''),
               pageChanged == 0
-                  ? VolumeHelper().showVolume
+                  ? volumeHelper.showVolume
                       ? Stack(
                           alignment: Alignment.center,
                           children: [
@@ -1450,7 +1451,7 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
                       : const Text('')
                   : const Text(''),
               pageChanged == 0
-                  ? VolumeHelper().showVolume
+                  ? volumeHelper.showVolume
                       ? IconButton(
                           tooltip: 'หยุดชั่วคราว',
                           icon: const Icon(Icons.pause),
@@ -1460,13 +1461,13 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
                         )
                       : const Text('')
                   : currentPlaylist.isEmpty
-                      ? VolumeHelper().showVolume
+                      ? volumeHelper.showVolume
                           ? const Icon(
                               Icons.stop,
                               color: Colors.grey,
                             )
                           : const Text('')
-                      : VolumeHelper().showVolume
+                      : volumeHelper.showVolume
                           ? IconButton(
                               tooltip: 'หยุดชั่วคราว',
                               icon: const Icon(Icons.pause),
