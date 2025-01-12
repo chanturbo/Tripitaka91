@@ -29,6 +29,7 @@ import 'package:tripitaka91/widget/login/login_dialog.dart';
 import 'package:tripitaka91/widget/login/show_logedit_save_with_page.dart';
 import 'package:tripitaka91/widget/pageviews/pageviews_edit.dart';
 import 'package:tripitaka91/widget/screen/respond_screen.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Tri91PageViewHtml extends StatefulWidget {
   final String triBookid;
@@ -110,6 +111,17 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
     textTitleReplace = TextTitleReplace();
     uniqueItems = [];
     chkTimer = true;
+  }
+
+  Future<void> openLinkInNewTab(String url) async {
+    final Uri uri = Uri.parse(url);
+
+    if (!await launchUrl(
+      uri,
+      mode: LaunchMode.externalApplication, // เปิดในเบราว์เซอร์แยก
+    )) {
+      throw 'ไม่สามารถเปิดลิงก์: $url';
+    }
   }
 
   void _onTimerFinished() {
@@ -710,21 +722,17 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
     return AppBar(
       title: ATextDiskplayMedium(text: '(เล่ม $bookid) $bookTitleTri91'),
       actions: [
-        InkWell(
-          onTap: () async {
+        IconButton(
+          color: Colors.white,
+          icon: const ATextDiskplayMedium(text: ' เปิดในโหมดเว็บ '),
+          onPressed: () async {
             String tmpLine = '1';
             if (pageChanged == pageids) {
               tmpLine = tribookline.toString();
             }
-            await Share.share(
-                '$tURLmain${widget.triBookid}-$pageChanged-$tmpLine.htm',
-                subject: 'พระไตรปิฎก');
+            openLinkInNewTab(
+                '$tURLmain${widget.triBookid}-$pageChanged-$tmpLine.htm');
           },
-          child: Icon(
-            Icons.share,
-            size: widget.isMobile ? 25 : 18,
-            color: Colors.white, // Change color as needed
-          ),
         ),
         const Text('   '),
         InkWell(
@@ -743,6 +751,23 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
           },
           child: Icon(
             Icons.copy,
+            size: widget.isMobile ? 25 : 18,
+            color: Colors.white, // Change color as needed
+          ),
+        ),
+        const Text('   '),
+        InkWell(
+          onTap: () async {
+            String tmpLine = '1';
+            if (pageChanged == pageids) {
+              tmpLine = tribookline.toString();
+            }
+            await Share.share(
+                '$tURLmain${widget.triBookid}-$pageChanged-$tmpLine.htm',
+                subject: 'พระไตรปิฎก');
+          },
+          child: Icon(
+            Icons.share,
             size: widget.isMobile ? 25 : 18,
             color: Colors.white, // Change color as needed
           ),

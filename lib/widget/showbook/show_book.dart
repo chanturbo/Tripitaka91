@@ -546,25 +546,25 @@ class _ShowBookSlideState extends State<ShowBookSlide> {
                       'https://play.google.com/store/apps/details?id=com.tripitaka91.tripitaka91&hl=th',
                   iconPath: 'assets/web/playstore.png',
                 ),
-                const Divider(height: 30),
-                // ข้อความสำหรับดาวน์โหลดไฟล์ ePub
-                const Text(
-                  'ดาวน์โหลดไฟล์ ePub สำหรับเครื่องอ่าน E-book',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 10),
-                const Text(
-                  'พระไตรปิฎกและอรรถกถาแปล ชุด 91 เล่ม ฉบับมหามกุฏราชวิทยาลัย (เล่มสีน้ำเงิน) พร้อมสารบัญหัวข้อธรรมในแต่ละเล่ม '
-                  'ในรูปแบบ E-book สำหรับเครื่องอ่าน Kindle, Sony, Kobo และเครื่องอ่านแท็บเล็ตต่าง ๆ เช่น iPad, iPhone, และ Android',
-                  textAlign: TextAlign.justify,
-                ),
-                const SizedBox(height: 10),
-                _buildDownloadButton(
-                  platform: 'ดาวน์โหลดไฟล์ ePub',
-                  url: 'https://www.tripitaka91.com/show_epub_download.php',
-                  iconPath:
-                      'assets/web/epub.png', // สมมติว่ามีไอคอน ePub ที่ชื่อ epub.png
-                ),
+                // const Divider(height: 30),
+                // // ข้อความสำหรับดาวน์โหลดไฟล์ ePub
+                // const Text(
+                //   'ดาวน์โหลดไฟล์ ePub สำหรับเครื่องอ่าน E-book',
+                //   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                // ),
+                // const SizedBox(height: 10),
+                // const Text(
+                //   'พระไตรปิฎกและอรรถกถาแปล ชุด 91 เล่ม ฉบับมหามกุฏราชวิทยาลัย (เล่มสีน้ำเงิน) พร้อมสารบัญหัวข้อธรรมในแต่ละเล่ม '
+                //   'ในรูปแบบ E-book สำหรับเครื่องอ่าน Kindle, Sony, Kobo และเครื่องอ่านแท็บเล็ตต่าง ๆ เช่น iPad, iPhone, และ Android',
+                //   textAlign: TextAlign.justify,
+                // ),
+                // const SizedBox(height: 10),
+                // _buildDownloadButton(
+                //   platform: 'ดาวน์โหลดไฟล์ ePub',
+                //   url: 'https://www.tripitaka91.com/show_epub_download.php',
+                //   iconPath:
+                //       'assets/web/epub.png', // สมมติว่ามีไอคอน ePub ที่ชื่อ epub.png
+                // ),
               ],
             ),
           ),

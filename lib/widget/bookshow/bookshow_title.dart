@@ -24,6 +24,7 @@ import 'package:tripitaka91/widget/bookshow/show_title_list.dart';
 import 'package:tripitaka91/widget/login/loading_dialog.dart';
 import 'package:tripitaka91/widget/pageviews/pageviews_html.dart';
 import 'package:tripitaka91/widget/right_clipper/center_clipper.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class BookShowTitle extends StatefulWidget {
   final String triBookid;
@@ -72,6 +73,17 @@ class _BookShowTitleState extends State<BookShowTitle> {
     _getLastBook();
     getDataTri91();
     _fetchDataTitle();
+  }
+
+  Future<void> openLinkInNewTab(String url) async {
+    final Uri uri = Uri.parse(url);
+
+    if (!await launchUrl(
+      uri,
+      mode: LaunchMode.externalApplication, // เปิดในเบราว์เซอร์แยก
+    )) {
+      throw 'ไม่สามารถเปิดลิงก์: $url';
+    }
   }
 
   Future<void> _fetchDataTitle() async {
@@ -451,6 +463,15 @@ class _BookShowTitleState extends State<BookShowTitle> {
                               color: Colors.blue,
                             ),
                             const ATextBodyMedium(text: ' สารบัญหัวข้อธรรม'),
+                            const SizedBox(width: 10),
+                            ElevatedButton(
+                              onPressed: () {
+                                openLinkInNewTab(
+                                    '${tURLmain}tripitaka91_1.php?book_code=${widget.triBookid}');
+                              },
+                              child: const ATextDiskplayMedium(
+                                  text: ' เปิดในโหมดเว็บ '),
+                            ),
                             const SizedBox(width: 10),
                             IconButton(
                               color: Colors.black,
@@ -978,6 +999,15 @@ class _BookShowTitleState extends State<BookShowTitle> {
                         color: Colors.blue,
                       ),
                       const ATextBodyMedium(text: ' สารบัญหัวข้อธรรม'),
+                      const SizedBox(width: 10),
+                      ElevatedButton(
+                        onPressed: () {
+                          openLinkInNewTab(
+                              '${tURLmain}tripitaka91_1.php?book_code=${widget.triBookid}');
+                        },
+                        child:
+                            const ATextDiskplayMedium(text: ' เปิดในโหมดเว็บ '),
+                      ),
                       const SizedBox(width: 10),
                       IconButton(
                         color: Colors.black,

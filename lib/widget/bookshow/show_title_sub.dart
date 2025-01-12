@@ -17,6 +17,7 @@ import 'package:tripitaka91/widget/auto_text/auto_text.dart';
 import 'package:tripitaka91/widget/login/loading_dialog.dart';
 import 'package:tripitaka91/widget/pageviews/pageviews_html.dart';
 import 'package:tripitaka91/widget/right_clipper/center_clipper.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ShowTitlePages extends StatefulWidget {
   final String wordSearch;
@@ -59,6 +60,17 @@ class _ShowTitlePagesState extends State<ShowTitlePages> {
   void dispose() {
     audioPlayerManager.dispose();
     super.dispose();
+  }
+
+  Future<void> openLinkInNewTab(String url) async {
+    final Uri uri = Uri.parse(url);
+
+    if (!await launchUrl(
+      uri,
+      mode: LaunchMode.externalApplication, // เปิดในเบราว์เซอร์แยก
+    )) {
+      throw 'ไม่สามารถเปิดลิงก์: $url';
+    }
   }
 
   void getUser() async {
@@ -317,6 +329,42 @@ class _ShowTitlePagesState extends State<ShowTitlePages> {
           text: widget.wordSearch,
         ),
         actions: [
+          IconButton(
+            color: Colors.white,
+            icon: const ATextDiskplayMedium(text: ' เปิดในโหมดเว็บ '),
+            onPressed: () async {
+              String searchText = widget.wordSearch;
+              int index = widget.menuList
+                  .indexWhere((element) => element[0] == searchText);
+              String bookcode = widget.menuList[index][0];
+              String sub1 = '';
+              if (widget.menuMain != '9.3') {
+                String text = bookcode;
+
+                // หาข้อความที่อยู่ในวงเล็บโดยใช้ Regex
+                RegExp regExp = RegExp(r"\((.*?)\)");
+                Iterable<Match> matches = regExp.allMatches(text);
+                List<String> extractedTexts = [];
+                for (Match match in matches) {
+                  // เพิ่มข้อความที่อยู่ในวงเล็บลงใน List
+                  extractedTexts.add(match.group(1)!);
+                }
+                if (extractedTexts.isNotEmpty) {
+                  sub1 = "(${extractedTexts.join(", ")})";
+                }
+              }
+
+              String code = widget.menuMain;
+              String sub = widget.menuList[index][1];
+              String linkPhp = 'tripitaka91_1.php';
+              if (sub1.isNotEmpty) {
+                openLinkInNewTab(
+                    '$tURLmain$linkPhp?book_code=$code&sub=$sub&sub1=$sub1');
+              } else {
+                openLinkInNewTab('$tURLmain$linkPhp?book_code=$code&sub=$sub');
+              }
+            },
+          ),
           IconButton(
             color: Colors.white,
             icon: const Icon(Icons.copy),
