@@ -722,54 +722,76 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
     return AppBar(
       title: ATextDiskplayMedium(text: '(เล่ม $bookid) $bookTitleTri91'),
       actions: [
-        IconButton(
-          color: Colors.white,
-          icon: const ATextDiskplayMedium(text: ' เปิดในโหมดเว็บ '),
-          onPressed: () async {
-            String tmpLine = '1';
-            if (pageChanged == pageids) {
-              tmpLine = tribookline.toString();
-            }
-            openLinkInNewTab(
-                '$tURLmain${widget.triBookid}-$pageChanged-$tmpLine.htm');
-          },
-        ),
-        const Text('   '),
-        InkWell(
-          onTap: () async {
-            String tmpLine = '1';
-            if (pageChanged == pageids) {
-              tmpLine = tribookline.toString();
-            }
-            await Clipboard.setData(
-              ClipboardData(
-                  text:
-                      '$tURLmain${widget.triBookid}-$pageChanged-$tmpLine.htm'),
-            );
-            // ignore: use_build_context_synchronously
-            _showSnackbar(context, 'คัดลอกข้อมูลเรียบร้อยแล้ว');
-          },
-          child: Icon(
-            Icons.copy,
-            size: widget.isMobile ? 25 : 18,
-            color: Colors.white, // Change color as needed
+        Tooltip(
+          message: 'เปิดในโหมดเว็บ',
+          child: IconButton(
+            color: Colors.white,
+            icon: widget.isMobile
+                ? const Icon(
+                    Icons.language,
+                    size: 25,
+                  )
+                : const ATextDiskplayMedium(text: ' เปิดในโหมดเว็บ '),
+            onPressed: () async {
+              String tmpLine = '1';
+              if (pageChanged == pageids) {
+                tmpLine = tribookline.toString();
+              }
+
+              List<String> findWord = widget.chkSearch.split(' ');
+              if (findWord.isNotEmpty) {
+                for (var x = 0; x < findWord.length; x++) {
+                  if (findWord[x] != '') {}
+                }
+              }
+
+              openLinkInNewTab(
+                  '$tURLmain${widget.triBookid}-$pageChanged-$tmpLine.htm');
+            },
           ),
         ),
         const Text('   '),
-        InkWell(
-          onTap: () async {
-            String tmpLine = '1';
-            if (pageChanged == pageids) {
-              tmpLine = tribookline.toString();
-            }
-            await Share.share(
-                '$tURLmain${widget.triBookid}-$pageChanged-$tmpLine.htm',
-                subject: 'พระไตรปิฎก');
-          },
-          child: Icon(
-            Icons.share,
-            size: widget.isMobile ? 25 : 18,
-            color: Colors.white, // Change color as needed
+        Tooltip(
+          message: 'คัดลอกลิงค์',
+          child: InkWell(
+            onTap: () async {
+              String tmpLine = '1';
+              if (pageChanged == pageids) {
+                tmpLine = tribookline.toString();
+              }
+              await Clipboard.setData(
+                ClipboardData(
+                    text:
+                        '$tURLmain${widget.triBookid}-$pageChanged-$tmpLine.htm'),
+              );
+              // ignore: use_build_context_synchronously
+              _showSnackbar(context, 'คัดลอกข้อมูลเรียบร้อยแล้ว');
+            },
+            child: Icon(
+              Icons.copy,
+              size: widget.isMobile ? 25 : 18,
+              color: Colors.white, // Change color as needed
+            ),
+          ),
+        ),
+        const Text('   '),
+        Tooltip(
+          message: 'แชร์ลิงค์',
+          child: InkWell(
+            onTap: () async {
+              String tmpLine = '1';
+              if (pageChanged == pageids) {
+                tmpLine = tribookline.toString();
+              }
+              await Share.share(
+                  '$tURLmain${widget.triBookid}-$pageChanged-$tmpLine.htm',
+                  subject: 'พระไตรปิฎก');
+            },
+            child: Icon(
+              Icons.share,
+              size: widget.isMobile ? 25 : 18,
+              color: Colors.white, // Change color as needed
+            ),
           ),
         ),
         const Text('   '),
