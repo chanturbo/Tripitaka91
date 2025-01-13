@@ -329,41 +329,50 @@ class _ShowTitlePagesState extends State<ShowTitlePages> {
           text: widget.wordSearch,
         ),
         actions: [
-          IconButton(
-            color: Colors.white,
-            icon: const ATextDiskplayMedium(text: ' เปิดในโหมดเว็บ '),
-            onPressed: () async {
-              String searchText = widget.wordSearch;
-              int index = widget.menuList
-                  .indexWhere((element) => element[0] == searchText);
-              String bookcode = widget.menuList[index][0];
-              String sub1 = '';
-              if (widget.menuMain != '9.3') {
-                String text = bookcode;
+          Tooltip(
+            message: 'เปิดในโหมดเว็บ',
+            child: IconButton(
+              color: Colors.white,
+              icon: widget.isM
+                  ? const Icon(
+                      Icons.language,
+                      size: 25,
+                    )
+                  : const ATextDiskplayMedium(text: ' เปิดในโหมดเว็บ '),
+              onPressed: () async {
+                String searchText = widget.wordSearch;
+                int index = widget.menuList
+                    .indexWhere((element) => element[0] == searchText);
+                String bookcode = widget.menuList[index][0];
+                String sub1 = '';
+                if (widget.menuMain != '9.3') {
+                  String text = bookcode;
 
-                // หาข้อความที่อยู่ในวงเล็บโดยใช้ Regex
-                RegExp regExp = RegExp(r"\((.*?)\)");
-                Iterable<Match> matches = regExp.allMatches(text);
-                List<String> extractedTexts = [];
-                for (Match match in matches) {
-                  // เพิ่มข้อความที่อยู่ในวงเล็บลงใน List
-                  extractedTexts.add(match.group(1)!);
+                  // หาข้อความที่อยู่ในวงเล็บโดยใช้ Regex
+                  RegExp regExp = RegExp(r"\((.*?)\)");
+                  Iterable<Match> matches = regExp.allMatches(text);
+                  List<String> extractedTexts = [];
+                  for (Match match in matches) {
+                    // เพิ่มข้อความที่อยู่ในวงเล็บลงใน List
+                    extractedTexts.add(match.group(1)!);
+                  }
+                  if (extractedTexts.isNotEmpty) {
+                    sub1 = "(${extractedTexts.join(", ")})";
+                  }
                 }
-                if (extractedTexts.isNotEmpty) {
-                  sub1 = "(${extractedTexts.join(", ")})";
-                }
-              }
 
-              String code = widget.menuMain;
-              String sub = widget.menuList[index][1];
-              String linkPhp = 'tripitaka91_1.php';
-              if (sub1.isNotEmpty) {
-                openLinkInNewTab(
-                    '$tURLmain$linkPhp?book_code=$code&sub=$sub&sub1=$sub1');
-              } else {
-                openLinkInNewTab('$tURLmain$linkPhp?book_code=$code&sub=$sub');
-              }
-            },
+                String code = widget.menuMain;
+                String sub = widget.menuList[index][1];
+                String linkPhp = 'tripitaka91_1.php';
+                if (sub1.isNotEmpty) {
+                  openLinkInNewTab(
+                      '$tURLmain$linkPhp?book_code=$code&sub=$sub&sub1=$sub1');
+                } else {
+                  openLinkInNewTab(
+                      '$tURLmain$linkPhp?book_code=$code&sub=$sub');
+                }
+              },
+            ),
           ),
           IconButton(
             color: Colors.white,

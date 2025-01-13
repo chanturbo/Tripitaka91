@@ -737,14 +737,6 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
               if (pageChanged == pageids) {
                 tmpLine = tribookline.toString();
               }
-
-              List<String> findWord = widget.chkSearch.split(' ');
-              if (findWord.isNotEmpty) {
-                for (var x = 0; x < findWord.length; x++) {
-                  if (findWord[x] != '') {}
-                }
-              }
-
               openLinkInNewTab(
                   '$tURLmain${widget.triBookid}-$pageChanged-$tmpLine.htm');
             },
