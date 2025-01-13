@@ -1332,7 +1332,9 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
                         )
                       : const Text(''),
               pageChanged == 0
-                  ? const ATextLabelMedium(text: '   หน้า')
+                  ? volumeHelper.showVolume
+                      ? const ATextLabelMedium(text: '   หน้า')
+                      : const Text('')
                   : const Text(''),
               pageChanged == 0
                   ? volumeHelper.showVolume
