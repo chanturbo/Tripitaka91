@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tripitaka91/utils/auth/authentication_service.dart';
 import 'package:tripitaka91/utils/constants/colors.dart';
 import 'package:tripitaka91/utils/constants/sizes.dart';
+import 'package:tripitaka91/widget/auto_text/auto_text.dart';
 import 'package:tripitaka91/widget/login/login.dart';
 import 'package:tripitaka91/widget/login/member_tab_show.dart';
 import 'package:tripitaka91/widget/search/data_search_widget.dart';
@@ -107,6 +108,25 @@ class _AppBarCustomState extends State<AppBarCustom> {
                     ),
             ),
             const Spacer(),
+            Stack(
+              alignment: Alignment.topRight,
+              children: [
+                const Icon(
+                  Icons.app_registration, // ไอคอนหลัก
+
+                  color: Colors.blue,
+                ),
+                Container(
+                  padding: const EdgeInsets.all(4),
+                  decoration: BoxDecoration(
+                    color: Colors.red,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: const ATextDiskplayMedium(text: "เวอร์ชั่น BETA"),
+                ),
+              ],
+            ),
+            const SizedBox(width: 10),
             IconButton(
               icon: const Icon(Icons.person),
               onPressed: _checkLoginStatus,

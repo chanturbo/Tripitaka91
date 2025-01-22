@@ -64,7 +64,7 @@ class _BookShowTitleState extends State<BookShowTitle> {
   AudioPlayerManager audioPlayerManager = AudioPlayerManager();
   final SharedImageGenerator sharedImageGenerator = SharedImageGenerator();
   Users? usersChk;
-
+  final volumeHelper = VolumeHelper();
   @override
   void initState() {
     super.initState();
@@ -526,7 +526,7 @@ class _BookShowTitleState extends State<BookShowTitle> {
                             children: [
                               Row(
                                 children: [
-                                  VolumeHelper().showVolume
+                                  volumeHelper.showVolume
                                       ? InkWell(
                                           onTap: () async {
                                             LoadingDialog.show(context);
@@ -568,7 +568,7 @@ class _BookShowTitleState extends State<BookShowTitle> {
                                           ),
                                         )
                                       : const Text(''),
-                                  VolumeHelper().showVolume
+                                  volumeHelper.showVolume
                                       ? const SizedBox(width: 10)
                                       : const SizedBox.shrink(),
                                   InkWell(

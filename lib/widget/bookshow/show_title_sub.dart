@@ -46,7 +46,7 @@ class _ShowTitlePagesState extends State<ShowTitlePages> {
   AudioPlayerManager audioPlayerManager = AudioPlayerManager();
   Users? usersChk;
   final SharedImageGenerator sharedImageGenerator = SharedImageGenerator();
-
+  final volumeHelper = VolumeHelper();
   @override
   void initState() {
     super.initState();
@@ -494,7 +494,7 @@ class _ShowTitlePagesState extends State<ShowTitlePages> {
                     children: [
                       Row(
                         children: [
-                          VolumeHelper().showVolume
+                          volumeHelper.showVolume
                               ? InkWell(
                                   onTap: () async {
                                     LoadingDialog.show(context);
@@ -532,7 +532,7 @@ class _ShowTitlePagesState extends State<ShowTitlePages> {
                                   ),
                                 )
                               : const Text(''),
-                          VolumeHelper().showVolume
+                          volumeHelper.showVolume
                               ? const SizedBox(width: 10)
                               : const SizedBox.shrink(),
                           InkWell(
