@@ -252,7 +252,7 @@ class _AppBarCustomState extends State<AppBarCustom> {
                     const SizedBox(width: 8),
                     ATextDiskplayMedium(
                       text: valueSpeech == 0
-                          ? "เวอร์ชั่น BETA"
+                          ? "เปิดเวอร์ชั่น BETA"
                           : "ปิดเวอร์ชั่น BETA",
                     ),
                   ],
