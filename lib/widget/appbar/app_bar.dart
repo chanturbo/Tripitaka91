@@ -210,9 +210,9 @@ class _AppBarCustomState extends State<AppBarCustom> {
                     context: context,
                     builder: (BuildContext context) {
                       return AlertDialog(
-                        title: const Text('ยืนยันการปิดระบบ BETA'),
-                        content:
-                            const Text('คุณต้องการปิดระบบ BETA ใช่หรือไม่?'),
+                        title: const Text('ยืนยันการปิดเวอร์ชั่น BETA'),
+                        content: const Text(
+                            'คุณต้องการปิดเวอร์ชั่น BETA ใช่หรือไม่?'),
                         actions: [
                           TextButton(
                             onPressed: () {
@@ -223,7 +223,7 @@ class _AppBarCustomState extends State<AppBarCustom> {
                           ElevatedButton(
                             onPressed: () {
                               Navigator.pop(context); // ปิด Dialog
-                              _toggleValueSpeech(); // เรียกใช้ Logic ปิดระบบ BETA
+                              _toggleValueSpeech(); // เรียกใช้ Logic ปิดเวอร์ชั่น BETA
                               uhtml.window.location.reload(); // รีเฟรชหน้าเว็บ
                             },
                             style: ElevatedButton.styleFrom(
@@ -251,8 +251,9 @@ class _AppBarCustomState extends State<AppBarCustom> {
                     const Icon(Icons.app_registration, color: Colors.white),
                     const SizedBox(width: 8),
                     ATextDiskplayMedium(
-                      text:
-                          valueSpeech == 0 ? "เวอร์ชั่น BETA" : "ปิดระบบ BETA",
+                      text: valueSpeech == 0
+                          ? "เวอร์ชั่น BETA"
+                          : "ปิดเวอร์ชั่น BETA",
                     ),
                   ],
                 ),
