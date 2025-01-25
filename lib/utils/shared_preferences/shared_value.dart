@@ -25,3 +25,29 @@ Future<int> getValueSpeechFurture() async {
   final int value = prefs.getInt(key) ?? 0;
   return value;
 }
+
+void saveValueBeta(int value) async {
+  final prefs = await SharedPreferences.getInstance();
+  const key = 'valueBeta';
+  prefs.setInt(key, value);
+}
+
+Future<int> getValueBetaFurture() async {
+  final prefs = await SharedPreferences.getInstance();
+  const key = 'valueBeta';
+  final int value = prefs.getInt(key) ?? 0;
+  return value;
+}
+
+void saveValueBetaSpeech(int value) async {
+  final prefs = await SharedPreferences.getInstance();
+  const key = 'valueBetaSpeech';
+  prefs.setInt(key, value);
+}
+
+Future<int> getValueBetaSpeechFurture() async {
+  final prefs = await SharedPreferences.getInstance();
+  const key = 'valueBetaSpeech';
+  final int value = prefs.getInt(key) ?? 0;
+  return value;
+}

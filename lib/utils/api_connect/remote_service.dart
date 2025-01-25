@@ -12,6 +12,7 @@ import 'package:tripitaka91/utils/models/tri91_bookall.dart';
 import 'package:tripitaka91/utils/models/tri91_booksearch.dart';
 import 'package:tripitaka91/utils/models/users.dart';
 import 'package:tripitaka91/utils/shared_preferences/shared_user.dart';
+import 'package:tripitaka91/utils/shared_preferences/shared_value.dart';
 
 class RemoteServiceRandTitle {
   Future<List<RandTitle>?> getRandTitle() async {
@@ -323,6 +324,13 @@ class RemoteServiceSoundsGetLink {
         ? Uri.parse(tURLSoundsGetLink)
         : Uri.parse(tURLSoundsGetLinkM);
 
+    int valueBetaSpeech = await getValueBetaFurture();
+    if (valueBetaSpeech == 1) {
+      int valueBetaSpeechFuture = await getValueBetaSpeechFurture();
+      valueBetaSpeechFuture == 0
+          ? uri = Uri.parse(tURLSoundsGetLinkM)
+          : uri = Uri.parse(tURLSoundsGetLink);
+    }
     // สร้าง Map ที่มีข้อมูลที่ต้องการส่งไปด้วย
     var data = {
       'title': title,
