@@ -32,6 +32,12 @@ void saveValueBeta(int value) async {
   prefs.setInt(key, value);
 }
 
+void clearValueBeta() async {
+  final prefs = await SharedPreferences.getInstance();
+  const key = 'valueBeta';
+  prefs.remove(key); // ลบข้อมูลที่เก็บใน SharedPreferences ด้วย key
+}
+
 Future<int> getValueBetaFurture() async {
   final prefs = await SharedPreferences.getInstance();
   const key = 'valueBeta';

@@ -137,6 +137,7 @@ class _LoginPageState extends State<LoginPage> {
       bool chkLogin = await loginUser(username, password, tSecretAPIKey);
       if (chkLogin) {
         saveUsersList(createUserModel());
+        clearValueBeta();
         // ignore: use_build_context_synchronously
         Navigator.pushReplacement(
           context,
