@@ -254,13 +254,23 @@ class _AppBarCustomState extends State<AppBarCustom> {
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const Icon(Icons.app_registration,
-                              color: Colors.white),
-                          const SizedBox(width: 8),
+                          valueSpeech == 0
+                              ? const Icon(Icons.app_registration,
+                                  color: Colors.white)
+                              : const SizedBox.shrink(),
+                          valueSpeech == 0
+                              ? const SizedBox(width: 8)
+                              : const SizedBox.shrink(),
                           ATextDiskplayMedium(
                             text: valueSpeech == 0
-                                ? "เปิดเวอร์ชั่น BETA"
-                                : "ปิดเวอร์ชั่น BETA",
+                                ? widget.isDesktop == false &&
+                                        widget.isTablet == false
+                                    ? "BETA"
+                                    : "เปิดเวอร์ชั่น BETA"
+                                : widget.isDesktop == false &&
+                                        widget.isTablet == false
+                                    ? "ปิด BETA"
+                                    : "ปิดเวอร์ชั่น BETA",
                           ),
                         ],
                       ),
