@@ -257,10 +257,17 @@ class _AppBarCustomState extends State<AppBarCustom> {
                           valueSpeech == 0
                               ? const Icon(Icons.app_registration,
                                   color: Colors.white)
-                              : const SizedBox.shrink(),
+                              : widget.isDesktop == false &&
+                                      widget.isTablet == false
+                                  ? const SizedBox.shrink()
+                                  : const Icon(Icons.app_registration,
+                                      color: Colors.white),
                           valueSpeech == 0
                               ? const SizedBox(width: 8)
-                              : const SizedBox.shrink(),
+                              : widget.isDesktop == false &&
+                                      widget.isTablet == false
+                                  ? const SizedBox.shrink()
+                                  : const SizedBox(width: 8),
                           ATextDiskplayMedium(
                             text: valueSpeech == 0
                                 ? widget.isDesktop == false &&
