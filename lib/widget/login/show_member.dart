@@ -427,12 +427,21 @@ class _MemberDisplayState extends State<MemberDisplay> {
                       await _logOut();
                       clearUsersList();
                       // ignore: use_build_context_synchronously
-                      Navigator.pushReplacement(
+                      Navigator.pushAndRemoveUntil(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const MyHomePage(
-                                online: false)), // แทนที่หน้าเดิม
+                          builder: (context) => const MyHomePage(
+                            online: false,
+                          ),
+                        ),
+                        (route) => false,
                       );
+                      // Navigator.pushReplacement(
+                      //   context,
+                      //   MaterialPageRoute(
+                      //       builder: (context) => const MyHomePage(
+                      //           online: false)), // แทนที่หน้าเดิม
+                      // );
                     },
                     child: const ATextDiskplayMedium(
                       text: 'ออกจากระบบ',

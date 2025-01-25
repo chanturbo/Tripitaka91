@@ -109,7 +109,7 @@ class _MyHomeMobileState extends State<MyHomeMobile> {
   }
 
   Future<void> logOutUser() async {
-    clearUsersList();
+    // clearUsersList();
   }
 
   Future<void> userOnline() async {

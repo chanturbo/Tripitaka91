@@ -9,7 +9,7 @@ import 'package:tripitaka91/utils/models/users_login.dart';
 import 'package:tripitaka91/utils/shared_preferences/shared_user.dart';
 import 'package:tripitaka91/utils/shared_preferences/shared_value.dart';
 import 'package:tripitaka91/widget/login/signup_screen.dart';
-import 'package:tripitaka91/widget/my_home_page_online.dart';
+import 'package:tripitaka91/widget/my_home_page.dart';
 import 'package:url_launcher/link.dart';
 
 class LoginPage extends StatefulWidget {
@@ -137,13 +137,18 @@ class _LoginPageState extends State<LoginPage> {
       bool chkLogin = await loginUser(username, password, tSecretAPIKey);
       if (chkLogin) {
         saveUsersList(createUserModel());
+        clearValueBeta();
+        // await Future.delayed(const Duration(seconds: 2));
         // ignore: use_build_context_synchronously
-        Navigator.pushReplacement(
+        Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(
-              builder: (context) => const MyHomePageOnline()), // แทนที่หน้าเดิม
+            builder: (context) => const MyHomePage(
+              online: true,
+            ),
+          ),
+          (route) => false,
         );
-
         // // ignore: use_build_context_synchronously
         // Navigator.pushReplacement(
         //   context,

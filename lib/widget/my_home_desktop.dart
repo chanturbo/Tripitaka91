@@ -106,7 +106,7 @@ class _MyHomeDesktopState extends State<MyHomeDesktop> {
   }
 
   Future<void> logOutUser() async {
-    clearUsersList();
+    // clearUsersList();
   }
 
   Future<void> userOnline() async {

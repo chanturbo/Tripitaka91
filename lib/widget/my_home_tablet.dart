@@ -115,7 +115,7 @@ class _MyHomeTabletState extends State<MyHomeTablet> {
   }
 
   Future<void> logOutUser() async {
-    clearUsersList();
+    // clearUsersList();
   }
 
   Future<void> userOnline() async {

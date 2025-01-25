@@ -15,6 +15,7 @@ import 'package:tripitaka91/widget/login/loading_dialog.dart';
 import 'package:tripitaka91/widget/pageviews/pageviews_html.dart';
 import 'package:tripitaka91/widget/right_clipper/center_clipper.dart';
 import 'package:http/http.dart' as http;
+import 'package:tripitaka91/widget/volume_helper/volume_helper.dart';
 
 class TitleCard extends StatefulWidget {
   final String triTitle;
@@ -56,6 +57,7 @@ class _TitleCardState extends State<TitleCard> {
   final SharedImageGenerator sharedImageGenerator = SharedImageGenerator();
   final SharedImageLocal sharedImageLocal = SharedImageLocal();
   final VideoGenerator videoGenerator = VideoGenerator();
+  final volumeHelper = VolumeHelper();
 
   @override
   void initState() {
@@ -239,7 +241,7 @@ class _TitleCardState extends State<TitleCard> {
             Row(
               children: [
                 const SizedBox(width: 15),
-                widget.online
+                widget.online || volumeHelper.showVolume
                     ? InkWell(
                         onTap: () async {
                           LoadingDialog.show(context);
@@ -262,7 +264,7 @@ class _TitleCardState extends State<TitleCard> {
                         ),
                       )
                     : const Text(''),
-                widget.online
+                widget.online || volumeHelper.showVolume
                     ? const SizedBox(width: 10)
                     : const SizedBox.shrink(),
                 InkWell(

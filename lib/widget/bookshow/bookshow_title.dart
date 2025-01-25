@@ -25,6 +25,7 @@ import 'package:tripitaka91/widget/bookshow/show_title_list.dart';
 import 'package:tripitaka91/widget/login/loading_dialog.dart';
 import 'package:tripitaka91/widget/pageviews/pageviews_html.dart';
 import 'package:tripitaka91/widget/right_clipper/center_clipper.dart';
+import 'package:tripitaka91/widget/volume_helper/volume_helper.dart';
 
 class BookShowTitle extends StatefulWidget {
   final String triBookid;
@@ -69,6 +70,7 @@ class _BookShowTitleState extends State<BookShowTitle> {
   Users? usersChk;
   final SharedImageLocal sharedImageLocal = SharedImageLocal();
   final VideoGenerator videoGenerator = VideoGenerator();
+  final volumeHelper = VolumeHelper();
 
   @override
   void initState() {
@@ -558,7 +560,7 @@ class _BookShowTitleState extends State<BookShowTitle> {
                             children: [
                               Row(
                                 children: [
-                                  widget.online
+                                  widget.online || volumeHelper.showVolume
                                       ? InkWell(
                                           onTap: () async {
                                             LoadingDialog.show(context);
@@ -600,7 +602,7 @@ class _BookShowTitleState extends State<BookShowTitle> {
                                           ),
                                         )
                                       : const Text(''),
-                                  widget.online
+                                  widget.online || volumeHelper.showVolume
                                       ? const SizedBox(width: 10)
                                       : const SizedBox.shrink(),
                                   InkWell(

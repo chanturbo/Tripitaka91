@@ -31,6 +31,7 @@ import 'package:tripitaka91/widget/login/login_dialog.dart';
 import 'package:tripitaka91/widget/login/show_logedit_save_with_page.dart';
 import 'package:tripitaka91/widget/pageviews/pageviews_edit.dart';
 import 'package:tripitaka91/widget/screen/respond_screen.dart';
+import 'package:tripitaka91/widget/volume_helper/volume_helper.dart';
 
 class Tri91PageViewHtml extends StatefulWidget {
   final String triBookid;
@@ -103,6 +104,7 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
   final VideoGenerator videoGenerator = VideoGenerator();
 
   final dbHelper = DatabaseHelper();
+  final volumeHelper = VolumeHelper();
 
   @override
   void initState() {
@@ -377,7 +379,7 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
                                       ),
                                 subtitle: Row(
                                   children: [
-                                    widget.online
+                                    widget.online || volumeHelper.showVolume
                                         ? InkWell(
                                             onTap: () async {
                                               LoadingDialog.show(context);
@@ -404,7 +406,7 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
                                             ),
                                           )
                                         : const Text(''),
-                                    widget.online
+                                    widget.online || volumeHelper.showVolume
                                         ? const SizedBox(width: 10)
                                         : const SizedBox.shrink(),
                                     InkWell(
@@ -1073,7 +1075,7 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
                     ),
               subtitle: Row(
                 children: [
-                  widget.online
+                  widget.online || volumeHelper.showVolume
                       ? InkWell(
                           onTap: () async {
                             LoadingDialog.show(context);
@@ -1096,7 +1098,7 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
                           ),
                         )
                       : const Text(''),
-                  widget.online
+                  widget.online || volumeHelper.showVolume
                       ? const SizedBox(width: 10)
                       : const SizedBox.shrink(),
                   InkWell(
@@ -1271,7 +1273,7 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
         children: [
           Row(
             children: [
-              widget.online
+              widget.online || volumeHelper.showVolume
                   ? pageChanged == 0
                       ? const Text('')
                       : IconButton(
@@ -1384,12 +1386,12 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
                           },
                         )
                   : const Text(''),
-              widget.online
+              widget.online || volumeHelper.showVolume
                   ? pageChanged == 0
                       ? const ATextLabelMedium(text: '   หน้า')
                       : const Text('')
                   : const Text(''),
-              widget.online
+              widget.online || volumeHelper.showVolume
                   ? pageChanged == 0
                       ? Stack(
                           alignment: Alignment.center,
@@ -1420,7 +1422,7 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
                         )
                       : const Text('')
                   : const Text(''),
-              widget.online
+              widget.online || volumeHelper.showVolume
                   ? pageChanged == 0
                       ? Stack(
                           alignment: Alignment.center,
@@ -1451,7 +1453,7 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
                         )
                       : const Text('')
                   : const Text(''),
-              widget.online
+              widget.online || volumeHelper.showVolume
                   ? pageChanged == 0
                       ? Stack(
                           alignment: Alignment.center,
@@ -1482,7 +1484,7 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
                         )
                       : const Text('')
                   : const Text(''),
-              widget.online
+              widget.online || volumeHelper.showVolume
                   ? pageChanged == 0
                       ? Stack(
                           alignment: Alignment.center,
@@ -1513,7 +1515,7 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
                         )
                       : const Text('')
                   : const Text(''),
-              widget.online
+              widget.online || volumeHelper.showVolume
                   ? pageChanged == 0
                       ? Stack(
                           alignment: Alignment.center,
@@ -1544,7 +1546,7 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
                         )
                       : const Text('')
                   : const Text(''),
-              widget.online
+              widget.online || volumeHelper.showVolume
                   ? pageChanged == 0
                       ? IconButton(
                           tooltip: 'หยุดชั่วคราว',
