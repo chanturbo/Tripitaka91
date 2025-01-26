@@ -16,6 +16,7 @@ import 'package:tripitaka91/widget/auto_text/auto_text.dart';
 import 'package:tripitaka91/widget/login/loading_dialog.dart';
 import 'package:tripitaka91/widget/pageviews/pageviews_html.dart';
 import 'package:tripitaka91/widget/right_clipper/center_clipper.dart';
+import 'package:tripitaka91/widget/volume_helper/volume_helper.dart';
 
 class SearchShowPagesTitle extends StatefulWidget {
   final String wordSearch;
@@ -45,7 +46,7 @@ class _SearchShowPagesTitleState extends State<SearchShowPagesTitle> {
   final SharedImageGenerator sharedImageGenerator = SharedImageGenerator();
   final SharedImageLocal sharedImageLocal = SharedImageLocal();
   final VideoGenerator videoGenerator = VideoGenerator();
-
+  final volumeHelper = VolumeHelper();
   @override
   void initState() {
     super.initState();
@@ -216,7 +217,7 @@ class _SearchShowPagesTitleState extends State<SearchShowPagesTitle> {
                     children: [
                       Row(
                         children: [
-                          widget.online
+                          widget.online || volumeHelper.showVolume
                               ? InkWell(
                                   onTap: () async {
                                     LoadingDialog.show(context);
@@ -254,7 +255,7 @@ class _SearchShowPagesTitleState extends State<SearchShowPagesTitle> {
                                   ),
                                 )
                               : const Text(''),
-                          widget.online
+                          widget.online || volumeHelper.showVolume
                               ? const SizedBox(width: 10)
                               : const SizedBox.shrink(),
                           InkWell(

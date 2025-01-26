@@ -15,6 +15,7 @@ import 'package:tripitaka91/widget/pageviews/pageviews_html.dart';
 import 'package:tripitaka91/widget/right_clipper/center_clipper.dart';
 import 'package:tripitaka91/utils/play_audio/audio_manager.dart';
 import 'package:tripitaka91/utils/img_service/shared_image_book.dart';
+import 'package:tripitaka91/widget/volume_helper/volume_helper.dart';
 
 class SearchShowPages extends StatefulWidget {
   final String title;
@@ -48,7 +49,7 @@ class _SearchShowPagesState extends State<SearchShowPages> {
 
   AudioPlayerManager audioPlayerManager = AudioPlayerManager();
   final SharedImageBook sharedImageGenerator = SharedImageBook();
-
+  final volumeHelper = VolumeHelper();
   @override
   void initState() {
     super.initState();
@@ -219,7 +220,7 @@ class _SearchShowPagesState extends State<SearchShowPages> {
                   ),
                   subtitle: Row(
                     children: [
-                      widget.online
+                      widget.online || volumeHelper.showVolume
                           ? InkWell(
                               onTap: () async {
                                 LoadingDialog.show(context);
@@ -244,7 +245,7 @@ class _SearchShowPagesState extends State<SearchShowPages> {
                               ),
                             )
                           : const Text(''),
-                      widget.online
+                      widget.online || volumeHelper.showVolume
                           ? const SizedBox(width: 10)
                           : const SizedBox.shrink(),
                       InkWell(

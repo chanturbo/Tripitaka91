@@ -10,6 +10,7 @@ import 'package:tripitaka91/utils/shared_preferences/shared_user.dart';
 import 'package:tripitaka91/utils/text_title_replace/text_title_replace.dart';
 import 'package:tripitaka91/widget/auto_text/auto_text.dart';
 import 'package:tripitaka91/widget/login/loading_dialog.dart';
+import 'package:tripitaka91/widget/volume_helper/volume_helper.dart';
 
 class ShowPagesDictbtList2 extends StatefulWidget {
   final String wordSearch;
@@ -34,7 +35,7 @@ class _ShowPagesDictbtList2State extends State<ShowPagesDictbtList2> {
   final ScrollController _scrollControllerDict = ScrollController();
 
   AudioPlayerManager audioPlayerManager = AudioPlayerManager();
-
+  final volumeHelper = VolumeHelper();
   @override
   void initState() {
     super.initState();
@@ -156,7 +157,7 @@ class _ShowPagesDictbtList2State extends State<ShowPagesDictbtList2> {
                   ),
                   subtitle: Row(
                     children: [
-                      widget.online
+                      widget.online || volumeHelper.showVolume
                           ? InkWell(
                               onTap: () async {
                                 LoadingDialog.show(context);
