@@ -92,4 +92,4 @@ flutter:
   
   - family: CupertinoIcons
     fonts:
-      - asset: assets/fonts/CupertinoIcons.ttf     
+      - asset: assets/fonts/CupertinoIcons.ttf
