@@ -8,7 +8,6 @@ import 'package:tripitaka91/utils/models/users.dart';
 import 'package:tripitaka91/utils/play_audio/audio_manager.dart';
 import 'package:tripitaka91/utils/shared_preferences/shared_user.dart';
 import 'package:tripitaka91/utils/text_title_replace/text_title_replace.dart';
-import 'package:tripitaka91/utils/video/video_utils.dart';
 import 'package:tripitaka91/widget/audio/edit_speak.dart';
 import 'package:tripitaka91/widget/auto_text/auto_text.dart';
 import 'package:tripitaka91/widget/login/loading_dialog.dart';
@@ -56,7 +55,6 @@ class _TitleCardState extends State<TitleCard> {
 
   final SharedImageGenerator sharedImageGenerator = SharedImageGenerator();
   final SharedImageLocal sharedImageLocal = SharedImageLocal();
-  final VideoGenerator videoGenerator = VideoGenerator();
   final volumeHelper = VolumeHelper();
 
   @override
@@ -293,66 +291,6 @@ class _TitleCardState extends State<TitleCard> {
                   ),
                 ),
                 const SizedBox(width: 10),
-                widget.online
-                    ? InkWell(
-                        onTap: () async {
-                          LoadingDialog.show(context);
-                          String txtTitle = textReplacer.replaceText(
-                              widget.triTitle, widget.bookBlue);
-
-                          String filename =
-                              widget.noTitleCate.replaceAll('.', '');
-                          filename =
-                              '$filename-${widget.noTitle}-${widget.bookIds}-${widget.pageId}-${widget.bookLine}';
-                          String? urlMp3 = await audioPlayerManager.createAudio(
-                              '1', filename, txtTitle);
-                          if (urlMp3 != null) {
-                            // ถ้า url ไม่เป็น null ให้ทำงานต่อไป
-                            // print("URL ที่ได้รับ: $urlMp3");
-                            // เพิ่มโค้ดที่ต้องการให้ทำงานต่อไปตรงนี้
-
-                            final String? imagePath =
-                                // ignore: use_build_context_synchronously
-                                await sharedImageLocal.generateAndSave(
-                              context: context,
-                              bookTitle: widget.triTitle.replaceAll('', ''),
-                              bookid: widget.bookIds,
-                              pageid: widget.pageId.toString(),
-                              lineid: widget.bookLine,
-                              bookBlue: widget.bookBlue,
-                              bookRed: widget.bookRed,
-                            );
-
-                            if (imagePath != null) {
-                              // print('Image saved at $imagePath');
-                              await videoGenerator.generateAndSaveVideo(
-                                  imagePath, urlMp3);
-                              // ignore: use_build_context_synchronously
-                              _showSnackbar(
-                                  context, 'บันทึกวิดีโอสำเร็จในแกลเลอรี่.');
-                            } else {
-                              // ignore: use_build_context_synchronously
-                              _showSnackbar(
-                                  context, 'ไม่สามารถบันทึกไฟล์รูปภาพได้.');
-                            }
-                          } else {
-                            // ถ้า url เป็น null สามารถจัดการได้ตามที่ต้องการ
-                            // ignore: use_build_context_synchronously
-                            _showSnackbar(context, "ไม่สามารถสร้าง URL ได้.");
-                          }
-                          // ignore: use_build_context_synchronously
-                          LoadingDialog.hide(context);
-                        },
-                        child: Icon(
-                          Icons.videocam,
-                          size: widget.isMobile ? 23 : 18,
-                          color: Colors.blue[300], // Change color as needed
-                        ),
-                      )
-                    : const Text(''),
-                widget.online
-                    ? const SizedBox(width: 10)
-                    : const SizedBox.shrink(),
                 InkWell(
                   onTap: () async {
                     String txtTitle = textReplacer.replaceText(

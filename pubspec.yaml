@@ -28,7 +28,6 @@ dependencies:
   permission_handler: ^11.3.1
   screenshot: ^2.5.0
   archive: ^3.6.1
-  flutter_ffmpeg: ^0.4.2
   image_gallery_saver: ^2.0.3
 
 dev_dependencies:
