@@ -127,11 +127,33 @@ class _SearchShowPagesState extends State<SearchShowPages> {
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
+  String arabicToThaiNumbers(String input) {
+    const Map<String, String> arabicToThai = {
+      '0': '๐',
+      '1': '๑',
+      '2': '๒',
+      '3': '๓',
+      '4': '๔',
+      '5': '๕',
+      '6': '๖',
+      '7': '๗',
+      '8': '๘',
+      '9': '๙'
+    };
+    return input.split('').map((char) => arabicToThai[char] ?? char).join();
+  }
+
   @override
   Widget build(BuildContext context) {
     String wordHilight = widget.wordSearch;
     RegExp regex = RegExp(r'\s+');
-    List<String> outputList = wordHilight.split(regex);
+    List<String> finalList = wordHilight.split(regex);
+
+// เพิ่มเลขไทยเข้าไป ถ้าพบเลขอารบิกในคำ
+    List<String> outputList = finalList.expand((word) {
+      String thaiNumber = arabicToThaiNumbers(word);
+      return (thaiNumber != word) ? [word, thaiNumber] : [word];
+    }).toList();
 
     return Scaffold(
       appBar: AppBar(

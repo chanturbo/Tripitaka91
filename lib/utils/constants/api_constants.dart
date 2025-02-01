@@ -26,7 +26,6 @@ const String tURLtitleUserInPageCorrectSpeak =
 const String tURLtitleDictbt = "${tURL}showdictbtsearch.php";
 const String tURLtitleDictbtAll = "${tURL}showdictbtall.php";
 const String tURLbooktri91Search = "${tURL}totalsearchtri.php";
-const String tURLbooktri91SearchSub = "${tURL}totalsearchtrisub.php";
 const String tURLdictSearch = "${tURL}totalsearchdict.php";
 const String tURLdictbtSearch = "${tURL}totalsearchdictbt.php";
 const String tURLbooktri91 = "${tURL}showbook.php";

@@ -145,6 +145,10 @@ class _AppBarCustomState extends State<AppBarCustom> {
                           context: context,
                           builder: (context) {
                             bool isMaleVoice = true; // ค่าเริ่มต้นสำหรับเสียง
+                            TextEditingController textController =
+                                TextEditingController();
+                            bool isInputValid = false;
+
                             return StatefulBuilder(
                               builder: (context, setState) {
                                 return AlertDialog(
@@ -153,7 +157,7 @@ class _AppBarCustomState extends State<AppBarCustom> {
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       const Text(
-                                        '     นี่คือเวอร์ชั่น Beta ในโหมดการอ่านออกเสียงหัวข้อธรรมและพระไตรปิฎก โดยใช้โปรแกรมอัตโนมัติในการอ่าน\nซึ่งอาจทำให้การอ่านออกเสียงไม่ถูกต้องหรือครบถ้วน กรุณาใช้วิจารณญาณในการรับฟัง\n\nเลือกเสียงอ่าน',
+                                        '     นี่คือเวอร์ชั่น Beta ในโหมดการอ่านออกเสียงหัวข้อธรรมและพระไตรปิฎก โดยใช้โปรแกรมอัตโนมัติในการอ่าน\nซึ่งอาจทำให้การอ่านออกเสียงไม่ถูกต้อง สมบูรณ์ ครบถ้วน ผู้ใช้งานต้องใช้วิจารณญาณในการรับฟัง\n\nเลือกเสียงอ่าน',
                                         textAlign: TextAlign.left,
                                       ),
                                       const SizedBox(height: 5),
@@ -177,6 +181,22 @@ class _AppBarCustomState extends State<AppBarCustom> {
                                           });
                                         },
                                       ),
+                                      const SizedBox(height: 10),
+                                      TextField(
+                                        controller: textController,
+                                        decoration: const InputDecoration(
+                                          labelText:
+                                              'พิมพ์ "BETA" เพื่อดำเนินการต่อ',
+                                          border: OutlineInputBorder(),
+                                        ),
+                                        onChanged: (value) {
+                                          setState(() {
+                                            isInputValid =
+                                                value.trim().toUpperCase() ==
+                                                    "BETA";
+                                          });
+                                        },
+                                      ),
                                     ],
                                   ),
                                   actions: [
@@ -187,17 +207,22 @@ class _AppBarCustomState extends State<AppBarCustom> {
                                       child: const Text('ยกเลิก'),
                                     ),
                                     ElevatedButton(
-                                      onPressed: () {
-                                        _toggleValueSpeech();
-                                        isMaleVoice
-                                            ? _toggleValueBetaSpeech(0)
-                                            : _toggleValueBetaSpeech(1);
-                                        Navigator.pop(context); // ปิด Popup
-                                        uhtml.window.location
-                                            .reload(); // รีเฟรชหน้าเว็บทั้งหมด
-                                      },
+                                      onPressed: isInputValid
+                                          ? () {
+                                              _toggleValueSpeech();
+                                              isMaleVoice
+                                                  ? _toggleValueBetaSpeech(0)
+                                                  : _toggleValueBetaSpeech(1);
+                                              Navigator.pop(
+                                                  context); // ปิด Popup
+                                              uhtml.window.location
+                                                  .reload(); // รีเฟรชหน้าเว็บ
+                                            }
+                                          : null, // ปิดใช้งานปุ่มถ้ายังไม่ได้ป้อน "BETA"
                                       style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors.red,
+                                        backgroundColor: isInputValid
+                                            ? Colors.red
+                                            : Colors.grey,
                                         foregroundColor: Colors.white,
                                       ),
                                       child:
