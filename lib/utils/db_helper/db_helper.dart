@@ -230,15 +230,38 @@ class DatabaseHelper {
     }
   }
 
+  String arabicToThaiNumbers(String input) {
+    const Map<String, String> arabicToThai = {
+      '0': '๐',
+      '1': '๑',
+      '2': '๒',
+      '3': '๓',
+      '4': '๔',
+      '5': '๕',
+      '6': '๖',
+      '7': '๗',
+      '8': '๘',
+      '9': '๙'
+    };
+
+    return input.split('').map((char) => arabicToThai[char] ?? char).join();
+  }
+
   Future<List<String>> fetchTri91(
       int bookid, String wordsearch, int startFrom, int recordsPerPage) async {
     final db = await database;
 
+    String wordsearchThai = arabicToThaiNumbers(wordsearch);
+
     // Query ข้อมูลหลักจาก tripitaka91_91book_line
     final List<Map<String, dynamic>> result = await db.query(
       'tripitaka91_91book_line',
-      where: 'book_id = ? AND book_detail LIKE ?',
-      whereArgs: [bookid, '%$wordsearch%'],
+      where: 'book_id = ? AND (book_detail LIKE ? OR book_detail LIKE ?)',
+      whereArgs: [
+        bookid,
+        '%$wordsearch%',
+        '%$wordsearchThai%'
+      ], // ค้นหาทั้งสองแบบ
       limit: recordsPerPage,
       offset: startFrom,
     );
@@ -551,6 +574,9 @@ class DatabaseHelper {
               if (value.containsKey("รวม")) {
                 chkReturn = true;
                 total = value["รวม"] as int;
+                if (total == 0) {
+                  chkReturn = false;
+                }
               }
             }
           }
@@ -565,16 +591,21 @@ class DatabaseHelper {
       }
     }
 
+// แปลงเลขอารบิกใน wordsearch เป็นเลขไทย
+    String wordsearchThai = arabicToThaiNumbers(wordsearch);
+
     String txtquery = """
-    SELECT book_id, COUNT(*) as total_records, GROUP_CONCAT(book_detail, ', ') as detail_records
-    FROM tripitaka91_91book_line 
-    WHERE book_id BETWEEN ? AND ? AND book_detail LIKE ? 
-    GROUP BY book_id
-  """;
+  SELECT book_id, COUNT(*) as total_records, 
+         GROUP_CONCAT(book_detail, ', ') as detail_records
+  FROM tripitaka91_91book_line 
+  WHERE book_id BETWEEN ? AND ? 
+        AND (book_detail LIKE ? OR book_detail LIKE ?) 
+  GROUP BY book_id
+""";
 
     List<Map<String, dynamic>> list = await dbClient.rawQuery(
       txtquery,
-      [bookid, bookidend, '%$wordsearch%'],
+      [bookid, bookidend, '%$wordsearch%', '%$wordsearchThai%'],
     );
 
     // สร้าง jsonData สำหรับเก็บผลลัพธ์
@@ -623,7 +654,7 @@ class DatabaseHelper {
       // แปลงข้อมูล tmp_1 จาก String เป็น Map
       Map<String, dynamic> jsonData = jsonDecode(x[0]["tmp_1"]);
 
-      // ตรวจสอบว่ามี set1 อยู่ใน jsonData หรือไม่
+      // ตรวจสอบว่ามี set2 อยู่ใน jsonData หรือไม่
       if (jsonData.containsKey("set2") && jsonData["set2"] is Map) {
         Map<String, dynamic> set1Data = jsonData["set2"];
 
@@ -641,6 +672,9 @@ class DatabaseHelper {
               if (value.containsKey("รวม")) {
                 chkReturn = true;
                 total = value["รวม"] as int;
+                if (total == 0) {
+                  chkReturn = false;
+                }
               }
             }
           }
@@ -655,16 +689,21 @@ class DatabaseHelper {
       }
     }
 
+    // แปลงเลขอารบิกใน wordsearch เป็นเลขไทย
+    String wordsearchThai = arabicToThaiNumbers(wordsearch);
+
     String txtquery = """
-    SELECT book_id, COUNT(*) as total_records, GROUP_CONCAT(book_detail, ', ') as detail_records
-    FROM tripitaka91_91book_line 
-    WHERE book_id BETWEEN ? AND ? AND book_detail LIKE ? 
-    GROUP BY book_id
-  """;
+  SELECT book_id, COUNT(*) as total_records, 
+         GROUP_CONCAT(book_detail, ', ') as detail_records
+  FROM tripitaka91_91book_line 
+  WHERE book_id BETWEEN ? AND ? 
+        AND (book_detail LIKE ? OR book_detail LIKE ?) 
+  GROUP BY book_id
+""";
 
     List<Map<String, dynamic>> list = await dbClient.rawQuery(
       txtquery,
-      [bookid, bookidend, '%$wordsearch%'],
+      [bookid, bookidend, '%$wordsearch%', '%$wordsearchThai%'],
     );
 
     // สร้าง jsonData สำหรับเก็บผลลัพธ์
@@ -713,7 +752,7 @@ class DatabaseHelper {
       // แปลงข้อมูล tmp_1 จาก String เป็น Map
       Map<String, dynamic> jsonData = jsonDecode(x[0]["tmp_1"]);
 
-      // ตรวจสอบว่ามี set1 อยู่ใน jsonData หรือไม่
+      // ตรวจสอบว่ามี set3 อยู่ใน jsonData หรือไม่
       if (jsonData.containsKey("set3") && jsonData["set3"] is Map) {
         Map<String, dynamic> set1Data = jsonData["set3"];
 
@@ -731,6 +770,9 @@ class DatabaseHelper {
               if (value.containsKey("รวม")) {
                 chkReturn = true;
                 total = value["รวม"] as int;
+                if (total == 0) {
+                  chkReturn = false;
+                }
               }
             }
           }
@@ -745,16 +787,21 @@ class DatabaseHelper {
       }
     }
 
+// แปลงเลขอารบิกใน wordsearch เป็นเลขไทย
+    String wordsearchThai = arabicToThaiNumbers(wordsearch);
+
     String txtquery = """
-    SELECT book_id, COUNT(*) as total_records, GROUP_CONCAT(book_detail, ', ') as detail_records
-    FROM tripitaka91_91book_line 
-    WHERE book_id BETWEEN ? AND ? AND book_detail LIKE ? 
-    GROUP BY book_id
-  """;
+  SELECT book_id, COUNT(*) as total_records, 
+         GROUP_CONCAT(book_detail, ', ') as detail_records
+  FROM tripitaka91_91book_line 
+  WHERE book_id BETWEEN ? AND ? 
+        AND (book_detail LIKE ? OR book_detail LIKE ?) 
+  GROUP BY book_id
+""";
 
     List<Map<String, dynamic>> list = await dbClient.rawQuery(
       txtquery,
-      [bookid, bookidend, '%$wordsearch%'],
+      [bookid, bookidend, '%$wordsearch%', '%$wordsearchThai%'],
     );
 
     // สร้าง jsonData สำหรับเก็บผลลัพธ์

@@ -109,39 +109,61 @@ class _AppBarCustomState extends State<AppBarCustom> {
                           context: context,
                           builder: (context) {
                             bool isMaleVoice = true; // ค่าเริ่มต้นสำหรับเสียง
+                            TextEditingController textController =
+                                TextEditingController();
+                            bool isInputValid = false;
+
                             return StatefulBuilder(
                               builder: (context, setState) {
                                 return AlertDialog(
                                   title: const Text('แจ้งเตือน'),
-                                  content: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      const Text(
-                                        '     นี่คือเวอร์ชั่น Beta ในโหมดการอ่านออกเสียงหัวข้อธรรมและพระไตรปิฎก โดยใช้โปรแกรมอัตโนมัติในการอ่าน\nซึ่งอาจทำให้การอ่านออกเสียงไม่ถูกต้องหรือครบถ้วน กรุณาใช้วิจารณญาณในการรับฟัง\n\nเลือกเสียงอ่าน',
-                                        textAlign: TextAlign.left,
-                                      ),
-                                      const SizedBox(height: 5),
-                                      RadioListTile<bool>(
-                                        title: const Text('เสียงผู้ชาย'),
-                                        value: true,
-                                        groupValue: isMaleVoice,
-                                        onChanged: (value) {
-                                          setState(() {
-                                            isMaleVoice = value!;
-                                          });
-                                        },
-                                      ),
-                                      RadioListTile<bool>(
-                                        title: const Text('เสียงผู้หญิง'),
-                                        value: false,
-                                        groupValue: isMaleVoice,
-                                        onChanged: (value) {
-                                          setState(() {
-                                            isMaleVoice = value!;
-                                          });
-                                        },
-                                      ),
-                                    ],
+                                  content: SingleChildScrollView(
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        const Text(
+                                          '     นี่คือเวอร์ชั่น Beta ในโหมดการอ่านออกเสียงหัวข้อธรรมและพระไตรปิฎก โดยใช้โปรแกรมอัตโนมัติในการอ่าน ซึ่งอาจทำให้การอ่านออกเสียงยังไม่ถูกต้อง ครบถ้วน สมบูรณ์ ดังนั้น ผู้ใช้งานควรใช้วิจารณญาณในการรับฟัง\n\nเลือกเสียงอ่าน',
+                                          textAlign: TextAlign.left,
+                                        ),
+                                        const SizedBox(height: 5),
+                                        RadioListTile<bool>(
+                                          title: const Text('เสียงผู้ชาย'),
+                                          value: true,
+                                          groupValue: isMaleVoice,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              isMaleVoice = value!;
+                                            });
+                                          },
+                                        ),
+                                        RadioListTile<bool>(
+                                          title: const Text('เสียงผู้หญิง'),
+                                          value: false,
+                                          groupValue: isMaleVoice,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              isMaleVoice = value!;
+                                            });
+                                          },
+                                        ),
+                                        const SizedBox(height: 10),
+                                        TextField(
+                                          controller: textController,
+                                          decoration: const InputDecoration(
+                                            labelText:
+                                                'พิมพ์ "BETA" เพื่อดำเนินการต่อ',
+                                            border: OutlineInputBorder(),
+                                          ),
+                                          onChanged: (value) {
+                                            setState(() {
+                                              isInputValid =
+                                                  value.trim().toUpperCase() ==
+                                                      "BETA";
+                                            });
+                                          },
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                   actions: [
                                     TextButton(
@@ -151,26 +173,31 @@ class _AppBarCustomState extends State<AppBarCustom> {
                                       child: const Text('ยกเลิก'),
                                     ),
                                     ElevatedButton(
-                                      onPressed: () {
-                                        _toggleValueSpeech();
-                                        isMaleVoice
-                                            ? _toggleValueBetaSpeech(0)
-                                            : _toggleValueBetaSpeech(1);
-                                        Navigator.pop(context); // ปิด Popup
-                                        // ignore: use_build_context_synchronously
-                                        Navigator.pushAndRemoveUntil(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                const MyHomePage(
-                                              online: false,
-                                            ),
-                                          ),
-                                          (route) => false,
-                                        );
-                                      },
+                                      onPressed: isInputValid
+                                          ? () {
+                                              _toggleValueSpeech();
+                                              isMaleVoice
+                                                  ? _toggleValueBetaSpeech(0)
+                                                  : _toggleValueBetaSpeech(1);
+                                              Navigator.pop(
+                                                  context); // ปิด Popup
+                                              // ignore: use_build_context_synchronously
+                                              Navigator.pushAndRemoveUntil(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      const MyHomePage(
+                                                    online: false,
+                                                  ),
+                                                ),
+                                                (route) => false,
+                                              );
+                                            }
+                                          : null, // ปิดใช้งานปุ่มถ้ายังไม่ได้ป้อน "BETA"
                                       style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors.red,
+                                        backgroundColor: isInputValid
+                                            ? Colors.red
+                                            : Colors.grey,
                                         foregroundColor: Colors.white,
                                       ),
                                       child:
