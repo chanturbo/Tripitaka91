@@ -153,51 +153,53 @@ class _AppBarCustomState extends State<AppBarCustom> {
                               builder: (context, setState) {
                                 return AlertDialog(
                                   title: const Text('แจ้งเตือน'),
-                                  content: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      const Text(
-                                        '     นี่คือเวอร์ชั่น Beta ในโหมดการอ่านออกเสียงหัวข้อธรรมและพระไตรปิฎก โดยใช้โปรแกรมอัตโนมัติในการอ่าน\nซึ่งอาจทำให้การอ่านออกเสียงไม่ถูกต้อง สมบูรณ์ ครบถ้วน ผู้ใช้งานต้องใช้วิจารณญาณในการรับฟัง\n\nเลือกเสียงอ่าน',
-                                        textAlign: TextAlign.left,
-                                      ),
-                                      const SizedBox(height: 5),
-                                      RadioListTile<bool>(
-                                        title: const Text('เสียงผู้ชาย'),
-                                        value: true,
-                                        groupValue: isMaleVoice,
-                                        onChanged: (value) {
-                                          setState(() {
-                                            isMaleVoice = value!;
-                                          });
-                                        },
-                                      ),
-                                      RadioListTile<bool>(
-                                        title: const Text('เสียงผู้หญิง'),
-                                        value: false,
-                                        groupValue: isMaleVoice,
-                                        onChanged: (value) {
-                                          setState(() {
-                                            isMaleVoice = value!;
-                                          });
-                                        },
-                                      ),
-                                      const SizedBox(height: 10),
-                                      TextField(
-                                        controller: textController,
-                                        decoration: const InputDecoration(
-                                          labelText:
-                                              'พิมพ์ "BETA" เพื่อดำเนินการต่อ',
-                                          border: OutlineInputBorder(),
+                                  content: SingleChildScrollView(
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        const Text(
+                                          '     นี่คือเวอร์ชั่น Beta ในโหมดการอ่านออกเสียงหัวข้อธรรมและพระไตรปิฎก โดยใช้โปรแกรมอัตโนมัติในการอ่าน ซึ่งอาจทำให้การอ่านออกเสียงยังไม่ถูกต้อง ครบถ้วน สมบูรณ์ ดังนั้น ผู้ใช้งานควรใช้วิจารณญาณในการรับฟัง\n\nเลือกเสียงอ่าน',
+                                          textAlign: TextAlign.left,
                                         ),
-                                        onChanged: (value) {
-                                          setState(() {
-                                            isInputValid =
-                                                value.trim().toUpperCase() ==
-                                                    "BETA";
-                                          });
-                                        },
-                                      ),
-                                    ],
+                                        const SizedBox(height: 5),
+                                        RadioListTile<bool>(
+                                          title: const Text('เสียงผู้ชาย'),
+                                          value: true,
+                                          groupValue: isMaleVoice,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              isMaleVoice = value!;
+                                            });
+                                          },
+                                        ),
+                                        RadioListTile<bool>(
+                                          title: const Text('เสียงผู้หญิง'),
+                                          value: false,
+                                          groupValue: isMaleVoice,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              isMaleVoice = value!;
+                                            });
+                                          },
+                                        ),
+                                        const SizedBox(height: 10),
+                                        TextField(
+                                          controller: textController,
+                                          decoration: const InputDecoration(
+                                            labelText:
+                                                'พิมพ์ "BETA" เพื่อดำเนินการต่อ',
+                                            border: OutlineInputBorder(),
+                                          ),
+                                          onChanged: (value) {
+                                            setState(() {
+                                              isInputValid =
+                                                  value.trim().toUpperCase() ==
+                                                      "BETA";
+                                            });
+                                          },
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                   actions: [
                                     TextButton(
