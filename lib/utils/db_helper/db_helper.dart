@@ -297,7 +297,10 @@ class DatabaseHelper {
       String cleanedString =
           '$strBefore${row['book_detail']}$strAfter|${row['book_id']}|${row['book_pages']}|${row['book_lines']}';
 
-      response.add(cleanedString);
+      response.add(cleanedString
+          .replaceAll('LineNull', '')
+          .replaceAll(RegExp(r'\s+'), ' ')
+          .trim());
     }
 
     return response;
