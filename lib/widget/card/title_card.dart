@@ -207,7 +207,8 @@ class _TitleCardState extends State<TitleCard> {
             ListTile(
               onTap: () {
                 audioPlayerManager.stop();
-                widget.bookIds == '0'
+                (widget.bookIds == '0' ||
+                        (widget.triTitle.contains("กฎหมายทั่วไป")))
                     ? Navigator.push(
                         context,
                         MaterialPageRoute(
