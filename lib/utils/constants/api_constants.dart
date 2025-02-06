@@ -3,7 +3,7 @@
 // Example
 const String tSecretAPIKey = "tripiaka91_b2da6ds3df3e785v8ddc59198f7615ba";
 const int tSpeakNum = 10;
-const int tCorrectNum = 100;
+const int tCorrectNum = 10;
 
 ///////////// WEB-CONFIG ///////////////////
 const String tURLmain = "https://www.tripitaka91.com/";
