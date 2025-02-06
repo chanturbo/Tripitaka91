@@ -207,18 +207,31 @@ class _TitleCardState extends State<TitleCard> {
             ListTile(
               onTap: () {
                 audioPlayerManager.stop();
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => Tri91PageViewHtml(
-                      triBookid: widget.bookIds,
-                      triPageid: widget.pageId,
-                      triBookline: widget.bookLine,
-                      chkSearch: '',
-                      isMobile: widget.isMobile,
-                    ),
-                  ),
-                );
+                widget.bookIds == '0'
+                    ? Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Tri91PageViewHtml(
+                            triBookid: '1',
+                            triPageid: 0,
+                            triBookline: widget.bookLine,
+                            chkSearch: '',
+                            isMobile: widget.isMobile,
+                          ),
+                        ),
+                      )
+                    : Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Tri91PageViewHtml(
+                            triBookid: widget.bookIds,
+                            triPageid: widget.pageId,
+                            triBookline: widget.bookLine,
+                            chkSearch: '',
+                            isMobile: widget.isMobile,
+                          ),
+                        ),
+                      );
               },
               title: widget.isMobile
                   ? Text(

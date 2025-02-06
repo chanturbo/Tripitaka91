@@ -368,9 +368,21 @@ class _SearchShowPagesTitleState extends State<SearchShowPagesTitle> {
                   ),
                   onTap: () {
                     audioPlayerManager.stop();
-                    if (textTitleReplace.getBookId(dataTitle[index]) == '0') {
-                      _showSnackbar(context,
-                          'กรุณาดูรายละเอียดในหัวข้อหนังสือแนะนำ หนังสืออุทิศบุญที่ได้ผล หน้า 68');
+                    if ((textTitleReplace.getBookId(dataTitle[index]) == '0') ||
+                        (widget.wordSearch.contains("กฎหมายทั่วไป"))) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Tri91PageViewHtml(
+                            triBookid: '1',
+                            triPageid: 0,
+                            triBookline:
+                                textTitleReplace.getLineId(dataTitle[index]),
+                            chkSearch: widget.wordSearch,
+                            isMobile: widget.isM,
+                          ),
+                        ),
+                      );
                     } else {
                       Navigator.push(
                         context,
