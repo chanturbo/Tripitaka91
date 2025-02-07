@@ -203,6 +203,9 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
   String bookSearchid1 = '0';
   String bookSearchid2 = '0';
   String bookSearchid3 = '0';
+  int? selectBookSearchIndex1;
+  int? selectBookSearchIndex2;
+  int? selectBookSearchIndex3;
 
   @override
   void initState() {
@@ -378,28 +381,37 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                               'เล่ม $strBook พบจำนวน ${data['page']} รายการ';
                                           return Column(
                                             children: [
-                                              ListTile(
-                                                leading: CircleAvatar(
-                                                  backgroundColor:
-                                                      Colors.blue[900],
-                                                  foregroundColor: Colors.white,
-                                                  child: Text(strBook),
+                                              Container(
+                                                color: selectBookSearchIndex1 ==
+                                                        index
+                                                    ? Colors.yellow
+                                                    : Colors.transparent,
+                                                child: ListTile(
+                                                  leading: CircleAvatar(
+                                                    backgroundColor:
+                                                        Colors.blue[900],
+                                                    foregroundColor:
+                                                        Colors.white,
+                                                    child: Text(strBook),
+                                                  ),
+                                                  title: SubstringHighlight(
+                                                    text: strTotal,
+                                                    terms:
+                                                        outputList, // หาก outputList ยังไม่ได้ถูกกำหนดให้ใช้ตามความเหมาะสม
+                                                    textStyle: TextStyle(
+                                                        fontSize: widget.isM
+                                                            ? 18.0
+                                                            : 16.0,
+                                                        color: Colors.black),
+                                                  ),
+                                                  onTap: () {
+                                                    setState(() {
+                                                      bookSearchid1 = strBook;
+                                                      selectBookSearchIndex1 =
+                                                          index;
+                                                    });
+                                                  },
                                                 ),
-                                                title: SubstringHighlight(
-                                                  text: strTotal,
-                                                  terms:
-                                                      outputList, // หาก outputList ยังไม่ได้ถูกกำหนดให้ใช้ตามความเหมาะสม
-                                                  textStyle: TextStyle(
-                                                      fontSize: widget.isM
-                                                          ? 18.0
-                                                          : 16.0,
-                                                      color: Colors.black),
-                                                ),
-                                                onTap: () {
-                                                  setState(() {
-                                                    bookSearchid1 = strBook;
-                                                  });
-                                                },
                                               ),
                                               const Divider(),
                                             ],
@@ -533,29 +545,41 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                                   'เล่ม $strBook พบจำนวน ${data['page']} รายการ';
                                               return Column(
                                                 children: [
-                                                  ListTile(
-                                                    leading: CircleAvatar(
-                                                      backgroundColor:
-                                                          Colors.blue[900],
-                                                      foregroundColor:
-                                                          Colors.white,
-                                                      child: Text(strBook),
+                                                  Container(
+                                                    color:
+                                                        selectBookSearchIndex2 ==
+                                                                index
+                                                            ? Colors.yellow
+                                                            : Colors
+                                                                .transparent,
+                                                    child: ListTile(
+                                                      leading: CircleAvatar(
+                                                        backgroundColor:
+                                                            Colors.blue[900],
+                                                        foregroundColor:
+                                                            Colors.white,
+                                                        child: Text(strBook),
+                                                      ),
+                                                      title: SubstringHighlight(
+                                                        text: strTotal,
+                                                        terms:
+                                                            outputList, // หาก outputList ยังไม่ได้ถูกกำหนดให้ใช้ตามความเหมาะสม
+                                                        textStyle: TextStyle(
+                                                            fontSize: widget.isM
+                                                                ? 18.0
+                                                                : 16.0,
+                                                            color:
+                                                                Colors.black),
+                                                      ),
+                                                      onTap: () {
+                                                        setState(() {
+                                                          bookSearchid2 =
+                                                              strBook;
+                                                          selectBookSearchIndex2 =
+                                                              index;
+                                                        });
+                                                      },
                                                     ),
-                                                    title: SubstringHighlight(
-                                                      text: strTotal,
-                                                      terms:
-                                                          outputList, // หาก outputList ยังไม่ได้ถูกกำหนดให้ใช้ตามความเหมาะสม
-                                                      textStyle: TextStyle(
-                                                          fontSize: widget.isM
-                                                              ? 18.0
-                                                              : 16.0,
-                                                          color: Colors.black),
-                                                    ),
-                                                    onTap: () {
-                                                      setState(() {
-                                                        bookSearchid2 = strBook;
-                                                      });
-                                                    },
                                                   ),
                                                   const Divider(),
                                                 ],
@@ -693,33 +717,45 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                                       'เล่ม $strBook พบจำนวน ${data['page']} รายการ';
                                                   return Column(
                                                     children: [
-                                                      ListTile(
-                                                        leading: CircleAvatar(
-                                                          backgroundColor:
-                                                              Colors.blue[900],
-                                                          foregroundColor:
-                                                              Colors.white,
-                                                          child: Text(strBook),
+                                                      Container(
+                                                        color:
+                                                            selectBookSearchIndex3 ==
+                                                                    index
+                                                                ? Colors.yellow
+                                                                : Colors
+                                                                    .transparent,
+                                                        child: ListTile(
+                                                          leading: CircleAvatar(
+                                                            backgroundColor:
+                                                                Colors
+                                                                    .blue[900],
+                                                            foregroundColor:
+                                                                Colors.white,
+                                                            child:
+                                                                Text(strBook),
+                                                          ),
+                                                          title:
+                                                              SubstringHighlight(
+                                                            text: strTotal,
+                                                            terms:
+                                                                outputList, // หาก outputList ยังไม่ได้ถูกกำหนดให้ใช้ตามความเหมาะสม
+                                                            textStyle: TextStyle(
+                                                                fontSize:
+                                                                    widget.isM
+                                                                        ? 18.0
+                                                                        : 16.0,
+                                                                color: Colors
+                                                                    .black),
+                                                          ),
+                                                          onTap: () {
+                                                            setState(() {
+                                                              bookSearchid3 =
+                                                                  strBook;
+                                                              selectBookSearchIndex3 =
+                                                                  index;
+                                                            });
+                                                          },
                                                         ),
-                                                        title:
-                                                            SubstringHighlight(
-                                                          text: strTotal,
-                                                          terms:
-                                                              outputList, // หาก outputList ยังไม่ได้ถูกกำหนดให้ใช้ตามความเหมาะสม
-                                                          textStyle: TextStyle(
-                                                              fontSize:
-                                                                  widget.isM
-                                                                      ? 18.0
-                                                                      : 16.0,
-                                                              color:
-                                                                  Colors.black),
-                                                        ),
-                                                        onTap: () {
-                                                          setState(() {
-                                                            bookSearchid3 =
-                                                                strBook;
-                                                          });
-                                                        },
                                                       ),
                                                       const Divider(),
                                                     ],
