@@ -748,7 +748,7 @@ class _ShowTitlePagesState extends State<ShowTitlePages> {
                   onTap: () {
                     audioPlayerManager.stop();
                     if ((textTitleReplace.getBookId(dataTitle[index]) == '0') ||
-                        (widget.wordSearch.contains("กฎหมายทั่วไป"))) {
+                        (dataTitle[index].contains("กฎหมายทั่วไป"))) {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
