@@ -3,7 +3,7 @@
 // Example
 const String tSecretAPIKey = "tripiaka91_b2da6ds3df3e785v8ddc59198f7615ba";
 const int tSpeakNum = 10;
-const int tCorrectNum = 100;
+const int tCorrectNum = 10;
 
 ///////////// WEB-CONFIG ///////////////////
 const String tURLmain = "https://www.tripitaka91.com/";
@@ -26,7 +26,6 @@ const String tURLtitleUserInPageCorrectSpeak =
 const String tURLtitleDictbt = "${tURL}showdictbtsearch.php";
 const String tURLtitleDictbtAll = "${tURL}showdictbtall.php";
 const String tURLbooktri91Search = "${tURL}totalsearchtri.php";
-const String tURLbooktri91SearchSub = "${tURL}totalsearchtrisub.php";
 const String tURLdictSearch = "${tURL}totalsearchdict.php";
 const String tURLdictbtSearch = "${tURL}totalsearchdictbt.php";
 const String tURLbooktri91 = "${tURL}showbook.php";

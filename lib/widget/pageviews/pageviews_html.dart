@@ -1014,6 +1014,22 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
+  String arabicToThaiNumbers(String input) {
+    const Map<String, String> arabicToThai = {
+      '0': '๐',
+      '1': '๑',
+      '2': '๒',
+      '3': '๓',
+      '4': '๔',
+      '5': '๕',
+      '6': '๖',
+      '7': '๗',
+      '8': '๘',
+      '9': '๙'
+    };
+    return input.split('').map((char) => arabicToThai[char] ?? char).join();
+  }
+
   Widget titleCardSub(
       String triTitle,
       String bookBlue,
@@ -1025,9 +1041,15 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
       double noTitleCate,
       int noTitle,
       bool isMobile) {
-    String wordSearch = widget.chkSearch;
+    String wordHilight = widget.chkSearch;
     RegExp regex = RegExp(r'\s+');
-    List<String> outputList = wordSearch.split(regex);
+    List<String> finalList = wordHilight.split(regex);
+
+// เพิ่มเลขไทยเข้าไป ถ้าพบเลขอารบิกในคำ
+    List<String> outputList = finalList.expand((word) {
+      String thaiNumber = arabicToThaiNumbers(word);
+      return (thaiNumber != word) ? [word, thaiNumber] : [word];
+    }).toList();
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(10.0),
@@ -1887,7 +1909,16 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
             snapText = snapText.replaceAll('<', '');
             snapText = snapText.replaceAll('>', '');
 
-            List<String> findWord = widget.chkSearch.split(' ');
+            String wordHilight = widget.chkSearch;
+            RegExp regex = RegExp(r'\s+');
+            List<String> finalList = wordHilight.split(regex);
+
+            // เพิ่มเลขไทยเข้าไป ถ้าพบเลขอารบิกในคำ
+            List<String> findWord = finalList.expand((word) {
+              String thaiNumber = arabicToThaiNumbers(word);
+              return (thaiNumber != word) ? [word, thaiNumber] : [word];
+            }).toList();
+
             if (findWord.isNotEmpty) {
               for (var x = 0; x < findWord.length; x++) {
                 if (findWord[x] != '') {

@@ -17,7 +17,7 @@ import 'package:tripitaka91/utils/play_audio/audio_manager.dart';
 import 'package:tripitaka91/utils/img_service/shared_image_book.dart';
 import 'package:tripitaka91/widget/volume_helper/volume_helper.dart';
 
-class SearchShowPages extends StatefulWidget {
+class SearchShowPagesOnPage extends StatefulWidget {
   final String title;
   final String wordSearch;
   final String bookid;
@@ -25,7 +25,7 @@ class SearchShowPages extends StatefulWidget {
   final String catalog;
   final bool online;
 
-  const SearchShowPages({
+  const SearchShowPagesOnPage({
     super.key,
     required this.title,
     required this.wordSearch,
@@ -36,10 +36,10 @@ class SearchShowPages extends StatefulWidget {
   });
 
   @override
-  State<SearchShowPages> createState() => _SearchShowPagesState();
+  State<SearchShowPagesOnPage> createState() => _SearchShowPagesOnPageState();
 }
 
-class _SearchShowPagesState extends State<SearchShowPages> {
+class _SearchShowPagesOnPageState extends State<SearchShowPagesOnPage> {
   List<String> data = [];
   int loadedRecords = 0;
   bool loading = false;
@@ -192,10 +192,6 @@ class _SearchShowPagesState extends State<SearchShowPages> {
     }).toList();
 
     return Scaffold(
-      appBar: AppBar(
-        title: ATextDiskplayMedium(
-            text: 'ค้นหาคำว่า \'${widget.wordSearch}\' จาก ${widget.title}'),
-      ),
       body: NotificationListener<ScrollEndNotification>(
         onNotification: (ScrollEndNotification scrollInfo) {
           if (_scrollController.offset >=

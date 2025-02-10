@@ -9,7 +9,6 @@ import 'package:tripitaka91/utils/models/sounds_getlink.dart';
 import 'package:tripitaka91/utils/models/totalsearchtitle.dart';
 import 'package:tripitaka91/utils/models/totalsearchtri.dart';
 import 'package:tripitaka91/utils/models/tri91_bookall.dart';
-import 'package:tripitaka91/utils/models/tri91_booksearch.dart';
 import 'package:tripitaka91/utils/models/users.dart';
 import 'package:tripitaka91/utils/shared_preferences/shared_user.dart';
 import 'package:tripitaka91/utils/shared_preferences/shared_value.dart';
@@ -53,37 +52,6 @@ class RemoteServiceUserCheck {
       var decodedJson = jsonDecode(utf8.decode(json.runes.toList()));
       var unicodeJson = jsonEncode(decodedJson);
       return usersFromJson(unicodeJson);
-    }
-
-    return null;
-  }
-}
-
-class RemoteServiceTriBook91 {
-  Future<List<Tri91BookSearch>?> getTriBook91(
-      String bookId, String bookEnd, String wordSearch, String token) async {
-    var client = http.Client();
-    var uri = Uri.parse(tURLbooktri91SearchSub);
-
-    // สร้าง Map ที่มีข้อมูลที่ต้องการส่งไปด้วย
-    var data = {
-      'bookid': bookId,
-      'bookidend': bookEnd,
-      'wordsearch': wordSearch.replaceAll(' ', '%'),
-      'token': token,
-    };
-
-    // สร้าง request แบบ POST พร้อมส่งข้อมูล
-    var response = await client.post(
-      uri,
-      body: data,
-    );
-
-    if (response.statusCode == 200) {
-      var json = response.body;
-      var decodedJson = jsonDecode(utf8.decode(json.runes.toList()));
-      var unicodeJson = jsonEncode(decodedJson);
-      return tri91BookSearchFromJson(unicodeJson);
     }
 
     return null;

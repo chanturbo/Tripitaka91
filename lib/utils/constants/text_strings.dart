@@ -37,7 +37,7 @@ class TTexts {
   static const String rememberMe = "Remember Me";
   static const String forgetPassword = "ลืมรหัสผ่าน?";
   static const String signIn = "เข้าสู่ระบบ";
-  static const String signUp = "ลงทะเบียน";
+  static const String signUp = "ลงทะเบียนผ่านเว็บไซต์ tripitaka91.com";
   static const String createAccount = "สร้างบัญชีผู้ใช้งาน";
   static const String orSignInWith = "or sign in with";
   static const String orSignUpWith = "or sign up with";
