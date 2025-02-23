@@ -193,10 +193,19 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
   int? selectBookSearchIndex1 = 0;
   int? selectBookSearchIndex2 = 0;
   int? selectBookSearchIndex3 = 0;
+  ScrollController _scrollController1 = ScrollController();
+  ScrollController _scrollController2 = ScrollController();
+  ScrollController _scrollController3 = ScrollController();
+  double scrollBookSearchIndexs1 = -1;
+  double scrollBookSearchIndexs2 = -1;
+  double scrollBookSearchIndexs3 = -1;
 
   @override
   void initState() {
     super.initState();
+    _scrollController1 = ScrollController();
+    _scrollController2 = ScrollController();
+    _scrollController3 = ScrollController();
     indexlocal = widget.indexLocal;
     if (indexlocal == 0) {
       // fetchDataTitle = loadDataTitle();
@@ -257,6 +266,42 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
     return randDict;
   }
 
+  void _scrollToSelectedIndex1() {
+    Future.delayed(const Duration(milliseconds: 200), () {
+      if (_scrollController1.hasClients && scrollBookSearchIndexs1 != -1) {
+        _scrollController1.animateTo(
+          scrollBookSearchIndexs1,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+        );
+      }
+    });
+  }
+
+  void _scrollToSelectedIndex2() {
+    Future.delayed(const Duration(milliseconds: 200), () {
+      if (_scrollController2.hasClients && scrollBookSearchIndexs2 != -1) {
+        _scrollController2.animateTo(
+          scrollBookSearchIndexs2,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+        );
+      }
+    });
+  }
+
+  void _scrollToSelectedIndex3() {
+    Future.delayed(const Duration(milliseconds: 200), () {
+      if (_scrollController3.hasClients && scrollBookSearchIndexs3 != -1) {
+        _scrollController3.animateTo(
+          scrollBookSearchIndexs3,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+        );
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
@@ -287,6 +332,7 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                 ? FutureBuilder<TotalTitleSearchTri?>(
                     future: loadDataTri1(),
                     builder: (context, snapshot) {
+                      double screenWidth = MediaQuery.of(context).size.width;
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         // กำลังโหลดข้อมูล
                         return const Center(child: CircularProgressIndicator());
@@ -365,6 +411,7 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                     Expanded(
                                       flex: 1,
                                       child: ListView.builder(
+                                        controller: _scrollController1,
                                         itemCount: dataList.length,
                                         itemBuilder: (context, index) {
                                           Map<String, dynamic> data =
@@ -404,6 +451,10 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                                       bookSearchid1 = strBook;
                                                       selectBookSearchIndex1 =
                                                           index;
+                                                      scrollBookSearchIndexs1 =
+                                                          _scrollController1
+                                                              .offset;
+                                                      _scrollToSelectedIndex1();
                                                     });
                                                   },
                                                 ),
@@ -422,7 +473,7 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                       ),
                                     ),
                                     Expanded(
-                                      flex: 3,
+                                      flex: screenWidth > 1440 ? 4 : 3,
                                       child: SearchShowPagesOnPage(
                                         title: '',
                                         wordSearch: widget.title,
@@ -445,6 +496,8 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                     ? FutureBuilder<TotalTitleSearchTri?>(
                         future: loadDataTri2(),
                         builder: (context, snapshot) {
+                          double screenWidth =
+                              MediaQuery.of(context).size.width;
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {
                             // กำลังโหลดข้อมูล
@@ -529,6 +582,7 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                         Expanded(
                                           flex: 1,
                                           child: ListView.builder(
+                                            controller: _scrollController2,
                                             itemCount: dataList.length,
                                             itemBuilder: (context, index) {
                                               Map<String, dynamic> data =
@@ -570,6 +624,10 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                                               strBook;
                                                           selectBookSearchIndex2 =
                                                               index;
+                                                          scrollBookSearchIndexs2 =
+                                                              _scrollController2
+                                                                  .offset;
+                                                          _scrollToSelectedIndex2();
                                                         });
                                                       },
                                                     ),
@@ -588,7 +646,7 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                           ),
                                         ),
                                         Expanded(
-                                          flex: 3,
+                                          flex: screenWidth > 1440 ? 4 : 3,
                                           child: SearchShowPagesOnPage(
                                             title: '',
                                             wordSearch: widget.title,
@@ -611,6 +669,8 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                         ? FutureBuilder<TotalTitleSearchTri?>(
                             future: loadDataTri3(),
                             builder: (context, snapshot) {
+                              double screenWidth =
+                                  MediaQuery.of(context).size.width;
                               if (snapshot.connectionState ==
                                   ConnectionState.waiting) {
                                 // กำลังโหลดข้อมูล
@@ -699,6 +759,7 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                             Expanded(
                                               flex: 1,
                                               child: ListView.builder(
+                                                controller: _scrollController3,
                                                 itemCount: dataList.length,
                                                 itemBuilder: (context, index) {
                                                   Map<String, dynamic> data =
@@ -744,6 +805,10 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                                                   strBook;
                                                               selectBookSearchIndex3 =
                                                                   index;
+                                                              scrollBookSearchIndexs3 =
+                                                                  _scrollController3
+                                                                      .offset;
+                                                              _scrollToSelectedIndex3();
                                                             });
                                                           },
                                                         ),
@@ -763,7 +828,7 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                               ),
                                             ),
                                             Expanded(
-                                              flex: 3,
+                                              flex: screenWidth > 1440 ? 4 : 3,
                                               child: SearchShowPagesOnPage(
                                                 title: '',
                                                 wordSearch: widget.title,
