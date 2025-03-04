@@ -149,6 +149,84 @@ class _BookShowTitleState extends State<BookShowTitle> {
     usersChk = users;
   }
 
+  void _handleLastBookAccess(bool isMobile) async {
+    // แสดง Dialog โหลดข้อมูล
+    showDialog(
+      context: context,
+      barrierDismissible: false, // ไม่ให้กดปิดจนกว่าจะโหลดเสร็จ
+      builder: (BuildContext context) {
+        return const AlertDialog(
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              CircularProgressIndicator(),
+              SizedBox(height: 10),
+              Text("กำลังโหลดข้อมูล..."),
+            ],
+          ),
+        );
+      },
+    );
+
+    // ดึงข้อมูล
+    await _getLastBook();
+
+    // ปิด Dialog เมื่อโหลดเสร็จ
+    // ignore: use_build_context_synchronously
+    Navigator.pop(context);
+
+    int lastInt = 1;
+
+    // ถ้าไม่มีข้อมูลให้แจ้งเตือน
+    if (lastBookAccess.isEmpty) {
+      // ignore: use_build_context_synchronously
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("ไม่พบหน้าที่อ่านล่าสุด")),
+      );
+    } else {
+      lastInt = int.parse(lastBookAccess[0].pageLastAccess.toString());
+    }
+
+    // แสดง Dialog ยืนยัน
+    // ignore: use_build_context_synchronously
+    bool? confirm = await showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("ยืนยันการเปิดหน้า"),
+          content: Text("คุณต้องการเปิดหน้าที่ $lastInt ใช่หรือไม่?"),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false), // ยกเลิก
+              child: const Text("ยกเลิก"),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(context, true), // ยืนยัน
+              child: const Text("ยืนยัน"),
+            ),
+          ],
+        );
+      },
+    );
+
+    // ถ้าผู้ใช้กดยืนยัน ให้นำทางไปยังหน้าใหม่
+    if (confirm == true) {
+      // ignore: use_build_context_synchronously
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => Tri91PageViewHtml(
+            triBookid: widget.triBookid,
+            triPageid: lastInt,
+            triBookline: '1',
+            chkSearch: '',
+            isMobile: isMobile,
+          ),
+        ),
+      );
+    }
+  }
+
   Future<void> _getLastBook() async {
     GetLastRead getLastRead = GetLastRead();
     List<LastBookAccess> result = await getLastRead.fetchLastBookAccessList();
@@ -426,29 +504,123 @@ class _BookShowTitleState extends State<BookShowTitle> {
                                                   Colors.orange),
                                         ),
                                         onPressed: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  Tri91PageViewHtml(
-                                                triBookid: widget.triBookid,
-                                                triPageid: int.parse(
-                                                  lastBookAccess[0]
-                                                      .pageLastAccess
-                                                      .toString(),
-                                                ),
-                                                triBookline: '1',
-                                                chkSearch: '',
-                                                isMobile: widget.isMobile,
-                                              ),
-                                            ),
-                                          );
+                                          _handleLastBookAccess(
+                                              widget.isMobile);
                                         },
-                                        child: ATextDiskplayMedium(
+                                        child: const ATextDiskplayMedium(
                                           text:
-                                              'เปิดหน้าที่อ่านล่าสุด เล่ม ${lastBookAccess[0].bookLastAccess} หน้า ${lastBookAccess[0].pageLastAccess}',
+                                              'เปิดหน้าที่อ่านล่าสุด', // เล่ม ${lastBookAccess[0].bookLastAccess} หน้า ${lastBookAccess[0].pageLastAccess}',
                                         ),
                                       ),
+                                    const SizedBox(height: 5),
+                                    TextButton(
+                                      style: ButtonStyle(
+                                        backgroundColor:
+                                            MaterialStateProperty.all<Color>(
+                                                Colors.orange),
+                                      ),
+                                      onPressed: () {
+                                        showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            TextEditingController
+                                                pageController =
+                                                TextEditingController();
+                                            String?
+                                                errorMessage; // ข้อความแจ้งเตือน
+
+                                            return StatefulBuilder(
+                                              builder: (context, setState) {
+                                                return AlertDialog(
+                                                  title:
+                                                      const Text('ป้อนเลขหน้า'),
+                                                  content: Column(
+                                                    mainAxisSize:
+                                                        MainAxisSize.min,
+                                                    children: [
+                                                      TextField(
+                                                        controller:
+                                                            pageController,
+                                                        keyboardType:
+                                                            TextInputType
+                                                                .number,
+                                                        decoration:
+                                                            InputDecoration(
+                                                          hintText:
+                                                              "เลขหน้าที่ต้องการ",
+                                                          errorText:
+                                                              errorMessage, // แสดงข้อความแจ้งเตือน
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  actions: [
+                                                    TextButton(
+                                                      onPressed: () =>
+                                                          Navigator.pop(
+                                                              context), // ปิด dialog
+                                                      child:
+                                                          const Text('ยกเลิก'),
+                                                    ),
+                                                    TextButton(
+                                                      onPressed: () {
+                                                        if (pageController
+                                                            .text.isNotEmpty) {
+                                                          int pageNumber =
+                                                              int.tryParse(
+                                                                      pageController
+                                                                          .text) ??
+                                                                  1;
+
+                                                          if (pageNumber < 1 ||
+                                                              pageNumber >
+                                                                  numPageAll) {
+                                                            // อัปเดตข้อความแจ้งเตือน
+                                                            setState(() {
+                                                              errorMessage =
+                                                                  "กรุณาป้อนเลขหน้า 1 - $numPageAll";
+                                                            });
+                                                          } else {
+                                                            Navigator.pop(
+                                                                context); // ปิด dialog
+
+                                                            // เปิดหน้าใหม่โดยใช้ bookid เดิม และเปลี่ยนเฉพาะ pageid
+                                                            //bool? returned = await
+                                                            Navigator.push(
+                                                              context,
+                                                              MaterialPageRoute(
+                                                                builder:
+                                                                    (context) =>
+                                                                        Tri91PageViewHtml(
+                                                                  triBookid: widget
+                                                                      .triBookid, // ใช้ค่าเดิม
+                                                                  triPageid:
+                                                                      pageNumber, // ใช้ค่าที่ป้อนมา
+                                                                  triBookline:
+                                                                      '1',
+                                                                  chkSearch: '',
+                                                                  isMobile: widget
+                                                                      .isMobile,
+                                                                ),
+                                                              ),
+                                                            );
+                                                          }
+                                                        }
+                                                      },
+                                                      child:
+                                                          const Text('ยืนยัน'),
+                                                    ),
+                                                  ],
+                                                );
+                                              },
+                                            );
+                                          },
+                                        );
+                                      },
+                                      child: const ATextDiskplayMedium(
+                                        text: 'เปิดระบุหน้า',
+                                      ),
+                                    ),
                                   ],
                                 ),
                               ),
@@ -919,30 +1091,15 @@ class _BookShowTitleState extends State<BookShowTitle> {
                                                         Color>(Colors.orange),
                                               ),
                                               onPressed: () {
-                                                Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        Tri91PageViewHtml(
-                                                      triBookid:
-                                                          widget.triBookid,
-                                                      triPageid: int.parse(
-                                                        lastBookAccess[0]
-                                                            .pageLastAccess
-                                                            .toString(),
-                                                      ),
-                                                      triBookline: '1',
-                                                      chkSearch: '',
-                                                      isMobile: widget.isMobile,
-                                                    ),
-                                                  ),
-                                                );
+                                                _handleLastBookAccess(
+                                                    widget.isMobile);
                                               },
-                                              child: ATextDiskplayMedium(
+                                              child: const ATextDiskplayMedium(
                                                 text:
-                                                    'เปิดหน้าที่อ่านล่าสุด เล่ม ${lastBookAccess[0].bookLastAccess} หน้า ${lastBookAccess[0].pageLastAccess}',
+                                                    'เปิดหน้าที่อ่านล่าสุด', // เล่ม ${lastBookAccess[0].bookLastAccess} หน้า ${lastBookAccess[0].pageLastAccess}',
                                               ),
                                             ),
+                                      const SizedBox(width: 5),
                                       TextButton(
                                         style: ButtonStyle(
                                           backgroundColor:
@@ -1038,24 +1195,6 @@ class _BookShowTitleState extends State<BookShowTitle> {
                                                                   ),
                                                                 ),
                                                               );
-/*
-                                                              // ตรวจสอบว่าผู้ใช้กลับมาหน้าหลัก
-                                                              if (returned ==
-                                                                  true) {
-                                                                await _getLastBook();
-                                                                print({
-                                                                  lastBookAccess[
-                                                                          0]
-                                                                      .pageLastAccess
-                                                                });
-                                                              } else {
-                                                                await _getLastBook();
-                                                                print({
-                                                                  lastBookAccess[
-                                                                          0]
-                                                                      .pageLastAccess
-                                                                });
-                                                              } */
                                                             }
                                                           }
                                                         },
