@@ -151,29 +151,29 @@ class _BookShowTitleState extends State<BookShowTitle> {
 
   void _handleLastBookAccess(bool isMobile) async {
     // แสดง Dialog โหลดข้อมูล
-    showDialog(
-      context: context,
-      barrierDismissible: false, // ไม่ให้กดปิดจนกว่าจะโหลดเสร็จ
-      builder: (BuildContext context) {
-        return const AlertDialog(
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              CircularProgressIndicator(),
-              SizedBox(height: 10),
-              Text("กำลังโหลดข้อมูล..."),
-            ],
-          ),
-        );
-      },
-    );
+    // showDialog(
+    //   context: context,
+    //   barrierDismissible: false, // ไม่ให้กดปิดจนกว่าจะโหลดเสร็จ
+    //   builder: (BuildContext context) {
+    //     return const AlertDialog(
+    //       content: Column(
+    //         mainAxisSize: MainAxisSize.min,
+    //         children: [
+    //           CircularProgressIndicator(),
+    //           SizedBox(height: 10),
+    //           Text("กำลังโหลดข้อมูล..."),
+    //         ],
+    //       ),
+    //     );
+    //   },
+    // );
 
     // ดึงข้อมูล
     await _getLastBook();
 
     // ปิด Dialog เมื่อโหลดเสร็จ
     // ignore: use_build_context_synchronously
-    Navigator.pop(context);
+    // Navigator.pop(context);
 
     int lastInt = 1;
 
