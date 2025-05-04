@@ -309,7 +309,7 @@ class _AppBarCustomState extends State<AppBarCustom> {
                                     ? "ปิด BETA"
                                     : widget.isDesktop == false &&
                                             widget.isTablet == true
-                                        ? "เปิด BETA"
+                                        ? "ปิด BETA"
                                         : "ปิดเวอร์ชั่น BETA",
                           ),
                         ],
