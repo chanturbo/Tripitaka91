@@ -20,8 +20,16 @@ import 'package:tripitaka91/widget/search/screen_mobile.dart';
 import 'package:tripitaka91/widget/showbook/show_book.dart';
 
 class MyHomeMobile extends StatefulWidget {
-  const MyHomeMobile({super.key, required this.title});
+  const MyHomeMobile({
+    super.key,
+    required this.title,
+    required this.onToggleGrayscale,
+    required this.isGrayscale,
+  });
+
   final String title;
+  final VoidCallback onToggleGrayscale;
+  final bool isGrayscale;
 
   @override
   State<MyHomeMobile> createState() => _MyHomeMobileState();
@@ -158,6 +166,16 @@ class _MyHomeMobileState extends State<MyHomeMobile> {
           isDesktop: false,
           isTablet: false,
         ),
+        actions: [
+          IconButton(
+            icon: Icon(
+              widget.isGrayscale ? Icons.visibility_off : Icons.visibility,
+            ),
+            color: Colors.white, // ใส่สีขาวตรงนี้
+            onPressed: widget.onToggleGrayscale,
+            tooltip: widget.isGrayscale ? 'ปิดโหมดขาว-ดำ' : 'เปิดโหมดขาว-ดำ',
+          ),
+        ],
       ),
       body: Container(
         padding: const EdgeInsets.all(0),

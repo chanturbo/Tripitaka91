@@ -19,9 +19,16 @@ import 'package:tripitaka91/widget/right_clipper/right_clipper.dart';
 import 'package:tripitaka91/widget/showbook/show_book.dart';
 
 class MyHomeDesktop extends StatefulWidget {
-  const MyHomeDesktop({super.key, required this.title});
+  const MyHomeDesktop({
+    super.key,
+    required this.title,
+    required this.onToggleGrayscale,
+    required this.isGrayscale,
+  });
 
   final String title;
+  final VoidCallback onToggleGrayscale;
+  final bool isGrayscale;
 
   @override
   State<MyHomeDesktop> createState() => _MyHomeDesktopState();
@@ -152,6 +159,16 @@ class _MyHomeDesktopState extends State<MyHomeDesktop> {
           isDesktop: true,
           isTablet: false,
         ),
+        actions: [
+          IconButton(
+            icon: Icon(
+              widget.isGrayscale ? Icons.visibility_off : Icons.visibility,
+            ),
+            color: Colors.white, // ใส่สีขาวตรงนี้
+            onPressed: widget.onToggleGrayscale,
+            tooltip: widget.isGrayscale ? 'ปิดโหมดขาว-ดำ' : 'เปิดโหมดขาว-ดำ',
+          ),
+        ],
       ),
       body: Container(
         padding: const EdgeInsets.all(0),

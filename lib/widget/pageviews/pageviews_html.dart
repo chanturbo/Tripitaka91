@@ -6,6 +6,7 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:http/http.dart' as http;
 import 'package:share_plus/share_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simple_html_css/simple_html_css.dart';
 import 'package:substring_highlight/substring_highlight.dart';
 import 'package:tripitaka91/utils/api_connect/remote_service.dart';
@@ -59,6 +60,7 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
   double _currentSliderValue = 0;
   int pageChanged = 0;
   late PageController pageController;
+  double _fontSize = 26;
 
   late String triCatage = 'โหลดข้อมูล...';
   late String triTitle = 'โหลดข้อมูล...';
@@ -100,6 +102,7 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
   @override
   void initState() {
     super.initState();
+    _loadFontSize();
     _getUser();
     // _currentSliderValue = widget.triPageid as double;
     getDataTitle();
@@ -111,6 +114,22 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
     textTitleReplace = TextTitleReplace();
     uniqueItems = [];
     chkTimer = true;
+  }
+
+  void _saveFontSize() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setDouble('fontSize', _fontSize);
+  }
+
+  void _loadFontSize() async {
+    final prefs = await SharedPreferences.getInstance();
+    widget.isMobile
+        ? setState(() {
+            _fontSize = prefs.getDouble('fontSize') ?? 28;
+          })
+        : setState(() {
+            _fontSize = prefs.getDouble('fontSize') ?? 26;
+          });
   }
 
   Future<void> openLinkInNewTab(String url) async {
@@ -1713,6 +1732,25 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
                   }
                 },
               ),
+              IconButton(
+                  onPressed: () {
+                    setState(() {
+                      _fontSize < 15 ? _fontSize = 15 : _fontSize -= 5;
+                      _saveFontSize();
+                    });
+                  },
+                  icon: const Icon(Icons.zoom_out), // หรือ Icons.remove
+                  tooltip: 'ลดขนาดตัวอักษร'),
+              IconButton(
+                onPressed: () {
+                  setState(() {
+                    _fontSize > 60 ? _fontSize = 60 : _fontSize += 5;
+                    _saveFontSize();
+                  });
+                },
+                icon: const Icon(Icons.zoom_in), // หรือ Icons.add
+                tooltip: 'ขยายตัวอักษร',
+              ),
               Container(
                 padding: const EdgeInsets.all(8.0),
                 child: ATextTitleMedium(
@@ -2034,14 +2072,14 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
             overrideStyle: <String, TextStyle>{
               'span': isMobile
                   ? const TextStyle(fontSize: 28)
-                  : const TextStyle(fontSize: 26), //isMobile
+                  : TextStyle(fontSize: _fontSize), //isMobile
               // ? const TextStyle(fontSize: 22)
               // : isTable
               //     ? const TextStyle(fontSize: 23)
               //     : const TextStyle(fontSize: 24),
               'p': isMobile
                   ? const TextStyle(fontSize: 28)
-                  : const TextStyle(fontSize: 26),
+                  : TextStyle(fontSize: _fontSize),
               // : isTable
               //     ? const TextStyle(fontSize: 25)
               //     : const TextStyle(fontSize: 26),

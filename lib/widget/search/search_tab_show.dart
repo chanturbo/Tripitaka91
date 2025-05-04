@@ -11,6 +11,7 @@ import 'package:tripitaka91/widget/auto_text/auto_text.dart';
 import 'package:tripitaka91/widget/line_custom/mylinepainter.dart';
 import 'package:tripitaka91/widget/search/search_show_dict.dart';
 import 'package:tripitaka91/widget/search/search_show_dictbt.dart';
+import 'package:tripitaka91/widget/search/search_show_titlerandom.dart';
 import 'package:tripitaka91/widget/search/search_show_title.dart';
 import 'package:tripitaka91/widget/search/search_show_tri91.dart';
 import 'package:tripitaka91/widget/search/search_show_tri91_onpage.dart';
@@ -68,6 +69,12 @@ class SearchTabShow extends StatelessWidget {
             MyPageTabDetail(
               title: title,
               indexLocal: 5,
+              result: result,
+              isM: isM,
+            ),
+            MyPageTabDetail(
+              title: title,
+              indexLocal: 6,
               result: result,
               isM: isM,
             ),
@@ -149,6 +156,13 @@ class MyTabPage extends StatelessWidget {
                     : ATextDiskplaySmallBlack(
                         text: 'พจนานุกรมไทย-บาลี [ ${results[5]} ]'),
               ),
+              Tab(
+                child: isM
+                    ? const ATextDiskplayLargeBlack(
+                        text: 'ค้นหาจากคำใกล้เคียง [ 1+ ]')
+                    : const ATextDiskplaySmallBlack(
+                        text: 'ค้นหาจากคำใกล้เคียง [ 1+ ]'),
+              ),
             ],
           ),
         ),
@@ -219,7 +233,6 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
       fetchDict();
     } else if (indexlocal == 5) {
       fetchDictbt();
-      // fetchData = loadData();
     }
   }
 
@@ -861,22 +874,32 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                         wordSearch: wordSearch,
                                         isM: widget.isM,
                                       )
-                                : FutureBuilder(
-                                    future: fetchData,
-                                    builder: (context, snapshot) {
-                                      if (snapshot.connectionState ==
-                                          ConnectionState.waiting) {
-                                        return const Center(
-                                            child: CircularProgressIndicator());
-                                      } else if (snapshot.hasError) {
-                                        return Text('Error: ${snapshot.error}');
-                                      } else {
-                                        return Center(
-                                          child: Text(snapshot.data.toString()),
-                                        );
-                                      }
-                                    },
-                                  ),
+                                : indexlocal == 6
+                                    ? widget.result[6] == '0'
+                                        ? const Text('ไม่พบข้อมูลสำหรับแสดงผล')
+                                        : SearchShowPagesTitleRandom(
+                                            wordSearch: wordSearch,
+                                            isM: widget.isM,
+                                          )
+                                    : FutureBuilder(
+                                        future: fetchData,
+                                        builder: (context, snapshot) {
+                                          if (snapshot.connectionState ==
+                                              ConnectionState.waiting) {
+                                            return const Center(
+                                                child:
+                                                    CircularProgressIndicator());
+                                          } else if (snapshot.hasError) {
+                                            return Text(
+                                                'Error: ${snapshot.error}');
+                                          } else {
+                                            return Center(
+                                              child: Text(
+                                                  snapshot.data.toString()),
+                                            );
+                                          }
+                                        },
+                                      ),
       ),
     );
   }

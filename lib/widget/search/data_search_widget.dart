@@ -82,12 +82,20 @@ class DataSearch extends SearchDelegate<String> {
               itemBuilder: (context, index) => ListTile(
                 onTap: () {
                   query = suggestionList[index];
+                  // showSuggestions(context);
                   showResults(context);
                 },
                 leading: const Icon(Icons.access_time),
                 title: isM
                     ? ATextTitleMedium18(text: suggestionList[index])
                     : ATextTitleMedium(text: suggestionList[index]),
+                trailing: IconButton(
+                  icon: const Icon(Icons.edit),
+                  onPressed: () {
+                    query = suggestionList[index];
+                    showSuggestions(context);
+                  },
+                ),
               ),
             );
           } else {
@@ -98,10 +106,18 @@ class DataSearch extends SearchDelegate<String> {
               itemBuilder: (context, index) => ListTile(
                 onTap: () {
                   query = searchHistory[index].keyword;
+                  // showSuggestions(context);
                   showResults(context);
                 },
                 leading: const Icon(Icons.access_time),
                 title: ATextTitleMedium(text: searchHistory![index].keyword),
+                trailing: IconButton(
+                  icon: const Icon(Icons.edit),
+                  onPressed: () {
+                    query = searchHistory[index].keyword;
+                    showSuggestions(context);
+                  },
+                ),
               ),
             );
           }
@@ -116,24 +132,32 @@ class DataSearch extends SearchDelegate<String> {
       return ListView.builder(
         itemCount: suggestionList.length,
         itemBuilder: (context, index) => ListTile(
-            onTap: () {
-              if (index < suggestionList.length) {
-                query = suggestionList[index];
-                Future.delayed(Duration.zero, () {
-                  close(context, '');
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => SearchPages(
-                        title: query,
-                        isM: isM,
-                      ),
+          onTap: () {
+            if (index < suggestionList.length) {
+              query = suggestionList[index];
+              Future.delayed(Duration.zero, () {
+                close(context, '');
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => SearchPages(
+                      title: query,
+                      isM: isM,
                     ),
-                  );
-                });
-              }
+                  ),
+                );
+              });
+            }
+          },
+          leading: const Icon(Icons.access_time),
+          title: ATextTitleMedium(text: suggestionList[index]),
+          trailing: IconButton(
+            icon: const Icon(Icons.edit),
+            onPressed: () {
+              query = suggestionList[index];
+              showSuggestions(context);
             },
-            leading: const Icon(Icons.access_time),
-            title: ATextTitleMedium(text: suggestionList[index])),
+          ),
+        ),
       );
     }
   }

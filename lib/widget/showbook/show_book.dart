@@ -115,50 +115,132 @@ class _ShowBookSlideState extends State<ShowBookSlide> {
         ),
         SizedBox(
           height: widget.isMobile ? 180 : 200.0,
-          child: ListView.builder(
-            controller: _scrollControllerListView,
-            scrollDirection: Axis.horizontal,
-            shrinkWrap: true,
-            itemCount: 10,
-            itemBuilder: (BuildContext context, int index) {
-              return Card(
-                margin: const EdgeInsets.all(10),
-                shape: RoundedRectangleBorder(
-                  borderRadius:
-                      BorderRadius.circular(10), // ปรับแต่งตามความต้องการ
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Expanded(
-                      child: InkWell(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => BookShowTitle(
-                                triBookid: (index + 1).toString(),
-                                chkSearch: "",
-                                isMobile: widget.isMobile,
+          child: Stack(
+            children: [
+              // ListView
+              Positioned.fill(
+                child: ListView.builder(
+                  controller: _scrollControllerListView,
+                  scrollDirection: Axis.horizontal,
+                  shrinkWrap: true,
+                  itemCount: 10,
+                  itemBuilder: (BuildContext context, int index) {
+                    return Card(
+                      margin: const EdgeInsets.all(10),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Expanded(
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => BookShowTitle(
+                                      triBookid: (index + 1).toString(),
+                                      chkSearch: "",
+                                      isMobile: widget.isMobile,
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: Image.asset(
+                                  'assets/images/bookcover/tripitaka91_book${index + 1}.png',
+                                  fit: BoxFit.cover,
+                                ),
                               ),
                             ),
-                          );
-                        },
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(
-                              10), // ปรับแต่งตามความต้องการ
-                          child: Image(
-                            image: AssetImage(
-                                'assets/images/bookcover/tripitaka91_book${index + 1}.png'),
-                            fit: BoxFit.cover, // ปรับตามความต้องการ
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ),
+
+              // ปุ่มเลื่อนซ้าย
+              widget.isMobile
+                  ? const Positioned(
+                      left: 0,
+                      top: 0,
+                      bottom: 0,
+                      child: Text(''),
+                    )
+                  : Positioned(
+                      left: 0,
+                      top: 0,
+                      bottom: 0,
+                      child: Center(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.7),
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.2),
+                                blurRadius: 4,
+                                offset: const Offset(2, 2),
+                              ),
+                            ],
+                          ),
+                          child: IconButton(
+                            icon: const Icon(Icons.chevron_left, size: 32),
+                            onPressed: () {
+                              _scrollControllerListView.animateTo(
+                                _scrollControllerListView.offset - 200,
+                                duration: const Duration(milliseconds: 300),
+                                curve: Curves.ease,
+                              );
+                            },
                           ),
                         ),
                       ),
                     ),
-                  ],
-                ),
-              );
-            },
+
+              // ปุ่มเลื่อนขวา
+              widget.isMobile
+                  ? const Positioned(
+                      left: 0,
+                      top: 0,
+                      bottom: 0,
+                      child: Text(''),
+                    )
+                  : Positioned(
+                      right: 0,
+                      top: 0,
+                      bottom: 0,
+                      child: Center(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.7),
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.2),
+                                blurRadius: 4,
+                                offset: const Offset(2, 2),
+                              ),
+                            ],
+                          ),
+                          child: IconButton(
+                            icon: const Icon(Icons.chevron_right, size: 32),
+                            onPressed: () {
+                              _scrollControllerListView.animateTo(
+                                _scrollControllerListView.offset + 200,
+                                duration: const Duration(milliseconds: 300),
+                                curve: Curves.ease,
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                    ),
+            ],
           ),
         ),
         Container(
@@ -202,51 +284,134 @@ class _ShowBookSlideState extends State<ShowBookSlide> {
           ],
         ),
         SizedBox(
-          height: widget.isMobile ? 180 : 200.0,
-          child: ListView.builder(
-            controller: _scrollControllerListView2,
-            scrollDirection: Axis.horizontal,
-            shrinkWrap: true,
-            itemCount: 64,
-            itemBuilder: (BuildContext context, int index) {
-              return Card(
-                margin: const EdgeInsets.all(10),
-                shape: RoundedRectangleBorder(
-                  borderRadius:
-                      BorderRadius.circular(10), // ปรับแต่งตามความต้องการ
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Expanded(
-                      child: InkWell(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => BookShowTitle(
-                                triBookid: (index + 11).toString(),
-                                chkSearch: "",
-                                isMobile: widget.isMobile,
+          height: widget.isMobile ? 180 : 200,
+          child: Stack(
+            children: [
+              // ListView
+              Positioned.fill(
+                child: ListView.builder(
+                  controller: _scrollControllerListView2,
+                  scrollDirection: Axis.horizontal,
+                  shrinkWrap: true,
+                  itemCount: 64,
+                  itemBuilder: (BuildContext context, int index) {
+                    return Card(
+                      margin: const EdgeInsets.all(10),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Expanded(
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => BookShowTitle(
+                                      triBookid: (index + 11).toString(),
+                                      chkSearch: "",
+                                      isMobile: widget.isMobile,
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: Image(
+                                  image: AssetImage(
+                                      'assets/images/bookcover/tripitaka91_book${index + 11}.png'),
+                                  fit: BoxFit.cover,
+                                ),
                               ),
                             ),
-                          );
-                        },
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(
-                              10), // ปรับแต่งตามความต้องการ
-                          child: Image(
-                            image: AssetImage(
-                                'assets/images/bookcover/tripitaka91_book${index + 11}.png'),
-                            fit: BoxFit.cover, // ปรับตามความต้องการ
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ),
+
+              // ปุ่มเลื่อนซ้าย
+              widget.isMobile
+                  ? const Positioned(
+                      left: 0,
+                      top: 0,
+                      bottom: 0,
+                      child: Text(''),
+                    )
+                  : Positioned(
+                      left: 0,
+                      top: 0,
+                      bottom: 0,
+                      child: Center(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.7),
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.2),
+                                blurRadius: 4,
+                                offset: const Offset(2, 2),
+                              ),
+                            ],
+                          ),
+                          child: IconButton(
+                            icon: const Icon(Icons.chevron_left, size: 32),
+                            onPressed: () {
+                              _scrollControllerListView2.animateTo(
+                                _scrollControllerListView2.offset - 200,
+                                duration: const Duration(milliseconds: 300),
+                                curve: Curves.ease,
+                              );
+                            },
                           ),
                         ),
                       ),
                     ),
-                  ],
-                ),
-              );
-            },
+
+              // ปุ่มเลื่อนขวา
+              widget.isMobile
+                  ? const Positioned(
+                      left: 0,
+                      top: 0,
+                      bottom: 0,
+                      child: Text(''),
+                    )
+                  : Positioned(
+                      right: 0,
+                      top: 0,
+                      bottom: 0,
+                      child: Center(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.7),
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.2),
+                                blurRadius: 4,
+                                offset: const Offset(2, 2),
+                              ),
+                            ],
+                          ),
+                          child: IconButton(
+                            icon: const Icon(Icons.chevron_right, size: 32),
+                            onPressed: () {
+                              _scrollControllerListView2.animateTo(
+                                _scrollControllerListView2.offset + 200,
+                                duration: const Duration(milliseconds: 300),
+                                curve: Curves.ease,
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                    ),
+            ],
           ),
         ),
         Container(
@@ -291,50 +456,132 @@ class _ShowBookSlideState extends State<ShowBookSlide> {
         ),
         SizedBox(
           height: widget.isMobile ? 180 : 200.0,
-          child: ListView.builder(
-            controller: _scrollControllerListView3,
-            scrollDirection: Axis.horizontal,
-            shrinkWrap: true,
-            itemCount: 17,
-            itemBuilder: (BuildContext context, int index) {
-              return Card(
-                margin: const EdgeInsets.all(10),
-                shape: RoundedRectangleBorder(
-                  borderRadius:
-                      BorderRadius.circular(10), // ปรับแต่งตามความต้องการ
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Expanded(
-                      child: InkWell(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => BookShowTitle(
-                                triBookid: (index + 75).toString(),
-                                chkSearch: "",
-                                isMobile: widget.isMobile,
+          child: Stack(
+            children: [
+              // ListView.builder
+              Positioned.fill(
+                child: ListView.builder(
+                  controller: _scrollControllerListView3,
+                  scrollDirection: Axis.horizontal,
+                  shrinkWrap: true,
+                  itemCount: 17,
+                  itemBuilder: (BuildContext context, int index) {
+                    return Card(
+                      margin: const EdgeInsets.all(10),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Expanded(
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => BookShowTitle(
+                                      triBookid: (index + 75).toString(),
+                                      chkSearch: "",
+                                      isMobile: widget.isMobile,
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: Image.asset(
+                                  'assets/images/bookcover/tripitaka91_book${index + 75}.png',
+                                  fit: BoxFit.cover,
+                                ),
                               ),
                             ),
-                          );
-                        },
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(
-                              10), // ปรับแต่งตามความต้องการ
-                          child: Image(
-                            image: AssetImage(
-                                'assets/images/bookcover/tripitaka91_book${index + 75}.png'),
-                            fit: BoxFit.cover, // ปรับตามความต้องการ
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ),
+
+              // ปุ่มเลื่อนซ้าย
+              widget.isMobile
+                  ? const Positioned(
+                      left: 0,
+                      top: 0,
+                      bottom: 0,
+                      child: Text(''),
+                    )
+                  : Positioned(
+                      left: 0,
+                      top: 0,
+                      bottom: 0,
+                      child: Center(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.7),
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.2),
+                                blurRadius: 4,
+                                offset: const Offset(2, 2),
+                              ),
+                            ],
+                          ),
+                          child: IconButton(
+                            icon: const Icon(Icons.chevron_left, size: 32),
+                            onPressed: () {
+                              _scrollControllerListView3.animateTo(
+                                _scrollControllerListView3.offset - 200,
+                                duration: const Duration(milliseconds: 300),
+                                curve: Curves.ease,
+                              );
+                            },
                           ),
                         ),
                       ),
                     ),
-                  ],
-                ),
-              );
-            },
+
+              // ปุ่มเลื่อนขวา
+              widget.isMobile
+                  ? const Positioned(
+                      left: 0,
+                      top: 0,
+                      bottom: 0,
+                      child: Text(''),
+                    )
+                  : Positioned(
+                      right: 0,
+                      top: 0,
+                      bottom: 0,
+                      child: Center(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.7),
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.2),
+                                blurRadius: 4,
+                                offset: const Offset(2, 2),
+                              ),
+                            ],
+                          ),
+                          child: IconButton(
+                            icon: const Icon(Icons.chevron_right, size: 32),
+                            onPressed: () {
+                              _scrollControllerListView3.animateTo(
+                                _scrollControllerListView3.offset + 200,
+                                duration: const Duration(milliseconds: 300),
+                                curve: Curves.ease,
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                    ),
+            ],
           ),
         ),
         Container(
@@ -379,52 +626,135 @@ class _ShowBookSlideState extends State<ShowBookSlide> {
         ),
         SizedBox(
           height: widget.isMobile ? 180 : 200.0,
-          child: ListView.builder(
-            controller: _scrollControllerListView5,
-            scrollDirection: Axis.horizontal,
-            shrinkWrap: true,
-            itemCount: dataList.length,
-            itemBuilder: (BuildContext context, int index) {
-              final item = dataList[index];
-              return Card(
-                margin: const EdgeInsets.all(10),
-                shape: RoundedRectangleBorder(
-                  borderRadius:
-                      BorderRadius.circular(10), // ปรับแต่งตามความต้องการ
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Expanded(
-                      child: InkWell(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => SubShowTitle(
-                                titleText: item['titleText'],
-                                menuList: item['menuList'],
-                                menuMain: item['menuMain'],
-                                isMobile: widget.isMobile,
+          child: Stack(
+            children: [
+              // ListView.builder
+              Positioned.fill(
+                child: ListView.builder(
+                  controller: _scrollControllerListView5,
+                  scrollDirection: Axis.horizontal,
+                  shrinkWrap: true,
+                  itemCount: dataList.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    final item = dataList[index];
+                    return Card(
+                      margin: const EdgeInsets.all(10),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Expanded(
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => SubShowTitle(
+                                      titleText: item['titleText'],
+                                      menuList: item['menuList'],
+                                      menuMain: item['menuMain'],
+                                      isMobile: widget.isMobile,
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: Image.asset(
+                                  'assets/images/title/title_0${index + 1}.png',
+                                  fit: BoxFit.cover,
+                                ),
                               ),
                             ),
-                          );
-                        },
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(
-                              10), // ปรับแต่งตามความต้องการ
-                          child: Image(
-                            image: AssetImage(
-                                'assets/images/title/title_0${index + 1}.png'),
-                            fit: BoxFit.cover, // ปรับตามความต้องการ
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ),
+
+              // ปุ่มเลื่อนซ้าย
+              widget.isMobile
+                  ? const Positioned(
+                      left: 0,
+                      top: 0,
+                      bottom: 0,
+                      child: Text(''),
+                    )
+                  : Positioned(
+                      left: 0,
+                      top: 0,
+                      bottom: 0,
+                      child: Center(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.7),
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.2),
+                                blurRadius: 4,
+                                offset: const Offset(2, 2),
+                              ),
+                            ],
+                          ),
+                          child: IconButton(
+                            icon: const Icon(Icons.chevron_left, size: 32),
+                            onPressed: () {
+                              _scrollControllerListView5.animateTo(
+                                _scrollControllerListView5.offset - 200,
+                                duration: const Duration(milliseconds: 300),
+                                curve: Curves.ease,
+                              );
+                            },
                           ),
                         ),
                       ),
                     ),
-                  ],
-                ),
-              );
-            },
+
+              // ปุ่มเลื่อนขวา
+              widget.isMobile
+                  ? const Positioned(
+                      left: 0,
+                      top: 0,
+                      bottom: 0,
+                      child: Text(''),
+                    )
+                  : Positioned(
+                      right: 0,
+                      top: 0,
+                      bottom: 0,
+                      child: Center(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white
+                                .withOpacity(0.7), // พื้นหลังขาวแบบโปร่งใส
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.2),
+                                blurRadius: 4,
+                                offset: const Offset(2, 2),
+                              ),
+                            ],
+                          ),
+                          child: IconButton(
+                            icon: const Icon(Icons.chevron_right, size: 32),
+                            onPressed: () {
+                              _scrollControllerListView5.animateTo(
+                                _scrollControllerListView5.offset + 200,
+                                duration: const Duration(milliseconds: 300),
+                                curve: Curves.ease,
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                    ),
+            ],
           ),
         ),
         Container(
@@ -469,41 +799,126 @@ class _ShowBookSlideState extends State<ShowBookSlide> {
         ),
         SizedBox(
           height: widget.isMobile ? 200 : 230.0,
-          child: ListView.builder(
-            controller: _scrollControllerListView4,
-            scrollDirection: Axis.horizontal,
-            shrinkWrap: true,
-            itemCount: 6,
-            itemBuilder: (BuildContext context, int index) {
-              return Card(
-                margin: const EdgeInsets.all(10),
-                shape: RoundedRectangleBorder(
-                  borderRadius:
-                      BorderRadius.circular(10), // ปรับแต่งตามความต้องการ
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Expanded(
-                      child: Link(
-                        uri: _getPdfUri(index),
-                        target: LinkTarget.blank,
-                        builder: (BuildContext ctx, FollowLink? openLink) {
-                          return IconButton(
-                            iconSize: 64, // กำหนดขนาดไอคอนตามต้องการ
-                            onPressed: openLink,
-                            icon: Image.asset(
-                              'assets/images/ebook/ebook-${index + 1}.png',
-                              fit: BoxFit.cover, // กำหนดการแสดงผลของรูปภาพ
+          child: Stack(
+            children: [
+              // ListView.builder
+              Positioned.fill(
+                child: ListView.builder(
+                  controller: _scrollControllerListView4,
+                  scrollDirection: Axis.horizontal,
+                  shrinkWrap: true,
+                  itemCount: 6,
+                  itemBuilder: (BuildContext context, int index) {
+                    return Card(
+                      margin: const EdgeInsets.all(10),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Expanded(
+                            child: Link(
+                              uri: _getPdfUri(index),
+                              target: LinkTarget.blank,
+                              builder:
+                                  (BuildContext ctx, FollowLink? openLink) {
+                                return IconButton(
+                                  iconSize: 64,
+                                  onPressed: openLink,
+                                  icon: Image.asset(
+                                    'assets/images/ebook/ebook-${index + 1}.png',
+                                    fit: BoxFit.cover,
+                                  ),
+                                );
+                              },
                             ),
-                          );
-                        },
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ),
+
+              // ปุ่มเลื่อนซ้าย
+              widget.isMobile
+                  ? const Positioned(
+                      left: 0,
+                      top: 0,
+                      bottom: 0,
+                      child: Text(''),
+                    )
+                  : Positioned(
+                      left: 0,
+                      top: 0,
+                      bottom: 0,
+                      child: Center(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.7),
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.2),
+                                blurRadius: 4,
+                                offset: const Offset(2, 2),
+                              ),
+                            ],
+                          ),
+                          child: IconButton(
+                            icon: const Icon(Icons.chevron_left, size: 32),
+                            onPressed: () {
+                              _scrollControllerListView4.animateTo(
+                                _scrollControllerListView4.offset - 200,
+                                duration: const Duration(milliseconds: 300),
+                                curve: Curves.ease,
+                              );
+                            },
+                          ),
+                        ),
                       ),
                     ),
-                  ],
-                ),
-              );
-            },
+
+              // ปุ่มเลื่อนขวา
+              widget.isMobile
+                  ? const Positioned(
+                      left: 0,
+                      top: 0,
+                      bottom: 0,
+                      child: Text(''),
+                    )
+                  : Positioned(
+                      right: 0,
+                      top: 0,
+                      bottom: 0,
+                      child: Center(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.7),
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.2),
+                                blurRadius: 4,
+                                offset: const Offset(2, 2),
+                              ),
+                            ],
+                          ),
+                          child: IconButton(
+                            icon: const Icon(Icons.chevron_right, size: 32),
+                            onPressed: () {
+                              _scrollControllerListView4.animateTo(
+                                _scrollControllerListView4.offset + 200,
+                                duration: const Duration(milliseconds: 300),
+                                curve: Curves.ease,
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                    ),
+            ],
           ),
         ),
         const SizedBox(height: 20),

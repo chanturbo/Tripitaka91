@@ -109,7 +109,7 @@ class _AppBarCustomState extends State<AppBarCustom> {
               child: widget.isTablet == false && widget.isDesktop == false
                   ? const SizedBox.shrink()
                   : Container(
-                      width: widget.isDesktop ? 580 : 380,
+                      width: widget.isDesktop ? 580 : 300,
                       padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
                       decoration: BoxDecoration(
                         border: Border.all(color: TColors.grey),
@@ -300,11 +300,17 @@ class _AppBarCustomState extends State<AppBarCustom> {
                                 ? widget.isDesktop == false &&
                                         widget.isTablet == false
                                     ? "BETA"
-                                    : "เปิดเวอร์ชั่น BETA"
+                                    : widget.isDesktop == false &&
+                                            widget.isTablet == true
+                                        ? "เปิด BETA"
+                                        : "เปิดเวอร์ชั่น BETA"
                                 : widget.isDesktop == false &&
                                         widget.isTablet == false
                                     ? "ปิด BETA"
-                                    : "ปิดเวอร์ชั่น BETA",
+                                    : widget.isDesktop == false &&
+                                            widget.isTablet == true
+                                        ? "เปิด BETA"
+                                        : "ปิดเวอร์ชั่น BETA",
                           ),
                         ],
                       ),

@@ -1272,9 +1272,22 @@ class _BookShowTitleState extends State<BookShowTitle> {
                   ),
                   Expanded(
                     flex: widget.isMobile ? 4 : 3,
-                    child: SearchShowPagesTitleList(
-                      bookid: widget.triBookid,
-                      isMobile: widget.isMobile,
+                    child: Padding(
+                      padding: const EdgeInsets.all(2.5),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Colors.blue,
+                            width: 1.0,
+                          ),
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        padding: const EdgeInsets.all(2.5),
+                        child: SearchShowPagesTitleList(
+                          bookid: widget.triBookid,
+                          isMobile: widget.isMobile,
+                        ),
+                      ),
                     ),
                   ),
                 ],

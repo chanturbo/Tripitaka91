@@ -25,7 +25,7 @@ class _SearchPagesState extends State<SearchPages> {
   TotalTitleSearch? randDict;
   TotalTitleSearch? randDictbt;
   TotalTitleSearchTri? randTri;
-  List<String> titleMenu = ["0", "0", "0", "0", "0", "0"];
+  List<String> titleMenu = ["0", "0", "0", "0", "0", "0", "1"];
 
   // ฟังก์ชันที่ใช้สำหรับอัปเดตข้อมูลในดัชนีที่ระบุ
   void updateData(int index, String newValue) {
@@ -584,6 +584,38 @@ class _SearchPagesState extends State<SearchPages> {
                                 );
                               }
                             }
+                          },
+                        ),
+                      ),
+                      const Divider(),
+                      Container(
+                        padding: const EdgeInsets.all(5),
+                        alignment: Alignment.bottomLeft,
+                        child: ListTile(
+                          leading: CircleAvatar(
+                            backgroundColor: Colors.blue[900],
+                            foregroundColor: Colors.white,
+                            child: const Text(
+                              '1+',
+                            ),
+                          ),
+                          title: widget.isM
+                              ? const ATextTitleMedium18(
+                                  text: 'ค้นหาจากคำใกล้เคียง จำนวน 1+ รายการ')
+                              : const ATextTitleLarge(
+                                  text: 'ค้นหาจากคำใกล้เคียง จำนวน 1+ รายการ'),
+                          onTap: () {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => SearchTabShow(
+                                  title: wordSearch,
+                                  result: titleMenu,
+                                  indexShow: 6,
+                                  isM: widget.isM,
+                                ),
+                              ),
+                            );
                           },
                         ),
                       ),
