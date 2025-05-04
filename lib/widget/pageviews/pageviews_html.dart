@@ -2070,16 +2070,18 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
                 fontFamily: "THSarabunNew",
                 fontSize: 28),
             overrideStyle: <String, TextStyle>{
-              'span': isMobile
-                  ? const TextStyle(fontSize: 28)
-                  : TextStyle(fontSize: _fontSize), //isMobile
+              'span': TextStyle(fontSize: _fontSize),
+              // isMobile
+              //     ? const TextStyle(fontSize: 28)
+              //     : TextStyle(fontSize: _fontSize), //isMobile
               // ? const TextStyle(fontSize: 22)
               // : isTable
               //     ? const TextStyle(fontSize: 23)
               //     : const TextStyle(fontSize: 24),
-              'p': isMobile
-                  ? const TextStyle(fontSize: 28)
-                  : TextStyle(fontSize: _fontSize),
+              'p': TextStyle(fontSize: _fontSize),
+              // isMobile
+              //     ? const TextStyle(fontSize: 28)
+              //     : TextStyle(fontSize: _fontSize),
               // : isTable
               //     ? const TextStyle(fontSize: 25)
               //     : const TextStyle(fontSize: 26),
