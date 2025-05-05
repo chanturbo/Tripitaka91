@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:tripitaka91/utils/api_connect/remote_service.dart';
+import 'package:tripitaka91/utils/auth/authentication_service.dart';
 import 'package:tripitaka91/utils/constants/colors.dart';
 import 'package:tripitaka91/utils/models/rand_title.dart';
 import 'package:tripitaka91/utils/models/users.dart';
@@ -13,6 +14,8 @@ import 'package:tripitaka91/widget/info/info.dart';
 import 'package:tripitaka91/widget/last_read/show_last.dart';
 import 'package:tripitaka91/widget/last_read/show_last2.dart';
 import 'package:tripitaka91/widget/line_custom/mylinepainter.dart';
+import 'package:tripitaka91/widget/login/login.dart';
+import 'package:tripitaka91/widget/login/member_tab_show.dart';
 import 'package:tripitaka91/widget/menu/list_menu.dart';
 import 'package:tripitaka91/widget/menu/list_menu_dict.dart';
 import 'package:tripitaka91/widget/menu/list_menu_title.dart';
@@ -63,6 +66,9 @@ class _MyHomeTabletState extends State<MyHomeTablet> {
   String? line;
   late Timer _timer;
 
+  final AuthenticationService _authService = AuthenticationService();
+  bool isLoggedIn = false;
+
   @override
   void initState() {
     super.initState();
@@ -70,6 +76,27 @@ class _MyHomeTabletState extends State<MyHomeTablet> {
     userOnline();
     _checkArguments();
     _timer = Timer(const Duration(seconds: 1), _onTimerFinished);
+  }
+
+  Future<void> _checkLoginStatus() async {
+    isLoggedIn = await _authService.checkLoginStatus();
+
+    if (isLoggedIn) {
+      // ignore: use_build_context_synchronously
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => const MemberTabShow(indexShow: 0)),
+      );
+    } else {
+      // ignore: use_build_context_synchronously
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const LoginPage(),
+        ),
+      );
+    }
   }
 
   void _onTimerFinished() {
@@ -168,6 +195,11 @@ class _MyHomeTabletState extends State<MyHomeTablet> {
           isTablet: true,
         ),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.person),
+            onPressed: _checkLoginStatus,
+            color: Colors.white, // ใส่สีขาวตรงนี้
+          ),
           IconButton(
             icon: Icon(
               widget.isGrayscale ? Icons.visibility_off : Icons.visibility,

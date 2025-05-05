@@ -316,11 +316,11 @@ class _AppBarCustomState extends State<AppBarCustom> {
                       ),
                     ),
                   ),
-            const SizedBox(width: 10),
-            IconButton(
-              icon: const Icon(Icons.person),
-              onPressed: _checkLoginStatus,
-            ),
+            // const SizedBox(width: 10),
+            // IconButton(
+            //   icon: const Icon(Icons.person),
+            //   onPressed: _checkLoginStatus,
+            // ),
           ],
         ),
       ],

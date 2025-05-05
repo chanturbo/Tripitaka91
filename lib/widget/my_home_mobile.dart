@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:tripitaka91/utils/auth/authentication_service.dart';
 import 'package:tripitaka91/widget/appbar/app_bar.dart';
 import 'package:tripitaka91/utils/api_connect/remote_service.dart';
 import 'package:tripitaka91/utils/constants/colors.dart';
@@ -11,6 +12,8 @@ import 'package:tripitaka91/widget/auto_text/auto_text.dart';
 import 'package:tripitaka91/widget/card/title_card.dart';
 import 'package:tripitaka91/widget/last_read/show_last.dart';
 import 'package:tripitaka91/widget/last_read/show_last2.dart';
+import 'package:tripitaka91/widget/login/login.dart';
+import 'package:tripitaka91/widget/login/member_tab_show.dart';
 // import 'package:tripitaka91/widget/line_custom/mylinepainter.dart';
 import 'package:tripitaka91/widget/menu/list_menu.dart';
 import 'package:tripitaka91/widget/pageviews/pageviews_html.dart';
@@ -57,6 +60,9 @@ class _MyHomeMobileState extends State<MyHomeMobile> {
   String? line;
   late Timer _timer;
 
+  final AuthenticationService _authService = AuthenticationService();
+  bool isLoggedIn = false;
+
   @override
   void initState() {
     super.initState();
@@ -85,6 +91,27 @@ class _MyHomeMobileState extends State<MyHomeMobile> {
           ),
         );
       }
+    }
+  }
+
+  Future<void> _checkLoginStatus() async {
+    isLoggedIn = await _authService.checkLoginStatus();
+
+    if (isLoggedIn) {
+      // ignore: use_build_context_synchronously
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => const MemberTabShow(indexShow: 0)),
+      );
+    } else {
+      // ignore: use_build_context_synchronously
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const LoginPage(),
+        ),
+      );
     }
   }
 
@@ -167,6 +194,11 @@ class _MyHomeMobileState extends State<MyHomeMobile> {
           isTablet: false,
         ),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.person),
+            color: Colors.white, // ใส่สีขาวตรงนี้
+            onPressed: _checkLoginStatus,
+          ),
           IconButton(
             icon: Icon(
               widget.isGrayscale ? Icons.visibility_off : Icons.visibility,
