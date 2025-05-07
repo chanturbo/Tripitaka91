@@ -138,7 +138,9 @@ class _SearchShowPagesTitleRandomState
                   child: ATextDiskplayMedium(text: '${index + 1}'),
                 ),
                 title: SubstringHighlight(
-                  text: dataTitleRandom[index].content,
+                  text: widget.isM
+                      ? dataTitleRandom[index].content
+                      : '[เล่ม ${dataTitleRandom[index].tripitakaBook} หน้า ${dataTitleRandom[index].tripitakaPage} บรรทัด ${dataTitleRandom[index].tripitakaLine}]\n${dataTitleRandom[index].content}',
                   terms: outputList,
                   textStyle: TextStyle(
                       fontFamily: widget.isM
