@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:tripitaka91/main.dart';
 import 'package:tripitaka91/utils/constants/api_constants.dart';
 import 'package:tripitaka91/utils/constants/colors.dart';
 import 'package:tripitaka91/utils/constants/text_strings.dart';
@@ -9,7 +10,6 @@ import 'package:tripitaka91/utils/models/users_login.dart';
 import 'package:tripitaka91/utils/shared_preferences/shared_user.dart';
 import 'package:tripitaka91/utils/shared_preferences/shared_value.dart';
 import 'package:tripitaka91/widget/login/signup_screen.dart';
-import 'package:tripitaka91/widget/my_home_page.dart';
 import 'package:url_launcher/link.dart';
 
 class LoginPage extends StatefulWidget {
@@ -143,9 +143,7 @@ class _LoginPageState extends State<LoginPage> {
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(
-            builder: (context) => const MyHomePage(
-              online: true,
-            ),
+            builder: (context) => const MyApp(),
           ),
           (route) => false,
         );

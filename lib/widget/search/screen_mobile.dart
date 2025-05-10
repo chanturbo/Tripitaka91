@@ -5,6 +5,7 @@ import 'package:tripitaka91/widget/search/data_search_widget.dart';
 
 class SearchMobileScreen extends StatefulWidget {
   final bool online;
+
   const SearchMobileScreen({
     super.key,
     required this.online,

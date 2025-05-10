@@ -16,11 +16,13 @@ class SearchPages extends StatefulWidget {
   final bool isM;
   final String title;
   final bool online;
+  final bool volumeHelper;
   const SearchPages({
     super.key,
     required this.title,
     required this.isM,
     required this.online,
+    required this.volumeHelper,
   });
 
   @override
@@ -57,7 +59,9 @@ class _SearchPagesState extends State<SearchPages> {
     widget.online
         ? fetchSearchHistoryFromAPI()
         : dbhelper.saveHisSearch(widget.title, jsonData);
-
+    if (widget.online || widget.volumeHelper) {
+      titleMenu.add("1");
+    }
     loadSequentially();
   }
 
@@ -101,12 +105,12 @@ class _SearchPagesState extends State<SearchPages> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => SearchTabShow(
-                      title: widget.title,
-                      result: titleMenu,
-                      indexShow: indexShow,
-                      isM: widget.isM,
-                      online: widget.online,
-                    ),
+                        title: widget.title,
+                        result: titleMenu,
+                        indexShow: indexShow,
+                        isM: widget.isM,
+                        online: widget.online,
+                        volumeHelper: widget.volumeHelper),
                   ),
                 );
               }
@@ -141,12 +145,12 @@ class _SearchPagesState extends State<SearchPages> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => SearchTabShow(
-                      title: widget.title,
-                      result: titleMenu,
-                      indexShow: indexShow,
-                      isM: widget.isM,
-                      online: widget.online,
-                    ),
+                        title: widget.title,
+                        result: titleMenu,
+                        indexShow: indexShow,
+                        isM: widget.isM,
+                        online: widget.online,
+                        volumeHelper: widget.volumeHelper),
                   ),
                 );
               }
@@ -181,12 +185,12 @@ class _SearchPagesState extends State<SearchPages> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => SearchTabShow(
-                      title: widget.title,
-                      result: titleMenu,
-                      indexShow: indexShow,
-                      isM: widget.isM,
-                      online: widget.online,
-                    ),
+                        title: widget.title,
+                        result: titleMenu,
+                        indexShow: indexShow,
+                        isM: widget.isM,
+                        online: widget.online,
+                        volumeHelper: widget.volumeHelper),
                   ),
                 );
               }
@@ -362,12 +366,12 @@ class _SearchPagesState extends State<SearchPages> {
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) => SearchTabShow(
-                                          title: wordSearch,
-                                          result: titleMenu,
-                                          indexShow: 5,
-                                          isM: widget.isM,
-                                          online: widget.online,
-                                        ),
+                                            title: wordSearch,
+                                            result: titleMenu,
+                                            indexShow: 5,
+                                            isM: widget.isM,
+                                            online: widget.online,
+                                            volumeHelper: widget.volumeHelper),
                                       ),
                                     );
                                   },
@@ -395,6 +399,41 @@ class _SearchPagesState extends State<SearchPages> {
                         ),
                       ),
                       const Divider(),
+                      if (widget.online || widget.volumeHelper)
+                        Container(
+                          padding: const EdgeInsets.all(5),
+                          alignment: Alignment.bottomLeft,
+                          child: ListTile(
+                            leading: CircleAvatar(
+                              backgroundColor: Colors.blue[900],
+                              foregroundColor: Colors.white,
+                              child: const Text(
+                                '1+',
+                              ),
+                            ),
+                            title: widget.isM
+                                ? const ATextTitleMedium18(
+                                    text: 'ค้นหาจากคำใกล้เคียง จำนวน 1+ รายการ')
+                                : const ATextTitleLarge(
+                                    text:
+                                        'ค้นหาจากคำใกล้เคียง จำนวน 1+ รายการ'),
+                            onTap: () {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => SearchTabShow(
+                                      title: wordSearch,
+                                      result: titleMenu,
+                                      indexShow: 6,
+                                      isM: widget.isM,
+                                      online: widget.online,
+                                      volumeHelper: widget.volumeHelper),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      if (widget.online || widget.volumeHelper) const Divider(),
                     ],
                   ),
                 ),

@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:tripitaka91/utils/auth/authentication_service.dart';
+import 'package:tripitaka91/main.dart';
 import 'package:tripitaka91/utils/constants/colors.dart';
 import 'package:tripitaka91/utils/constants/sizes.dart';
 import 'package:tripitaka91/utils/models/users.dart';
 import 'package:tripitaka91/utils/shared_preferences/shared_value.dart';
 import 'package:tripitaka91/widget/auto_text/auto_text.dart';
-import 'package:tripitaka91/widget/login/login.dart';
-import 'package:tripitaka91/widget/login/member_tab_show.dart';
-import 'package:tripitaka91/widget/my_home_page.dart';
 import 'package:tripitaka91/widget/search/data_search_widget.dart';
 
 class AppBarCustom extends StatefulWidget {
@@ -26,7 +23,6 @@ class AppBarCustom extends StatefulWidget {
 }
 
 class _AppBarCustomState extends State<AppBarCustom> {
-  final AuthenticationService _authService = AuthenticationService();
   bool isLoggedIn = false;
   // Users? _usersData;
   int valueSpeech = 0; // ค่าเริ่มต้น
@@ -59,26 +55,26 @@ class _AppBarCustomState extends State<AppBarCustom> {
     saveValueBetaSpeech(newValue); // บันทึกค่าใหม่
   }
 
-  Future<void> _checkLoginStatus() async {
-    isLoggedIn = await _authService.checkLoginStatus();
+  // Future<void> _checkLoginStatus() async {
+  //   isLoggedIn = await _authService.checkLoginStatus();
 
-    if (isLoggedIn) {
-      // ignore: use_build_context_synchronously
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => const MemberTabShow(indexShow: 0)),
-      );
-    } else {
-      // ignore: use_build_context_synchronously
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const LoginPage(),
-        ),
-      );
-    }
-  }
+  //   if (isLoggedIn) {
+  //     // ignore: use_build_context_synchronously
+  //     Navigator.push(
+  //       context,
+  //       MaterialPageRoute(
+  //           builder: (context) => const MemberTabShow(indexShow: 0)),
+  //     );
+  //   } else {
+  //     // ignore: use_build_context_synchronously
+  //     Navigator.push(
+  //       context,
+  //       MaterialPageRoute(
+  //         builder: (context) => const LoginPage(),
+  //       ),
+  //     );
+  //   }
+  // }
 
   // void _getUser() async {
   //   _usersData = await getUsersList();
@@ -186,9 +182,7 @@ class _AppBarCustomState extends State<AppBarCustom> {
                                                 context,
                                                 MaterialPageRoute(
                                                   builder: (context) =>
-                                                      const MyHomePage(
-                                                    online: false,
-                                                  ),
+                                                      const MyApp(),
                                                 ),
                                                 (route) => false,
                                               );
@@ -231,8 +225,7 @@ class _AppBarCustomState extends State<AppBarCustom> {
                                     Navigator.pushAndRemoveUntil(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) =>
-                                            const MyHomePage(online: false),
+                                        builder: (context) => const MyApp(),
                                       ),
                                       (route) => false,
                                     );
@@ -279,11 +272,17 @@ class _AppBarCustomState extends State<AppBarCustom> {
                                 ? widget.isDesktop == false &&
                                         widget.isTablet == false
                                     ? "BETA"
-                                    : "เปิดเวอร์ชั่น BETA"
+                                    : widget.isDesktop == false &&
+                                            widget.isTablet == true
+                                        ? "เปิด BETA"
+                                        : "เปิดเวอร์ชั่น BETA"
                                 : widget.isDesktop == false &&
                                         widget.isTablet == false
                                     ? "ปิด BETA"
-                                    : "ปิดเวอร์ชั่น BETA",
+                                    : widget.isDesktop == false &&
+                                            widget.isTablet == true
+                                        ? "เปิด BETA"
+                                        : "ปิดเวอร์ชั่น BETA",
                           ),
                         ],
                       ),
@@ -309,7 +308,7 @@ class _AppBarCustomState extends State<AppBarCustom> {
               child: widget.isTablet == false && widget.isDesktop == false
                   ? const SizedBox.shrink()
                   : Container(
-                      width: widget.isDesktop ? 580 : 380,
+                      width: widget.isDesktop ? 580 : 300,
                       padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
                       decoration: BoxDecoration(
                         border: Border.all(color: TColors.grey),
@@ -333,11 +332,6 @@ class _AppBarCustomState extends State<AppBarCustom> {
                         ],
                       ),
                     ),
-            ),
-            const Spacer(),
-            IconButton(
-              icon: const Icon(Icons.person),
-              onPressed: _checkLoginStatus,
             ),
           ],
         ),
