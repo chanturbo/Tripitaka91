@@ -281,20 +281,6 @@ class _AppBarCustomState extends State<AppBarCustom> {
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          valueSpeech == 0
-                              ? const Icon(Icons.app_registration,
-                                  color: Colors.white)
-                              : widget.isDesktop == false &&
-                                      widget.isTablet == false
-                                  ? const SizedBox.shrink()
-                                  : const Icon(Icons.app_registration,
-                                      color: Colors.white),
-                          valueSpeech == 0
-                              ? const SizedBox(width: 8)
-                              : widget.isDesktop == false &&
-                                      widget.isTablet == false
-                                  ? const SizedBox.shrink()
-                                  : const SizedBox(width: 8),
                           ATextDiskplayMedium(
                             text: valueSpeech == 0
                                 ? widget.isDesktop == false &&
