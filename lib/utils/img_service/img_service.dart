@@ -15,7 +15,7 @@ class ImageCaptureService {
     try {
       String link = '$tURLmain$bookid-$pageid-$lineid.htm';
       String replaceTitle = '$bookid/$pageid/$lineid';
-      replaceTitle = replaceTitle.replaceAll(title, replaceTitle);
+      title = title.replaceAll(replaceTitle, '');
       // ตรวจสอบว่าเป็น iPhone หรือ iPad หรือไม่
       // final userAgent = html.window.navigator.userAgent;
       // final isIPhone = userAgent.contains('iPhone');
@@ -48,7 +48,7 @@ class ImageCaptureService {
       // แชร์ไฟล์รูปภาพ
       await Share.shareXFiles([XFile(imgFile.path)],
           text:
-              '$replaceTitle เล่ม $bookid หน้า $pageid บรรทัด $lineid อ่านรายละเอียด -> $link');
+              '$title เล่ม $bookid หน้า $pageid บรรทัด $lineid อ่านรายละเอียด -> $link');
       // }
     } catch (e) {
       // คุณสามารถจัดการข้อผิดพลาดได้ตามต้องการ
