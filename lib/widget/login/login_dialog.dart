@@ -95,7 +95,7 @@ class _LoginPageDialogState extends State<LoginPageDialog> {
             children: [
               TextButton(
                 style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
+                  backgroundColor: WidgetStateProperty.all<Color>(Colors.red),
                 ),
                 onPressed: () {
                   _login(context);
@@ -109,7 +109,7 @@ class _LoginPageDialogState extends State<LoginPageDialog> {
               ),
               TextButton(
                 style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
+                  backgroundColor: WidgetStateProperty.all<Color>(Colors.red),
                 ),
                 onPressed: () {
                   Navigator.pop(context, false);

@@ -13,6 +13,7 @@ import 'package:tripitaka91/widget/line_custom/mylinepainter.dart';
 import 'package:tripitaka91/widget/search/search_show_dict.dart';
 import 'package:tripitaka91/widget/search/search_show_dictbt.dart';
 import 'package:tripitaka91/widget/search/search_show_title.dart';
+import 'package:tripitaka91/widget/search/search_show_titlerandom.dart';
 import 'package:tripitaka91/widget/search/search_show_tri91.dart';
 import 'package:tripitaka91/widget/search/search_show_tri91_onpage.dart';
 
@@ -22,68 +23,86 @@ class SearchTabShow extends StatelessWidget {
   final int indexShow;
   final bool isM;
   final bool online;
-
-  const SearchTabShow({
-    super.key,
-    required this.title,
-    required this.result,
-    required this.indexShow,
-    required this.isM,
-    required this.online,
-  });
+  final bool volumeHelper;
+  const SearchTabShow(
+      {super.key,
+      required this.title,
+      required this.result,
+      required this.indexShow,
+      required this.isM,
+      required this.online,
+      required this.volumeHelper});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: MyTabPage(
-          indexShow: indexShow,
-          title: title,
-          pages: [
+        indexShow: indexShow,
+        title: title,
+        pages: [
+          MyPageTabDetail(
+            title: title,
+            indexLocal: 0,
+            result: result,
+            isM: isM,
+            online: online,
+            volumeHelper: volumeHelper,
+          ),
+          MyPageTabDetail(
+            title: title,
+            indexLocal: 1,
+            result: result,
+            isM: isM,
+            online: online,
+            volumeHelper: volumeHelper,
+          ),
+          MyPageTabDetail(
+            title: title,
+            indexLocal: 2,
+            result: result,
+            isM: isM,
+            online: online,
+            volumeHelper: volumeHelper,
+          ),
+          MyPageTabDetail(
+            title: title,
+            indexLocal: 3,
+            result: result,
+            isM: isM,
+            online: online,
+            volumeHelper: volumeHelper,
+          ),
+          MyPageTabDetail(
+            title: title,
+            indexLocal: 4,
+            result: result,
+            isM: isM,
+            online: online,
+            volumeHelper: volumeHelper,
+          ),
+          MyPageTabDetail(
+            title: title,
+            indexLocal: 5,
+            result: result,
+            isM: isM,
+            online: online,
+            volumeHelper: volumeHelper,
+          ),
+          if (online || volumeHelper)
             MyPageTabDetail(
               title: title,
-              indexLocal: 0,
+              indexLocal: 6,
               result: result,
               isM: isM,
               online: online,
+              volumeHelper: volumeHelper,
             ),
-            MyPageTabDetail(
-              title: title,
-              indexLocal: 1,
-              result: result,
-              isM: isM,
-              online: online,
-            ),
-            MyPageTabDetail(
-              title: title,
-              indexLocal: 2,
-              result: result,
-              isM: isM,
-              online: online,
-            ),
-            MyPageTabDetail(
-              title: title,
-              indexLocal: 3,
-              result: result,
-              isM: isM,
-              online: online,
-            ),
-            MyPageTabDetail(
-              title: title,
-              indexLocal: 4,
-              result: result,
-              isM: isM,
-              online: online,
-            ),
-            MyPageTabDetail(
-              title: title,
-              indexLocal: 5,
-              result: result,
-              isM: isM,
-              online: online,
-            ),
-          ],
-          result: result,
-          isM: isM),
+        ],
+        result: result,
+        isM: isM,
+        online: online,
+        volumeHelper: volumeHelper,
+      ),
     );
   }
 }
@@ -94,6 +113,8 @@ class MyTabPage extends StatelessWidget {
   final List<MyPageTabDetail> pages;
   final List<String> result;
   final bool isM;
+  final bool online;
+  final bool volumeHelper;
 
   const MyTabPage({
     super.key,
@@ -102,6 +123,8 @@ class MyTabPage extends StatelessWidget {
     required this.pages,
     required this.result,
     required this.isM,
+    required this.online,
+    required this.volumeHelper,
   });
 
   @override
@@ -159,6 +182,14 @@ class MyTabPage extends StatelessWidget {
                     : ATextDiskplaySmallBlack(
                         text: 'พจนานุกรมไทย-บาลี [ ${results[5]} ]'),
               ),
+              if (online || volumeHelper)
+                Tab(
+                  child: isM
+                      ? const ATextDiskplayLargeBlack(
+                          text: 'ค้นหาจากคำใกล้เคียง [ 1+ ]')
+                      : const ATextDiskplaySmallBlack(
+                          text: 'ค้นหาจากคำใกล้เคียง [ 1+ ]'),
+                ),
             ],
           ),
         ),
@@ -176,6 +207,7 @@ class MyPageTabDetail extends StatefulWidget {
   final List<String> result;
   final bool isM;
   final bool online;
+  final bool volumeHelper;
 
   const MyPageTabDetail({
     super.key,
@@ -184,6 +216,7 @@ class MyPageTabDetail extends StatefulWidget {
     required this.result,
     required this.isM,
     required this.online,
+    required this.volumeHelper,
   });
 
   @override
@@ -206,10 +239,19 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
   int? selectBookSearchIndex1 = 0;
   int? selectBookSearchIndex2 = 0;
   int? selectBookSearchIndex3 = 0;
+  ScrollController _scrollController1 = ScrollController();
+  ScrollController _scrollController2 = ScrollController();
+  ScrollController _scrollController3 = ScrollController();
+  double scrollBookSearchIndexs1 = -1;
+  double scrollBookSearchIndexs2 = -1;
+  double scrollBookSearchIndexs3 = -1;
 
   @override
   void initState() {
     super.initState();
+    _scrollController1 = ScrollController();
+    _scrollController2 = ScrollController();
+    _scrollController3 = ScrollController();
     indexlocal = widget.indexLocal;
     if (indexlocal == 0) {
     } else if (indexlocal == 1) {
@@ -262,6 +304,42 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
     return randDict;
   }
 
+  void _scrollToSelectedIndex1() {
+    Future.delayed(const Duration(milliseconds: 200), () {
+      if (_scrollController1.hasClients && scrollBookSearchIndexs1 != -1) {
+        _scrollController1.animateTo(
+          scrollBookSearchIndexs1,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+        );
+      }
+    });
+  }
+
+  void _scrollToSelectedIndex2() {
+    Future.delayed(const Duration(milliseconds: 200), () {
+      if (_scrollController2.hasClients && scrollBookSearchIndexs2 != -1) {
+        _scrollController2.animateTo(
+          scrollBookSearchIndexs2,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+        );
+      }
+    });
+  }
+
+  void _scrollToSelectedIndex3() {
+    Future.delayed(const Duration(milliseconds: 200), () {
+      if (_scrollController3.hasClients && scrollBookSearchIndexs3 != -1) {
+        _scrollController3.animateTo(
+          scrollBookSearchIndexs3,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+        );
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
@@ -293,6 +371,7 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                 ? FutureBuilder<TotalTitleSearchTri?>(
                     future: loadDataTri1(),
                     builder: (context, snapshot) {
+                      double screenWidth = MediaQuery.of(context).size.width;
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         // กำลังโหลดข้อมูล
                         return const Center(child: CircularProgressIndicator());
@@ -372,6 +451,7 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                     Expanded(
                                       flex: 1,
                                       child: ListView.builder(
+                                        controller: _scrollController1,
                                         itemCount: dataList.length,
                                         itemBuilder: (context, index) {
                                           Map<String, dynamic> data =
@@ -409,6 +489,10 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                                       bookSearchid1 = strBook;
                                                       selectBookSearchIndex1 =
                                                           index;
+                                                      scrollBookSearchIndexs1 =
+                                                          _scrollController1
+                                                              .offset;
+                                                      _scrollToSelectedIndex1();
                                                     });
                                                   },
                                                 ),
@@ -427,7 +511,7 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                       ),
                                     ),
                                     Expanded(
-                                      flex: 3,
+                                      flex: screenWidth > 1440 ? 4 : 3,
                                       child: SearchShowPagesOnPage(
                                         title: '',
                                         wordSearch: widget.title,
@@ -451,6 +535,8 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                     ? FutureBuilder<TotalTitleSearchTri?>(
                         future: loadDataTri2(),
                         builder: (context, snapshot) {
+                          double screenWidth =
+                              MediaQuery.of(context).size.width;
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {
                             // กำลังโหลดข้อมูล
@@ -536,6 +622,7 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                         Expanded(
                                           flex: 1,
                                           child: ListView.builder(
+                                            controller: _scrollController2,
                                             itemCount: dataList.length,
                                             itemBuilder: (context, index) {
                                               Map<String, dynamic> data =
@@ -577,6 +664,10 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                                               strBook;
                                                           selectBookSearchIndex2 =
                                                               index;
+                                                          scrollBookSearchIndexs2 =
+                                                              _scrollController2
+                                                                  .offset;
+                                                          _scrollToSelectedIndex2();
                                                         });
                                                       },
                                                     ),
@@ -595,7 +686,7 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                           ),
                                         ),
                                         Expanded(
-                                          flex: 3,
+                                          flex: screenWidth > 1440 ? 4 : 3,
                                           child: SearchShowPagesOnPage(
                                             title: '',
                                             wordSearch: widget.title,
@@ -619,6 +710,8 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                         ? FutureBuilder<TotalTitleSearchTri?>(
                             future: loadDataTri3(),
                             builder: (context, snapshot) {
+                              double screenWidth =
+                                  MediaQuery.of(context).size.width;
                               if (snapshot.connectionState ==
                                   ConnectionState.waiting) {
                                 // กำลังโหลดข้อมูล
@@ -708,6 +801,7 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                             Expanded(
                                               flex: 1,
                                               child: ListView.builder(
+                                                controller: _scrollController3,
                                                 itemCount: dataList.length,
                                                 itemBuilder: (context, index) {
                                                   Map<String, dynamic> data =
@@ -753,6 +847,10 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                                                   strBook;
                                                               selectBookSearchIndex3 =
                                                                   index;
+                                                              scrollBookSearchIndexs3 =
+                                                                  _scrollController3
+                                                                      .offset;
+                                                              _scrollToSelectedIndex3();
                                                             });
                                                           },
                                                         ),
@@ -772,7 +870,7 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                               ),
                                             ),
                                             Expanded(
-                                              flex: 3,
+                                              flex: screenWidth > 1440 ? 4 : 3,
                                               child: SearchShowPagesOnPage(
                                                 title: '',
                                                 wordSearch: widget.title,
@@ -810,22 +908,54 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                             online: widget.online,
                                           )
                                     : const Text('ไม่พบข้อมูลสำหรับแสดงผล')
-                                : FutureBuilder(
-                                    future: fetchData,
-                                    builder: (context, snapshot) {
-                                      if (snapshot.connectionState ==
-                                          ConnectionState.waiting) {
-                                        return const Center(
-                                            child: CircularProgressIndicator());
-                                      } else if (snapshot.hasError) {
-                                        return Text('Error: ${snapshot.error}');
-                                      } else {
-                                        return Center(
-                                          child: Text(snapshot.data.toString()),
-                                        );
-                                      }
-                                    },
-                                  ),
+                                : indexlocal == 6
+                                    ? (widget.online || widget.volumeHelper)
+                                        ? widget.result[6] == '0'
+                                            ? const Text(
+                                                'ไม่พบข้อมูลสำหรับแสดงผล')
+                                            : SearchShowPagesTitleRandom(
+                                                wordSearch: wordSearch,
+                                                isM: widget.isM,
+                                                online: widget.online,
+                                              )
+                                        : FutureBuilder(
+                                            future: fetchData,
+                                            builder: (context, snapshot) {
+                                              if (snapshot.connectionState ==
+                                                  ConnectionState.waiting) {
+                                                return const Center(
+                                                    child:
+                                                        CircularProgressIndicator());
+                                              } else if (snapshot.hasError) {
+                                                return Text(
+                                                    'Error: ${snapshot.error}');
+                                              } else {
+                                                return Center(
+                                                  child: Text(
+                                                      snapshot.data.toString()),
+                                                );
+                                              }
+                                            },
+                                          )
+                                    : FutureBuilder(
+                                        future: fetchData,
+                                        builder: (context, snapshot) {
+                                          if (snapshot.connectionState ==
+                                              ConnectionState.waiting) {
+                                            return const Center(
+                                                child:
+                                                    CircularProgressIndicator());
+                                          } else if (snapshot.hasError) {
+                                            return Text(
+                                                'Error: ${snapshot.error}');
+                                          } else {
+                                            return Center(
+                                              child: Text(
+                                                  snapshot.data.toString()),
+                                            );
+                                          }
+                                        },
+                                      ),
       ),
     );
   }

@@ -16,7 +16,6 @@ import 'package:http/http.dart' as http;
 import 'package:tripitaka91/widget/login/set_voice.dart';
 import 'package:tripitaka91/widget/login/show_userall.dart';
 import 'package:tripitaka91/widget/login/user_activity_log.dart';
-import 'package:tripitaka91/widget/my_home_page.dart';
 
 class MemberDisplay extends StatefulWidget {
   const MemberDisplay({super.key});
@@ -430,9 +429,7 @@ class _MemberDisplayState extends State<MemberDisplay> {
                       Navigator.pushAndRemoveUntil(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const MyHomePage(
-                            online: false,
-                          ),
+                          builder: (context) => const MyApp(),
                         ),
                         (route) => false,
                       );

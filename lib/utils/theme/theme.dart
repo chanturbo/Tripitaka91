@@ -29,10 +29,7 @@ class TAppTheme {
     inputDecorationTheme: TTextFormFieldTheme.lightInputDecorationTheme,
     drawerTheme: const DrawerThemeData(
       backgroundColor: TColors.white,
-    ),
-    dialogTheme: const DialogTheme(
-      backgroundColor: Colors.white,
-    ),
+    ),    
   );
 
   static ThemeData darkTheme = ThemeData(
@@ -52,9 +49,6 @@ class TAppTheme {
     inputDecorationTheme: TTextFormFieldTheme.darkInputDecorationTheme,
     drawerTheme: const DrawerThemeData(
       backgroundColor: TColors.white,
-    ),
-    dialogTheme: const DialogTheme(
-      backgroundColor: TColors.black,
-    ),
+    ),    
   );
 }

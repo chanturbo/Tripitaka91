@@ -13,6 +13,7 @@ const String tURLtitle = "${tURL}showtitle.php";
 const String tURLtitleShow = "${tURL}showtitleshow.php";
 const String tURLtitleEdit = "${tURL}showtitleedit.php";
 const String tURLtitleSearch = "${tURL}showtitlesearch.php";
+const String tURLtitleSearchRandom = "${tURL}showtitlesearchrandom.php";
 const String tURLtitleShowInPage = "${tURL}showtitleshowinpages.php";
 const String tURLtitleSearchTotal = "${tURL}totalsearchtitle.php";
 const String tURLtitleDict = "${tURL}showdictsearch.php";

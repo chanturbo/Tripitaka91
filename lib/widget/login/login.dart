@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:tripitaka91/main.dart';
 import 'package:tripitaka91/utils/constants/api_constants.dart';
 import 'package:tripitaka91/utils/constants/colors.dart';
 import 'package:tripitaka91/utils/constants/text_strings.dart';
@@ -9,9 +10,7 @@ import 'package:tripitaka91/utils/models/users_login.dart';
 import 'package:tripitaka91/utils/shared_preferences/shared_user.dart';
 import 'package:tripitaka91/utils/shared_preferences/shared_value.dart';
 import 'package:tripitaka91/widget/login/signup_screen.dart';
-import 'package:tripitaka91/widget/my_home_page.dart';
 import 'package:url_launcher/link.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -144,9 +143,7 @@ class _LoginPageState extends State<LoginPage> {
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(
-            builder: (context) => const MyHomePage(
-              online: true,
-            ),
+            builder: (context) => const MyApp(),
           ),
           (route) => false,
         );
@@ -293,17 +290,6 @@ class _LoginPageState extends State<LoginPage> {
         child: const Text(TTexts.forgetPassword));
   }
 
-  Future<void> openLinkInNewTab(String url) async {
-    final Uri uri = Uri.parse(url);
-
-    if (!await launchUrl(
-      uri,
-      mode: LaunchMode.externalApplication, // เปิดในเบราว์เซอร์แยก
-    )) {
-      throw 'ไม่สามารถเปิดลิงก์: $url';
-    }
-  }
-
   _signup(context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -311,7 +297,6 @@ class _LoginPageState extends State<LoginPage> {
         const Text(TTexts.dontNotAccount),
         TextButton(
           onPressed: () {
-            //openLinkInNewTab('https://www.tripitaka91.com/');
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) => const SignUpScreen()),

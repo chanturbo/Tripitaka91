@@ -349,7 +349,7 @@ class _LogEditScreenBackupState extends State<LogEditScreenBackup> {
                         ElevatedButton(
                           style: ButtonStyle(
                             backgroundColor:
-                                MaterialStateProperty.all<Color>(Colors.red),
+                                WidgetStateProperty.all<Color>(Colors.red),
                           ),
                           onPressed: _loadBackPage, // เรียกใช้เมธอดเมื่อกดปุ่ม
                           child:
@@ -361,7 +361,7 @@ class _LogEditScreenBackupState extends State<LogEditScreenBackup> {
                         ElevatedButton(
                           style: ButtonStyle(
                             backgroundColor:
-                                MaterialStateProperty.all<Color>(Colors.red),
+                                WidgetStateProperty.all<Color>(Colors.red),
                           ),
                           onPressed: _loadNextPage, // เรียกใช้เมธอดเมื่อกดปุ่ม
                           child:

@@ -9,10 +9,12 @@ import 'package:tripitaka91/utils/shared_preferences/shared_user.dart';
 import 'package:tripitaka91/widget/auto_text/auto_text.dart';
 import 'package:tripitaka91/widget/search/data_search.dart';
 import 'package:tripitaka91/widget/search/search_page.dart';
+import 'package:tripitaka91/widget/volume_helper/volume_helper.dart';
 
 class DataSearch extends SearchDelegate<String> {
   final bool isM; // เพิ่มพารามิเตอร์ isM ใน constructor
   final bool online;
+
   DataSearch({
     required this.isM,
     required this.online,
@@ -48,6 +50,7 @@ class DataSearch extends SearchDelegate<String> {
       // โดยใช้ Navigator.push เพื่อเปิดหน้าใหม่
       Future.delayed(Duration.zero, () {
         close(context, '');
+        final volumeHelper = VolumeHelper();
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -55,6 +58,7 @@ class DataSearch extends SearchDelegate<String> {
               title: query,
               isM: isM,
               online: online,
+              volumeHelper: volumeHelper.showVolume,
             ),
           ),
         );
@@ -97,6 +101,13 @@ class DataSearch extends SearchDelegate<String> {
                 title: isM
                     ? ATextTitleMedium18(text: suggestionList[index])
                     : ATextTitleMedium(text: suggestionList[index]),
+                trailing: IconButton(
+                  icon: const Icon(Icons.edit),
+                  onPressed: () {
+                    query = suggestionList[index];
+                    showSuggestions(context);
+                  },
+                ),
               ),
             );
           } else {
@@ -112,6 +123,13 @@ class DataSearch extends SearchDelegate<String> {
                   },
                   leading: const Icon(Icons.access_time),
                   title: ATextTitleMedium(text: searchHistory![index].keyword),
+                  trailing: IconButton(
+                    icon: const Icon(Icons.edit),
+                    onPressed: () {
+                      query = searchHistory[index].keyword;
+                      showSuggestions(context);
+                    },
+                  ),
                 ),
               );
             } else {
@@ -159,6 +177,13 @@ class DataSearch extends SearchDelegate<String> {
                       },
                       leading: const Icon(Icons.access_time),
                       title: ATextTitleMedium(text: item.keyword),
+                      trailing: IconButton(
+                        icon: const Icon(Icons.edit),
+                        onPressed: () {
+                          query = searchHistory[index].keyword;
+                          showSuggestions(context);
+                        },
+                      ),
                     ),
                   );
                 },
@@ -168,6 +193,7 @@ class DataSearch extends SearchDelegate<String> {
         },
       );
     } else {
+      final volumeHelper = VolumeHelper();
       final suggestionList = wordsearch
           .where((element) =>
               element.toLowerCase().startsWith(query.toLowerCase()))
@@ -184,10 +210,10 @@ class DataSearch extends SearchDelegate<String> {
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) => SearchPages(
-                      title: query,
-                      isM: isM,
-                      online: online,
-                    ),
+                        title: query,
+                        isM: isM,
+                        online: online,
+                        volumeHelper: volumeHelper.showVolume),
                   ),
                 );
               });
@@ -195,6 +221,13 @@ class DataSearch extends SearchDelegate<String> {
           },
           leading: const Icon(Icons.access_time),
           title: ATextTitleMedium(text: suggestionList[index]),
+          trailing: IconButton(
+            icon: const Icon(Icons.edit),
+            onPressed: () {
+              query = suggestionList[index];
+              showSuggestions(context);
+            },
+          ),
         ),
       );
     }

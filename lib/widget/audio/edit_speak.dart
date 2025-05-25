@@ -178,8 +178,8 @@ class _EditSpeakScreenState extends State<EditSpeakScreen> {
                     ElevatedButton(
                       style: ButtonStyle(
                         backgroundColor:
-                            MaterialStateProperty.all<Color>(Colors.grey),
-                        side: MaterialStateProperty.all<BorderSide>(
+                            WidgetStateProperty.all<Color>(Colors.grey),
+                        side: WidgetStateProperty.all<BorderSide>(
                             BorderSide.none),
                       ),
                       onPressed: () async {
@@ -204,8 +204,8 @@ class _EditSpeakScreenState extends State<EditSpeakScreen> {
                     ElevatedButton(
                       style: ButtonStyle(
                         backgroundColor:
-                            MaterialStateProperty.all<Color>(Colors.red),
-                        side: MaterialStateProperty.all<BorderSide>(
+                            WidgetStateProperty.all<Color>(Colors.red),
+                        side: WidgetStateProperty.all<BorderSide>(
                             BorderSide.none),
                       ),
                       onPressed: () async {
@@ -261,8 +261,8 @@ class _EditSpeakScreenState extends State<EditSpeakScreen> {
                     ElevatedButton(
                       style: ButtonStyle(
                         backgroundColor:
-                            MaterialStateProperty.all<Color>(Colors.red),
-                        side: MaterialStateProperty.all<BorderSide>(
+                            WidgetStateProperty.all<Color>(Colors.red),
+                        side: WidgetStateProperty.all<BorderSide>(
                             BorderSide.none),
                       ),
                       onPressed: () {

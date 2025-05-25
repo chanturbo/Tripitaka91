@@ -9,7 +9,11 @@ import 'package:tripitaka91/widget/my_home_tablet.dart';
 
 class MyHomePage extends StatefulWidget {
   final bool online;
-  const MyHomePage({super.key, required this.online});
+
+  const MyHomePage({
+    super.key,
+    required this.online,
+  });
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
