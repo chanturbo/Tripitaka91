@@ -1735,7 +1735,7 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
               IconButton(
                   onPressed: () {
                     setState(() {
-                      _fontSize < 15 ? _fontSize = 15 : _fontSize -= 5;
+                      _fontSize < 15 ? _fontSize = 15 : _fontSize -= 2;
                       _saveFontSize();
                     });
                   },
@@ -1744,7 +1744,7 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
               IconButton(
                 onPressed: () {
                   setState(() {
-                    _fontSize > 60 ? _fontSize = 60 : _fontSize += 5;
+                    _fontSize > 60 ? _fontSize = 60 : _fontSize += 2;
                     _saveFontSize();
                   });
                 },
