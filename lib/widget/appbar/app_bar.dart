@@ -95,6 +95,18 @@ class _AppBarCustomState extends State<AppBarCustom> {
               height: 35,
             ),
             const Spacer(),
+            // valueSpeech == 0
+            //     ? const Icon(Icons.app_registration, color: Colors.white)
+            //     : widget.isDesktop == false && widget.isTablet == false
+            //         ? const SizedBox.shrink()
+            //         : const Icon(Icons.app_registration, color: Colors.white),
+            // valueSpeech == 0
+            //     ? const SizedBox(width: 8)
+            //     : widget.isDesktop == false &&
+            //             widget.isTablet == false
+            //         ? const SizedBox.shrink()
+            //         : const SizedBox(width: 8),
+            const SizedBox(width: 8),
             widget.online
                 ? const SizedBox.shrink()
                 : InkWell(
@@ -253,20 +265,20 @@ class _AppBarCustomState extends State<AppBarCustom> {
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          valueSpeech == 0
-                              ? const Icon(Icons.app_registration,
-                                  color: Colors.white)
-                              : widget.isDesktop == false &&
-                                      widget.isTablet == false
-                                  ? const SizedBox.shrink()
-                                  : const Icon(Icons.app_registration,
-                                      color: Colors.white),
-                          valueSpeech == 0
-                              ? const SizedBox(width: 8)
-                              : widget.isDesktop == false &&
-                                      widget.isTablet == false
-                                  ? const SizedBox.shrink()
-                                  : const SizedBox(width: 8),
+                          // valueSpeech == 0
+                          //     ? const Icon(Icons.app_registration,
+                          //         color: Colors.white)
+                          //     : widget.isDesktop == false &&
+                          //             widget.isTablet == false
+                          //         ? const SizedBox.shrink()
+                          //         : const Icon(Icons.app_registration,
+                          //             color: Colors.white),
+                          // valueSpeech == 0
+                          //     ? const SizedBox(width: 8)
+                          //     : widget.isDesktop == false &&
+                          //             widget.isTablet == false
+                          //         ? const SizedBox.shrink()
+                          //         : const SizedBox(width: 8),
                           ATextDiskplayMedium(
                             text: valueSpeech == 0
                                 ? widget.isDesktop == false &&
@@ -281,7 +293,7 @@ class _AppBarCustomState extends State<AppBarCustom> {
                                     ? "ปิด BETA"
                                     : widget.isDesktop == false &&
                                             widget.isTablet == true
-                                        ? "เปิด BETA"
+                                        ? "ปิด BETA"
                                         : "ปิดเวอร์ชั่น BETA",
                           ),
                         ],
