@@ -427,6 +427,8 @@ class _BookShowTitleState extends State<BookShowTitle> {
                   floating: false,
                   pinned: true,
                   flexibleSpace: FlexibleSpaceBar(
+                    titlePadding: const EdgeInsets.only(
+                        left: 72.0, bottom: 16.0), // ปรับซ้ายให้พ้นลูกศร
                     title: ATextTitleMediumColor(
                       text: 'เล่ม $bookid $bookTitleTri91',
                       color: TColors.white,
@@ -996,9 +998,8 @@ class _BookShowTitleState extends State<BookShowTitle> {
                           ? const SizedBox.shrink()
                           : TextButton(
                               style: ButtonStyle(
-                                backgroundColor:
-                                    WidgetStateProperty.all<Color>(
-                                        Colors.orange),
+                                backgroundColor: WidgetStateProperty.all<Color>(
+                                    Colors.orange),
                               ),
                               onPressed: () {
                                 Navigator.push(

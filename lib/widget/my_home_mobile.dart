@@ -1,8 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:tripitaka91/utils/auth/authentication_service.dart';
 import 'package:tripitaka91/utils/db_helper/db_helper.dart';
+import 'package:tripitaka91/utils/theme/theme_provider.dart';
 import 'package:tripitaka91/widget/appbar/app_bar.dart';
 import 'package:tripitaka91/utils/api_connect/remote_service.dart';
 import 'package:tripitaka91/utils/constants/colors.dart';
@@ -96,26 +98,26 @@ class _MyHomeMobileState extends State<MyHomeMobile> {
     }
   }
 
-  Future<void> _checkLoginStatus() async {
-    isLoggedIn = await _authService.checkLoginStatus();
-
-    if (isLoggedIn) {
-      // ignore: use_build_context_synchronously
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => const MemberTabShow(indexShow: 0)),
-      );
-    } else {
-      // ignore: use_build_context_synchronously
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const LoginPage(),
-        ),
-      );
-    }
-  }
+  // Future<void> _checkLoginStatus() async {
+  //   isLoggedIn = await _authService.checkLoginStatus();
+  //   if (!mounted) return;
+  //   if (isLoggedIn) {
+  //     // ignore: use_build_context_synchronously
+  //     Navigator.push(
+  //       context,
+  //       MaterialPageRoute(
+  //           builder: (context) => const MemberTabShow(indexShow: 0)),
+  //     );
+  //   } else {
+  //     // ignore: use_build_context_synchronously
+  //     Navigator.push(
+  //       context,
+  //       MaterialPageRoute(
+  //         builder: (context) => const LoginPage(),
+  //       ),
+  //     );
+  //   }
+  // }
 
   void _checkArguments() {
     final uri = Uri.base;
@@ -200,10 +202,24 @@ class _MyHomeMobileState extends State<MyHomeMobile> {
           online: widget.online,
         ),
         actions: [
-          IconButton(
+          /*IconButton(
             icon: const Icon(Icons.person),
             color: Colors.white,
             onPressed: _checkLoginStatus,
+          ),*/
+          IconButton(
+            icon: Icon(
+              context.watch<ThemeProvider>().isGrayscale
+                  ? Icons.visibility_off
+                  : Icons.visibility,
+            ),
+            color: Colors.white,
+            tooltip: context.watch<ThemeProvider>().isGrayscale
+                ? 'ปิดโหมดขาว-ดำ'
+                : 'เปิดโหมดขาว-ดำ',
+            onPressed: () {
+              context.read<ThemeProvider>().toggleGrayscale();
+            },
           ),
         ],
       ),

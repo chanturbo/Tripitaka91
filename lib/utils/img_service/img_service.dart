@@ -10,10 +10,12 @@ import 'package:tripitaka91/utils/constants/api_constants.dart';
 // import 'dart:html' as html; // ไม่ควรใช้ในแพลตฟอร์มอื่นนอกจากเว็บ
 
 class ImageCaptureService {
-  Future<void> captureAndSharePng(Uint8List capturedImage, String bookid,
-      String pageid, String lineid) async {
+  Future<void> captureAndSharePng(Uint8List capturedImage, String title,
+      String bookid, String pageid, String lineid) async {
     try {
       String link = '$tURLmain$bookid-$pageid-$lineid.htm';
+      String replaceTitle = '$bookid/$pageid/$lineid';
+      title = title.replaceAll(replaceTitle, '');
 
       // ตรวจสอบว่าเป็น iPhone หรือ iPad หรือไม่
       // final userAgent = html.window.navigator.userAgent;
@@ -46,7 +48,8 @@ class ImageCaptureService {
 
       // แชร์ไฟล์รูปภาพ
       await Share.shareXFiles([XFile(imgFile.path)],
-          text: 'อ่านเนื้อความเต็ม $link');
+          text:
+              '$title เล่ม $bookid หน้า $pageid บรรทัด $lineid อ่านรายละเอียด -> $link');
       // }
     } catch (e) {
       // คุณสามารถจัดการข้อผิดพลาดได้ตามต้องการ

@@ -95,6 +95,17 @@ class _AppBarCustomState extends State<AppBarCustom> {
               height: 35,
             ),
             const Spacer(),
+            // valueSpeech == 0
+            //     ? const Icon(Icons.app_registration, color: Colors.white)
+            //     : widget.isDesktop == false && widget.isTablet == false
+            //         ? const SizedBox.shrink()
+            //         : const Icon(Icons.app_registration, color: Colors.white),
+            // valueSpeech == 0
+            //     ? const SizedBox(width: 8)
+            //     : widget.isDesktop == false && widget.isTablet == false
+            //         ? const SizedBox.shrink()
+            //         : const SizedBox(width: 8),
+            const SizedBox(width: 8),
             widget.online
                 ? const SizedBox.shrink()
                 : InkWell(
@@ -118,7 +129,7 @@ class _AppBarCustomState extends State<AppBarCustom> {
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
                                         const Text(
-                                          '     นี่คือเวอร์ชั่น Beta ในโหมดการอ่านออกเสียงหัวข้อธรรมและพระไตรปิฎก โดยใช้โปรแกรมอัตโนมัติในการอ่าน ซึ่งอาจทำให้การอ่านออกเสียงยังไม่ถูกต้อง ครบถ้วน สมบูรณ์ ดังนั้น ผู้ใช้งานควรใช้วิจารณญาณในการรับฟัง\n\nเลือกเสียงอ่าน',
+                                          '     นี่คือเวอร์ชั่น ONLINE ในโหมดการอ่านออกเสียงหัวข้อธรรมและพระไตรปิฎก โดยใช้โปรแกรมอัตโนมัติในการอ่าน ซึ่งอาจทำให้การอ่านออกเสียงยังไม่ถูกต้อง ครบถ้วน สมบูรณ์ ดังนั้น ผู้ใช้งานควรใช้วิจารณญาณในการรับฟัง\n\nเลือกเสียงอ่าน',
                                           textAlign: TextAlign.left,
                                         ),
                                         const SizedBox(height: 5),
@@ -147,14 +158,14 @@ class _AppBarCustomState extends State<AppBarCustom> {
                                           controller: textController,
                                           decoration: const InputDecoration(
                                             labelText:
-                                                'พิมพ์ "BETA" เพื่อดำเนินการต่อ',
+                                                'พิมพ์ "ONLINE" เพื่อดำเนินการต่อ',
                                             border: OutlineInputBorder(),
                                           ),
                                           onChanged: (value) {
                                             setState(() {
                                               isInputValid =
                                                   value.trim().toUpperCase() ==
-                                                      "BETA";
+                                                      "ONLINE";
                                             });
                                           },
                                         ),
@@ -187,7 +198,7 @@ class _AppBarCustomState extends State<AppBarCustom> {
                                                 (route) => false,
                                               );
                                             }
-                                          : null, // ปิดใช้งานปุ่มถ้ายังไม่ได้ป้อน "BETA"
+                                          : null, // ปิดใช้งานปุ่มถ้ายังไม่ได้ป้อน "ONLINE"
                                       style: ElevatedButton.styleFrom(
                                         backgroundColor: isInputValid
                                             ? Colors.red
@@ -208,9 +219,9 @@ class _AppBarCustomState extends State<AppBarCustom> {
                           context: context,
                           builder: (BuildContext context) {
                             return AlertDialog(
-                              title: const Text('ยืนยันการปิดเวอร์ชั่น BETA'),
+                              title: const Text('ยืนยันการปิดเวอร์ชั่น ONLINE'),
                               content: const Text(
-                                  'คุณต้องการปิดเวอร์ชั่น BETA ใช่หรือไม่?'),
+                                  'คุณต้องการปิดเวอร์ชั่น ONLINE ใช่หรือไม่?'),
                               actions: [
                                 TextButton(
                                   onPressed: () {
@@ -221,7 +232,7 @@ class _AppBarCustomState extends State<AppBarCustom> {
                                 ElevatedButton(
                                   onPressed: () {
                                     Navigator.pop(context); // ปิด Dialog
-                                    _toggleValueSpeech(); // เรียกใช้ Logic ปิดเวอร์ชั่น BETA
+                                    _toggleValueSpeech(); // เรียกใช้ Logic ปิดเวอร์ชั่น ONLINE
                                     Navigator.pushAndRemoveUntil(
                                       context,
                                       MaterialPageRoute(
@@ -253,36 +264,22 @@ class _AppBarCustomState extends State<AppBarCustom> {
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          valueSpeech == 0
-                              ? const Icon(Icons.app_registration,
-                                  color: Colors.white)
-                              : widget.isDesktop == false &&
-                                      widget.isTablet == false
-                                  ? const SizedBox.shrink()
-                                  : const Icon(Icons.app_registration,
-                                      color: Colors.white),
-                          valueSpeech == 0
-                              ? const SizedBox(width: 8)
-                              : widget.isDesktop == false &&
-                                      widget.isTablet == false
-                                  ? const SizedBox.shrink()
-                                  : const SizedBox(width: 8),
                           ATextDiskplayMedium(
                             text: valueSpeech == 0
                                 ? widget.isDesktop == false &&
                                         widget.isTablet == false
-                                    ? "BETA"
+                                    ? "ONLINE"
                                     : widget.isDesktop == false &&
                                             widget.isTablet == true
-                                        ? "เปิด BETA"
-                                        : "เปิดเวอร์ชั่น BETA"
+                                        ? "เปิด ONLINE"
+                                        : "เปิดเวอร์ชั่น ONLINE"
                                 : widget.isDesktop == false &&
                                         widget.isTablet == false
-                                    ? "ปิด BETA"
+                                    ? "ปิด ONLINE"
                                     : widget.isDesktop == false &&
                                             widget.isTablet == true
-                                        ? "เปิด BETA"
-                                        : "ปิดเวอร์ชั่น BETA",
+                                        ? "ปิด ONLINE"
+                                        : "ปิดเวอร์ชั่น ONLINE",
                           ),
                         ],
                       ),

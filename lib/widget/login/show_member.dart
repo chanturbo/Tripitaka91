@@ -241,7 +241,7 @@ class _MemberDisplayState extends State<MemberDisplay> {
                 TextButton(
                   style: ButtonStyle(
                     backgroundColor:
-                        MaterialStateProperty.all<Color>(Colors.orange),
+                        WidgetStateProperty.all<Color>(Colors.orange),
                   ),
                   onPressed: () {
                     showDialog(
@@ -277,7 +277,7 @@ class _MemberDisplayState extends State<MemberDisplay> {
                 TextButton(
                   style: ButtonStyle(
                     backgroundColor:
-                        MaterialStateProperty.all<Color>(Colors.orange),
+                        WidgetStateProperty.all<Color>(Colors.orange),
                   ),
                   onPressed: () {
                     showDialog(
@@ -302,7 +302,7 @@ class _MemberDisplayState extends State<MemberDisplay> {
                     ? TextButton(
                         style: ButtonStyle(
                           backgroundColor:
-                              MaterialStateProperty.all<Color>(Colors.orange),
+                              WidgetStateProperty.all<Color>(Colors.orange),
                         ),
                         onPressed: () {
                           Navigator.push(
@@ -327,7 +327,7 @@ class _MemberDisplayState extends State<MemberDisplay> {
                     ? TextButton(
                         style: ButtonStyle(
                           backgroundColor:
-                              MaterialStateProperty.all<Color>(Colors.orange),
+                              WidgetStateProperty.all<Color>(Colors.orange),
                         ),
                         onPressed: () {
                           Navigator.push(
@@ -352,7 +352,7 @@ class _MemberDisplayState extends State<MemberDisplay> {
                     ? TextButton(
                         style: ButtonStyle(
                           backgroundColor:
-                              MaterialStateProperty.all<Color>(Colors.orange),
+                              WidgetStateProperty.all<Color>(Colors.orange),
                         ),
                         onPressed: () {
                           Navigator.push(
@@ -377,7 +377,7 @@ class _MemberDisplayState extends State<MemberDisplay> {
                     ? TextButton(
                         style: ButtonStyle(
                           backgroundColor:
-                              MaterialStateProperty.all<Color>(Colors.orange),
+                              WidgetStateProperty.all<Color>(Colors.orange),
                         ),
                         onPressed: () {
                           Navigator.push(
@@ -399,7 +399,7 @@ class _MemberDisplayState extends State<MemberDisplay> {
                     ? TextButton(
                         style: ButtonStyle(
                           backgroundColor:
-                              MaterialStateProperty.all<Color>(Colors.orange),
+                              WidgetStateProperty.all<Color>(Colors.orange),
                         ),
                         onPressed: () {
                           Navigator.push(
@@ -420,7 +420,7 @@ class _MemberDisplayState extends State<MemberDisplay> {
                   child: TextButton(
                     style: ButtonStyle(
                       backgroundColor:
-                          MaterialStateProperty.all<Color>(Colors.red),
+                          WidgetStateProperty.all<Color>(Colors.red),
                     ),
                     onPressed: () async {
                       await _logOut();

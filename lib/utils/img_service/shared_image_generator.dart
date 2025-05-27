@@ -142,7 +142,7 @@ class SharedImageGenerator {
 
       // เรียกใช้ฟังก์ชันแชร์จาก ImageCaptureService
       await imageCaptureService.captureAndSharePng(
-          capturedImage, bookid, pageid, lineid);
+          capturedImage, bookTitle, bookid, pageid, lineid);
     } catch (e) {
       // คุณสามารถจัดการข้อผิดพลาดได้ตามต้องการ
       // ignore: avoid_print

@@ -1560,7 +1560,7 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
                           child: TextButton(
                             style: ButtonStyle(
                               backgroundColor:
-                                  MaterialStateProperty.all<Color>(Colors.blue),
+                                  WidgetStateProperty.all<Color>(Colors.blue),
                             ),
                             child: const ATextDiskplaySmall(
                                 text: 'สารบัญหัวข้อธรรม'),
@@ -1577,7 +1577,7 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
                       child: TextButton(
                         style: ButtonStyle(
                           backgroundColor:
-                              MaterialStateProperty.all<Color>(Colors.blue),
+                              WidgetStateProperty.all<Color>(Colors.blue),
                         ),
                         child: const ATextDiskplaySmall(text: 'พจนานุกรม'),
                         onPressed: () async {
@@ -1726,7 +1726,7 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
               IconButton(
                   onPressed: () {
                     setState(() {
-                      _fontSize < 15 ? _fontSize = 15 : _fontSize -= 5;
+                      _fontSize < 15 ? _fontSize = 15 : _fontSize -= 2;
                       _saveFontSize();
                     });
                   },
@@ -1735,7 +1735,7 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
               IconButton(
                 onPressed: () {
                   setState(() {
-                    _fontSize > 60 ? _fontSize = 60 : _fontSize += 5;
+                    _fontSize > 60 ? _fontSize = 60 : _fontSize += 2;
                     _saveFontSize();
                   });
                 },
