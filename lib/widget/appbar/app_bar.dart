@@ -96,6 +96,7 @@ class _AppBarCustomState extends State<AppBarCustom> {
               height: 35,
             ),
             const Spacer(),
+            const SizedBox(width: 8),
             GestureDetector(
               onTap: () {
                 showSearch(
