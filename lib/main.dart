@@ -1,24 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart'; // ✅ เพิ่มตรงนี้
+import 'package:provider/provider.dart';
 import 'package:tripitaka91/utils/theme/theme.dart';
+import 'package:tripitaka91/utils/theme/theme_provider.dart';
 import 'package:tripitaka91/widget/my_home_page.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => ThemeProvider(),
+      child: const MyApp(),
+    ),
+  );
 }
 
-class MyApp extends StatefulWidget {
+class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  @override
-  State<MyApp> createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-  bool _isGrayscale = false;
-  bool _isLoading = true; // ✅ ใช้โหลด SharedPreferences
-
-  final grayscaleFilter = const ColorFilter.matrix(<double>[
+  static const grayscaleFilter = ColorFilter.matrix(<double>[
     0.2126,
     0.7152,
     0.0722,
@@ -42,41 +40,11 @@ class _MyAppState extends State<MyApp> {
   ]);
 
   @override
-  void initState() {
-    super.initState();
-    _loadGrayscaleSetting();
-  }
-
-  Future<void> _loadGrayscaleSetting() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _isGrayscale =
-          prefs.getBool('isGrayscale') ?? false; // default: ปิดโหมดขาวดำ
-      _isLoading = false;
-    });
-  }
-
-  Future<void> _toggleGrayscale() async {
-    setState(() {
-      _isGrayscale = !_isGrayscale;
-    });
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('isGrayscale', _isGrayscale);
-  }
-
-  @override
   Widget build(BuildContext context) {
-    if (_isLoading) {
-      // ✅ รอโหลดค่า SharedPreferences ก่อน
-      return const MaterialApp(
-        home: Scaffold(
-          body: Center(child: CircularProgressIndicator()),
-        ),
-      );
-    }
+    final isGrayscale = context.watch<ThemeProvider>().isGrayscale;
 
     return ColorFiltered(
-      colorFilter: _isGrayscale
+      colorFilter: isGrayscale
           ? grayscaleFilter
           : const ColorFilter.mode(Colors.transparent, BlendMode.dst),
       child: MaterialApp(
@@ -85,10 +53,7 @@ class _MyAppState extends State<MyApp> {
         theme: TAppTheme.lightTheme,
         darkTheme: TAppTheme.darkTheme,
         debugShowCheckedModeBanner: false,
-        home: MyHomePage(
-          onToggleGrayscale: _toggleGrayscale,
-          isGrayscale: _isGrayscale,
-        ),
+        home: const MyHomePage(),
       ),
     );
   }

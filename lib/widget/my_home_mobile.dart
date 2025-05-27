@@ -1,7 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:tripitaka91/utils/auth/authentication_service.dart';
+import 'package:tripitaka91/utils/theme/theme_provider.dart';
 import 'package:tripitaka91/widget/appbar/app_bar.dart';
 import 'package:tripitaka91/utils/api_connect/remote_service.dart';
 import 'package:tripitaka91/utils/constants/colors.dart';
@@ -26,13 +28,9 @@ class MyHomeMobile extends StatefulWidget {
   const MyHomeMobile({
     super.key,
     required this.title,
-    required this.onToggleGrayscale,
-    required this.isGrayscale,
   });
 
   final String title;
-  final VoidCallback onToggleGrayscale;
-  final bool isGrayscale;
 
   @override
   State<MyHomeMobile> createState() => _MyHomeMobileState();
@@ -201,11 +199,17 @@ class _MyHomeMobileState extends State<MyHomeMobile> {
           ),
           IconButton(
             icon: Icon(
-              widget.isGrayscale ? Icons.visibility_off : Icons.visibility,
+              context.watch<ThemeProvider>().isGrayscale
+                  ? Icons.visibility_off
+                  : Icons.visibility,
             ),
-            color: Colors.white, // ใส่สีขาวตรงนี้
-            onPressed: widget.onToggleGrayscale,
-            tooltip: widget.isGrayscale ? 'ปิดโหมดขาว-ดำ' : 'เปิดโหมดขาว-ดำ',
+            tooltip: context.watch<ThemeProvider>().isGrayscale
+                ? 'ปิดโหมดขาว-ดำ'
+                : 'เปิดโหมดขาว-ดำ',
+            onPressed: () {
+              context.read<ThemeProvider>().toggleGrayscale();
+            },
+            color: Colors.white,
           ),
         ],
       ),
