@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tripitaka91/main.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:tripitaka91/utils/constants/colors.dart';
 import 'package:tripitaka91/utils/constants/sizes.dart';
 import 'package:tripitaka91/utils/models/users.dart';
@@ -187,17 +187,18 @@ class _AppBarCustomState extends State<AppBarCustom> {
                                               isMaleVoice
                                                   ? _toggleValueBetaSpeech(0)
                                                   : _toggleValueBetaSpeech(1);
-                                              Navigator.pop(
-                                                  context); // ปิด Popup
-                                              // ignore: use_build_context_synchronously
-                                              Navigator.pushAndRemoveUntil(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      const MyApp(),
-                                                ),
-                                                (route) => false,
-                                              );
+                                              Phoenix.rebirth(context);
+                                              // Navigator.pop(
+                                              //     context); // ปิด Popup
+                                              // // ignore: use_build_context_synchronously
+                                              // Navigator.pushAndRemoveUntil(
+                                              //   context,
+                                              //   MaterialPageRoute(
+                                              //     builder: (context) =>
+                                              //         const MyApp(),
+                                              //   ),
+                                              //   (route) => false,
+                                              // );
                                             }
                                           : null, // ปิดใช้งานปุ่มถ้ายังไม่ได้ป้อน "BETA"
                                       style: ElevatedButton.styleFrom(
@@ -234,13 +235,14 @@ class _AppBarCustomState extends State<AppBarCustom> {
                                   onPressed: () {
                                     Navigator.pop(context); // ปิด Dialog
                                     _toggleValueSpeech(); // เรียกใช้ Logic ปิดเวอร์ชั่น BETA
-                                    Navigator.pushAndRemoveUntil(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => const MyApp(),
-                                      ),
-                                      (route) => false,
-                                    );
+                                    Phoenix.rebirth(context);
+                                    // Navigator.pushAndRemoveUntil(
+                                    //   context,
+                                    //   MaterialPageRoute(
+                                    //     builder: (context) => const MyApp(),
+                                    //   ),
+                                    //   (route) => false,
+                                    // );
                                   },
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: Colors.red,

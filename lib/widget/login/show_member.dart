@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:tripitaka91/main.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:tripitaka91/utils/constants/api_constants.dart';
 import 'package:tripitaka91/utils/format_date/format_date.dart';
 import 'package:tripitaka91/utils/models/users.dart';
@@ -259,12 +259,13 @@ class _MemberDisplayState extends State<MemberDisplay> {
 
                         // ปิดหน้าจอหลังจากทำงานเสร็จ
                         // ignore: use_build_context_synchronously
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  const MyApp()), // แทนที่หน้าเดิม
-                        );
+                        Phoenix.rebirth(context);
+                        // Navigator.pushReplacement(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //       builder: (context) =>
+                        //           const MyApp()), // แทนที่หน้าเดิม
+                        // );
                       }
                     });
                   },
@@ -426,13 +427,15 @@ class _MemberDisplayState extends State<MemberDisplay> {
                       await _logOut();
                       clearUsersList();
                       // ignore: use_build_context_synchronously
-                      Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const MyApp(),
-                        ),
-                        (route) => false,
-                      );
+                      Phoenix.rebirth(context);
+                      // Navigator.pushAndRemoveUntil(
+                      //   context,
+                      //   MaterialPageRoute(
+                      //     builder: (context) => const MyApp(),
+                      //   ),
+                      //   (route) => false,
+                      // );
+
                       // Navigator.pushReplacement(
                       //   context,
                       //   MaterialPageRoute(
