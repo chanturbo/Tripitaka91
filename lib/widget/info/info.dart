@@ -9,8 +9,8 @@ class TripitakaInfoWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const ATextDiskplayLarge(
-            text: 'เกี่ยวกับแอพพลิเคชั่น TRIPITAKA91.COM'),
+        title:
+            const ATextDiskplayLarge(text: 'เกี่ยวกับแอปพลิเคชัน TRIPITAKA91'),
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -21,7 +21,7 @@ class TripitakaInfoWidget extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const ATextTitleLarge(
-                  text: 'เกี่ยวกับแอพพลิเคชั่น TRIPITAKA91.COM',
+                  text: 'เกี่ยวกับแอปพลิเคชัน TRIPITAKA91',
                 ),
                 const SizedBox(height: 8.0),
                 const ATextTitleMedium(
@@ -65,7 +65,7 @@ class TripitakaInfoWidget extends StatelessWidget {
                 const SizedBox(height: 16.0),
                 const ATextTitleMedium(
                   text:
-                      'หมายเหตุ : แอพพลิเคชั่นแห่งนี้จัดทำขึ้นมีวัตถุประสงค์เพื่อเปิดเผยพระธรรมวินัย ไม่ได้มุ่งหมายทำการค้าแต่อย่างใด โดยนำหัวข้อธรรมที่ทางคณะวัดสามแยกได้จัดทำขึ้นมาดำเนินการ และหากมีรูปภาพหรือข้อความส่วนใดที่ละเมิดลิขสิทธิ์ กรุณาแจ้งที่ อีเมล์ chanturbo@hotmail.com เพื่อจะดำเนินการลบข้อมูลออกจากแอพพลิเคชั่นต่อไป',
+                      'หมายเหตุ : แอปพลิเคชันแห่งนี้จัดทำขึ้นมีวัตถุประสงค์เพื่อเปิดเผยพระธรรมวินัย ไม่ได้มุ่งหมายทำการค้าแต่อย่างใด โดยนำหัวข้อธรรมที่ทางคณะวัดสามแยกได้จัดทำขึ้นมาดำเนินการ และหากมีรูปภาพหรือข้อความส่วนใดที่ละเมิดลิขสิทธิ์ กรุณาแจ้งที่ อีเมล์ chanturbo@hotmail.com เพื่อจะดำเนินการลบข้อมูลออกจากแอปพลิเคชันต่อไป',
                 ),
                 const SizedBox(height: 16.0),
                 SizedBox(
