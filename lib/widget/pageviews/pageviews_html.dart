@@ -108,6 +108,9 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
   final volumeHelper = VolumeHelper();
   double _fontSize = 26;
 
+  bool _showLeftPanel = true;
+  double scrollBookSearchIndexs1 = -1;
+
   @override
   void initState() {
     super.initState();
@@ -117,12 +120,38 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
     getDataTitle();
     _getLogEdit();
     getBookTri91All();
+    _loadShowLeftPanel();
 
     pageController =
         PageController(initialPage: widget.triPageid, viewportFraction: 1.0);
     textTitleReplace = TextTitleReplace();
     uniqueItems = [];
     chkTimer = true;
+  }
+
+  Future<void> _loadShowLeftPanel() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _showLeftPanel = prefs.getBool('showLeftPanel') ?? true;
+    });
+  }
+
+  Future<void> _saveShowLeftPanel() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('showLeftPanel', _showLeftPanel);
+  }
+
+  void _scrollToSelectedIndex1() {
+    Future.delayed(const Duration(milliseconds: 200), () {
+      if (_scrollControllerListTitle.hasClients &&
+          scrollBookSearchIndexs1 != -1) {
+        _scrollControllerListTitle.animateTo(
+          scrollBookSearchIndexs1,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+        );
+      }
+    });
   }
 
   void _saveFontSize() async {
@@ -927,49 +956,92 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
   Widget buildBodyTablet() {
     return Row(
       children: [
-        (numRecord == 0)
-            ? Container(
-                alignment: Alignment.topCenter,
-                width: 250.0,
-                color: Colors.white,
-                child: Text(txtShowEmpty),
-              )
-            : Container(
-                width: 250.0,
-                color: Colors.white,
-                child: ListView.builder(
-                  controller: _scrollControllerListTitle,
-                  itemCount: numRecord,
-                  itemBuilder: (context, index) {
-                    return titleCardSub(
-                      randTitle.isEmpty
-                          ? triTitle
-                          : randTitle[index].tripitaka91Title,
-                      randTitle.isEmpty
-                          ? bookBlue
-                          : randTitle[index].tripitaka91BookBlue,
-                      randTitle.isEmpty
-                          ? bookRed
-                          : randTitle[index].tripitaka91BookRed,
-                      randTitle.isEmpty
-                          ? bookid.toString()
-                          : randTitle[index].tripitaka91Book.toString(),
-                      randTitle.isEmpty
-                          ? pageids
-                          : randTitle[index].tripitaka91Page,
-                      randTitle.isEmpty
-                          ? bookLine.toString()
-                          : randTitle[index].tripitaka91Line.toString(),
-                      randTitle.isEmpty
-                          ? "FALSE"
-                          : randTitle[index].tripitaka91Mark,
-                      randTitle.isEmpty ? 0 : randTitle[index].tripitaka91Code,
-                      randTitle.isEmpty ? 0 : randTitle[index].tripitaka91No,
-                      false,
-                    );
+        if (_showLeftPanel)
+          (numRecord == 0)
+              ? Container(
+                  alignment: Alignment.topCenter,
+                  width: 250.0,
+                  color: Colors.white,
+                  child: Text(txtShowEmpty),
+                )
+              : Container(
+                  width: 250.0,
+                  color: Colors.white,
+                  child: ListView.builder(
+                    controller: _scrollControllerListTitle,
+                    itemCount: numRecord,
+                    itemBuilder: (context, index) {
+                      return titleCardSub(
+                        randTitle.isEmpty
+                            ? triTitle
+                            : randTitle[index].tripitaka91Title,
+                        randTitle.isEmpty
+                            ? bookBlue
+                            : randTitle[index].tripitaka91BookBlue,
+                        randTitle.isEmpty
+                            ? bookRed
+                            : randTitle[index].tripitaka91BookRed,
+                        randTitle.isEmpty
+                            ? bookid.toString()
+                            : randTitle[index].tripitaka91Book.toString(),
+                        randTitle.isEmpty
+                            ? pageids
+                            : randTitle[index].tripitaka91Page,
+                        randTitle.isEmpty
+                            ? bookLine.toString()
+                            : randTitle[index].tripitaka91Line.toString(),
+                        randTitle.isEmpty
+                            ? "FALSE"
+                            : randTitle[index].tripitaka91Mark,
+                        randTitle.isEmpty
+                            ? 0
+                            : randTitle[index].tripitaka91Code,
+                        randTitle.isEmpty ? 0 : randTitle[index].tripitaka91No,
+                        false,
+                      );
+                    },
+                  ),
+                ),
+        // คั่นกลาง: ปุ่ม toggle + เส้น
+        Container(
+          width: 25,
+          color: Colors.grey[200],
+          child: Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 1,
+                  height: 100,
+                  color: Colors.grey,
+                ),
+                const SizedBox(height: 4),
+                IconButton(
+                  icon: Icon(
+                    _showLeftPanel
+                        ? Icons.arrow_back_ios
+                        : Icons.arrow_forward_ios,
+                    size: 18,
+                    color: Colors.grey,
+                  ),
+                  onPressed: () async {
+                    setState(() {
+                      _showLeftPanel = !_showLeftPanel;
+                    });
+                    await _saveShowLeftPanel();
+                    _scrollToSelectedIndex1();
                   },
                 ),
-              ),
+                const SizedBox(height: 4),
+                Container(
+                  width: 1,
+                  height: 100,
+                  color: Colors.grey,
+                ),
+              ],
+            ),
+          ),
+        ),
         pageview(false, true),
       ],
     );
@@ -978,49 +1050,92 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
   Widget buildBody() {
     return Row(
       children: [
-        (numRecord == 0)
-            ? Container(
-                alignment: Alignment.topCenter,
-                width: 350.0,
-                color: Colors.white,
-                child: Text(txtShowEmpty),
-              )
-            : Container(
-                width: 350.0,
-                color: Colors.white,
-                child: ListView.builder(
-                  controller: _scrollControllerListTitle,
-                  itemCount: numRecord,
-                  itemBuilder: (context, index) {
-                    return titleCardSub(
-                      randTitle.isEmpty
-                          ? triTitle
-                          : randTitle[index].tripitaka91Title,
-                      randTitle.isEmpty
-                          ? bookBlue
-                          : randTitle[index].tripitaka91BookBlue,
-                      randTitle.isEmpty
-                          ? bookRed
-                          : randTitle[index].tripitaka91BookRed,
-                      randTitle.isEmpty
-                          ? bookid.toString()
-                          : randTitle[index].tripitaka91Book.toString(),
-                      randTitle.isEmpty
-                          ? pageids
-                          : randTitle[index].tripitaka91Page,
-                      randTitle.isEmpty
-                          ? bookLine.toString()
-                          : randTitle[index].tripitaka91Line.toString(),
-                      randTitle.isEmpty
-                          ? "FALSE"
-                          : randTitle[index].tripitaka91Mark,
-                      randTitle.isEmpty ? 0 : randTitle[index].tripitaka91Code,
-                      randTitle.isEmpty ? 0 : randTitle[index].tripitaka91No,
-                      false,
-                    );
+        if (_showLeftPanel)
+          (numRecord == 0)
+              ? Container(
+                  alignment: Alignment.topCenter,
+                  width: 350.0,
+                  color: Colors.white,
+                  child: Text(txtShowEmpty),
+                )
+              : Container(
+                  width: 350.0,
+                  color: Colors.white,
+                  child: ListView.builder(
+                    controller: _scrollControllerListTitle,
+                    itemCount: numRecord,
+                    itemBuilder: (context, index) {
+                      return titleCardSub(
+                        randTitle.isEmpty
+                            ? triTitle
+                            : randTitle[index].tripitaka91Title,
+                        randTitle.isEmpty
+                            ? bookBlue
+                            : randTitle[index].tripitaka91BookBlue,
+                        randTitle.isEmpty
+                            ? bookRed
+                            : randTitle[index].tripitaka91BookRed,
+                        randTitle.isEmpty
+                            ? bookid.toString()
+                            : randTitle[index].tripitaka91Book.toString(),
+                        randTitle.isEmpty
+                            ? pageids
+                            : randTitle[index].tripitaka91Page,
+                        randTitle.isEmpty
+                            ? bookLine.toString()
+                            : randTitle[index].tripitaka91Line.toString(),
+                        randTitle.isEmpty
+                            ? "FALSE"
+                            : randTitle[index].tripitaka91Mark,
+                        randTitle.isEmpty
+                            ? 0
+                            : randTitle[index].tripitaka91Code,
+                        randTitle.isEmpty ? 0 : randTitle[index].tripitaka91No,
+                        false,
+                      );
+                    },
+                  ),
+                ),
+        // คั่นกลาง: ปุ่ม toggle + เส้น
+        Container(
+          width: 25,
+          color: Colors.grey[200],
+          child: Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 1,
+                  height: 100,
+                  color: Colors.grey,
+                ),
+                const SizedBox(height: 4),
+                IconButton(
+                  icon: Icon(
+                    _showLeftPanel
+                        ? Icons.arrow_back_ios
+                        : Icons.arrow_forward_ios,
+                    size: 18,
+                    color: Colors.grey,
+                  ),
+                  onPressed: () async {
+                    setState(() {
+                      _showLeftPanel = !_showLeftPanel;
+                    });
+                    await _saveShowLeftPanel();
+                    _scrollToSelectedIndex1();
                   },
                 ),
-              ),
+                const SizedBox(height: 4),
+                Container(
+                  width: 1,
+                  height: 100,
+                  color: Colors.grey,
+                ),
+              ],
+            ),
+          ),
+        ),
         pageview(false, false),
       ],
     );
@@ -1097,6 +1212,7 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
                   _currentSliderValue = pageId.toDouble();
                   triBookLineRead = tribookline;
                   chkTimer2 = true;
+                  scrollBookSearchIndexs1 = _scrollControllerListTitle.offset;
                 });
               },
               title: (mark == 'FALSE')
