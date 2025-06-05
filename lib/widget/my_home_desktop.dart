@@ -95,26 +95,26 @@ class _MyHomeDesktopState extends State<MyHomeDesktop> {
     }
   }
 
-  // Future<void> _checkLoginStatus() async {
-  //   isLoggedIn = await _authService.checkLoginStatus();
-  //   if (!mounted) return;
-  //   if (isLoggedIn) {
-  //     // ignore: use_build_context_synchronously
-  //     Navigator.push(
-  //       context,
-  //       MaterialPageRoute(
-  //           builder: (context) => const MemberTabShow(indexShow: 0)),
-  //     );
-  //   } else {
-  //     // ignore: use_build_context_synchronously
-  //     Navigator.push(
-  //       context,
-  //       MaterialPageRoute(
-  //         builder: (context) => const LoginPage(),
-  //       ),
-  //     );
-  //   }
-  // }
+  Future<void> _checkLoginStatus() async {
+    isLoggedIn = await _authService.checkLoginStatus();
+    if (!mounted) return;
+    if (isLoggedIn) {
+      // ignore: use_build_context_synchronously
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => const MemberTabShow(indexShow: 0)),
+      );
+    } else {
+      // ignore: use_build_context_synchronously
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const LoginPage(),
+        ),
+      );
+    }
+  }
 
   void _checkArguments() {
     final uri = Uri.base;
@@ -194,11 +194,11 @@ class _MyHomeDesktopState extends State<MyHomeDesktop> {
           online: widget.online,
         ),
         actions: [
-          /*IconButton(
+          IconButton(
             icon: const Icon(Icons.person),
             color: Colors.white,
             onPressed: _checkLoginStatus,
-          ),*/
+          ),
           IconButton(
             icon: Icon(
               context.watch<ThemeProvider>().isGrayscale

@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:tripitaka91/main.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:tripitaka91/utils/constants/api_constants.dart';
 import 'package:tripitaka91/utils/format_date/format_date.dart';
 import 'package:tripitaka91/utils/models/users.dart';
@@ -39,6 +39,126 @@ class _MemberDisplayState extends State<MemberDisplay> {
     valueCorrect.then((int value) {
       values = value;
     });
+  }
+
+  Future<bool> deleteUser(String username) async {
+    final response = await http.post(
+      Uri.parse(tURLdeleteUser),
+      body: {
+        'token': tSecretAPIKey,
+        'username': username,
+      },
+    );
+
+    if (response.statusCode == 200) {
+      var jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
+      return jsonResponse['success'] == true;
+    } else {
+      throw Exception('ลบไม่สำเร็จ: ${response.statusCode}');
+    }
+  }
+
+  void _confirmDelete(BuildContext context, String username) {
+    final TextEditingController textController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('ยืนยันการลบบัญชีผู้ใช้งาน'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text('คุณต้องการลบบัญชีผู้ใช้งาน "$username" ใช่หรือไม่?'),
+            const SizedBox(height: 16),
+            const Text(
+              'พิมพ์คำว่า "delete" เพื่อยืนยัน:',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            TextField(
+              controller: textController,
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('ยกเลิก'),
+          ),
+          TextButton(
+            onPressed: () async {
+              if (textController.text.trim().toLowerCase() == 'delete') {
+                Navigator.pop(ctx); // ปิด dialog
+                bool success = await deleteUser(username);
+                if (success) {
+                  // ignore: use_build_context_synchronously
+                  await showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: const Text('สำเร็จ'),
+                      content: const Text('ลบบัญชีผู้ใช้สำเร็จ'),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context); // ปิด AlertDialog
+                          },
+                          child: const Text('ตกลง'),
+                        ),
+                      ],
+                    ),
+                  );
+
+                  await _logOut();
+                  clearUsersList();
+
+                  // ปิดหน้าจอหลังจากทำงานเสร็จ
+                  // ignore: use_build_context_synchronously
+                  Phoenix.rebirth(context);
+                  /*Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const MyApp()), // แทนที่หน้าเดิม
+                  );*/
+                } else {
+                  // ignore: use_build_context_synchronously
+                  await showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: const Text('ผิดพลาด'),
+                      content: const Text('เกิดข้อผิดพลาดในการลบ'),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: const Text('ตกลง'),
+                        ),
+                      ],
+                    ),
+                  );
+                }
+              } else {
+                await showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: const Text('คำเตือน'),
+                    content: const Text('กรุณาพิมพ์คำว่า "delete" เพื่อยืนยัน'),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: const Text('ตกลง'),
+                      ),
+                    ],
+                  ),
+                );
+              }
+            },
+            child: const Text('ลบ', style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
+    );
   }
 
   Future<Users?> _getUser() async {
@@ -259,12 +379,13 @@ class _MemberDisplayState extends State<MemberDisplay> {
 
                         // ปิดหน้าจอหลังจากทำงานเสร็จ
                         // ignore: use_build_context_synchronously
-                        Navigator.pushReplacement(
+                        Phoenix.rebirth(context);
+                        /*Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
                               builder: (context) =>
                                   const MyApp()), // แทนที่หน้าเดิม
-                        );
+                        );*/
                       }
                     });
                   },
@@ -295,6 +416,27 @@ class _MemberDisplayState extends State<MemberDisplay> {
                     text: 'เปลี่ยนรหัสผ่าน',
                   ),
                 ),
+
+                const SizedBox(height: 10),
+                TextButton(
+                  style: ButtonStyle(
+                    backgroundColor: WidgetStateProperty.all<Color>(Colors.red),
+                  ),
+                  onPressed: () async {
+                    Users? users = await getUsersList();
+                    String tmpUser = 'guest';
+                    if (users != null) {
+                      tmpUser = users.username;
+                    }
+
+                    // ignore: use_build_context_synchronously
+                    _confirmDelete(context, tmpUser);
+                  },
+                  child: const ATextDiskplayMedium(
+                    text: 'ลบบัญชีผู้ใช้งาน',
+                  ),
+                ),
+
                 users.levelAccess == '1'
                     ? const SizedBox(height: 10)
                     : const SizedBox.shrink(),
@@ -426,13 +568,14 @@ class _MemberDisplayState extends State<MemberDisplay> {
                       await _logOut();
                       clearUsersList();
                       // ignore: use_build_context_synchronously
-                      Navigator.pushAndRemoveUntil(
+                      Phoenix.rebirth(context);
+                      /*Navigator.pushAndRemoveUntil(
                         context,
                         MaterialPageRoute(
                           builder: (context) => const MyApp(),
                         ),
                         (route) => false,
-                      );
+                      );*/
                       // Navigator.pushReplacement(
                       //   context,
                       //   MaterialPageRoute(
