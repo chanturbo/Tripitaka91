@@ -2165,7 +2165,7 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
                 }
 
                 String tmpLog =
-                    'คำที่น่าจะผิด: [$wordIncorrect] คำที่น่าจะถูก: [$wordCorrect] แจ้งโดย: $nameid$firestName $lastName\n';
+                    'คำที่น่าจะผิด: $wordIncorrect คำที่น่าจะถูก: $wordCorrect แจ้งโดย: $nameid$firestName $lastName\n';
                 logEdit = '$logEdit$tmpLog';
                 chkComfirm = log.bookConfirm;
                 chkSuscess = log.bookSuscess;
@@ -2175,18 +2175,18 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
             if (chkLogShow) {
               if (chkSuscess == 1) {
                 logEdit =
-                    '$logEdit \nหมายเหตุ: {มีการแก้ไขข้อมูลเรียบร้อยแล้ว}\nข้อความเดิม: $lineOld\nข้อความที่แก้ไข: $lineNew';
+                    '{$logEdit \nหมายเหตุ: มีการแก้ไขข้อมูลเรียบร้อยแล้ว\nข้อความเดิม: $lineOld\nข้อความที่แก้ไข: $lineNew}';
                 if (logEdit != '') {
                   logEdit = '<a href="$logEdit">[*]</a> ';
                 }
               } else if (chkSuscess == 0) {
                 if (chkComfirm == 0) {
-                  logEdit = '$logEdit \nหมายเหตุ: [ยังไม่มีการแก้ไข]';
+                  logEdit = '[$logEdit \nหมายเหตุ: ยังไม่มีการแก้ไข]';
                 } else {
                   lineOld = lineOld.replaceAll('"', '');
                   lineNew = lineNew.replaceAll('"', '');
                   logEdit =
-                      '$logEdit \nหมายเหตุ: [อยู่ในกระบวนการแก้ไขข้อมูล]\nข้อความเดิม: $lineOld\nข้อความที่แก้ไข: $lineNew';
+                      '[$logEdit \nหมายเหตุ: อยู่ในกระบวนการแก้ไขข้อมูล\nข้อความเดิม: $lineOld\nข้อความที่แก้ไข: $lineNew]';
                 }
                 if (logEdit != '') {
                   logEdit = '<a href="$logEdit">[*]</a> ';

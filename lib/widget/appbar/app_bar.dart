@@ -277,7 +277,7 @@ class _AppBarCustomState extends State<AppBarCustom> {
                                         : "เปิดเวอร์ชั่น ONLINE"
                                 : widget.isDesktop == false &&
                                         widget.isTablet == false
-                                    ? "ปิด ONLINE"
+                                    ? "OFFLINE"
                                     : widget.isDesktop == false &&
                                             widget.isTablet == true
                                         ? "ปิด ONLINE"
