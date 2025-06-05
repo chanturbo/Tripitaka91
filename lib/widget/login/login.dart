@@ -219,7 +219,8 @@ class _LoginPageState extends State<LoginPage> {
         var decodedJson = jsonDecode(utf8.decode(json.runes.toList()));
 
         if (decodedJson['user']['active'] == 0) {
-          msgLogin = 'บัญชีของคุณอยู่ระหว่างรอการยืนยันจากสมาชิก';
+          msgLogin =
+              'บัญชีของคุณอยู่ระหว่างรอการยืนยันการสมัครสมาชิกจากผู้ดูแลระบบ';
           return false;
         } else {
           usersLogin = UsersLogin.fromJson(decodedJson);

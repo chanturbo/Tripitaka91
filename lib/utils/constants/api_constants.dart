@@ -71,3 +71,4 @@ const String tURLeditSpeakConfirm = "${tURL}edit_logspeech.php";
 const String tURLsuscessSpeakConfirm = "${tURL}confirm_speak.php";
 const String tURLsuscessCorrectConfirm = "${tURL}confirm_correct.php";
 const String tURLwords = "${tURL}show_words.php";
+const String tURLdeleteUser = "${tURL}delete_user.php";

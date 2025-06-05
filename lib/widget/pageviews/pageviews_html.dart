@@ -1020,21 +1020,31 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
                   color: Colors.grey,
                 ),
                 const SizedBox(height: 4),
-                IconButton(
-                  icon: Icon(
-                    _showLeftPanel
-                        ? Icons.arrow_back_ios
-                        : Icons.arrow_forward_ios,
-                    size: 18,
-                    color: Colors.grey,
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Colors.grey, // สีของเส้นขอบ
+                      width: 1, // ความหนาของเส้นขอบ
+                    ),
+                    borderRadius:
+                        BorderRadius.circular(8), // มุมโค้ง (ถ้าต้องการ)
                   ),
-                  onPressed: () async {
-                    setState(() {
-                      _showLeftPanel = !_showLeftPanel;
-                    });
-                    await _saveShowLeftPanel();
-                    _scrollToSelectedIndex1();
-                  },
+                  child: IconButton(
+                    icon: Icon(
+                      _showLeftPanel
+                          ? Icons.arrow_back_ios
+                          : Icons.arrow_forward_ios,
+                      size: 18,
+                      color: Colors.grey,
+                    ),
+                    onPressed: () async {
+                      setState(() {
+                        _showLeftPanel = !_showLeftPanel;
+                      });
+                      await _saveShowLeftPanel();
+                      _scrollToSelectedIndex1();
+                    },
+                  ),
                 ),
                 const SizedBox(height: 4),
                 Container(
@@ -1114,21 +1124,31 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
                   color: Colors.grey,
                 ),
                 const SizedBox(height: 4),
-                IconButton(
-                  icon: Icon(
-                    _showLeftPanel
-                        ? Icons.arrow_back_ios
-                        : Icons.arrow_forward_ios,
-                    size: 18,
-                    color: Colors.grey,
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Colors.grey, // สีของเส้นขอบ
+                      width: 1, // ความหนาของเส้นขอบ
+                    ),
+                    borderRadius:
+                        BorderRadius.circular(8), // มุมโค้ง (ถ้าต้องการ)
                   ),
-                  onPressed: () async {
-                    setState(() {
-                      _showLeftPanel = !_showLeftPanel;
-                    });
-                    await _saveShowLeftPanel();
-                    _scrollToSelectedIndex1();
-                  },
+                  child: IconButton(
+                    icon: Icon(
+                      _showLeftPanel
+                          ? Icons.arrow_back_ios
+                          : Icons.arrow_forward_ios,
+                      size: 18,
+                      color: Colors.grey,
+                    ),
+                    onPressed: () async {
+                      setState(() {
+                        _showLeftPanel = !_showLeftPanel;
+                      });
+                      await _saveShowLeftPanel();
+                      _scrollToSelectedIndex1();
+                    },
+                  ),
                 ),
                 const SizedBox(height: 4),
                 Container(

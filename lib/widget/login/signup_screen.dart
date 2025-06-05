@@ -12,7 +12,6 @@ import 'package:tripitaka91/utils/validators/validation.dart';
 import 'package:tripitaka91/widget/login/loading_dialog.dart';
 import 'package:tripitaka91/widget/login/login.dart';
 import 'package:intl/intl.dart';
-import 'package:tripitaka91/widget/login/member_tab_show.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -238,15 +237,40 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   // ignore: use_build_context_synchronously
                   LoadingDialog.hide(context);
                   if (loginSucess) {
-                    saveUsersList(users);
+                    // saveUsersList(users);
+                    clearUsersList();
+                    // ignore: use_build_context_synchronously
+                    await showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: const Text('แจ้งให้ทราบ'),
+                        content: const Text(
+                            'สมัครสมาชิกสำเร็จ กรุณารอผู้ดูแลระบบยืนยันการสมัครสมาชิก'),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: const Text('ตกลง'),
+                          ),
+                        ],
+                      ),
+                    );
                     // ignore: use_build_context_synchronously
                     Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const LoginPage()),
+                    );
+
+                    // ignore: use_build_context_synchronously
+                    /*Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
                           builder: (context) => const MemberTabShow(
                                 indexShow: 0,
                               )),
-                    );
+                    );*/
                   }
                 }
               } else {
