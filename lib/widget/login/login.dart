@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:tripitaka91/main.dart';
@@ -140,13 +141,15 @@ class _LoginPageState extends State<LoginPage> {
         clearValueBeta();
         // await Future.delayed(const Duration(seconds: 2));
         // ignore: use_build_context_synchronously
-        Navigator.pushAndRemoveUntil(
+        Phoenix.rebirth(context);
+        // ignore: use_build_context_synchronously
+        /*Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(
             builder: (context) => const MyApp(),
           ),
           (route) => false,
-        );
+        );*/
         // // ignore: use_build_context_synchronously
         // Navigator.pushReplacement(
         //   context,
