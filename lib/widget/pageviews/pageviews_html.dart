@@ -1710,6 +1710,7 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
                                 text: 'สารบัญหัวข้อธรรม'),
                             onPressed: () {
                               _showDialogTitle(context, true);
+                              _scrollToSelectedIndex1();
                             },
                           ),
                         )
