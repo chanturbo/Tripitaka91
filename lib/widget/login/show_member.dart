@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:tripitaka91/main.dart';
 import 'package:tripitaka91/utils/constants/api_constants.dart';
 import 'package:tripitaka91/utils/format_date/format_date.dart';
 import 'package:tripitaka91/utils/models/users.dart';
@@ -16,6 +15,8 @@ import 'package:http/http.dart' as http;
 import 'package:tripitaka91/widget/login/set_voice.dart';
 import 'package:tripitaka91/widget/login/show_userall.dart';
 import 'package:tripitaka91/widget/login/user_activity_log.dart';
+// ignore: avoid_web_libraries_in_flutter
+import 'dart:html' as html;
 
 class MemberDisplay extends StatefulWidget {
   const MemberDisplay({super.key});
@@ -109,14 +110,15 @@ class _MemberDisplayState extends State<MemberDisplay> {
 
                   await _logOut();
                   clearUsersList();
-
+                  html.window.location.reload();
+/*
                   // ปิดหน้าจอหลังจากทำงานเสร็จ
                   // ignore: use_build_context_synchronously
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
                         builder: (context) => const MyApp()), // แทนที่หน้าเดิม
-                  );
+                  );*/
                 } else {
                   // ignore: use_build_context_synchronously
                   await showDialog(
@@ -375,7 +377,8 @@ class _MemberDisplayState extends State<MemberDisplay> {
                         // ทำงาน async นอก setState()
                         await _logOut();
                         clearUsersList();
-
+                        html.window.location.reload();
+/*
                         // ปิดหน้าจอหลังจากทำงานเสร็จ
                         // ignore: use_build_context_synchronously
                         Navigator.pushReplacement(
@@ -383,7 +386,7 @@ class _MemberDisplayState extends State<MemberDisplay> {
                           MaterialPageRoute(
                               builder: (context) =>
                                   const MyApp()), // แทนที่หน้าเดิม
-                        );
+                        );*/
                       }
                     });
                   },
@@ -566,13 +569,15 @@ class _MemberDisplayState extends State<MemberDisplay> {
                     onPressed: () async {
                       await _logOut();
                       clearUsersList();
+                      html.window.location.reload();
+                      /*
                       // ignore: use_build_context_synchronously
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
                             builder: (context) =>
                                 const MyApp()), // แทนที่หน้าเดิม
-                      );
+                      );*/
                     },
                     child: const ATextDiskplayMedium(
                       text: 'ออกจากระบบ',

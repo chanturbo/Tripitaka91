@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'package:tripitaka91/main.dart';
 import 'package:tripitaka91/utils/constants/api_constants.dart';
 import 'package:tripitaka91/utils/constants/colors.dart';
 import 'package:tripitaka91/utils/constants/text_strings.dart';
@@ -11,6 +10,8 @@ import 'package:tripitaka91/utils/shared_preferences/shared_user.dart';
 import 'package:tripitaka91/utils/shared_preferences/shared_value.dart';
 import 'package:tripitaka91/widget/login/signup_screen.dart';
 import 'package:url_launcher/link.dart';
+// ignore: avoid_web_libraries_in_flutter
+import 'dart:html' as html;
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -138,13 +139,16 @@ class _LoginPageState extends State<LoginPage> {
       if (chkLogin) {
         saveUsersList(createUserModel());
         clearValueBeta();
+        html.window.location.reload();
+
+        /*
         // ignore: use_build_context_synchronously
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
               builder: (context) => const MyApp()), // แทนที่หน้าเดิม
         );
-
+*/
         // // ignore: use_build_context_synchronously
         // Navigator.pushReplacement(
         //   context,
