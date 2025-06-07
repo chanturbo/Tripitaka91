@@ -449,43 +449,46 @@ class _SearchShowPagesTitleState extends State<SearchShowPagesTitle> {
                         ],
                       ),
                       widget.isM
-                          ? Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: ClipPath(
-                                    clipper: DoubleTriangleRectangleClipper(),
-                                    child: Container(
-                                      padding: const EdgeInsets.all(3.0),
-                                      color: Colors.blue[900],
-                                      child: ATextLabelSmall(
-                                        text:
-                                            '${textTitleReplace.extractRemainingText(dataTitle[index])} ',
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(width: 10),
-                                Align(
-                                  alignment: Alignment.centerRight,
-                                  child: ClipPath(
-                                    clipper: DoubleTriangleRectangleClipper(),
-                                    child: Container(
-                                      padding: const EdgeInsets.all(3.0),
-                                      color:
-                                          Colors.red, // Change color as needed
-                                      child: Center(
+                          ? SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: ClipPath(
+                                      clipper: DoubleTriangleRectangleClipper(),
+                                      child: Container(
+                                        padding: const EdgeInsets.all(3.0),
+                                        color: Colors.blue[900],
                                         child: ATextLabelSmall(
                                           text:
-                                              'เล่มสีแดง ${textTitleReplace.getBookRed(dataTitle[index])}', // Access widget property
+                                              '${textTitleReplace.extractRemainingText(dataTitle[index])} ',
                                         ),
                                       ),
                                     ),
                                   ),
-                                ),
-                              ],
+                                  const SizedBox(width: 10),
+                                  Align(
+                                    alignment: Alignment.centerRight,
+                                    child: ClipPath(
+                                      clipper: DoubleTriangleRectangleClipper(),
+                                      child: Container(
+                                        padding: const EdgeInsets.all(3.0),
+                                        color: Colors
+                                            .red, // Change color as needed
+                                        child: Center(
+                                          child: ATextLabelSmall(
+                                            text:
+                                                'เล่มสีแดง ${textTitleReplace.getBookRed(dataTitle[index])}', // Access widget property
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             )
                           : const SizedBox.shrink(),
                     ],

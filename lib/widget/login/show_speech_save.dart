@@ -671,138 +671,148 @@ class _ShowSpeechSaveState extends State<ShowSpeechSave> {
                         ),
                       ),
                       opt == '0'
-                          ? Row(
-                              children: [
-                                InkWell(
-                                  onTap: () async {
-                                    LoadingDialog.show(context);
-                                    String txtTitle =
-                                        '${dataTitle[index]['words_speak']}';
-                                    String namesave =
-                                        '${dataTitle[index]['words']}'
-                                            .trim()
-                                            .replaceAll(RegExp(r'\s+'), '');
+                          ? SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Row(
+                                children: [
+                                  InkWell(
+                                    onTap: () async {
+                                      LoadingDialog.show(context);
+                                      String txtTitle =
+                                          '${dataTitle[index]['words_speak']}';
+                                      String namesave =
+                                          '${dataTitle[index]['words']}'
+                                              .trim()
+                                              .replaceAll(RegExp(r'\s+'), '');
 
-                                    String filename = 'tmp-$namesave';
-                                    await audioPlayerManager.playAudio(
-                                        '4', filename, txtTitle);
-                                    // ignore: use_build_context_synchronously
-                                    LoadingDialog.hide(context);
-                                  },
-                                  child: Icon(
-                                    Icons.volume_up,
-                                    size: 20,
-                                    color: Colors
-                                        .blue[300], // Change color as needed
-                                  ),
-                                ),
-                                const SizedBox(width: 10),
-                                InkWell(
-                                  onTap: () async {
-                                    Users? users = await getUsersList();
-                                    if (users?.permissionVoice == '0') {
+                                      String filename = 'tmp-$namesave';
+                                      await audioPlayerManager.playAudio(
+                                          '4', filename, txtTitle);
                                       // ignore: use_build_context_synchronously
-                                      showPermissionDialog(context);
-                                    } else {
-                                      bool? confirm =
-                                          // ignore: use_build_context_synchronously
-                                          await _showConfirmationDialog(
-                                              context);
-                                      if (confirm!) {
-                                        // print('ยืนยันข้อมูล');
-                                        // print('${dataTitle[index]['words']}');
-                                        await _fetchUpdateInsertDataSpeakConfirm(
-                                            '${dataTitle[index]['words']}');
-                                      }
-                                    }
-                                  },
-                                  child: Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: ClipPath(
-                                      clipper: DoubleTriangleRectangleClipper(),
-                                      child: Container(
-                                        padding: const EdgeInsets.all(3.0),
-                                        color: Colors.red,
-                                        child: const ATextDiskplaySmall(
-                                            text: 'ยืนยันข้อมูล'),
-                                      ),
+                                      LoadingDialog.hide(context);
+                                    },
+                                    child: Icon(
+                                      Icons.volume_up,
+                                      size: 20,
+                                      color: Colors
+                                          .blue[300], // Change color as needed
                                     ),
                                   ),
-                                ),
-                                const SizedBox(width: 5),
-                                InkWell(
-                                  onTap: () {
-                                    _showDialogUser(
-                                        context,
-                                        'รายชื่อสมาชิกที่ยืนยันแล้ว',
-                                        '${dataTitle[index]['words']}');
-                                  },
-                                  child: Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: ClipPath(
-                                      clipper: DoubleTriangleRectangleClipper(),
-                                      child: Container(
-                                        padding: const EdgeInsets.all(3.0),
-                                        color: Colors.green,
-                                        child: ATextDiskplaySmall(
-                                            text:
-                                                'สมาชิกได้ยืนยันแล้ว ${dataTitle[index]['words_comfirm']} ท่าน'),
-                                      ),
-                                    ),
-                                  ),
-                                )
-                              ],
-                            )
-                          : opt == '1'
-                              ? Row(
-                                  children: [
-                                    InkWell(
-                                      onTap: () async {
-                                        LoadingDialog.show(context);
-                                        String txtTitle =
-                                            '${dataTitle[index]['words_speak']}';
-                                        String namesave =
-                                            '${dataTitle[index]['words']}'
-                                                .trim()
-                                                .replaceAll(RegExp(r'\s+'), '');
-
-                                        String filename = 'tmp-$namesave';
-                                        await audioPlayerManager.playAudio(
-                                            '4', filename, txtTitle);
+                                  const SizedBox(width: 10),
+                                  InkWell(
+                                    onTap: () async {
+                                      Users? users = await getUsersList();
+                                      if (users?.permissionVoice == '0') {
                                         // ignore: use_build_context_synchronously
-                                        LoadingDialog.hide(context);
-                                      },
-                                      child: Icon(
-                                        Icons.volume_up,
-                                        size: 20,
-                                        color: Colors.blue[
-                                            300], // Change color as needed
-                                      ),
-                                    ),
-                                    const SizedBox(width: 10),
-                                    InkWell(
-                                      onTap: () {
-                                        _showDialogUser(
-                                            context,
-                                            'รายชื่อสมาชิกที่ยืนยันแล้ว',
-                                            '${dataTitle[index]['words']}');
-                                      },
-                                      child: Align(
-                                        alignment: Alignment.centerLeft,
-                                        child: ClipPath(
-                                          clipper:
-                                              DoubleTriangleRectangleClipper(),
-                                          child: Container(
-                                            padding: const EdgeInsets.all(3.0),
-                                            color: Colors.green,
-                                            child: ATextDiskplaySmall(
-                                                text:
-                                                    'สมาชิกที่ได้ยืนยันแล้ว ${dataTitle[index]['words_comfirm']} ท่าน'),
-                                          ),
+                                        showPermissionDialog(context);
+                                      } else {
+                                        bool? confirm =
+                                            // ignore: use_build_context_synchronously
+                                            await _showConfirmationDialog(
+                                                context);
+                                        if (confirm!) {
+                                          // print('ยืนยันข้อมูล');
+                                          // print('${dataTitle[index]['words']}');
+                                          await _fetchUpdateInsertDataSpeakConfirm(
+                                              '${dataTitle[index]['words']}');
+                                        }
+                                      }
+                                    },
+                                    child: Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: ClipPath(
+                                        clipper:
+                                            DoubleTriangleRectangleClipper(),
+                                        child: Container(
+                                          padding: const EdgeInsets.all(3.0),
+                                          color: Colors.red,
+                                          child: const ATextDiskplaySmall(
+                                              text: 'ยืนยันข้อมูล'),
                                         ),
                                       ),
                                     ),
-                                  ],
+                                  ),
+                                  const SizedBox(width: 5),
+                                  InkWell(
+                                    onTap: () {
+                                      _showDialogUser(
+                                          context,
+                                          'รายชื่อสมาชิกที่ยืนยันแล้ว',
+                                          '${dataTitle[index]['words']}');
+                                    },
+                                    child: Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: ClipPath(
+                                        clipper:
+                                            DoubleTriangleRectangleClipper(),
+                                        child: Container(
+                                          padding: const EdgeInsets.all(3.0),
+                                          color: Colors.green,
+                                          child: ATextDiskplaySmall(
+                                              text:
+                                                  'สมาชิกได้ยืนยันแล้ว ${dataTitle[index]['words_comfirm']} ท่าน'),
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            )
+                          : opt == '1'
+                              ? SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: Row(
+                                    children: [
+                                      InkWell(
+                                        onTap: () async {
+                                          LoadingDialog.show(context);
+                                          String txtTitle =
+                                              '${dataTitle[index]['words_speak']}';
+                                          String namesave =
+                                              '${dataTitle[index]['words']}'
+                                                  .trim()
+                                                  .replaceAll(
+                                                      RegExp(r'\s+'), '');
+
+                                          String filename = 'tmp-$namesave';
+                                          await audioPlayerManager.playAudio(
+                                              '4', filename, txtTitle);
+                                          // ignore: use_build_context_synchronously
+                                          LoadingDialog.hide(context);
+                                        },
+                                        child: Icon(
+                                          Icons.volume_up,
+                                          size: 20,
+                                          color: Colors.blue[
+                                              300], // Change color as needed
+                                        ),
+                                      ),
+                                      const SizedBox(width: 10),
+                                      InkWell(
+                                        onTap: () {
+                                          _showDialogUser(
+                                              context,
+                                              'รายชื่อสมาชิกที่ยืนยันแล้ว',
+                                              '${dataTitle[index]['words']}');
+                                        },
+                                        child: Align(
+                                          alignment: Alignment.centerLeft,
+                                          child: ClipPath(
+                                            clipper:
+                                                DoubleTriangleRectangleClipper(),
+                                            child: Container(
+                                              padding:
+                                                  const EdgeInsets.all(3.0),
+                                              color: Colors.green,
+                                              child: ATextDiskplaySmall(
+                                                  text:
+                                                      'สมาชิกที่ได้ยืนยันแล้ว ${dataTitle[index]['words_comfirm']} ท่าน'),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 )
                               : SingleChildScrollView(
                                   scrollDirection: Axis.horizontal,
