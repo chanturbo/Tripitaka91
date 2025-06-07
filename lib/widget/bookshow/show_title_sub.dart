@@ -701,47 +701,50 @@ class _ShowTitlePagesState extends State<ShowTitlePages> {
                                 ),
                         ],
                       ),
-                      Row(
-                        children: [
-                          widget.isM
-                              ? Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: ClipPath(
-                                    clipper: DoubleTriangleRectangleClipper(),
-                                    child: Container(
-                                      padding: const EdgeInsets.all(3.0),
-                                      color: Colors.blue[900],
-                                      child: ATextLabelSmall(
-                                        text:
-                                            '${textTitleReplace.extractRemainingText(dataTitle[index])} ',
-                                      ),
-                                    ),
-                                  ),
-                                )
-                              : const SizedBox.shrink(),
-                          widget.isM
-                              ? const SizedBox(width: 10)
-                              : const SizedBox.shrink(),
-                          widget.isM
-                              ? Align(
-                                  alignment: Alignment.centerRight,
-                                  child: ClipPath(
-                                    clipper: DoubleTriangleRectangleClipper(),
-                                    child: Container(
-                                      padding: const EdgeInsets.all(3.0),
-                                      color:
-                                          Colors.red, // Change color as needed
-                                      child: Center(
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children: [
+                            widget.isM
+                                ? Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: ClipPath(
+                                      clipper: DoubleTriangleRectangleClipper(),
+                                      child: Container(
+                                        padding: const EdgeInsets.all(3.0),
+                                        color: Colors.blue[900],
                                         child: ATextLabelSmall(
                                           text:
-                                              'เล่มสีแดง ${textTitleReplace.getBookRed(dataTitle[index])}', // Access widget property
+                                              '${textTitleReplace.extractRemainingText(dataTitle[index])} ',
                                         ),
                                       ),
                                     ),
-                                  ),
-                                )
-                              : const SizedBox.shrink(),
-                        ],
+                                  )
+                                : const SizedBox.shrink(),
+                            widget.isM
+                                ? const SizedBox(width: 10)
+                                : const SizedBox.shrink(),
+                            widget.isM
+                                ? Align(
+                                    alignment: Alignment.centerRight,
+                                    child: ClipPath(
+                                      clipper: DoubleTriangleRectangleClipper(),
+                                      child: Container(
+                                        padding: const EdgeInsets.all(3.0),
+                                        color: Colors
+                                            .red, // Change color as needed
+                                        child: Center(
+                                          child: ATextLabelSmall(
+                                            text:
+                                                'เล่มสีแดง ${textTitleReplace.getBookRed(dataTitle[index])}', // Access widget property
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                : const SizedBox.shrink(),
+                          ],
+                        ),
                       ),
                     ],
                   ),
