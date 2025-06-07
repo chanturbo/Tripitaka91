@@ -669,8 +669,8 @@ class _ShowCorrectSaveState extends State<ShowCorrectSave> {
                                 opt == '0'
                                     ? Colors.orange
                                     : Colors.white), // กำหนดสีพื้นหลังเป็นสีขาว
-                            shape: WidgetStateProperty.all<
-                                RoundedRectangleBorder>(
+                            shape:
+                                WidgetStateProperty.all<RoundedRectangleBorder>(
                               RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(
                                     18.0), // กำหนดขนาดของเส้นขอบ
@@ -694,8 +694,8 @@ class _ShowCorrectSaveState extends State<ShowCorrectSave> {
                                 opt == '1'
                                     ? Colors.orange
                                     : Colors.white), // กำหนดสีพื้นหลังเป็นสีขาว
-                            shape: WidgetStateProperty.all<
-                                RoundedRectangleBorder>(
+                            shape:
+                                WidgetStateProperty.all<RoundedRectangleBorder>(
                               RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(
                                     18.0), // กำหนดขนาดของเส้นขอบ
@@ -719,8 +719,8 @@ class _ShowCorrectSaveState extends State<ShowCorrectSave> {
                                 opt == '2'
                                     ? Colors.orange
                                     : Colors.white), // กำหนดสีพื้นหลังเป็นสีขาว
-                            shape: WidgetStateProperty.all<
-                                RoundedRectangleBorder>(
+                            shape:
+                                WidgetStateProperty.all<RoundedRectangleBorder>(
                               RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(
                                     18.0), // กำหนดขนาดของเส้นขอบ
@@ -829,70 +829,75 @@ class _ShowCorrectSaveState extends State<ShowCorrectSave> {
                               ),
                             )
                           : opt == '0'
-                              ? Row(
-                                  children: [
-                                    InkWell(
-                                      onTap: () async {
-                                        Users? users = await getUsersList();
-                                        if (users?.permissionLogEdit == '0') {
-                                          // ignore: use_build_context_synchronously
-                                          showPermissionDialog(context);
-                                        } else {
-                                          bool? confirm =
-                                              // ignore: use_build_context_synchronously
-                                              await _showConfirmationDialog(
-                                                  context);
-                                          if (confirm!) {
-                                            // print('ยืนยันข้อมูล');
-                                            await _fetchUpdateInsertDataCorrectConfirm(
-                                                '${dataTitle[index]['tripitaka91_book']}',
-                                                '${dataTitle[index]['tripitaka91_page']}',
-                                                '${dataTitle[index]['tripitaka91_line']}');
+                              ? SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: Row(
+                                    children: [
+                                      InkWell(
+                                        onTap: () async {
+                                          Users? users = await getUsersList();
+                                          if (users?.permissionLogEdit == '0') {
+                                            // ignore: use_build_context_synchronously
+                                            showPermissionDialog(context);
+                                          } else {
+                                            bool? confirm =
+                                                // ignore: use_build_context_synchronously
+                                                await _showConfirmationDialog(
+                                                    context);
+                                            if (confirm!) {
+                                              // print('ยืนยันข้อมูล');
+                                              await _fetchUpdateInsertDataCorrectConfirm(
+                                                  '${dataTitle[index]['tripitaka91_book']}',
+                                                  '${dataTitle[index]['tripitaka91_page']}',
+                                                  '${dataTitle[index]['tripitaka91_line']}');
+                                            }
                                           }
-                                        }
-                                      },
-                                      child: Align(
-                                        alignment: Alignment.centerLeft,
-                                        child: ClipPath(
-                                          clipper:
-                                              DoubleTriangleRectangleClipper(),
-                                          child: Container(
-                                            padding: const EdgeInsets.all(3.0),
-                                            color: Colors.red,
-                                            child: const ATextDiskplaySmall(
-                                                text: 'ยืนยันข้อมูล'),
+                                        },
+                                        child: Align(
+                                          alignment: Alignment.centerLeft,
+                                          child: ClipPath(
+                                            clipper:
+                                                DoubleTriangleRectangleClipper(),
+                                            child: Container(
+                                              padding:
+                                                  const EdgeInsets.all(3.0),
+                                              color: Colors.red,
+                                              child: const ATextDiskplaySmall(
+                                                  text: 'ยืนยันข้อมูล'),
+                                            ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                    const SizedBox(
-                                      width: 5,
-                                    ),
-                                    InkWell(
-                                      onTap: () {
-                                        _showDialogUser(
-                                            context,
-                                            'รายชื่อสมาชิกที่ยืนยันแล้ว',
-                                            '${dataTitle[index]['tripitaka91_book']}',
-                                            '${dataTitle[index]['tripitaka91_page']}',
-                                            '${dataTitle[index]['tripitaka91_line']}');
-                                      },
-                                      child: Align(
-                                        alignment: Alignment.centerLeft,
-                                        child: ClipPath(
-                                          clipper:
-                                              DoubleTriangleRectangleClipper(),
-                                          child: Container(
-                                            padding: const EdgeInsets.all(3.0),
-                                            color: Colors.green,
-                                            child: ATextDiskplaySmall(
-                                                text:
-                                                    'สมาชิกได้ยืนยันแล้ว ${dataTitle[index]['bookconfirm']} ท่าน'),
+                                      const SizedBox(
+                                        width: 5,
+                                      ),
+                                      InkWell(
+                                        onTap: () {
+                                          _showDialogUser(
+                                              context,
+                                              'รายชื่อสมาชิกที่ยืนยันแล้ว',
+                                              '${dataTitle[index]['tripitaka91_book']}',
+                                              '${dataTitle[index]['tripitaka91_page']}',
+                                              '${dataTitle[index]['tripitaka91_line']}');
+                                        },
+                                        child: Align(
+                                          alignment: Alignment.centerLeft,
+                                          child: ClipPath(
+                                            clipper:
+                                                DoubleTriangleRectangleClipper(),
+                                            child: Container(
+                                              padding:
+                                                  const EdgeInsets.all(3.0),
+                                              color: Colors.green,
+                                              child: ATextDiskplaySmall(
+                                                  text:
+                                                      'สมาชิกได้ยืนยันแล้ว ${dataTitle[index]['bookconfirm']} ท่าน'),
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    )
-                                  ],
+                                      )
+                                    ],
+                                  ),
                                 )
                               : opt == '1'
                                   ? InkWell(

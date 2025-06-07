@@ -858,65 +858,69 @@ class _ShowCorrectSaveWithPageState extends State<ShowCorrectSaveWithPage> {
                                   ),
                                 )
                               : opt == '0'
-                                  ? Row(
-                                      children: [
-                                        InkWell(
-                                          onTap: () async {
-                                            bool? confirm =
-                                                await _showConfirmationDialog(
-                                                    context);
-                                            if (confirm!) {
-                                              // print('ยืนยันข้อมูล');
-                                              await _fetchUpdateInsertDataCorrectConfirm(
+                                  ? SingleChildScrollView(
+                                      scrollDirection: Axis.horizontal,
+                                      child: Row(
+                                        children: [
+                                          InkWell(
+                                            onTap: () async {
+                                              bool? confirm =
+                                                  await _showConfirmationDialog(
+                                                      context);
+                                              if (confirm!) {
+                                                // print('ยืนยันข้อมูล');
+                                                await _fetchUpdateInsertDataCorrectConfirm(
+                                                    '${dataTitle[index]['tripitaka91_book']}',
+                                                    '${dataTitle[index]['tripitaka91_page']}',
+                                                    '${dataTitle[index]['tripitaka91_line']}');
+                                              }
+                                            },
+                                            child: Align(
+                                              alignment: Alignment.centerLeft,
+                                              child: ClipPath(
+                                                clipper:
+                                                    DoubleTriangleRectangleClipper(),
+                                                child: Container(
+                                                  padding:
+                                                      const EdgeInsets.all(3.0),
+                                                  color: Colors.red,
+                                                  child:
+                                                      const ATextDiskplaySmall(
+                                                          text: 'ยืนยันข้อมูล'),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          const SizedBox(
+                                            width: 5,
+                                          ),
+                                          InkWell(
+                                            onTap: () {
+                                              _showDialogUser(
+                                                  context,
+                                                  'รายชื่อสมาชิกที่ยืนยันแล้ว',
                                                   '${dataTitle[index]['tripitaka91_book']}',
                                                   '${dataTitle[index]['tripitaka91_page']}',
                                                   '${dataTitle[index]['tripitaka91_line']}');
-                                            }
-                                          },
-                                          child: Align(
-                                            alignment: Alignment.centerLeft,
-                                            child: ClipPath(
-                                              clipper:
-                                                  DoubleTriangleRectangleClipper(),
-                                              child: Container(
-                                                padding:
-                                                    const EdgeInsets.all(3.0),
-                                                color: Colors.red,
-                                                child: const ATextDiskplaySmall(
-                                                    text: 'ยืนยันข้อมูล'),
+                                            },
+                                            child: Align(
+                                              alignment: Alignment.centerLeft,
+                                              child: ClipPath(
+                                                clipper:
+                                                    DoubleTriangleRectangleClipper(),
+                                                child: Container(
+                                                  padding:
+                                                      const EdgeInsets.all(3.0),
+                                                  color: Colors.green,
+                                                  child: ATextDiskplaySmall(
+                                                      text:
+                                                          'สมาชิกได้ยืนยันแล้ว ${dataTitle[index]['bookconfirm']} ท่าน'),
+                                                ),
                                               ),
                                             ),
-                                          ),
-                                        ),
-                                        const SizedBox(
-                                          width: 5,
-                                        ),
-                                        InkWell(
-                                          onTap: () {
-                                            _showDialogUser(
-                                                context,
-                                                'รายชื่อสมาชิกที่ยืนยันแล้ว',
-                                                '${dataTitle[index]['tripitaka91_book']}',
-                                                '${dataTitle[index]['tripitaka91_page']}',
-                                                '${dataTitle[index]['tripitaka91_line']}');
-                                          },
-                                          child: Align(
-                                            alignment: Alignment.centerLeft,
-                                            child: ClipPath(
-                                              clipper:
-                                                  DoubleTriangleRectangleClipper(),
-                                              child: Container(
-                                                padding:
-                                                    const EdgeInsets.all(3.0),
-                                                color: Colors.green,
-                                                child: ATextDiskplaySmall(
-                                                    text:
-                                                        'สมาชิกได้ยืนยันแล้ว ${dataTitle[index]['bookconfirm']} ท่าน'),
-                                              ),
-                                            ),
-                                          ),
-                                        )
-                                      ],
+                                          )
+                                        ],
+                                      ),
                                     )
                                   : opt == '1'
                                       ? InkWell(
