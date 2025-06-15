@@ -110,7 +110,8 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
 
   bool _showLeftPanel = true;
   double scrollBookSearchIndexs1 = -1;
-
+  String bgColor = '#ffffff';
+  String fontColor = '#475859';
   @override
   void initState() {
     super.initState();
@@ -121,12 +122,21 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
     _getLogEdit();
     getBookTri91All();
     _loadShowLeftPanel();
+    _loadColour();
 
     pageController =
         PageController(initialPage: widget.triPageid, viewportFraction: 1.0);
     textTitleReplace = TextTitleReplace();
     uniqueItems = [];
     chkTimer = true;
+  }
+
+  Future<void> _loadColour() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      bgColor = prefs.getString('color_bg') ?? '#ffffff';
+      fontColor = prefs.getString('color_font') ?? '#475859';
+    });
   }
 
   Future<void> _loadShowLeftPanel() async {
@@ -382,6 +392,84 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
     }
 
     return uniqueSet.toList();
+  }
+
+  Color hexToColor(String code) {
+    return Color(int.parse(code.substring(1, 7), radix: 16) + 0xFF000000);
+  }
+
+  _setColour(int index) async {
+    String bgColor = '#ffffff';
+    String fontColor = '#475859';
+    if (index == 0) {
+      bgColor = '#ffffff';
+      fontColor = '#475859';
+    } else if (index == 1) {
+      bgColor = '#f8f1e4';
+      fontColor = '#475859';
+    } else if (index == 2) {
+      bgColor = '#6b6b6e';
+      fontColor = '#ffffff';
+    } else if (index == 3) {
+      bgColor = '#121212';
+      fontColor = '#ffffff';
+    }
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('color_bg', bgColor);
+    prefs.setString('color_font', fontColor);
+  }
+
+  Future<int?> showAlertDialog(BuildContext context) {
+    final listItems = List.generate(4, (i) => "คลิกเลือก");
+
+    return showDialog<int>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(32.0))),
+          contentPadding: const EdgeInsets.only(top: 10.0),
+          content: SizedBox(
+            width: 300.0,
+            child: ListView.builder(
+              itemCount: listItems.length,
+              itemBuilder: (_, index) {
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).pop(index); // ส่ง index กลับ
+                  },
+                  child: Card(
+                    margin: const EdgeInsets.symmetric(
+                        vertical: 15, horizontal: 20),
+                    color: index == 0
+                        ? HexColor('#ffffff')
+                        : index == 1
+                            ? HexColor('#f8f1e4')
+                            : index == 2
+                                ? HexColor('#6b6b6e')
+                                : HexColor('#121212'),
+                    child: Container(
+                      padding: const EdgeInsets.all(30),
+                      alignment: Alignment.bottomCenter,
+                      child: Text(
+                        listItems[index],
+                        style: TextStyle(
+                          fontSize: 24,
+                          color: index == 0 || index == 1
+                              ? HexColor('#6b6a6a')
+                              : HexColor('#ffffff'),
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        );
+      },
+    );
   }
 
   void _showDialogDict(BuildContext context, String result, bool isM) {
@@ -1448,379 +1536,415 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
     return Expanded(
       child: Column(
         children: [
-          Row(
-            children: [
-              widget.online || volumeHelper.showVolume
-                  ? pageChanged == 0
-                      ? const Text('')
-                      : IconButton(
-                          tooltip: 'อ่านออกเสียง',
-                          icon: const Icon(Icons.volume_up),
-                          color: TColors.secondary,
-                          onPressed: () async {
-                            if (currentPlaylist.isNotEmpty) {
-                              LoadingDialog.show(context);
-                              currentPlaylist.clear();
-                              String txtDetail = '';
-                              triBookLineRead = 1;
-                              String filename =
-                                  '${widget.triBookid}-$pageids-1';
-                              if (bookTri91.isNotEmpty) {
-                                if (bookTri91[0].bookPages != pageChanged) {
-                                  LoadingDialog.hide(context);
-                                  _showSnackbar(context,
-                                      'กรุณากดปุ่มอ่านออกเสียงอีกครั้ง');
-                                  setState(() {
-                                    chkTimer2 = true;
-                                  });
-                                  return;
-                                }
+          Container(
+            // width: MediaQuery.of(context).size.width - 20.0,
+            margin: const EdgeInsets.all(1.0),
+            padding: const EdgeInsets.all(1.0),
+            decoration: BoxDecoration(
+              color: hexToColor(bgColor),
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            child: Row(
+              children: [
+                widget.online || volumeHelper.showVolume
+                    ? pageChanged == 0
+                        ? const Text('')
+                        : IconButton(
+                            tooltip: 'อ่านออกเสียง',
+                            icon: const Icon(Icons.volume_up),
+                            color: TColors.secondary,
+                            onPressed: () async {
+                              if (currentPlaylist.isNotEmpty) {
+                                LoadingDialog.show(context);
+                                currentPlaylist.clear();
+                                String txtDetail = '';
                                 triBookLineRead = 1;
-                                filename =
-                                    '${bookTri91[0].bookId}-${bookTri91[0].bookPages}-1';
+                                String filename =
+                                    '${widget.triBookid}-$pageids-1';
+                                if (bookTri91.isNotEmpty) {
+                                  if (bookTri91[0].bookPages != pageChanged) {
+                                    LoadingDialog.hide(context);
+                                    _showSnackbar(context,
+                                        'กรุณากดปุ่มอ่านออกเสียงอีกครั้ง');
+                                    setState(() {
+                                      chkTimer2 = true;
+                                    });
+                                    return;
+                                  }
+                                  triBookLineRead = 1;
+                                  filename =
+                                      '${bookTri91[0].bookId}-${bookTri91[0].bookPages}-1';
 
-                                for (var book in bookTri91) {
-                                  if (book.bookLines != 0) {
-                                    if (book.bookPages == pageids) {
-                                      if (book.bookLines >= tribookline) {
+                                  for (var book in bookTri91) {
+                                    if (book.bookLines != 0) {
+                                      if (book.bookPages == pageids) {
+                                        if (book.bookLines >= tribookline) {
+                                          String modifiedBookDetail = book
+                                              .bookDetail
+                                              .trimRight()
+                                              .replaceAll('.', '');
+                                          txtDetail += modifiedBookDetail;
+                                          filename =
+                                              '${bookTri91[0].bookId}-${bookTri91[0].bookPages}-$tribookline';
+                                        }
+                                      } else {
                                         String modifiedBookDetail = book
                                             .bookDetail
                                             .trimRight()
                                             .replaceAll('.', '');
                                         txtDetail += modifiedBookDetail;
-                                        filename =
-                                            '${bookTri91[0].bookId}-${bookTri91[0].bookPages}-$tribookline';
                                       }
-                                    } else {
-                                      String modifiedBookDetail = book
-                                          .bookDetail
-                                          .trimRight()
-                                          .replaceAll('.', '');
-                                      txtDetail += modifiedBookDetail;
                                     }
                                   }
-                                }
 
-                                currentPlaylist.add(txtDetail);
-                                await audioPlayerManager.playAudio(
-                                    '0', filename, txtDetail);
-                              }
-                              // ignore: use_build_context_synchronously
-                              LoadingDialog.hide(context);
-                            } else {
-                              LoadingDialog.show(context);
-                              currentPlaylist.clear();
-                              String txtDetail = '';
-                              triBookLineRead = 1;
-                              String filename =
-                                  '${widget.triBookid}-$pageids-1';
-                              if (bookTri91.isNotEmpty) {
-                                if (bookTri91[0].bookPages != pageChanged) {
-                                  LoadingDialog.hide(context);
-                                  _showSnackbar(context,
-                                      'กรุณากดปุ่มอ่านออกเสียงอีกครั้ง');
-                                  setState(() {
-                                    chkTimer2 = true;
-                                  });
-                                  return;
+                                  currentPlaylist.add(txtDetail);
+                                  await audioPlayerManager.playAudio(
+                                      '0', filename, txtDetail);
                                 }
+                                // ignore: use_build_context_synchronously
+                                LoadingDialog.hide(context);
+                              } else {
+                                LoadingDialog.show(context);
+                                currentPlaylist.clear();
+                                String txtDetail = '';
                                 triBookLineRead = 1;
-                                filename =
-                                    '${bookTri91[0].bookId}-${bookTri91[0].bookPages}-1';
+                                String filename =
+                                    '${widget.triBookid}-$pageids-1';
+                                if (bookTri91.isNotEmpty) {
+                                  if (bookTri91[0].bookPages != pageChanged) {
+                                    LoadingDialog.hide(context);
+                                    _showSnackbar(context,
+                                        'กรุณากดปุ่มอ่านออกเสียงอีกครั้ง');
+                                    setState(() {
+                                      chkTimer2 = true;
+                                    });
+                                    return;
+                                  }
+                                  triBookLineRead = 1;
+                                  filename =
+                                      '${bookTri91[0].bookId}-${bookTri91[0].bookPages}-1';
 
-                                for (var book in bookTri91) {
-                                  if (book.bookLines != 0) {
-                                    if (book.bookPages == pageids) {
-                                      if (book.bookLines >= tribookline) {
+                                  for (var book in bookTri91) {
+                                    if (book.bookLines != 0) {
+                                      if (book.bookPages == pageids) {
+                                        if (book.bookLines >= tribookline) {
+                                          String modifiedBookDetail = book
+                                              .bookDetail
+                                              .trimRight()
+                                              .replaceAll('.', '');
+                                          txtDetail += modifiedBookDetail;
+                                          triBookLineRead = tribookline;
+                                          filename =
+                                              '${bookTri91[0].bookId}-${bookTri91[0].bookPages}-$tribookline';
+                                        }
+                                      } else {
                                         String modifiedBookDetail = book
                                             .bookDetail
                                             .trimRight()
                                             .replaceAll('.', '');
                                         txtDetail += modifiedBookDetail;
-                                        triBookLineRead = tribookline;
-                                        filename =
-                                            '${bookTri91[0].bookId}-${bookTri91[0].bookPages}-$tribookline';
                                       }
-                                    } else {
-                                      String modifiedBookDetail = book
-                                          .bookDetail
-                                          .trimRight()
-                                          .replaceAll('.', '');
-                                      txtDetail += modifiedBookDetail;
                                     }
                                   }
+                                  currentPlaylist.add(txtDetail);
+                                  setState(() {
+                                    chkTimer2 = true;
+                                  });
+                                  await audioPlayerManager.playAudio(
+                                      '0', filename, txtDetail);
                                 }
-                                currentPlaylist.add(txtDetail);
-                                setState(() {
-                                  chkTimer2 = true;
-                                });
-                                await audioPlayerManager.playAudio(
-                                    '0', filename, txtDetail);
+                                // ignore: use_build_context_synchronously
+                                LoadingDialog.hide(context);
                               }
-                              // ignore: use_build_context_synchronously
-                              LoadingDialog.hide(context);
-                            }
-                          },
-                        )
-                  : const Text(''),
-              widget.online || volumeHelper.showVolume
-                  ? pageChanged == 0
-                      ? const ATextLabelMedium(text: '   หน้า')
-                      : const Text('')
-                  : const Text(''),
-              widget.online || volumeHelper.showVolume
-                  ? pageChanged == 0
-                      ? Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            const Positioned(
-                              bottom: 13, // ระยะห่างจากด้านล่าง
-                              child: Text(
-                                '1',
-                                style: TextStyle(fontSize: 10),
-                              ),
-                            ),
-                            IconButton(
-                              icon: const Icon(Icons.circle_outlined),
-                              onPressed: () async {
-                                audioPlayerManager.pause();
-                                setState(() {
-                                  if (audioPlayerManager.chkStatePlay()) {
-                                    audioPlayerManager.stop();
-                                  }
-                                });
-                                String filename = '0-1-1';
-                                String txtDetail = 'คำนำ1';
-                                await audioPlayerManager.playAudio(
-                                    '0', filename, txtDetail);
-                              },
-                            ),
-                          ],
-                        )
-                      : const Text('')
-                  : const Text(''),
-              widget.online || volumeHelper.showVolume
-                  ? pageChanged == 0
-                      ? Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            const Positioned(
-                              bottom: 13, // ระยะห่างจากด้านล่าง
-                              child: Text(
-                                '2',
-                                style: TextStyle(fontSize: 10),
-                              ),
-                            ),
-                            IconButton(
-                              icon: const Icon(Icons.circle_outlined),
-                              onPressed: () async {
-                                audioPlayerManager.pause();
-                                setState(() {
-                                  if (audioPlayerManager.chkStatePlay()) {
-                                    audioPlayerManager.stop();
-                                  }
-                                });
-                                String filename = '0-1-2';
-                                String txtDetail = 'คำนำ2';
-                                await audioPlayerManager.playAudio(
-                                    '0', filename, txtDetail);
-                              },
-                            ),
-                          ],
-                        )
-                      : const Text('')
-                  : const Text(''),
-              widget.online || volumeHelper.showVolume
-                  ? pageChanged == 0
-                      ? Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            const Positioned(
-                              bottom: 13, // ระยะห่างจากด้านล่าง
-                              child: Text(
-                                '3',
-                                style: TextStyle(fontSize: 10),
-                              ),
-                            ),
-                            IconButton(
-                              icon: const Icon(Icons.circle_outlined),
-                              onPressed: () async {
-                                audioPlayerManager.pause();
-                                setState(() {
-                                  if (audioPlayerManager.chkStatePlay()) {
-                                    audioPlayerManager.stop();
-                                  }
-                                });
-                                String filename = '0-1-3';
-                                String txtDetail = 'คำนำ3';
-                                await audioPlayerManager.playAudio(
-                                    '0', filename, txtDetail);
-                              },
-                            ),
-                          ],
-                        )
-                      : const Text('')
-                  : const Text(''),
-              widget.online || volumeHelper.showVolume
-                  ? pageChanged == 0
-                      ? Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            const Positioned(
-                              bottom: 13, // ระยะห่างจากด้านล่าง
-                              child: Text(
-                                '4',
-                                style: TextStyle(fontSize: 10),
-                              ),
-                            ),
-                            IconButton(
-                              icon: const Icon(Icons.circle_outlined),
-                              onPressed: () async {
-                                audioPlayerManager.pause();
-                                setState(() {
-                                  if (audioPlayerManager.chkStatePlay()) {
-                                    audioPlayerManager.stop();
-                                  }
-                                });
-                                String filename = '0-1-4';
-                                String txtDetail = 'คำนำ4';
-                                await audioPlayerManager.playAudio(
-                                    '0', filename, txtDetail);
-                              },
-                            ),
-                          ],
-                        )
-                      : const Text('')
-                  : const Text(''),
-              widget.online || volumeHelper.showVolume
-                  ? pageChanged == 0
-                      ? Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            const Positioned(
-                              bottom: 13, // ระยะห่างจากด้านล่าง
-                              child: Text(
-                                '5',
-                                style: TextStyle(fontSize: 10),
-                              ),
-                            ),
-                            IconButton(
-                              icon: const Icon(Icons.circle_outlined),
-                              onPressed: () async {
-                                audioPlayerManager.pause();
-                                setState(() {
-                                  if (audioPlayerManager.chkStatePlay()) {
-                                    audioPlayerManager.stop();
-                                  }
-                                });
-                                String filename = '0-1-5';
-                                String txtDetail = 'คำนำ5';
-                                await audioPlayerManager.playAudio(
-                                    '0', filename, txtDetail);
-                              },
-                            ),
-                          ],
-                        )
-                      : const Text('')
-                  : const Text(''),
-              widget.online || volumeHelper.showVolume
-                  ? pageChanged == 0
-                      ? IconButton(
-                          tooltip: 'หยุดชั่วคราว',
-                          icon: const Icon(Icons.pause),
-                          onPressed: () {
-                            audioPlayerManager.pause();
-                          },
-                        )
-                      : currentPlaylist.isEmpty
-                          ? const Icon(
-                              Icons.stop,
-                              color: Colors.grey,
-                            )
-                          : IconButton(
-                              tooltip: 'หยุดชั่วคราว',
-                              icon: const Icon(Icons.pause),
-                              onPressed: () {
-                                audioPlayerManager.pause();
-                              },
-                            )
-                  : const Text(''),
-              const Expanded(
-                child: Text(''),
-              ),
-              pageChanged == 0
-                  ? const Text('')
-                  : isMobile
-                      ? Align(
-                          alignment: Alignment.centerLeft,
-                          child: TextButton(
-                            style: ButtonStyle(
-                              backgroundColor:
-                                  MaterialStateProperty.all<Color>(Colors.blue),
-                            ),
-                            child: const ATextDiskplaySmall(
-                                text: 'สารบัญหัวข้อธรรม'),
-                            onPressed: () {
-                              _showDialogTitle(context, true);
-                              _scrollToSelectedIndex1();
                             },
-                          ),
-                        )
-                      : const Text(''),
-              pageChanged == 0
-                  ? const Text('')
-                  : Align(
-                      alignment: Alignment.centerLeft,
-                      child: TextButton(
-                        style: ButtonStyle(
-                          backgroundColor:
-                              MaterialStateProperty.all<Color>(Colors.blue),
+                          )
+                    : const Text(''),
+                widget.online || volumeHelper.showVolume
+                    ? pageChanged == 0
+                        ? const ATextLabelMedium(text: '   หน้า')
+                        : const Text('')
+                    : const Text(''),
+                widget.online || volumeHelper.showVolume
+                    ? pageChanged == 0
+                        ? Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              const Positioned(
+                                bottom: 13, // ระยะห่างจากด้านล่าง
+                                child: Text(
+                                  '1',
+                                  style: TextStyle(fontSize: 10),
+                                ),
+                              ),
+                              IconButton(
+                                icon: const Icon(Icons.circle_outlined),
+                                onPressed: () async {
+                                  audioPlayerManager.pause();
+                                  setState(() {
+                                    if (audioPlayerManager.chkStatePlay()) {
+                                      audioPlayerManager.stop();
+                                    }
+                                  });
+                                  String filename = '0-1-1';
+                                  String txtDetail = 'คำนำ1';
+                                  await audioPlayerManager.playAudio(
+                                      '0', filename, txtDetail);
+                                },
+                              ),
+                            ],
+                          )
+                        : const Text('')
+                    : const Text(''),
+                widget.online || volumeHelper.showVolume
+                    ? pageChanged == 0
+                        ? Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              const Positioned(
+                                bottom: 13, // ระยะห่างจากด้านล่าง
+                                child: Text(
+                                  '2',
+                                  style: TextStyle(fontSize: 10),
+                                ),
+                              ),
+                              IconButton(
+                                icon: const Icon(Icons.circle_outlined),
+                                onPressed: () async {
+                                  audioPlayerManager.pause();
+                                  setState(() {
+                                    if (audioPlayerManager.chkStatePlay()) {
+                                      audioPlayerManager.stop();
+                                    }
+                                  });
+                                  String filename = '0-1-2';
+                                  String txtDetail = 'คำนำ2';
+                                  await audioPlayerManager.playAudio(
+                                      '0', filename, txtDetail);
+                                },
+                              ),
+                            ],
+                          )
+                        : const Text('')
+                    : const Text(''),
+                widget.online || volumeHelper.showVolume
+                    ? pageChanged == 0
+                        ? Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              const Positioned(
+                                bottom: 13, // ระยะห่างจากด้านล่าง
+                                child: Text(
+                                  '3',
+                                  style: TextStyle(fontSize: 10),
+                                ),
+                              ),
+                              IconButton(
+                                icon: const Icon(Icons.circle_outlined),
+                                onPressed: () async {
+                                  audioPlayerManager.pause();
+                                  setState(() {
+                                    if (audioPlayerManager.chkStatePlay()) {
+                                      audioPlayerManager.stop();
+                                    }
+                                  });
+                                  String filename = '0-1-3';
+                                  String txtDetail = 'คำนำ3';
+                                  await audioPlayerManager.playAudio(
+                                      '0', filename, txtDetail);
+                                },
+                              ),
+                            ],
+                          )
+                        : const Text('')
+                    : const Text(''),
+                widget.online || volumeHelper.showVolume
+                    ? pageChanged == 0
+                        ? Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              const Positioned(
+                                bottom: 13, // ระยะห่างจากด้านล่าง
+                                child: Text(
+                                  '4',
+                                  style: TextStyle(fontSize: 10),
+                                ),
+                              ),
+                              IconButton(
+                                icon: const Icon(Icons.circle_outlined),
+                                onPressed: () async {
+                                  audioPlayerManager.pause();
+                                  setState(() {
+                                    if (audioPlayerManager.chkStatePlay()) {
+                                      audioPlayerManager.stop();
+                                    }
+                                  });
+                                  String filename = '0-1-4';
+                                  String txtDetail = 'คำนำ4';
+                                  await audioPlayerManager.playAudio(
+                                      '0', filename, txtDetail);
+                                },
+                              ),
+                            ],
+                          )
+                        : const Text('')
+                    : const Text(''),
+                widget.online || volumeHelper.showVolume
+                    ? pageChanged == 0
+                        ? Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              const Positioned(
+                                bottom: 13, // ระยะห่างจากด้านล่าง
+                                child: Text(
+                                  '5',
+                                  style: TextStyle(fontSize: 10),
+                                ),
+                              ),
+                              IconButton(
+                                icon: const Icon(Icons.circle_outlined),
+                                onPressed: () async {
+                                  audioPlayerManager.pause();
+                                  setState(() {
+                                    if (audioPlayerManager.chkStatePlay()) {
+                                      audioPlayerManager.stop();
+                                    }
+                                  });
+                                  String filename = '0-1-5';
+                                  String txtDetail = 'คำนำ5';
+                                  await audioPlayerManager.playAudio(
+                                      '0', filename, txtDetail);
+                                },
+                              ),
+                            ],
+                          )
+                        : const Text('')
+                    : const Text(''),
+                widget.online || volumeHelper.showVolume
+                    ? pageChanged == 0
+                        ? IconButton(
+                            tooltip: 'หยุดชั่วคราว',
+                            icon: const Icon(Icons.pause),
+                            onPressed: () {
+                              audioPlayerManager.pause();
+                            },
+                          )
+                        : currentPlaylist.isEmpty
+                            ? const Icon(
+                                Icons.stop,
+                                color: Colors.grey,
+                              )
+                            : IconButton(
+                                tooltip: 'หยุดชั่วคราว',
+                                icon: const Icon(Icons.pause),
+                                onPressed: () {
+                                  audioPlayerManager.pause();
+                                },
+                              )
+                    : const Text(''),
+                const Expanded(
+                  child: Text(''),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.visibility),
+                  tooltip: 'เปลี่ยนสีพื้น',
+                  onPressed: () async {
+                    final selectedIndex = await showAlertDialog(context);
+                    if (selectedIndex != null) {
+                      _setColour(
+                          selectedIndex); // หรือจะใช้ค่าที่ส่งกลับมาไป setState()
+                      // ignore: use_build_context_synchronously
+                      Navigator.of(context).pop();
+                      // ignore: use_build_context_synchronously
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                              'เปลี่ยนสีพื้นหลังแล้ว\n\nเพื่อทำการปรับปรุงพื้นหลังใหม่\nกรุณาคลิกเข้าอ่านพระไตรปิฎกอีกครั้งหนึ่ง\n\n'),
+                          duration: Duration(seconds: 4),
                         ),
-                        child: const ATextDiskplaySmall(text: 'พจนานุกรม'),
-                        onPressed: () async {
-                          if (bookTri91.isNotEmpty) {
-                            // print(
-                            //     'bookPageds ${bookTri91[0].bookPages} pageChanged : $pageChanged');
-                            if (bookTri91[0].bookPages != pageChanged) {
-                              // LoadingDialog.hide(context);
-                              _showSnackbar(
-                                  context, 'กรุณากดปุ่มพจนานุกรมอีกครั้ง');
-                              setState(() {});
-                              return;
+                      );
+                    }
+                  },
+                  color: Colors.blue,
+                ),
+                const SizedBox(
+                  width: 5,
+                ),
+                pageChanged == 0
+                    ? const Text('')
+                    : isMobile
+                        ? Align(
+                            alignment: Alignment.centerLeft,
+                            child: TextButton(
+                              style: ButtonStyle(
+                                backgroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                        Colors.blue),
+                              ),
+                              child: const ATextDiskplaySmall(
+                                  text: 'สารบัญหัวข้อธรรม'),
+                              onPressed: () {
+                                _showDialogTitle(context, true);
+                                _scrollToSelectedIndex1();
+                              },
+                            ),
+                          )
+                        : const Text(''),
+                pageChanged == 0
+                    ? const Text('')
+                    : Align(
+                        alignment: Alignment.centerLeft,
+                        child: TextButton(
+                          style: ButtonStyle(
+                            backgroundColor:
+                                MaterialStateProperty.all<Color>(Colors.blue),
+                          ),
+                          child: const ATextDiskplaySmall(text: 'พจนานุกรม'),
+                          onPressed: () async {
+                            if (bookTri91.isNotEmpty) {
+                              // print(
+                              //     'bookPageds ${bookTri91[0].bookPages} pageChanged : $pageChanged');
+                              if (bookTri91[0].bookPages != pageChanged) {
+                                // LoadingDialog.hide(context);
+                                _showSnackbar(
+                                    context, 'กรุณากดปุ่มพจนานุกรมอีกครั้ง');
+                                setState(() {});
+                                return;
+                              }
+
+                              String dictTmp = '';
+                              for (var book in bookTri91) {
+                                dictTmp += '${book.bookDict!},';
+                              }
+
+                              if (dictTmp.isNotEmpty) {
+                                dictTmp =
+                                    dictTmp.substring(0, dictTmp.length - 1);
+                                uniqueItems = removeDuplicatesAndDash(dictTmp);
+                                uniqueItems.sort(
+                                    (a, b) => a.length.compareTo(b.length));
+
+                                String result = uniqueItems.join(',');
+
+                                _showDialogDict(context, result, isMobile);
+                              } else {
+                                _showSnackbar(context, 'ไม่พบข้อมูลคำศัพท์');
+                              }
+
+                              // toggleDrawer();
                             }
-
-                            String dictTmp = '';
-                            for (var book in bookTri91) {
-                              dictTmp += '${book.bookDict!},';
-                            }
-
-                            if (dictTmp.isNotEmpty) {
-                              dictTmp =
-                                  dictTmp.substring(0, dictTmp.length - 1);
-                              uniqueItems = removeDuplicatesAndDash(dictTmp);
-                              uniqueItems
-                                  .sort((a, b) => a.length.compareTo(b.length));
-
-                              String result = uniqueItems.join(',');
-
-                              _showDialogDict(context, result, isMobile);
-                            } else {
-                              _showSnackbar(context, 'ไม่พบข้อมูลคำศัพท์');
-                            }
-
-                            // toggleDrawer();
-                          }
-                        },
+                          },
+                        ),
                       ),
-                    ),
-            ],
+              ],
+            ),
           ),
           Expanded(
             child: Container(
               width: MediaQuery.of(context).size.width - 20.0,
-              margin: const EdgeInsets.all(5.0),
-              padding: const EdgeInsets.all(5.0),
+              margin: const EdgeInsets.all(1.0),
+              padding: const EdgeInsets.all(1.0),
               decoration: BoxDecoration(
+                color: hexToColor(bgColor),
                 border: Border.all(
                   color: Colors.blue,
                   width: 1.0,
@@ -2365,7 +2489,7 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
             // as name suggests, optionally set the default text style
             defaultTextStyle: TextStyle(
                 letterSpacing: 0.4,
-                color: HexColor('#475859'), //Colors.grey[700],
+                color: HexColor(fontColor), //Colors.grey[700],
                 decoration: TextDecoration.none,
                 fontFamily: "THSarabunNew",
                 fontSize: 28),
