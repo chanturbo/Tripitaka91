@@ -26,15 +26,65 @@ class _SearchPagesState extends State<SearchPages> {
   TotalTitleSearch? randDictbt;
   TotalTitleSearchTri? randTri;
   List<String> titleMenu = ["0", "0", "0", "0", "0", "0", "1"];
+  List<String> listResultsDetail = ["0"];
+  final ValueNotifier<int> vinayaTotal = ValueNotifier<int>(0);
+  final ValueNotifier<int> suttantaTotal = ValueNotifier<int>(0);
+  final ValueNotifier<int> abhidhammaTotal = ValueNotifier<int>(0);
 
-  // ฟังก์ชันที่ใช้สำหรับอัปเดตข้อมูลในดัชนีที่ระบุ
   void updateData(int index, String newValue) {
-    // ตรวจสอบว่าดัชนีที่ระบุอยู่ในช่วงของ List
     if (index >= 0 && index < titleMenu.length) {
-      // ทำการอัปเดตข้อมูลเฉพาะดัชนีที่ระบุ
-      titleMenu[index] = newValue;
-      // ไม่ต้องใช้ setState ในกรณีนี้ เนื่องจากเราอัปเดตเฉพาะส่วนหนึ่งของ List
+      final oldValue = int.tryParse(titleMenu[index]) ?? 0;
+      final addValue = int.tryParse(newValue) ?? 0;
+
+      titleMenu[index] = (oldValue + addValue).toString();
     }
+  }
+
+  void updateResults(
+    List<String> listResults,
+    String newInput,
+  ) {
+    // ฟังก์ชันตรวจ format
+    bool isValidFormat(String item) {
+      final regex = RegExp(r'^\d+#\d+$');
+      return regex.hasMatch(item);
+    }
+
+    // แยกข้อมูลใหม่
+    List<String> newItems = newInput.split("|");
+
+    // กรองเฉพาะที่ถูก format
+    newItems = newItems.where((e) => isValidFormat(e)).toList();
+
+    // ถ้าไม่มีข้อมูลถูกต้องเลย → ไม่ต้องทำอะไร
+    if (newItems.isEmpty) return;
+
+    // ถ้ายังเป็นค่าเริ่มต้น
+    if (listResults[0] == "0") {
+      listResults[0] = newItems.join("|");
+      return;
+    }
+
+    // แยกข้อมูลเดิม
+    List<String> oldItems = listResults[0].split("|");
+
+    // กันซ้ำ + รวม
+    Set<String> merged = {};
+    merged.addAll(oldItems);
+    merged.addAll(newItems);
+
+    // sort ตามเลขหน้า #
+    List<String> sortedList = merged.toList()
+      ..sort((a, b) {
+        int aNum = int.parse(a.split("#")[0]);
+        int bNum = int.parse(b.split("#")[0]);
+
+        return aNum.compareTo(bNum);
+      });
+
+    // รวมกลับ
+    listResults[0] = sortedList.join("|");
+    // print(listResults[0]);
   }
 
   @override
@@ -100,9 +150,9 @@ class _SearchPagesState extends State<SearchPages> {
     return randTri;
   }
 
-  Future<TotalTitleSearchTri?> fetchDataTri2() async {
+  Future<TotalTitleSearchTri?> fetchDataTri2(String start, String end) async {
     randTri = await RemoteServiceTri91SearchTotal()
-        .getBookTri91("11", "74", widget.title, tSecretAPIKey);
+        .getBookTri91(start, end, widget.title, tSecretAPIKey);
     updateData(2, randTri!.totalRecords.toString());
     return randTri;
   }
@@ -114,9 +164,117 @@ class _SearchPagesState extends State<SearchPages> {
     return randTri;
   }
 
+  Future<TotalTitleSearchTri?> fetchDataTriSplit(
+      int opt, String start, String end) async {
+    randTri = await RemoteServiceTri91SearchTotalSplit()
+        .getBookTri91(start, end, widget.title, tSecretAPIKey);
+    updateData(opt, randTri!.totalRecords.toString());
+    updateResults(listResultsDetail, randTri!.detailRecords.toString());
+    return randTri;
+  }
+
+  Widget titleByMode(String text, bool isM) {
+    return isM ? ATextTitleMedium18(text: text) : ATextTitleLarge(text: text);
+  }
+
+  Widget triSection({
+    required BuildContext context,
+    required bool isM,
+    required int indexShow,
+    required String from,
+    required String to,
+    required String label,
+    required String nikayaName,
+    required String wordSearch,
+    required dynamic titleMenu,
+    required ValueNotifier<int> totalCounter,
+  }) {
+    return FutureBuilder<TotalTitleSearchTri?>(
+      future: fetchDataTriSplit(indexShow, from, to),
+      builder: (context, snapshot) {
+        /// ⏳ ระหว่างรอ API
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Padding(
+            padding: EdgeInsets.symmetric(vertical: 8),
+            child: Row(
+              children: [
+                SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                ),
+                SizedBox(width: 12),
+                Text(
+                  'กำลังโหลดข้อมูล...',
+                  style: TextStyle(color: Colors.grey),
+                ),
+              ],
+            ),
+          );
+        }
+
+        /// ❌ error → ไม่แสดง
+        if (snapshot.hasError) {
+          return const SizedBox.shrink();
+        }
+
+        final total = snapshot.data?.totalRecords ?? 0;
+
+        /// ❌ ไม่มีข้อมูล → ไม่แสดง
+        if (total <= 0) {
+          return const SizedBox.shrink();
+        }
+
+        /// ✅ บวกเข้าผลรวม (กันบวกซ้ำ)
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          totalCounter.value += total;
+        });
+
+        return Container(
+          padding: const EdgeInsets.all(5),
+          alignment: Alignment.bottomLeft,
+          child: ListTile(
+            leading: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              decoration: BoxDecoration(
+                color: Colors.blue[900],
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Text(
+                label,
+                style: const TextStyle(color: Colors.white),
+              ),
+            ),
+            title: titleByMode(
+              '$nikayaName พบจำนวน $total รายการ',
+              isM,
+            ),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => SearchTabShow(
+                    title: wordSearch,
+                    result: titleMenu,
+                    resultDetail: listResultsDetail,
+                    indexShow: indexShow,
+                    isM: isM,
+                  ),
+                ),
+              );
+            },
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     String wordSearch = widget.title;
+    vinayaTotal.value = 0;
+    suttantaTotal.value = 0;
+    abhidhammaTotal.value = 0;
     return Scaffold(
       appBar: AppBar(
           title: ATextDiskplayLarge(text: 'ผลการค้นหาคำว่า \'$wordSearch\'')),
@@ -171,12 +329,13 @@ class _SearchPagesState extends State<SearchPages> {
                                           text:
                                               'หัวข้อธรรมสำคัญ พบจำนวน $total รายการ'),
                                   onTap: () {
-                                    Navigator.pushReplacement(
+                                    Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) => SearchTabShow(
                                           title: wordSearch,
                                           result: titleMenu,
+                                          resultDetail: listResultsDetail,
                                           indexShow: 0,
                                           isM: widget.isM,
                                         ),
@@ -209,240 +368,238 @@ class _SearchPagesState extends State<SearchPages> {
                         ),
                       ),
                       const Divider(),
-                      Container(
-                        padding: const EdgeInsets.all(5),
-                        alignment: Alignment.bottomLeft,
-                        child: FutureBuilder<TotalTitleSearchTri?>(
-                          future: fetchDataTri1(),
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              // กำลังโหลดข้อมูล
-                              return const Center(
-                                  child: CircularProgressIndicator());
-                            } else if (snapshot.hasError) {
-                              // กรณีเกิดข้อผิดพลาด
-                              return Text('Error: ${snapshot.error}');
-                            } else {
-                              TotalTitleSearchTri? totalTitleSearch =
-                                  snapshot.data;
-                              int total = totalTitleSearch!.totalRecords;
-
-                              // String detail = totalTitleSearch.detailRecords;
-                              // List<String> detailList = detail.split('|');
-                              // List<String> modifiedList =
-                              //     detailList.map((item) {
-                              //   // ใช้ replaceAll เพื่อแทนที่คำ # ด้วย 'พบจำนวน'
-                              //   return '[เล่ม ${item.replaceAll('#', ' จำนวน ')} รายการ]';
-                              // }).toList();
-                              // String result = modifiedList.join('\n');
-                              if (total > 0) {
-                                return ListTile(
-                                  leading: CircleAvatar(
-                                    backgroundColor: Colors.blue[900],
-                                    foregroundColor: Colors.white,
-                                    child: Text(
-                                      total.toString(),
-                                    ),
-                                  ),
-                                  title: widget.isM
-                                      ? ATextTitleMedium18(
-                                          text:
-                                              'พระวินัยปิฎก พบจำนวน $total รายการ',
-                                        )
-                                      : ATextTitleLarge(
-                                          text:
-                                              'พระวินัยปิฎก พบจำนวน $total รายการ',
-                                        ),
-                                  onTap: () {
-                                    Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => SearchTabShow(
-                                          title: wordSearch,
-                                          result: titleMenu,
-                                          indexShow: 1,
-                                          isM: widget.isM,
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                );
-                              } else {
-                                return ListTile(
-                                  leading: CircleAvatar(
-                                    backgroundColor: Colors.grey,
-                                    foregroundColor: Colors.white,
-                                    child: Text(
-                                      total.toString(),
-                                    ),
-                                  ),
-                                  title: widget.isM
-                                      ? ATextTitleMedium18(
-                                          text:
-                                              'พระวินัยปิฎก พบจำนวน $total รายการ',
-                                        )
-                                      : ATextTitleMedium(
-                                          text:
-                                              'พระวินัยปิฎก พบจำนวน $total รายการ',
-                                        ),
-                                );
-                              }
-                            }
-                          },
-                        ),
+                      ValueListenableBuilder<int>(
+                        valueListenable: vinayaTotal,
+                        builder: (context, total, _) {
+                          return ListTile(
+                            title: titleByMode(
+                              total == 0
+                                  ? '[ พระวินัยปิฎก พบจำนวน 0 รายการ ]'
+                                  : '[ พระวินัยปิฎก ]',
+                              widget.isM,
+                            ),
+                          );
+                        },
+                      ),
+                      triSection(
+                        context: context,
+                        isM: widget.isM,
+                        indexShow: 1,
+                        from: '1',
+                        to: '4',
+                        label: 'เล่ม 1-4',
+                        nikayaName: 'มหาวิภังค์',
+                        wordSearch: wordSearch,
+                        titleMenu: titleMenu,
+                        totalCounter: vinayaTotal,
+                      ),
+                      triSection(
+                        context: context,
+                        isM: widget.isM,
+                        indexShow: 1,
+                        from: '5',
+                        to: '5',
+                        label: 'เล่ม 5',
+                        nikayaName: 'ภิกขุนีวิภังค์',
+                        wordSearch: wordSearch,
+                        titleMenu: titleMenu,
+                        totalCounter: vinayaTotal,
+                      ),
+                      triSection(
+                        context: context,
+                        isM: widget.isM,
+                        indexShow: 1,
+                        from: '6',
+                        to: '7',
+                        label: 'เล่ม 6-7',
+                        nikayaName: 'มหาวรรค',
+                        wordSearch: wordSearch,
+                        titleMenu: titleMenu,
+                        totalCounter: vinayaTotal,
+                      ),
+                      triSection(
+                        context: context,
+                        isM: widget.isM,
+                        indexShow: 1,
+                        from: '8',
+                        to: '9',
+                        label: 'เล่ม 8-9',
+                        nikayaName: 'จุลวรรค',
+                        wordSearch: wordSearch,
+                        titleMenu: titleMenu,
+                        totalCounter: vinayaTotal,
+                      ),
+                      triSection(
+                        context: context,
+                        isM: widget.isM,
+                        indexShow: 1,
+                        from: '10',
+                        to: '10',
+                        label: 'เล่ม 10',
+                        nikayaName: 'ปริวาร',
+                        wordSearch: wordSearch,
+                        titleMenu: titleMenu,
+                        totalCounter: vinayaTotal,
                       ),
                       const Divider(),
-                      Container(
-                        padding: const EdgeInsets.all(5),
-                        alignment: Alignment.bottomLeft,
-                        child: FutureBuilder<TotalTitleSearchTri?>(
-                          future: fetchDataTri2(),
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              // กำลังโหลดข้อมูล
-                              return const Center(
-                                  child: CircularProgressIndicator());
-                            } else if (snapshot.hasError) {
-                              // กรณีเกิดข้อผิดพลาด
-                              return Text('Error: ${snapshot.error}');
-                            } else {
-                              TotalTitleSearchTri? totalTitleSearch =
-                                  snapshot.data;
-                              int total = totalTitleSearch!.totalRecords;
-
-                              if (total > 0) {
-                                return ListTile(
-                                  leading: CircleAvatar(
-                                    backgroundColor: Colors.blue[900],
-                                    foregroundColor: Colors.white,
-                                    child: Text(
-                                      total.toString(),
-                                    ),
-                                  ),
-                                  title: widget.isM
-                                      ? ATextTitleMedium18(
-                                          text:
-                                              'พระสุตตันตปิฎก พบจำนวน $total รายการ',
-                                        )
-                                      : ATextTitleLarge(
-                                          text:
-                                              'พระสุตตันตปิฎก พบจำนวน $total รายการ',
-                                        ),
-                                  onTap: () {
-                                    Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => SearchTabShow(
-                                          title: wordSearch,
-                                          result: titleMenu,
-                                          indexShow: 2,
-                                          isM: widget.isM,
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                );
-                              } else {
-                                return ListTile(
-                                  leading: CircleAvatar(
-                                    backgroundColor: Colors.grey,
-                                    foregroundColor: Colors.white,
-                                    child: Text(
-                                      total.toString(),
-                                    ),
-                                  ),
-                                  title: widget.isM
-                                      ? ATextTitleMedium18(
-                                          text:
-                                              'พระสุตตันตปิฎก พบจำนวน $total รายการ',
-                                        )
-                                      : ATextTitleMedium(
-                                          text:
-                                              'พระสุตตันตปิฎก พบจำนวน $total รายการ',
-                                        ),
-                                );
-                              }
-                            }
-                          },
-                        ),
+                      ValueListenableBuilder<int>(
+                        valueListenable: suttantaTotal,
+                        builder: (context, total, _) {
+                          return ListTile(
+                            title: titleByMode(
+                              total == 0
+                                  ? '[ พระสุตตันตปิฎก จำนวน 0 รายการ ]'
+                                  : '[ พระสุตตันตปิฎก ]',
+                              widget.isM,
+                            ),
+                          );
+                        },
+                      ),
+                      triSection(
+                        context: context,
+                        isM: widget.isM,
+                        indexShow: 2,
+                        from: '11',
+                        to: '16',
+                        label: 'เล่ม 11-16',
+                        nikayaName: 'ทีฆนิกาย',
+                        wordSearch: wordSearch,
+                        titleMenu: titleMenu,
+                        totalCounter: suttantaTotal,
+                      ),
+                      triSection(
+                        context: context,
+                        isM: widget.isM,
+                        indexShow: 2,
+                        from: '17',
+                        to: '23',
+                        label: 'เล่ม 17-23',
+                        nikayaName: 'มัชฌิมนิกาย',
+                        wordSearch: wordSearch,
+                        titleMenu: titleMenu,
+                        totalCounter: suttantaTotal,
+                      ),
+                      triSection(
+                        context: context,
+                        isM: widget.isM,
+                        indexShow: 2,
+                        from: '24',
+                        to: '31',
+                        label: 'เล่ม 24-31',
+                        nikayaName: 'สังยุตตนิกาย',
+                        wordSearch: wordSearch,
+                        titleMenu: titleMenu,
+                        totalCounter: suttantaTotal,
+                      ),
+                      triSection(
+                        context: context,
+                        isM: widget.isM,
+                        indexShow: 2,
+                        from: '32',
+                        to: '38',
+                        label: 'เล่ม 32-38',
+                        nikayaName: 'อังคุตตรนิกาย',
+                        wordSearch: wordSearch,
+                        titleMenu: titleMenu,
+                        totalCounter: suttantaTotal,
+                      ),
+                      triSection(
+                        context: context,
+                        isM: widget.isM,
+                        indexShow: 2,
+                        from: '39',
+                        to: '74',
+                        label: 'เล่ม 39-74',
+                        nikayaName: 'ขุททกนิกาย',
+                        wordSearch: wordSearch,
+                        titleMenu: titleMenu,
+                        totalCounter: suttantaTotal,
                       ),
                       const Divider(),
-                      Container(
-                        padding: const EdgeInsets.all(5),
-                        alignment: Alignment.bottomLeft,
-                        child: FutureBuilder<TotalTitleSearchTri?>(
-                          future: fetchDataTri3(),
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              // กำลังโหลดข้อมูล
-                              return const Center(
-                                  child: CircularProgressIndicator());
-                            } else if (snapshot.hasError) {
-                              // กรณีเกิดข้อผิดพลาด
-                              return Text('Error: ${snapshot.error}');
-                            } else {
-                              TotalTitleSearchTri? totalTitleSearch =
-                                  snapshot.data;
-                              int total = totalTitleSearch!.totalRecords;
-
-                              if (total > 0) {
-                                return ListTile(
-                                  leading: CircleAvatar(
-                                    backgroundColor: Colors.blue[900],
-                                    foregroundColor: Colors.white,
-                                    child: Text(
-                                      total.toString(),
-                                    ),
-                                  ),
-                                  title: widget.isM
-                                      ? ATextTitleMedium18(
-                                          text:
-                                              'พระอภิธรรมปิฎก พบจำนวน $total รายการ',
-                                        )
-                                      : ATextTitleLarge(
-                                          text:
-                                              'พระอภิธรรมปิฎก พบจำนวน $total รายการ',
-                                        ),
-                                  onTap: () {
-                                    Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => SearchTabShow(
-                                          title: wordSearch,
-                                          result: titleMenu,
-                                          indexShow: 3,
-                                          isM: widget.isM,
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                );
-                              } else {
-                                return ListTile(
-                                  leading: CircleAvatar(
-                                    backgroundColor: Colors.grey,
-                                    foregroundColor: Colors.white,
-                                    child: Text(
-                                      total.toString(),
-                                    ),
-                                  ),
-                                  title: widget.isM
-                                      ? ATextTitleMedium18(
-                                          text:
-                                              'พระอภิธรรมปิฎก พบจำนวน $total รายการ',
-                                        )
-                                      : ATextTitleMedium(
-                                          text:
-                                              'พระอภิธรรมปิฎก พบจำนวน $total รายการ',
-                                        ),
-                                );
-                              }
-                            }
-                          },
-                        ),
+                      ValueListenableBuilder<int>(
+                        valueListenable: abhidhammaTotal,
+                        builder: (context, total, _) {
+                          return ListTile(
+                            title: titleByMode(
+                              total == 0
+                                  ? '[ พระอภิธรรมปิฎก จำนวน 0 รายการ ]'
+                                  : '[ พระอภิธรรมปิฎก ]',
+                              widget.isM,
+                            ),
+                          );
+                        },
+                      ),
+                      triSection(
+                        context: context,
+                        isM: widget.isM,
+                        indexShow: 3,
+                        from: '75',
+                        to: '76',
+                        label: 'เล่ม 75-76',
+                        nikayaName: 'ธรรมสังคณี',
+                        wordSearch: wordSearch,
+                        titleMenu: titleMenu,
+                        totalCounter: abhidhammaTotal,
+                      ),
+                      triSection(
+                        context: context,
+                        isM: widget.isM,
+                        indexShow: 3,
+                        from: '77',
+                        to: '78',
+                        label: 'เล่ม 77-78',
+                        nikayaName: 'วิภังค์',
+                        wordSearch: wordSearch,
+                        titleMenu: titleMenu,
+                        totalCounter: abhidhammaTotal,
+                      ),
+                      triSection(
+                        context: context,
+                        isM: widget.isM,
+                        indexShow: 3,
+                        from: '79',
+                        to: '79',
+                        label: 'เล่ม 79',
+                        nikayaName: 'ธาตุกถา-บุคคลบัญญัติ',
+                        wordSearch: wordSearch,
+                        titleMenu: titleMenu,
+                        totalCounter: abhidhammaTotal,
+                      ),
+                      triSection(
+                        context: context,
+                        isM: widget.isM,
+                        indexShow: 3,
+                        from: '80',
+                        to: '81',
+                        label: 'เล่ม 80-81',
+                        nikayaName: 'กถาวัตถุ',
+                        wordSearch: wordSearch,
+                        titleMenu: titleMenu,
+                        totalCounter: abhidhammaTotal,
+                      ),
+                      triSection(
+                        context: context,
+                        isM: widget.isM,
+                        indexShow: 3,
+                        from: '82',
+                        to: '84',
+                        label: 'เล่ม 82-84',
+                        nikayaName: 'ยมก',
+                        wordSearch: wordSearch,
+                        titleMenu: titleMenu,
+                        totalCounter: abhidhammaTotal,
+                      ),
+                      triSection(
+                        context: context,
+                        isM: widget.isM,
+                        indexShow: 3,
+                        from: '85',
+                        to: '91',
+                        label: 'เล่ม 85-91',
+                        nikayaName: 'ปัฏฐาน',
+                        wordSearch: wordSearch,
+                        titleMenu: titleMenu,
+                        totalCounter: abhidhammaTotal,
                       ),
                       const Divider(),
                       Container(
@@ -480,12 +637,13 @@ class _SearchPagesState extends State<SearchPages> {
                                               'พจนานุกรม ฉบับประมวลศัพท์ พบจำนวน $total รายการ',
                                         ),
                                   onTap: () {
-                                    Navigator.pushReplacement(
+                                    Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) => SearchTabShow(
                                           title: wordSearch,
                                           result: titleMenu,
+                                          resultDetail: listResultsDetail,
                                           indexShow: 4,
                                           isM: widget.isM,
                                         ),
@@ -552,12 +710,13 @@ class _SearchPagesState extends State<SearchPages> {
                                           text:
                                               'พจนานุกรม ไทย-บาลี พบจำนวน $total รายการ'),
                                   onTap: () {
-                                    Navigator.pushReplacement(
+                                    Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) => SearchTabShow(
                                           title: wordSearch,
                                           result: titleMenu,
+                                          resultDetail: listResultsDetail,
                                           indexShow: 5,
                                           isM: widget.isM,
                                         ),
@@ -605,12 +764,13 @@ class _SearchPagesState extends State<SearchPages> {
                               : const ATextTitleLarge(
                                   text: 'ค้นหาจากคำใกล้เคียง จำนวน 1+ รายการ'),
                           onTap: () {
-                            Navigator.pushReplacement(
+                            Navigator.push(
                               context,
                               MaterialPageRoute(
                                 builder: (context) => SearchTabShow(
                                   title: wordSearch,
                                   result: titleMenu,
+                                  resultDetail: listResultsDetail,
                                   indexShow: 6,
                                   isM: widget.isM,
                                 ),

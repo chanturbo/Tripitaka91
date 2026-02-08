@@ -19,6 +19,7 @@ import 'package:tripitaka91/widget/search/search_show_tri91_onpage.dart';
 class SearchTabShow extends StatelessWidget {
   final String title;
   final List<String> result;
+  final List<String> resultDetail;
   final int indexShow;
   final bool isM;
 
@@ -26,6 +27,7 @@ class SearchTabShow extends StatelessWidget {
       {super.key,
       required this.title,
       required this.result,
+      required this.resultDetail,
       required this.indexShow,
       required this.isM});
 
@@ -40,42 +42,49 @@ class SearchTabShow extends StatelessWidget {
               title: title,
               indexLocal: 0,
               result: result,
+              resultDetail: resultDetail,
               isM: isM,
             ),
             MyPageTabDetail(
               title: title,
               indexLocal: 1,
               result: result,
+              resultDetail: resultDetail,
               isM: isM,
             ),
             MyPageTabDetail(
               title: title,
               indexLocal: 2,
               result: result,
+              resultDetail: resultDetail,
               isM: isM,
             ),
             MyPageTabDetail(
               title: title,
               indexLocal: 3,
               result: result,
+              resultDetail: resultDetail,
               isM: isM,
             ),
             MyPageTabDetail(
               title: title,
               indexLocal: 4,
               result: result,
+              resultDetail: resultDetail,
               isM: isM,
             ),
             MyPageTabDetail(
               title: title,
               indexLocal: 5,
               result: result,
+              resultDetail: resultDetail,
               isM: isM,
             ),
             MyPageTabDetail(
               title: title,
               indexLocal: 6,
               result: result,
+              resultDetail: resultDetail,
               isM: isM,
             ),
           ],
@@ -178,12 +187,14 @@ class MyPageTabDetail extends StatefulWidget {
   final String title;
   final int indexLocal;
   final List<String> result;
+  final List<String> resultDetail;
   final bool isM;
   const MyPageTabDetail({
     super.key,
     required this.title,
     required this.indexLocal,
     required this.result,
+    required this.resultDetail,
     required this.isM,
   });
 
@@ -249,21 +260,37 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
   }
 
   Future<TotalTitleSearchTri?> loadDataTri1() async {
-    randTri = await RemoteServiceTri91SearchTotal()
-        .getBookTri91("1", "10", widget.title, tSecretAPIKey);
-    return randTri;
+    // randTri = await RemoteServiceTri91SearchTotal()
+    //     .getBookTri91("1", "10", widget.title, tSecretAPIKey);
+    // return randTri;
+    return filterByRange(
+      widget.resultDetail[0],
+      1,
+      10,
+    );
   }
 
   Future<TotalTitleSearchTri?> loadDataTri2() async {
-    randTri = await RemoteServiceTri91SearchTotal()
-        .getBookTri91("11", "74", widget.title, tSecretAPIKey);
-    return randTri;
+    // randTri = await RemoteServiceTri91SearchTotal()
+    //     .getBookTri91("11", "74", widget.title, tSecretAPIKey);
+    // return randTri;
+    return filterByRange(
+      widget.resultDetail[0],
+      11,
+      74,
+    );
   }
 
   Future<TotalTitleSearchTri?> loadDataTri3() async {
-    randTri = await RemoteServiceTri91SearchTotal()
-        .getBookTri91("75", "91", widget.title, tSecretAPIKey);
-    return randTri;
+    // randTri = await RemoteServiceTri91SearchTotal()
+    //     .getBookTri91("75", "91", widget.title, tSecretAPIKey);
+    // return randTri;
+
+    return filterByRange(
+      widget.resultDetail[0],
+      75,
+      91,
+    );
   }
 
   Future<TotalTitleSearch?> fetchDict() async {
@@ -277,6 +304,47 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
         .getTitle(widget.title, tSecretAPIKey);
 
     return randDict;
+  }
+
+  TotalTitleSearchTri filterByRange(
+    String source,
+    int start,
+    int end,
+  ) {
+    // แยกข้อมูลทั้งหมด
+    List<String> items = source.split("|");
+
+    List<String> filtered = [];
+    int sum = 0;
+
+    // วนคัดช่วง
+    for (var item in items) {
+      List<String> parts = item.split("#");
+
+      if (parts.length != 2) continue;
+
+      int front = int.tryParse(parts[0]) ?? -1;
+      int value = int.tryParse(parts[1]) ?? 0;
+
+      if (front >= start && front <= end) {
+        filtered.add(item);
+        sum += value;
+      }
+    }
+
+    // 👉 ใส่ตรงนี้ (หลัง loop)
+    if (filtered.isEmpty) {
+      return TotalTitleSearchTri(
+        totalRecords: 0,
+        detailRecords: "",
+      );
+    }
+
+    // return ปกติ
+    return TotalTitleSearchTri(
+      totalRecords: sum,
+      detailRecords: filtered.join("|"),
+    );
   }
 
   void _scrollToSelectedIndex1() {
@@ -313,6 +381,44 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
         );
       }
     });
+  }
+
+  String getNikayaName(int bookNo) {
+    if (bookNo >= 1 && bookNo <= 4) {
+      return '[ มหาวิภังค์ ]';
+    } else if (bookNo == 5) {
+      return '[ ภิกขุนีวิภังค์ ]';
+    } else if (bookNo >= 6 && bookNo <= 7) {
+      return '[ มหาวรรค ]';
+    } else if (bookNo >= 8 && bookNo <= 9) {
+      return '[ จุลวรรค ]';
+    } else if (bookNo == 10) {
+      return '[ ปริวาร ]';
+    } else if (bookNo >= 11 && bookNo <= 16) {
+      return '[ ทีฆนิกาย ]';
+    } else if (bookNo >= 17 && bookNo <= 23) {
+      return '[ มัชฌิมนิกาย ]';
+    } else if (bookNo >= 24 && bookNo <= 31) {
+      return '[ สังยุตตนิกาย ]';
+    } else if (bookNo >= 32 && bookNo <= 38) {
+      return '[ อังคุตตรนิกาย ]';
+    } else if (bookNo >= 39 && bookNo <= 74) {
+      return '[ ขุททกนิกาย ]';
+    } else if (bookNo >= 75 && bookNo <= 76) {
+      return '[ ธรรมสังคณี ]';
+    } else if (bookNo >= 77 && bookNo <= 78) {
+      return '[ วิภังค์ ]';
+    } else if (bookNo == 79) {
+      return '[ ธาตุกถา-บุคคลบัญญัติ ]';
+    } else if (bookNo >= 80 && bookNo <= 81) {
+      return '[ กถาวัตถุ ]';
+    } else if (bookNo >= 82 && bookNo <= 84) {
+      return '[ ยมก ]';
+    } else if (bookNo >= 85 && bookNo <= 91) {
+      return '[ ปัฏฐาน ]';
+    } else {
+      return '-';
+    }
   }
 
   @override
@@ -398,6 +504,9 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                                     widget.isM ? 18.0 : 16.0,
                                                 color: Colors.black),
                                           ),
+                                          subtitle: Text(
+                                            getNikayaName(int.parse(strBook)),
+                                          ),
                                           onTap: () {
                                             Navigator.push(
                                               context,
@@ -458,6 +567,10 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                                             ? 18.0
                                                             : 16.0,
                                                         color: Colors.black),
+                                                  ),
+                                                  subtitle: Text(
+                                                    getNikayaName(
+                                                        int.parse(strBook)),
                                                   ),
                                                   onTap: () {
                                                     setState(() {
@@ -569,6 +682,10 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                                         : 16.0,
                                                     color: Colors.black),
                                               ),
+                                              subtitle: Text(
+                                                getNikayaName(
+                                                    int.parse(strBook)),
+                                              ),
                                               onTap: () {
                                                 Navigator.push(
                                                   context,
@@ -630,6 +747,10 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                                                 : 16.0,
                                                             color:
                                                                 Colors.black),
+                                                      ),
+                                                      subtitle: Text(
+                                                        getNikayaName(
+                                                            int.parse(strBook)),
                                                       ),
                                                       onTap: () {
                                                         setState(() {
@@ -744,6 +865,10 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                                             : 16.0,
                                                         color: Colors.black),
                                                   ),
+                                                  subtitle: Text(
+                                                    getNikayaName(
+                                                        int.parse(strBook)),
+                                                  ),
                                                   onTap: () {
                                                     Navigator.push(
                                                       context,
@@ -811,6 +936,11 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                                                         : 16.0,
                                                                 color: Colors
                                                                     .black),
+                                                          ),
+                                                          subtitle: Text(
+                                                            getNikayaName(
+                                                                int.parse(
+                                                                    strBook)),
                                                           ),
                                                           onTap: () {
                                                             setState(() {
