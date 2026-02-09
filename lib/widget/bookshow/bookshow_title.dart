@@ -18,7 +18,6 @@ import 'package:tripitaka91/utils/models/users.dart';
 import 'package:tripitaka91/utils/play_audio/audio_manager.dart';
 import 'package:tripitaka91/utils/shared_preferences/shared_user.dart';
 import 'package:tripitaka91/utils/text_title_replace/text_title_replace.dart';
-import 'package:tripitaka91/utils/video/video_utils.dart';
 import 'package:tripitaka91/widget/audio/edit_speak.dart';
 import 'package:tripitaka91/widget/auto_text/auto_text.dart';
 import 'package:tripitaka91/widget/bookshow/show_title_list.dart';
@@ -69,7 +68,7 @@ class _BookShowTitleState extends State<BookShowTitle> {
   final SharedImageGenerator sharedImageGenerator = SharedImageGenerator();
   Users? usersChk;
   final SharedImageLocal sharedImageLocal = SharedImageLocal();
-  final VideoGenerator videoGenerator = VideoGenerator();
+
   final volumeHelper = VolumeHelper();
 
   @override
@@ -812,101 +811,7 @@ class _BookShowTitleState extends State<BookShowTitle> {
                                       color: Colors.blue[300],
                                     ),
                                   ),
-                                  const SizedBox(width: 10),
-                                  widget.online
-                                      ? InkWell(
-                                          onTap: () async {
-                                            LoadingDialog.show(context);
-                                            String bookIds = textTitleReplace
-                                                .getBookId(dataTitle[index]);
-                                            String pageId = textTitleReplace
-                                                .getPageId(dataTitle[index]);
-                                            String bookLine = textTitleReplace
-                                                .getLineId(dataTitle[index]);
-                                            String noTitleCate =
-                                                textTitleReplace
-                                                    .getCate(dataTitle[index]);
-                                            String noTitle = textTitleReplace
-                                                .getNo(dataTitle[index]);
-
-                                            String txtTitle =
-                                                textTitleReplace.replaceText(
-                                                    textTitleReplace
-                                                        .extractText(
-                                                            dataTitle[index]),
-                                                    textTitleReplace
-                                                        .getBookBlue(
-                                                            dataTitle[index]));
-
-                                            String filename =
-                                                noTitleCate.replaceAll('.', '');
-                                            filename =
-                                                '$filename-$noTitle-$bookIds-$pageId-$bookLine';
-                                            String? urlMp3 =
-                                                await audioPlayerManager
-                                                    .createAudio('1', filename,
-                                                        txtTitle);
-                                            if (urlMp3 != null) {
-                                              String bookIds = textTitleReplace
-                                                  .getBookId(dataTitle[index]);
-                                              String pageId = textTitleReplace
-                                                  .getPageId(dataTitle[index]);
-                                              String bookLine = textTitleReplace
-                                                  .getLineId(dataTitle[index]);
-                                              String txtTitle =
-                                                  '${textTitleReplace.extractText(dataTitle[index]).replaceAll(textTitleReplace.getBookBlue(dataTitle[index]), '')} ';
-
-                                              final String? imagePath =
-                                                  // ignore: use_build_context_synchronously
-                                                  await sharedImageLocal
-                                                      .generateAndSave(
-                                                context: context,
-                                                bookTitle: txtTitle.replaceAll(
-                                                    '', ''),
-                                                bookid: bookIds,
-                                                pageid: pageId.toString(),
-                                                lineid: bookLine,
-                                                bookBlue: textTitleReplace
-                                                    .getBookBlue(
-                                                        dataTitle[index]),
-                                                bookRed:
-                                                    textTitleReplace.getBookRed(
-                                                        dataTitle[index]),
-                                              );
-
-                                              if (imagePath != null) {
-                                                // print('Image saved at $imagePath');
-                                                await videoGenerator
-                                                    .generateAndSaveVideo(
-                                                        imagePath, urlMp3);
-                                                // ignore: use_build_context_synchronously
-                                                _showSnackbar(context,
-                                                    'บันทึกวิดีโอสำเร็จในแกลเลอรี่.');
-                                              } else {
-                                                // ignore: use_build_context_synchronously
-                                                _showSnackbar(context,
-                                                    'ไม่สามารถบันทึกไฟล์รูปภาพได้.');
-                                              }
-                                            } else {
-                                              // ถ้า url เป็น null สามารถจัดการได้ตามที่ต้องการ
-                                              // ignore: use_build_context_synchronously
-                                              _showSnackbar(context,
-                                                  "ไม่สามารถสร้าง URL ได้.");
-                                            }
-                                            // ignore: use_build_context_synchronously
-                                            LoadingDialog.hide(context);
-                                          },
-                                          child: Icon(
-                                            Icons.videocam,
-                                            size: widget.isMobile ? 23 : 18,
-                                            color: Colors.blue[
-                                                300], // Change color as needed
-                                          ),
-                                        )
-                                      : const Text(''),
-                                  widget.online
-                                      ? const SizedBox(width: 10)
-                                      : const SizedBox.shrink(),
+                                  const SizedBox(width: 10),                                  
                                   InkWell(
                                     onTap: () async {
                                       String bookIds = textTitleReplace
