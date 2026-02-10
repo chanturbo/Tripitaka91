@@ -44,7 +44,6 @@ class _SearchShowPagesTitleState extends State<SearchShowPagesTitle> {
   AudioPlayerManager audioPlayerManager = AudioPlayerManager();
   final SharedImageGenerator sharedImageGenerator = SharedImageGenerator();
   final SharedImageLocal sharedImageLocal = SharedImageLocal();
-
   final volumeHelper = VolumeHelper();
   @override
   void initState() {
@@ -291,8 +290,7 @@ class _SearchShowPagesTitleState extends State<SearchShowPagesTitle> {
                               color: Colors.blue[300],
                             ),
                           ),
-                          const SizedBox(width: 10),
-                          
+                          const SizedBox(width: 10),                          
                           InkWell(
                             onTap: () async {
                               String bookIds =

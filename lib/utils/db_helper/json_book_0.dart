@@ -19,7 +19,7 @@ String jsonBookString = '''
         "book_id": 0,
         "book_pages": 1,
         "book_line": 2,
-        "book_detail": "          พระพุทธวจนะ คือ พระไตรปิฎก รวมเป็นศาสนาธรรมคำสอนของ",
+        "book_detail": "          พระพุทธวจนะ คือ พระไตรปิฎก รวมเป็นศาสนธรรมคำสอนของ",
         "book_lines": 2,
         "book_edit": null,
         "book_dict": null,

@@ -30,7 +30,7 @@ class TAppTheme {
     drawerTheme: const DrawerThemeData(
       backgroundColor: TColors.white,
     ),
-    dialogTheme: const DialogThemeData(
+     dialogTheme: const DialogThemeData(
       backgroundColor: Colors.white,
     ),
   );

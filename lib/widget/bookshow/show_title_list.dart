@@ -46,7 +46,6 @@ class _SearchShowPagesTitleListState extends State<SearchShowPagesTitleList> {
   Users? usersChk;
   final SharedImageGenerator sharedImageGenerator = SharedImageGenerator();
   final SharedImageLocal sharedImageLocal = SharedImageLocal();
-
   final volumeHelper = VolumeHelper();
 
   @override
@@ -476,8 +475,7 @@ class _SearchShowPagesTitleListState extends State<SearchShowPagesTitleList> {
                               color: Colors.blue[300],
                             ),
                           ),
-                          const SizedBox(width: 10),
-                          
+                          const SizedBox(width: 10),                          
                           InkWell(
                             onTap: () async {
                               String bookIds =

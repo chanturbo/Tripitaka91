@@ -547,8 +547,7 @@ class _ShowTitlePagesState extends State<ShowTitlePages> {
                               color: Colors.blue[300],
                             ),
                           ),
-                          const SizedBox(width: 10),
-                         
+                          const SizedBox(width: 10),                          
                           InkWell(
                             onTap: () async {
                               String bookIds =

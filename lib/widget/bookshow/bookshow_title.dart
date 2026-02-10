@@ -68,7 +68,6 @@ class _BookShowTitleState extends State<BookShowTitle> {
   final SharedImageGenerator sharedImageGenerator = SharedImageGenerator();
   Users? usersChk;
   final SharedImageLocal sharedImageLocal = SharedImageLocal();
-
   final volumeHelper = VolumeHelper();
 
   @override

@@ -102,7 +102,6 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
   final SharedImageGenerator sharedImageGenerator = SharedImageGenerator();
   final SharedImageLocal sharedImageLocal = SharedImageLocal();
 
-
   final dbHelper = DatabaseHelper();
   final volumeHelper = VolumeHelper();
   double _fontSize = 26;
@@ -1392,7 +1391,6 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
                     ),
                   ),
                   const SizedBox(width: 10),
-                  
                   InkWell(
                     onTap: () async {
                       String txtTitle =

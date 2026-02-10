@@ -1,9 +1,11 @@
 name: tripitaka91
 description: พระไตรปิฎกและอรรถกถาแปล ชุด 91 เล่ม ฉบับ มมร. (เล่มสีน้ำเงิน)
 publish_to: 'none' 
-version: 4.0.0+47
+
+version: 4.0.0+48
+
 environment:
-  sdk: '>=3.4.0 <4.0.0'
+  sdk: ^3.9.2
 
 dependencies:
   flutter:
@@ -92,4 +94,4 @@ flutter:
   
   - family: CupertinoIcons
     fonts:
-      - asset: assets/fonts/CupertinoIcons.ttf     
+      - asset: assets/fonts/CupertinoIcons.ttf  

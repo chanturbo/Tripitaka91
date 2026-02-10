@@ -305,8 +305,7 @@ class _TitleCardState extends State<TitleCard> {
                     color: Colors.blue[300], // Change color as needed
                   ),
                 ),
-                const SizedBox(width: 10),
-                
+                const SizedBox(width: 10),                
                 InkWell(
                   onTap: () async {
                     String txtTitle = textReplacer.replaceText(
