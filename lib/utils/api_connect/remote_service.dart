@@ -171,6 +171,51 @@ class RemoteServiceTri91SearchTotal {
   }
 }
 
+class RemoteServiceTri91SearchTotalSplit {
+  Future<TotalTitleSearchTri?> getBookTri91(
+      String bookId, String bookEnd, String wordSearch, String token) async {
+    var client = http.Client();
+    var uri = Uri.parse(tURLbooktri91SearchSplit);
+
+    // สร้าง Map ที่มีข้อมูลที่ต้องการส่งไปด้วย
+    var data = {
+      'bookid': bookId,
+      'bookidend': bookEnd,
+      'wordsearch': wordSearch.replaceAll(' ', '%'),
+      'token': token,
+    };
+
+    // สร้าง request แบบ POST พร้อมส่งข้อมูล
+    var response = await client.post(
+      uri,
+      body: data,
+    );
+
+    if (response.statusCode == 200) {
+      var json = response.body;
+      var decodedJson = jsonDecode(utf8.decode(json.runes.toList()));
+      // var unicodeJson = jsonEncode(decodedJson);
+
+      // ตรวจสอบว่ามีข้อมูลหรือไม่
+      var total = decodedJson['total_records'];
+      var detail = decodedJson['detail_records'];
+      if (decodedJson != null && decodedJson['total_records'] != null) {
+        // return totalTitleSearchFromJson(unicodeJson);
+        if (total == '-1') {
+          return TotalTitleSearchTri(totalRecords: 0, detailRecords: '-');
+        } else {
+          return TotalTitleSearchTri(
+              totalRecords: int.parse(total), detailRecords: detail);
+        }
+      } else {
+        // ไม่พบข้อมูล
+        return TotalTitleSearchTri(totalRecords: 0, detailRecords: '-');
+      }
+    }
+    return null;
+  }
+}
+
 class RemoteServiceTitleSearchTotal {
   Future<TotalTitleSearch?> getTitle(String wordSearch, String token) async {
     var client = http.Client();
