@@ -20,8 +20,7 @@ class RemoteServiceRandTitle {
     var response = await client.post(uri);
     if (response.statusCode == 200) {
       var json = response.body;
-      var decodedJson = jsonDecode(
-          utf8.decode(json.runes.toList())); // เพิ่ม utf8.decode ที่นี่
+      var decodedJson = jsonDecode(json); 
       var unicodeJson = jsonEncode(decodedJson);
       return randTitleFromJson(unicodeJson);
     }
@@ -49,7 +48,7 @@ class RemoteServiceUserCheck {
 
     if (response.statusCode == 200) {
       var json = response.body;
-      var decodedJson = jsonDecode(utf8.decode(json.runes.toList()));
+      var decodedJson = jsonDecode(json); 
       var unicodeJson = jsonEncode(decodedJson);
       return usersFromJson(unicodeJson);
     }
@@ -77,7 +76,7 @@ class RemoteServiceLogEdit {
 
     if (response.statusCode == 200) {
       var json = response.body;
-      var decodedJson = jsonDecode(utf8.decode(json.runes.toList()));
+      var decodedJson = jsonDecode(json); 
       var unicodeJson = jsonEncode(decodedJson);
       return logeditFromJson(unicodeJson);
     }
@@ -107,7 +106,7 @@ class RemoteServiceTitle {
       var json = response.body;
 
       try {
-        var jsonResponse = jsonDecode(utf8.decode(json.runes.toList()));
+        var jsonResponse = jsonDecode(json); 
 
         if (jsonResponse['success'] == true) {
           var message = jsonResponse['message'];
@@ -148,7 +147,7 @@ class RemoteServiceTri91SearchTotal {
 
     if (response.statusCode == 200) {
       var json = response.body;
-      var decodedJson = jsonDecode(utf8.decode(json.runes.toList()));
+      var decodedJson = jsonDecode(json); 
       // var unicodeJson = jsonEncode(decodedJson);
 
       // ตรวจสอบว่ามีข้อมูลหรือไม่
@@ -193,12 +192,13 @@ class RemoteServiceTri91SearchTotalSplit {
 
     if (response.statusCode == 200) {
       var json = response.body;
-      var decodedJson = jsonDecode(utf8.decode(json.runes.toList()));
+      var decodedJson = jsonDecode(json); 
       // var unicodeJson = jsonEncode(decodedJson);
 
       // ตรวจสอบว่ามีข้อมูลหรือไม่
       var total = decodedJson['total_records'];
       var detail = decodedJson['detail_records'];
+      
       if (decodedJson != null && decodedJson['total_records'] != null) {
         // return totalTitleSearchFromJson(unicodeJson);
         if (total == '-1') {
@@ -235,7 +235,7 @@ class RemoteServiceTitleSearchTotal {
 
     if (response.statusCode == 200) {
       var json = response.body;
-      var decodedJson = jsonDecode(utf8.decode(json.runes.toList()));
+      var decodedJson = jsonDecode(json); 
       // var unicodeJson = jsonEncode(decodedJson);
 
       // ตรวจสอบว่ามีข้อมูลหรือไม่
@@ -272,7 +272,7 @@ class RemoteServiceDictSearchTotal {
 
     if (response.statusCode == 200) {
       var json = response.body;
-      var decodedJson = jsonDecode(utf8.decode(json.runes.toList()));
+      var decodedJson = jsonDecode(json); 
       // var unicodeJson = jsonEncode(decodedJson);
       // print(unicodeJson);
       // ตรวจสอบว่ามีข้อมูลหรือไม่
@@ -309,7 +309,7 @@ class RemoteServiceDictbtSearchTotal {
 
     if (response.statusCode == 200) {
       var json = response.body;
-      var decodedJson = jsonDecode(utf8.decode(json.runes.toList()));
+      var decodedJson = jsonDecode(json); 
       // var unicodeJson = jsonEncode(decodedJson);
 
       // ตรวจสอบว่ามีข้อมูลหรือไม่
@@ -361,7 +361,7 @@ class RemoteServiceSoundsGetLink {
 
     if (response.statusCode == 200) {
       var json = response.body;
-      var decodedJson = jsonDecode(utf8.decode(json.runes.toList()));
+      var decodedJson = jsonDecode(json); 
       return [SoundsGetLink.fromJson(decodedJson)];
     }
 
@@ -388,7 +388,7 @@ class RemoteServiceTitleShow {
 
     if (response.statusCode == 200) {
       var json = response.body;
-      var decodedJson = jsonDecode(utf8.decode(json.runes.toList()));
+      var decodedJson = jsonDecode(json); 
       var unicodeJson = jsonEncode(decodedJson);
       return randTitleFromJson(unicodeJson);
     }
@@ -416,7 +416,7 @@ class RemoteServiceTitleSearch {
 
     if (response.statusCode == 200) {
       var json = response.body;
-      var decodedJson = jsonDecode(utf8.decode(json.runes.toList()));
+      var decodedJson = jsonDecode(json); 
       var unicodeJson = jsonEncode(decodedJson);
       // print(unicodeJson);
       return randTitleFromJson(unicodeJson);
@@ -446,7 +446,7 @@ class RemoteServiceBookTri91Html {
 
     if (response.statusCode == 200) {
       var json = response.body;
-      var decodedJson = jsonDecode(utf8.decode(json.runes.toList()));
+      var decodedJson = jsonDecode(json); 
       var unicodeJson = jsonEncode(decodedJson);
       //print(unicodeJson);
       return bookTri91FromJson(unicodeJson);
@@ -477,7 +477,7 @@ class RemoteServiceBookTri91 {
 
     if (response.statusCode == 200) {
       var json = response.body;
-      var decodedJson = jsonDecode(utf8.decode(json.runes.toList()));
+      var decodedJson = jsonDecode(json); 
       var unicodeJson = jsonEncode(decodedJson);
       //print(unicodeJson);
       return bookTri91FromJson(unicodeJson);
@@ -508,7 +508,7 @@ class RemoteServiceBookTri91All {
 
       if (response.statusCode == 200) {
         var json = response.body;
-        var decodedJson = jsonDecode(utf8.decode(json.runes.toList()));
+        var decodedJson = jsonDecode(json); 
         var unicodeJson = jsonEncode(decodedJson);
         return tri91BookAllFromJson(unicodeJson);
       } else {
@@ -575,7 +575,7 @@ class GetLastRead {
 
       if (response.statusCode == 200) {
         var json = response.body;
-        var decodedJson = jsonDecode(utf8.decode(json.runes.toList()));
+        var decodedJson = jsonDecode(json); 
         // var unicodeJson = jsonEncode(decodedJson);
         // print(unicodeJson);
 
@@ -651,7 +651,7 @@ class GetLastRead {
 
       if (response.statusCode == 200) {
         var json = response.body;
-        var decodedJson = jsonDecode(utf8.decode(json.runes.toList()));
+        var decodedJson = jsonDecode(json); 
         // var unicodeJson = jsonEncode(decodedJson);
         // print(unicodeJson);
 

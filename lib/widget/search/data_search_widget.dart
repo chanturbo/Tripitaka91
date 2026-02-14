@@ -252,7 +252,7 @@ class DataSearch extends SearchDelegate<String> {
 
     if (response.statusCode == 200) {
       var json = response.body;
-      var decodedJson = jsonDecode(utf8.decode(json.runes.toList()));
+      var decodedJson = jsonDecode(json); 
       bool successValue = decodedJson['success'];
       var data = decodedJson['data'];
       // print(data);

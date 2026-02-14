@@ -305,7 +305,7 @@ class _EditSpeakScreenState extends State<EditSpeakScreen> {
 
       if (response.statusCode == 200) {
         var json = response.body;
-        var decodedJson = jsonDecode(utf8.decode(json.runes.toList()));
+        var decodedJson = jsonDecode(json); 
         messageFromApi = decodedJson['message'];
         return decodedJson['success'];
       }

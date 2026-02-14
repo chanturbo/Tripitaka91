@@ -89,7 +89,7 @@ class _MyUserPageState extends State<MyUserPage> {
 
       if (response.statusCode == 200) {
         var json = response.body;
-        var jsonResponse = jsonDecode(utf8.decode(json.runes.toList()));
+        var jsonResponse = jsonDecode(json); 
 
         if (jsonResponse['success'] == true) {
           List<dynamic> newData = jsonResponse['users'];
@@ -165,7 +165,7 @@ class _MyUserPageState extends State<MyUserPage> {
 
       if (response.statusCode == 200) {
         var json = response.body;
-        var jsonResponse = jsonDecode(utf8.decode(json.runes.toList()));
+        var jsonResponse = jsonDecode(json); 
 
         if (jsonResponse['success'] == true) {
           _handleAddData();
@@ -201,7 +201,7 @@ class _MyUserPageState extends State<MyUserPage> {
 
       if (response.statusCode == 200) {
         var json = response.body;
-        var jsonResponse = jsonDecode(utf8.decode(json.runes.toList()));
+        var jsonResponse = jsonDecode(json); 
 
         if (jsonResponse['success'] == true) {
           _handleAddData();
@@ -234,7 +234,7 @@ class _MyUserPageState extends State<MyUserPage> {
 
     if (response.statusCode == 200) {
       var json = response.body;
-      var jsonResponse = jsonDecode(utf8.decode(json.runes.toList()));
+      var jsonResponse = jsonDecode(json); 
 
       if (jsonResponse['success'] == true) {
         _handleAddData();
@@ -262,7 +262,7 @@ class _MyUserPageState extends State<MyUserPage> {
 
     if (response.statusCode == 200) {
       var json = response.body;
-      var jsonResponse = jsonDecode(utf8.decode(json.runes.toList()));
+      var jsonResponse = jsonDecode(json); 
 
       if (jsonResponse['success'] == true) {
         _handleAddData();

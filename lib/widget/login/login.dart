@@ -219,7 +219,7 @@ class _LoginPageState extends State<LoginPage> {
 
       if (response.statusCode == 200) {
         var json = response.body;
-        var decodedJson = jsonDecode(utf8.decode(json.runes.toList()));
+        var decodedJson = jsonDecode(json); 
 
         if (decodedJson['user']['active'] == 0) {
           msgLogin =

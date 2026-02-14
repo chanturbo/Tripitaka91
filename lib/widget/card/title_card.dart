@@ -154,7 +154,7 @@ class _TitleCardState extends State<TitleCard> {
 
     if (response.statusCode == 200) {
       var json = response.body;
-      var jsonResponse = jsonDecode(utf8.decode(json.runes.toList()));
+      var jsonResponse = jsonDecode(json); 
 
       if (jsonResponse['success'] == true) {
         // ignore: use_build_context_synchronously

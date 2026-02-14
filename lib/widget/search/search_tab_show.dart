@@ -20,18 +20,21 @@ import 'package:tripitaka91/widget/search/search_show_tri91_onpage.dart';
 class SearchTabShow extends StatelessWidget {
   final String title;
   final List<String> result;
+  final List<String> resultDetail;
   final int indexShow;
   final bool isM;
   final bool online;
   final bool volumeHelper;
-  const SearchTabShow(
-      {super.key,
-      required this.title,
-      required this.result,
-      required this.indexShow,
-      required this.isM,
-      required this.online,
-      required this.volumeHelper});
+  const SearchTabShow({
+    super.key,
+    required this.title,
+    required this.result,
+    required this.resultDetail,
+    required this.indexShow,
+    required this.isM,
+    required this.online,
+    required this.volumeHelper,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -44,6 +47,7 @@ class SearchTabShow extends StatelessWidget {
             title: title,
             indexLocal: 0,
             result: result,
+            resultDetail: resultDetail,
             isM: isM,
             online: online,
             volumeHelper: volumeHelper,
@@ -52,6 +56,7 @@ class SearchTabShow extends StatelessWidget {
             title: title,
             indexLocal: 1,
             result: result,
+            resultDetail: resultDetail,
             isM: isM,
             online: online,
             volumeHelper: volumeHelper,
@@ -60,6 +65,7 @@ class SearchTabShow extends StatelessWidget {
             title: title,
             indexLocal: 2,
             result: result,
+            resultDetail: resultDetail,
             isM: isM,
             online: online,
             volumeHelper: volumeHelper,
@@ -68,6 +74,7 @@ class SearchTabShow extends StatelessWidget {
             title: title,
             indexLocal: 3,
             result: result,
+            resultDetail: resultDetail,
             isM: isM,
             online: online,
             volumeHelper: volumeHelper,
@@ -76,6 +83,7 @@ class SearchTabShow extends StatelessWidget {
             title: title,
             indexLocal: 4,
             result: result,
+            resultDetail: resultDetail,
             isM: isM,
             online: online,
             volumeHelper: volumeHelper,
@@ -84,6 +92,7 @@ class SearchTabShow extends StatelessWidget {
             title: title,
             indexLocal: 5,
             result: result,
+            resultDetail: resultDetail,
             isM: isM,
             online: online,
             volumeHelper: volumeHelper,
@@ -93,6 +102,7 @@ class SearchTabShow extends StatelessWidget {
               title: title,
               indexLocal: 6,
               result: result,
+              resultDetail: resultDetail,
               isM: isM,
               online: online,
               volumeHelper: volumeHelper,
@@ -143,59 +153,71 @@ class MyTabPage extends StatelessWidget {
               Tab(
                 child: isM
                     ? ATextDiskplayLargeBlack(
-                        text: 'หัวข้อธรรมสำคัญ [ ${results[0]} ]')
+                        text: 'หัวข้อธรรมสำคัญ [ ${results[0]} ]',
+                      )
                     : ATextDiskplaySmallBlack(
-                        text: 'หัวข้อธรรมสำคัญ [ ${results[0]} ]'),
+                        text: 'หัวข้อธรรมสำคัญ [ ${results[0]} ]',
+                      ),
               ),
               Tab(
                 child: isM
                     ? ATextDiskplayLargeBlack(
-                        text: 'พระวินัยปิฎก [ ${results[1]} ]')
+                        text: 'พระวินัยปิฎก [ ${results[1]} ]',
+                      )
                     : ATextDiskplaySmallBlack(
-                        text: 'พระวินัยปิฎก [ ${results[1]} ]'),
+                        text: 'พระวินัยปิฎก [ ${results[1]} ]',
+                      ),
               ),
               Tab(
                 child: isM
                     ? ATextDiskplayLargeBlack(
-                        text: 'พระสุตันตปิฎก [ ${results[2]} ]')
+                        text: 'พระสุตันตปิฎก [ ${results[2]} ]',
+                      )
                     : ATextDiskplaySmallBlack(
-                        text: 'พระสุตันตปิฎก [ ${results[2]} ]'),
+                        text: 'พระสุตันตปิฎก [ ${results[2]} ]',
+                      ),
               ),
               Tab(
                 child: isM
                     ? ATextDiskplayLargeBlack(
-                        text: 'พระอภิธรรมปิฎก [ ${results[3]} ]')
+                        text: 'พระอภิธรรมปิฎก [ ${results[3]} ]',
+                      )
                     : ATextDiskplaySmallBlack(
-                        text: 'พระอภิธรรมปิฎก [ ${results[3]} ]'),
+                        text: 'พระอภิธรรมปิฎก [ ${results[3]} ]',
+                      ),
               ),
               Tab(
                 child: isM
                     ? ATextDiskplayLargeBlack(
-                        text: 'ประมวลศัพท์ [ ${results[4]} ]')
+                        text: 'ประมวลศัพท์ [ ${results[4]} ]',
+                      )
                     : ATextDiskplaySmallBlack(
-                        text: 'ประมวลศัพท์ [ ${results[4]} ]'),
+                        text: 'ประมวลศัพท์ [ ${results[4]} ]',
+                      ),
               ),
               Tab(
                 child: isM
                     ? ATextDiskplayLargeBlack(
-                        text: 'พจนานุกรมไทย-บาลี [ ${results[5]} ]')
+                        text: 'พจนานุกรมไทย-บาลี [ ${results[5]} ]',
+                      )
                     : ATextDiskplaySmallBlack(
-                        text: 'พจนานุกรมไทย-บาลี [ ${results[5]} ]'),
+                        text: 'พจนานุกรมไทย-บาลี [ ${results[5]} ]',
+                      ),
               ),
               if (online || volumeHelper)
                 Tab(
                   child: isM
                       ? const ATextDiskplayLargeBlack(
-                          text: 'ค้นหาจากคำใกล้เคียง [ 1+ ]')
+                          text: 'ค้นหาจากคำใกล้เคียง [ 1+ ]',
+                        )
                       : const ATextDiskplaySmallBlack(
-                          text: 'ค้นหาจากคำใกล้เคียง [ 1+ ]'),
+                          text: 'ค้นหาจากคำใกล้เคียง [ 1+ ]',
+                        ),
                 ),
             ],
           ),
         ),
-        body: TabBarView(
-          children: pages.map((page) => page).toList(),
-        ),
+        body: TabBarView(children: pages.map((page) => page).toList()),
       ),
     );
   }
@@ -205,6 +227,7 @@ class MyPageTabDetail extends StatefulWidget {
   final String title;
   final int indexLocal;
   final List<String> result;
+  final List<String> resultDetail;
   final bool isM;
   final bool online;
   final bool volumeHelper;
@@ -214,6 +237,7 @@ class MyPageTabDetail extends StatefulWidget {
     required this.title,
     required this.indexLocal,
     required this.result,
+    required this.resultDetail,
     required this.isM,
     required this.online,
     required this.volumeHelper,
@@ -268,40 +292,92 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
   }
 
   Future<TotalTitleSearchTri?> loadDataTri1() async {
-    randTri = widget.online
-        ? await RemoteServiceTri91SearchTotal()
-            .getBookTri91("1", "10", widget.title, tSecretAPIKey)
+    /* randTri = widget.online
+        ? await RemoteServiceTri91SearchTotal().getBookTri91(
+            "1",
+            "10",
+            widget.title,
+            tSecretAPIKey,
+          )
         : await DatabaseHelper().getBook91SearchSet1(widget.title);
-    return randTri;
+    return randTri;*/
+    return filterByRange(widget.resultDetail[0], 1, 10);
   }
 
   Future<TotalTitleSearchTri?> loadDataTri2() async {
-    randTri = widget.online
-        ? await RemoteServiceTri91SearchTotal()
-            .getBookTri91("11", "74", widget.title, tSecretAPIKey)
+    /*randTri = widget.online
+        ? await RemoteServiceTri91SearchTotal().getBookTri91(
+            "11",
+            "74",
+            widget.title,
+            tSecretAPIKey,
+          )
         : await DatabaseHelper().getBook91SearchSet2(widget.title);
-    return randTri;
+    return randTri;*/
+    return filterByRange(widget.resultDetail[0], 11, 74);
   }
 
   Future<TotalTitleSearchTri?> loadDataTri3() async {
-    randTri = widget.online
-        ? await RemoteServiceTri91SearchTotal()
-            .getBookTri91("75", "91", widget.title, tSecretAPIKey)
+    /*randTri = widget.online
+        ? await RemoteServiceTri91SearchTotal().getBookTri91(
+            "75",
+            "91",
+            widget.title,
+            tSecretAPIKey,
+          )
         : await DatabaseHelper().getBook91SearchSet3(widget.title);
-    return randTri;
+    return randTri;*/
+    return filterByRange(widget.resultDetail[0], 75, 91);
   }
 
   Future<TotalTitleSearch?> fetchDict() async {
-    randDict = await RemoteServiceDictSearchTotal()
-        .getTitle(widget.title, tSecretAPIKey);
+    randDict = await RemoteServiceDictSearchTotal().getTitle(
+      widget.title,
+      tSecretAPIKey,
+    );
     return randDict;
   }
 
   Future<TotalTitleSearch?> fetchDictbt() async {
-    randDict = await RemoteServiceDictbtSearchTotal()
-        .getTitle(widget.title, tSecretAPIKey);
+    randDict = await RemoteServiceDictbtSearchTotal().getTitle(
+      widget.title,
+      tSecretAPIKey,
+    );
 
     return randDict;
+  }
+
+  TotalTitleSearchTri filterByRange(String source, int start, int end) {
+    // แยกข้อมูลทั้งหมด
+    List<String> items = source.split("|");
+    List<String> filtered = [];
+    int sum = 0;
+
+    // วนคัดช่วง
+    for (var item in items) {
+      List<String> parts = item.split("#");
+      if (parts.length != 2) continue;
+
+      int front = int.tryParse(parts[0]) ?? -1;
+      int value = int.tryParse(parts[1]) ?? 0;
+
+      // ✅ เพิ่มเงื่อนไข: ตรวจสอบว่าอยู่ในช่วงและค่าไม่เป็น 0
+      if (front >= start && front <= end && value != 0) {
+        filtered.add(item);
+        sum += value;
+      }
+    }
+
+    // ถ้าไม่มีข้อมูลเลย
+    if (filtered.isEmpty) {
+      return TotalTitleSearchTri(totalRecords: 0, detailRecords: "");
+    }
+
+    // return ปกติ
+    return TotalTitleSearchTri(
+      totalRecords: sum,
+      detailRecords: filtered.join("|"),
+    );
   }
 
   void _scrollToSelectedIndex1() {
@@ -340,6 +416,44 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
     });
   }
 
+  String getNikayaName(int bookNo) {
+    if (bookNo >= 1 && bookNo <= 4) {
+      return '[ มหาวิภังค์ ]';
+    } else if (bookNo == 5) {
+      return '[ ภิกขุนีวิภังค์ ]';
+    } else if (bookNo >= 6 && bookNo <= 7) {
+      return '[ มหาวรรค ]';
+    } else if (bookNo >= 8 && bookNo <= 9) {
+      return '[ จุลวรรค ]';
+    } else if (bookNo == 10) {
+      return '[ ปริวาร ]';
+    } else if (bookNo >= 11 && bookNo <= 16) {
+      return '[ ทีฆนิกาย ]';
+    } else if (bookNo >= 17 && bookNo <= 23) {
+      return '[ มัชฌิมนิกาย ]';
+    } else if (bookNo >= 24 && bookNo <= 31) {
+      return '[ สังยุตตนิกาย ]';
+    } else if (bookNo >= 32 && bookNo <= 38) {
+      return '[ อังคุตตรนิกาย ]';
+    } else if (bookNo >= 39 && bookNo <= 74) {
+      return '[ ขุททกนิกาย ]';
+    } else if (bookNo >= 75 && bookNo <= 76) {
+      return '[ ธรรมสังคณี ]';
+    } else if (bookNo >= 77 && bookNo <= 78) {
+      return '[ วิภังค์ ]';
+    } else if (bookNo == 79) {
+      return '[ ธาตุกถา-บุคคลบัญญัติ ]';
+    } else if (bookNo >= 80 && bookNo <= 81) {
+      return '[ กถาวัตถุ ]';
+    } else if (bookNo >= 82 && bookNo <= 84) {
+      return '[ ยมก ]';
+    } else if (bookNo >= 85 && bookNo <= 91) {
+      return '[ ปัฏฐาน ]';
+    } else {
+      return '-';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
@@ -352,84 +466,84 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
       padding: const EdgeInsets.all(2.5),
       child: Container(
         decoration: BoxDecoration(
-          border: Border.all(
-            color: Colors.blue,
-            width: 1.0,
-          ),
+          border: Border.all(color: Colors.blue, width: 1.0),
           borderRadius: BorderRadius.circular(10.0),
         ),
         padding: const EdgeInsets.all(2.5),
         child: indexlocal == 0
             ? widget.result[0] == '0'
-                ? const Text('ไม่พบข้อมูลสำหรับแสดงผล')
-                : SearchShowPagesTitle(
-                    wordSearch: wordSearch,
-                    isM: widget.isM,
-                    online: widget.online,
-                  )
+                  ? const Text('ไม่พบข้อมูลสำหรับแสดงผล')
+                  : SearchShowPagesTitle(
+                      wordSearch: wordSearch,
+                      isM: widget.isM,
+                      online: widget.online,
+                    )
             : indexlocal == 1
-                ? FutureBuilder<TotalTitleSearchTri?>(
-                    future: loadDataTri1(),
-                    builder: (context, snapshot) {
-                      double screenWidth = MediaQuery.of(context).size.width;
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        // กำลังโหลดข้อมูล
-                        return const Center(child: CircularProgressIndicator());
-                      } else if (snapshot.hasError) {
-                        // กรณีเกิดข้อผิดพลาด
-                        return Text('Error: ${snapshot.error}');
-                      } else if (snapshot.hasData) {
-                        TotalTitleSearchTri? totalTitleSearch = snapshot.data;
-                        if (totalTitleSearch?.totalRecords != 0) {
-                          String detail = totalTitleSearch!.detailRecords;
-                          List<Map<String, dynamic>> dataList = [];
-                          List<String> pairs = detail.split('|');
-                          for (var pair in pairs) {
-                            List<String> keyValue = pair.split('#');
-                            if (keyValue.length == 2) {
-                              String book = keyValue[0];
-                              String page = keyValue[1];
-                              Map<String, dynamic> data = {
-                                'book': book,
-                                'page': page,
-                              };
-                              if (bookSearchid1 == '0') {
-                                bookSearchid1 = book;
-                              }
-                              dataList.add(data);
-                            }
+            ? FutureBuilder<TotalTitleSearchTri?>(
+                future: loadDataTri1(),
+                builder: (context, snapshot) {
+                  double screenWidth = MediaQuery.of(context).size.width;
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    // กำลังโหลดข้อมูล
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    // กรณีเกิดข้อผิดพลาด
+                    return Text('Error: ${snapshot.error}');
+                  } else if (snapshot.hasData) {
+                    TotalTitleSearchTri? totalTitleSearch = snapshot.data;
+                    if (totalTitleSearch?.totalRecords != 0) {
+                      String detail = totalTitleSearch!.detailRecords;
+                      List<Map<String, dynamic>> dataList = [];
+                      List<String> pairs = detail.split('|');
+                      for (var pair in pairs) {
+                        List<String> keyValue = pair.split('#');
+                        if (keyValue.length == 2) {
+                          String book = keyValue[0];
+                          String page = keyValue[1];
+                          Map<String, dynamic> data = {
+                            'book': book,
+                            'page': page,
+                          };
+                          if (bookSearchid1 == '0') {
+                            bookSearchid1 = book;
                           }
-                          return widget.isM
-                              ? ListView.builder(
-                                  itemCount: dataList.length,
-                                  itemBuilder: (context, index) {
-                                    Map<String, dynamic> data = dataList[index];
-                                    String strBook = data['book'];
-                                    String strTotal =
-                                        'เล่ม $strBook พบจำนวน ${data['page']} รายการ';
-                                    return Column(
-                                      children: [
-                                        ListTile(
-                                          leading: CircleAvatar(
-                                            backgroundColor: Colors.blue[900],
-                                            foregroundColor: Colors.white,
-                                            child: Text(strBook),
-                                          ),
-                                          title: SubstringHighlight(
-                                            text: strTotal,
-                                            terms:
-                                                outputList, // หาก outputList ยังไม่ได้ถูกกำหนดให้ใช้ตามความเหมาะสม
-                                            textStyle: TextStyle(
-                                                fontSize:
-                                                    widget.isM ? 18.0 : 16.0,
-                                                color: Colors.black),
-                                          ),
-                                          onTap: () {
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) =>
-                                                    SearchShowPages(
+                          dataList.add(data);
+                        }
+                      }
+                      return widget.isM
+                          ? ListView.builder(
+                              itemCount: dataList.length,
+                              itemBuilder: (context, index) {
+                                Map<String, dynamic> data = dataList[index];
+                                String strBook = data['book'];
+                                String strTotal =
+                                    'เล่ม $strBook พบจำนวน ${data['page']} รายการ';
+                                return Column(
+                                  children: [
+                                    ListTile(
+                                      leading: CircleAvatar(
+                                        backgroundColor: Colors.blue[900],
+                                        foregroundColor: Colors.white,
+                                        child: Text(strBook),
+                                      ),
+                                      title: SubstringHighlight(
+                                        text: strTotal,
+                                        terms:
+                                            outputList, // หาก outputList ยังไม่ได้ถูกกำหนดให้ใช้ตามความเหมาะสม
+                                        textStyle: TextStyle(
+                                          fontSize: widget.isM ? 18.0 : 16.0,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                      subtitle: Text(
+                                        getNikayaName(int.parse(strBook)),
+                                      ),
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                SearchShowPages(
                                                   title: strTotal,
                                                   wordSearch: widget.title,
                                                   bookid: strBook,
@@ -437,148 +551,36 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                                   catalog: 'พระวินัยปิฎก',
                                                   online: widget.online,
                                                 ),
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                        const Divider(),
-                                      ],
-                                    );
-                                  },
-                                )
-                              : Row(
-                                  children: [
-                                    Expanded(
-                                      flex: 1,
-                                      child: ListView.builder(
-                                        controller: _scrollController1,
-                                        itemCount: dataList.length,
-                                        itemBuilder: (context, index) {
-                                          Map<String, dynamic> data =
-                                              dataList[index];
-                                          String strBook = data['book'];
-                                          String strTotal =
-                                              'เล่ม $strBook พบจำนวน ${data['page']} รายการ';
-                                          return Column(
-                                            children: [
-                                              Container(
-                                                color: selectBookSearchIndex1 ==
-                                                        index
-                                                    ? Colors.yellow
-                                                    : Colors.transparent,
-                                                child: ListTile(
-                                                  leading: CircleAvatar(
-                                                    backgroundColor:
-                                                        Colors.blue[900],
-                                                    foregroundColor:
-                                                        Colors.white,
-                                                    child: Text(strBook),
-                                                  ),
-                                                  title: SubstringHighlight(
-                                                    text: strTotal,
-                                                    terms:
-                                                        outputList, // หาก outputList ยังไม่ได้ถูกกำหนดให้ใช้ตามความเหมาะสม
-                                                    textStyle: TextStyle(
-                                                        fontSize: widget.isM
-                                                            ? 18.0
-                                                            : 16.0,
-                                                        color: Colors.black),
-                                                  ),
-                                                  onTap: () {
-                                                    setState(() {
-                                                      bookSearchid1 = strBook;
-                                                      selectBookSearchIndex1 =
-                                                          index;
-                                                      scrollBookSearchIndexs1 =
-                                                          _scrollController1
-                                                              .offset;
-                                                      _scrollToSelectedIndex1();
-                                                    });
-                                                  },
-                                                ),
-                                              ),
-                                              const Divider(),
-                                            ],
-                                          );
-                                        },
-                                      ),
+                                          ),
+                                        );
+                                      },
                                     ),
-                                    Container(
-                                      alignment: Alignment.topCenter,
-                                      child: CustomPaint(
-                                        painter: MyVerticalLinePainter(),
-                                        size: Size(0.5, screenHeight),
-                                      ),
-                                    ),
-                                    Expanded(
-                                      flex: screenWidth > 1440 ? 4 : 3,
-                                      child: SearchShowPagesOnPage(
-                                        title: '',
-                                        wordSearch: widget.title,
-                                        bookid: bookSearchid1,
-                                        isM: widget.isM,
-                                        catalog: 'พระวินัยปิฎก',
-                                        online: widget.online,
-                                      ),
-                                    ),
+                                    const Divider(),
                                   ],
                                 );
-                        } else {
-                          return const Text('ไม่พบข้อมูลสำหรับแสดงผล');
-                        }
-                      } else {
-                        return const Text('ไม่พบข้อมูลสำหรับแสดงผล');
-                      }
-                    },
-                  )
-                : indexlocal == 2
-                    ? FutureBuilder<TotalTitleSearchTri?>(
-                        future: loadDataTri2(),
-                        builder: (context, snapshot) {
-                          double screenWidth =
-                              MediaQuery.of(context).size.width;
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            // กำลังโหลดข้อมูล
-                            return const Center(
-                                child: CircularProgressIndicator());
-                          } else if (snapshot.hasError) {
-                            // กรณีเกิดข้อผิดพลาด
-                            return Text('Error: ${snapshot.error}');
-                          } else if (snapshot.hasData) {
-                            TotalTitleSearchTri? totalTitleSearch =
-                                snapshot.data;
-                            if (totalTitleSearch?.totalRecords != 0) {
-                              String detail = totalTitleSearch!.detailRecords;
-                              List<Map<String, dynamic>> dataList = [];
-                              List<String> pairs = detail.split('|');
-                              for (var pair in pairs) {
-                                List<String> keyValue = pair.split('#');
-                                if (keyValue.length == 2) {
-                                  String book = keyValue[0];
-                                  String page = keyValue[1];
-                                  Map<String, dynamic> data = {
-                                    'book': book,
-                                    'page': page,
-                                  };
-                                  if (bookSearchid2 == '0') {
-                                    bookSearchid2 = book;
-                                  }
-                                  dataList.add(data);
-                                }
-                              }
-                              return widget.isM
-                                  ? ListView.builder(
-                                      itemCount: dataList.length,
-                                      itemBuilder: (context, index) {
-                                        Map<String, dynamic> data =
-                                            dataList[index];
-                                        String strBook = data['book'];
-                                        String strTotal =
-                                            'เล่ม $strBook พบจำนวน ${data['page']} รายการ';
-                                        return Column(
-                                          children: [
-                                            ListTile(
+                              },
+                            )
+                          : Row(
+                              children: [
+                                Expanded(
+                                  flex: 1,
+                                  child: ListView.builder(
+                                    controller: _scrollController1,
+                                    itemCount: dataList.length,
+                                    itemBuilder: (context, index) {
+                                      Map<String, dynamic> data =
+                                          dataList[index];
+                                      String strBook = data['book'];
+                                      String strTotal =
+                                          'เล่ม $strBook พบจำนวน ${data['page']} รายการ';
+                                      return Column(
+                                        children: [
+                                          Container(
+                                            color:
+                                                selectBookSearchIndex1 == index
+                                                ? Colors.yellow
+                                                : Colors.transparent,
+                                            child: ListTile(
                                               leading: CircleAvatar(
                                                 backgroundColor:
                                                     Colors.blue[900],
@@ -590,372 +592,459 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                                 terms:
                                                     outputList, // หาก outputList ยังไม่ได้ถูกกำหนดให้ใช้ตามความเหมาะสม
                                                 textStyle: TextStyle(
-                                                    fontSize: widget.isM
-                                                        ? 18.0
-                                                        : 16.0,
-                                                    color: Colors.black),
+                                                  fontSize: widget.isM
+                                                      ? 18.0
+                                                      : 16.0,
+                                                  color: Colors.black,
+                                                ),
+                                              ),
+                                              subtitle: Text(
+                                                getNikayaName(
+                                                  int.parse(strBook),
+                                                ),
                                               ),
                                               onTap: () {
-                                                Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        SearchShowPages(
-                                                      title: strTotal,
-                                                      wordSearch: widget.title,
-                                                      bookid: strBook,
-                                                      isM: widget.isM,
-                                                      catalog: 'พระสุตตันตปิฎก',
-                                                      online: widget.online,
-                                                    ),
-                                                  ),
-                                                );
+                                                setState(() {
+                                                  bookSearchid1 = strBook;
+                                                  selectBookSearchIndex1 =
+                                                      index;
+                                                  scrollBookSearchIndexs1 =
+                                                      _scrollController1.offset;
+                                                  _scrollToSelectedIndex1();
+                                                });
                                               },
                                             ),
-                                            const Divider(),
-                                          ],
+                                          ),
+                                          const Divider(),
+                                        ],
+                                      );
+                                    },
+                                  ),
+                                ),
+                                Container(
+                                  alignment: Alignment.topCenter,
+                                  child: CustomPaint(
+                                    painter: MyVerticalLinePainter(),
+                                    size: Size(0.5, screenHeight),
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: screenWidth > 1440 ? 4 : 3,
+                                  child: SearchShowPagesOnPage(
+                                    title: '',
+                                    wordSearch: widget.title,
+                                    bookid: bookSearchid1,
+                                    isM: widget.isM,
+                                    catalog: 'พระวินัยปิฎก',
+                                    online: widget.online,
+                                  ),
+                                ),
+                              ],
+                            );
+                    } else {
+                      return const Text('ไม่พบข้อมูลสำหรับแสดงผล');
+                    }
+                  } else {
+                    return const Text('ไม่พบข้อมูลสำหรับแสดงผล');
+                  }
+                },
+              )
+            : indexlocal == 2
+            ? FutureBuilder<TotalTitleSearchTri?>(
+                future: loadDataTri2(),
+                builder: (context, snapshot) {
+                  double screenWidth = MediaQuery.of(context).size.width;
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    // กำลังโหลดข้อมูล
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    // กรณีเกิดข้อผิดพลาด
+                    return Text('Error: ${snapshot.error}');
+                  } else if (snapshot.hasData) {
+                    TotalTitleSearchTri? totalTitleSearch = snapshot.data;
+                    if (totalTitleSearch?.totalRecords != 0) {
+                      String detail = totalTitleSearch!.detailRecords;
+                      List<Map<String, dynamic>> dataList = [];
+                      List<String> pairs = detail.split('|');
+                      for (var pair in pairs) {
+                        List<String> keyValue = pair.split('#');
+                        if (keyValue.length == 2) {
+                          String book = keyValue[0];
+                          String page = keyValue[1];
+                          Map<String, dynamic> data = {
+                            'book': book,
+                            'page': page,
+                          };
+                          if (bookSearchid2 == '0') {
+                            bookSearchid2 = book;
+                          }
+                          dataList.add(data);
+                        }
+                      }
+                      return widget.isM
+                          ? ListView.builder(
+                              itemCount: dataList.length,
+                              itemBuilder: (context, index) {
+                                Map<String, dynamic> data = dataList[index];
+                                String strBook = data['book'];
+                                String strTotal =
+                                    'เล่ม $strBook พบจำนวน ${data['page']} รายการ';
+                                return Column(
+                                  children: [
+                                    ListTile(
+                                      leading: CircleAvatar(
+                                        backgroundColor: Colors.blue[900],
+                                        foregroundColor: Colors.white,
+                                        child: Text(strBook),
+                                      ),
+                                      title: SubstringHighlight(
+                                        text: strTotal,
+                                        terms:
+                                            outputList, // หาก outputList ยังไม่ได้ถูกกำหนดให้ใช้ตามความเหมาะสม
+                                        textStyle: TextStyle(
+                                          fontSize: widget.isM ? 18.0 : 16.0,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                      subtitle: Text(
+                                        getNikayaName(int.parse(strBook)),
+                                      ),
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                SearchShowPages(
+                                                  title: strTotal,
+                                                  wordSearch: widget.title,
+                                                  bookid: strBook,
+                                                  isM: widget.isM,
+                                                  catalog: 'พระสุตตันตปิฎก',
+                                                  online: widget.online,
+                                                ),
+                                          ),
                                         );
                                       },
-                                    )
-                                  : Row(
-                                      children: [
-                                        Expanded(
-                                          flex: 1,
-                                          child: ListView.builder(
-                                            controller: _scrollController2,
-                                            itemCount: dataList.length,
-                                            itemBuilder: (context, index) {
-                                              Map<String, dynamic> data =
-                                                  dataList[index];
-                                              String strBook = data['book'];
-                                              String strTotal =
-                                                  'เล่ม $strBook พบจำนวน ${data['page']} รายการ';
-                                              return Column(
-                                                children: [
-                                                  Container(
-                                                    color:
-                                                        selectBookSearchIndex2 ==
-                                                                index
-                                                            ? Colors.yellow
-                                                            : Colors
-                                                                .transparent,
-                                                    child: ListTile(
-                                                      leading: CircleAvatar(
-                                                        backgroundColor:
-                                                            Colors.blue[900],
-                                                        foregroundColor:
-                                                            Colors.white,
-                                                        child: Text(strBook),
-                                                      ),
-                                                      title: SubstringHighlight(
-                                                        text: strTotal,
-                                                        terms:
-                                                            outputList, // หาก outputList ยังไม่ได้ถูกกำหนดให้ใช้ตามความเหมาะสม
-                                                        textStyle: TextStyle(
-                                                            fontSize: widget.isM
-                                                                ? 18.0
-                                                                : 16.0,
-                                                            color:
-                                                                Colors.black),
-                                                      ),
-                                                      onTap: () {
-                                                        setState(() {
-                                                          bookSearchid2 =
-                                                              strBook;
-                                                          selectBookSearchIndex2 =
-                                                              index;
-                                                          scrollBookSearchIndexs2 =
-                                                              _scrollController2
-                                                                  .offset;
-                                                          _scrollToSelectedIndex2();
-                                                        });
-                                                      },
-                                                    ),
-                                                  ),
-                                                  const Divider(),
-                                                ],
-                                              );
-                                            },
-                                          ),
-                                        ),
-                                        Container(
-                                          alignment: Alignment.topCenter,
-                                          child: CustomPaint(
-                                            painter: MyVerticalLinePainter(),
-                                            size: Size(0.5, screenHeight),
-                                          ),
-                                        ),
-                                        Expanded(
-                                          flex: screenWidth > 1440 ? 4 : 3,
-                                          child: SearchShowPagesOnPage(
-                                            title: '',
-                                            wordSearch: widget.title,
-                                            bookid: bookSearchid2,
-                                            isM: widget.isM,
-                                            catalog: 'พระสุตตันตปิฎก',
-                                            online: widget.online,
-                                          ),
-                                        ),
-                                      ],
-                                    );
-                            } else {
-                              return const Text('ไม่พบข้อมูลสำหรับแสดงผล');
-                            }
-                          } else {
-                            return const Text('ไม่พบข้อมูลสำหรับแสดงผล');
-                          }
-                        },
-                      )
-                    : indexlocal == 3
-                        ? FutureBuilder<TotalTitleSearchTri?>(
-                            future: loadDataTri3(),
-                            builder: (context, snapshot) {
-                              double screenWidth =
-                                  MediaQuery.of(context).size.width;
-                              if (snapshot.connectionState ==
-                                  ConnectionState.waiting) {
-                                // กำลังโหลดข้อมูล
-                                return const Center(
-                                    child: CircularProgressIndicator());
-                              } else if (snapshot.hasError) {
-                                // กรณีเกิดข้อผิดพลาด
-                                return Text('Error: ${snapshot.error}');
-                              } else if (snapshot.hasData) {
-                                TotalTitleSearchTri? totalTitleSearch =
-                                    snapshot.data;
-                                if (totalTitleSearch?.totalRecords != 0) {
-                                  String detail =
-                                      totalTitleSearch!.detailRecords;
-                                  List<Map<String, dynamic>> dataList = [];
-                                  List<String> pairs = detail.split('|');
-                                  for (var pair in pairs) {
-                                    List<String> keyValue = pair.split('#');
-                                    if (keyValue.length == 2) {
-                                      String book = keyValue[0];
-                                      String page = keyValue[1];
-                                      Map<String, dynamic> data = {
-                                        'book': book,
-                                        'page': page,
-                                      };
-                                      if (bookSearchid3 == '0') {
-                                        bookSearchid3 = book;
-                                      }
-                                      dataList.add(data);
-                                    }
-                                  }
-                                  return widget.isM
-                                      ? ListView.builder(
-                                          itemCount: dataList.length,
-                                          itemBuilder: (context, index) {
-                                            Map<String, dynamic> data =
-                                                dataList[index];
-                                            String strBook = data['book'];
-                                            String strTotal =
-                                                'เล่ม $strBook พบจำนวน ${data['page']} รายการ';
-                                            return Column(
-                                              children: [
-                                                ListTile(
-                                                  leading: CircleAvatar(
-                                                    backgroundColor:
-                                                        Colors.blue[900],
-                                                    foregroundColor:
-                                                        Colors.white,
-                                                    child: Text(strBook),
-                                                  ),
-                                                  title: SubstringHighlight(
-                                                    text: strTotal,
-                                                    terms:
-                                                        outputList, // หาก outputList ยังไม่ได้ถูกกำหนดให้ใช้ตามความเหมาะสม
-                                                    textStyle: TextStyle(
-                                                        fontSize: widget.isM
-                                                            ? 18.0
-                                                            : 16.0,
-                                                        color: Colors.black),
-                                                  ),
-                                                  onTap: () {
-                                                    Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            SearchShowPages(
-                                                          title: strTotal,
-                                                          wordSearch:
-                                                              widget.title,
-                                                          bookid: strBook,
-                                                          isM: widget.isM,
-                                                          catalog:
-                                                              'พระอภิธรรมปิฎก',
-                                                          online: widget.online,
-                                                        ),
-                                                      ),
-                                                    );
-                                                  },
+                                    ),
+                                    const Divider(),
+                                  ],
+                                );
+                              },
+                            )
+                          : Row(
+                              children: [
+                                Expanded(
+                                  flex: 1,
+                                  child: ListView.builder(
+                                    controller: _scrollController2,
+                                    itemCount: dataList.length,
+                                    itemBuilder: (context, index) {
+                                      Map<String, dynamic> data =
+                                          dataList[index];
+                                      String strBook = data['book'];
+                                      String strTotal =
+                                          'เล่ม $strBook พบจำนวน ${data['page']} รายการ';
+                                      return Column(
+                                        children: [
+                                          Container(
+                                            color:
+                                                selectBookSearchIndex2 == index
+                                                ? Colors.yellow
+                                                : Colors.transparent,
+                                            child: ListTile(
+                                              leading: CircleAvatar(
+                                                backgroundColor:
+                                                    Colors.blue[900],
+                                                foregroundColor: Colors.white,
+                                                child: Text(strBook),
+                                              ),
+                                              title: SubstringHighlight(
+                                                text: strTotal,
+                                                terms:
+                                                    outputList, // หาก outputList ยังไม่ได้ถูกกำหนดให้ใช้ตามความเหมาะสม
+                                                textStyle: TextStyle(
+                                                  fontSize: widget.isM
+                                                      ? 18.0
+                                                      : 16.0,
+                                                  color: Colors.black,
                                                 ),
-                                                const Divider(),
-                                              ],
-                                            );
-                                          },
-                                        )
-                                      : Row(
-                                          children: [
-                                            Expanded(
-                                              flex: 1,
-                                              child: ListView.builder(
-                                                controller: _scrollController3,
-                                                itemCount: dataList.length,
-                                                itemBuilder: (context, index) {
-                                                  Map<String, dynamic> data =
-                                                      dataList[index];
-                                                  String strBook = data['book'];
-                                                  String strTotal =
-                                                      'เล่ม $strBook พบจำนวน ${data['page']} รายการ';
-                                                  return Column(
-                                                    children: [
-                                                      Container(
-                                                        color:
-                                                            selectBookSearchIndex3 ==
-                                                                    index
-                                                                ? Colors.yellow
-                                                                : Colors
-                                                                    .transparent,
-                                                        child: ListTile(
-                                                          leading: CircleAvatar(
-                                                            backgroundColor:
-                                                                Colors
-                                                                    .blue[900],
-                                                            foregroundColor:
-                                                                Colors.white,
-                                                            child:
-                                                                Text(strBook),
-                                                          ),
-                                                          title:
-                                                              SubstringHighlight(
-                                                            text: strTotal,
-                                                            terms:
-                                                                outputList, // หาก outputList ยังไม่ได้ถูกกำหนดให้ใช้ตามความเหมาะสม
-                                                            textStyle: TextStyle(
-                                                                fontSize:
-                                                                    widget.isM
-                                                                        ? 18.0
-                                                                        : 16.0,
-                                                                color: Colors
-                                                                    .black),
-                                                          ),
-                                                          onTap: () {
-                                                            setState(() {
-                                                              bookSearchid3 =
-                                                                  strBook;
-                                                              selectBookSearchIndex3 =
-                                                                  index;
-                                                              scrollBookSearchIndexs3 =
-                                                                  _scrollController3
-                                                                      .offset;
-                                                              _scrollToSelectedIndex3();
-                                                            });
-                                                          },
-                                                        ),
-                                                      ),
-                                                      const Divider(),
-                                                    ],
-                                                  );
-                                                },
                                               ),
-                                            ),
-                                            Container(
-                                              alignment: Alignment.topCenter,
-                                              child: CustomPaint(
-                                                painter:
-                                                    MyVerticalLinePainter(),
-                                                size: Size(0.5, screenHeight),
+                                              subtitle: Text(
+                                                getNikayaName(
+                                                  int.parse(strBook),
+                                                ),
                                               ),
+                                              onTap: () {
+                                                setState(() {
+                                                  bookSearchid2 = strBook;
+                                                  selectBookSearchIndex2 =
+                                                      index;
+                                                  scrollBookSearchIndexs2 =
+                                                      _scrollController2.offset;
+                                                  _scrollToSelectedIndex2();
+                                                });
+                                              },
                                             ),
-                                            Expanded(
-                                              flex: screenWidth > 1440 ? 4 : 3,
-                                              child: SearchShowPagesOnPage(
-                                                title: '',
-                                                wordSearch: widget.title,
-                                                bookid: bookSearchid3,
-                                                isM: widget.isM,
-                                                catalog: 'พระอภิธรรมปิฎก',
-                                                online: widget.online,
-                                              ),
-                                            ),
-                                          ],
-                                        );
-                                } else {
-                                  return const Text('ไม่พบข้อมูลสำหรับแสดงผล');
-                                }
-                              } else {
-                                return const Text('ไม่พบข้อมูลสำหรับแสดงผล');
-                              }
-                            },
-                          )
-                        : indexlocal == 4
-                            ? widget.result[4] == '0'
-                                ? const Text('ไม่พบข้อมูลสำหรับแสดงผล')
-                                : SearchShowPagesDict(
-                                    wordSearch: wordSearch,
+                                          ),
+                                          const Divider(),
+                                        ],
+                                      );
+                                    },
+                                  ),
+                                ),
+                                Container(
+                                  alignment: Alignment.topCenter,
+                                  child: CustomPaint(
+                                    painter: MyVerticalLinePainter(),
+                                    size: Size(0.5, screenHeight),
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: screenWidth > 1440 ? 4 : 3,
+                                  child: SearchShowPagesOnPage(
+                                    title: '',
+                                    wordSearch: widget.title,
+                                    bookid: bookSearchid2,
                                     isM: widget.isM,
+                                    catalog: 'พระสุตตันตปิฎก',
                                     online: widget.online,
-                                  )
-                            : indexlocal == 5
-                                ? widget.online
-                                    ? widget.result[5] == '0'
-                                        ? const Text('ไม่พบข้อมูลสำหรับแสดงผล')
-                                        : SearchShowPagesDictbt(
-                                            wordSearch: wordSearch,
-                                            isM: widget.isM,
-                                            online: widget.online,
-                                          )
-                                    : const Text('ไม่พบข้อมูลสำหรับแสดงผล')
-                                : indexlocal == 6
-                                    ? (widget.online || widget.volumeHelper)
-                                        ? widget.result[6] == '0'
-                                            ? const Text(
-                                                'ไม่พบข้อมูลสำหรับแสดงผล')
-                                            : SearchShowPagesTitleRandom(
-                                                wordSearch: wordSearch,
-                                                isM: widget.isM,
-                                                online: widget.online,
-                                              )
-                                        : FutureBuilder(
-                                            future: fetchData,
-                                            builder: (context, snapshot) {
-                                              if (snapshot.connectionState ==
-                                                  ConnectionState.waiting) {
-                                                return const Center(
-                                                    child:
-                                                        CircularProgressIndicator());
-                                              } else if (snapshot.hasError) {
-                                                return Text(
-                                                    'Error: ${snapshot.error}');
-                                              } else {
-                                                return Center(
-                                                  child: Text(
-                                                      snapshot.data.toString()),
-                                                );
-                                              }
-                                            },
-                                          )
-                                    : FutureBuilder(
-                                        future: fetchData,
-                                        builder: (context, snapshot) {
-                                          if (snapshot.connectionState ==
-                                              ConnectionState.waiting) {
-                                            return const Center(
-                                                child:
-                                                    CircularProgressIndicator());
-                                          } else if (snapshot.hasError) {
-                                            return Text(
-                                                'Error: ${snapshot.error}');
-                                          } else {
-                                            return Center(
-                                              child: Text(
-                                                  snapshot.data.toString()),
-                                            );
-                                          }
-                                        },
+                                  ),
+                                ),
+                              ],
+                            );
+                    } else {
+                      return const Text('ไม่พบข้อมูลสำหรับแสดงผล');
+                    }
+                  } else {
+                    return const Text('ไม่พบข้อมูลสำหรับแสดงผล');
+                  }
+                },
+              )
+            : indexlocal == 3
+            ? FutureBuilder<TotalTitleSearchTri?>(
+                future: loadDataTri3(),
+                builder: (context, snapshot) {
+                  double screenWidth = MediaQuery.of(context).size.width;
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    // กำลังโหลดข้อมูล
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    // กรณีเกิดข้อผิดพลาด
+                    return Text('Error: ${snapshot.error}');
+                  } else if (snapshot.hasData) {
+                    TotalTitleSearchTri? totalTitleSearch = snapshot.data;
+                    if (totalTitleSearch?.totalRecords != 0) {
+                      String detail = totalTitleSearch!.detailRecords;
+                      List<Map<String, dynamic>> dataList = [];
+                      List<String> pairs = detail.split('|');
+                      for (var pair in pairs) {
+                        List<String> keyValue = pair.split('#');
+                        if (keyValue.length == 2) {
+                          String book = keyValue[0];
+                          String page = keyValue[1];
+                          Map<String, dynamic> data = {
+                            'book': book,
+                            'page': page,
+                          };
+                          if (bookSearchid3 == '0') {
+                            bookSearchid3 = book;
+                          }
+                          dataList.add(data);
+                        }
+                      }
+                      return widget.isM
+                          ? ListView.builder(
+                              itemCount: dataList.length,
+                              itemBuilder: (context, index) {
+                                Map<String, dynamic> data = dataList[index];
+                                String strBook = data['book'];
+                                String strTotal =
+                                    'เล่ม $strBook พบจำนวน ${data['page']} รายการ';
+                                return Column(
+                                  children: [
+                                    ListTile(
+                                      leading: CircleAvatar(
+                                        backgroundColor: Colors.blue[900],
+                                        foregroundColor: Colors.white,
+                                        child: Text(strBook),
                                       ),
+                                      title: SubstringHighlight(
+                                        text: strTotal,
+                                        terms:
+                                            outputList, // หาก outputList ยังไม่ได้ถูกกำหนดให้ใช้ตามความเหมาะสม
+                                        textStyle: TextStyle(
+                                          fontSize: widget.isM ? 18.0 : 16.0,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                      subtitle: Text(
+                                        getNikayaName(int.parse(strBook)),
+                                      ),
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                SearchShowPages(
+                                                  title: strTotal,
+                                                  wordSearch: widget.title,
+                                                  bookid: strBook,
+                                                  isM: widget.isM,
+                                                  catalog: 'พระอภิธรรมปิฎก',
+                                                  online: widget.online,
+                                                ),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                    const Divider(),
+                                  ],
+                                );
+                              },
+                            )
+                          : Row(
+                              children: [
+                                Expanded(
+                                  flex: 1,
+                                  child: ListView.builder(
+                                    controller: _scrollController3,
+                                    itemCount: dataList.length,
+                                    itemBuilder: (context, index) {
+                                      Map<String, dynamic> data =
+                                          dataList[index];
+                                      String strBook = data['book'];
+                                      String strTotal =
+                                          'เล่ม $strBook พบจำนวน ${data['page']} รายการ';
+                                      return Column(
+                                        children: [
+                                          Container(
+                                            color:
+                                                selectBookSearchIndex3 == index
+                                                ? Colors.yellow
+                                                : Colors.transparent,
+                                            child: ListTile(
+                                              leading: CircleAvatar(
+                                                backgroundColor:
+                                                    Colors.blue[900],
+                                                foregroundColor: Colors.white,
+                                                child: Text(strBook),
+                                              ),
+                                              title: SubstringHighlight(
+                                                text: strTotal,
+                                                terms:
+                                                    outputList, // หาก outputList ยังไม่ได้ถูกกำหนดให้ใช้ตามความเหมาะสม
+                                                textStyle: TextStyle(
+                                                  fontSize: widget.isM
+                                                      ? 18.0
+                                                      : 16.0,
+                                                  color: Colors.black,
+                                                ),
+                                              ),
+                                              subtitle: Text(
+                                                getNikayaName(
+                                                  int.parse(strBook),
+                                                ),
+                                              ),
+                                              onTap: () {
+                                                setState(() {
+                                                  bookSearchid3 = strBook;
+                                                  selectBookSearchIndex3 =
+                                                      index;
+                                                  scrollBookSearchIndexs3 =
+                                                      _scrollController3.offset;
+                                                  _scrollToSelectedIndex3();
+                                                });
+                                              },
+                                            ),
+                                          ),
+                                          const Divider(),
+                                        ],
+                                      );
+                                    },
+                                  ),
+                                ),
+                                Container(
+                                  alignment: Alignment.topCenter,
+                                  child: CustomPaint(
+                                    painter: MyVerticalLinePainter(),
+                                    size: Size(0.5, screenHeight),
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: screenWidth > 1440 ? 4 : 3,
+                                  child: SearchShowPagesOnPage(
+                                    title: '',
+                                    wordSearch: widget.title,
+                                    bookid: bookSearchid3,
+                                    isM: widget.isM,
+                                    catalog: 'พระอภิธรรมปิฎก',
+                                    online: widget.online,
+                                  ),
+                                ),
+                              ],
+                            );
+                    } else {
+                      return const Text('ไม่พบข้อมูลสำหรับแสดงผล');
+                    }
+                  } else {
+                    return const Text('ไม่พบข้อมูลสำหรับแสดงผล');
+                  }
+                },
+              )
+            : indexlocal == 4
+            ? widget.result[4] == '0'
+                  ? const Text('ไม่พบข้อมูลสำหรับแสดงผล')
+                  : SearchShowPagesDict(
+                      wordSearch: wordSearch,
+                      isM: widget.isM,
+                      online: widget.online,
+                    )
+            : indexlocal == 5
+            ? widget.online
+                  ? widget.result[5] == '0'
+                        ? const Text('ไม่พบข้อมูลสำหรับแสดงผล')
+                        : SearchShowPagesDictbt(
+                            wordSearch: wordSearch,
+                            isM: widget.isM,
+                            online: widget.online,
+                          )
+                  : const Text('ไม่พบข้อมูลสำหรับแสดงผล')
+            : indexlocal == 6
+            ? (widget.online || widget.volumeHelper)
+                  ? widget.result[6] == '0'
+                        ? const Text('ไม่พบข้อมูลสำหรับแสดงผล')
+                        : SearchShowPagesTitleRandom(
+                            wordSearch: wordSearch,
+                            isM: widget.isM,
+                            online: widget.online,
+                          )
+                  : FutureBuilder(
+                      future: fetchData,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        } else if (snapshot.hasError) {
+                          return Text('Error: ${snapshot.error}');
+                        } else {
+                          return Center(child: Text(snapshot.data.toString()));
+                        }
+                      },
+                    )
+            : FutureBuilder(
+                future: fetchData,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  } else {
+                    return Center(child: Text(snapshot.data.toString()));
+                  }
+                },
+              ),
       ),
     );
   }
