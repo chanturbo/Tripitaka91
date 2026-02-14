@@ -421,6 +421,263 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
     }
   }
 
+  // ===============================================================
+  // ฟังก์ชันใหม่: แยกข้อมูลและจัดกลุ่มตามนิกาย
+  // ===============================================================
+
+  /// แยกข้อมูลจาก string และจัดกลุ่มตามนิกาย
+  /// Input: "11#14|12#29|13#19|..."
+  /// Output: Map ที่จัดกลุ่มตามชื่อนิกาย
+  Map<String, List<Map<String, dynamic>>> parseAndGroupByNikaya(String data) {
+    Map<String, List<Map<String, dynamic>>> groupedData = {};
+
+    // แยกข้อมูลด้วย |
+    List<String> entries = data.split('|');
+
+    for (String entry in entries) {
+      if (entry.trim().isEmpty) continue;
+
+      // แยกเลขเล่มและจำนวน
+      List<String> parts = entry.split('#');
+      if (parts.length == 2) {
+        int bookNo = int.parse(parts[0].trim());
+        int count = int.parse(parts[1].trim());
+
+        String nikayaName = getNikayaName(bookNo);
+
+        // เพิ่มข้อมูลลงในกลุ่ม
+        if (!groupedData.containsKey(nikayaName)) {
+          groupedData[nikayaName] = [];
+        }
+
+        groupedData[nikayaName]!.add({
+          'book': bookNo,
+          'count': count,
+        });
+      }
+    }
+
+    return groupedData;
+  }
+
+  /// แปลงข้อมูลที่จัดกลุ่มแล้วเป็น List พร้อม subtitle (header)
+  /// จะสร้างรายการที่มีทั้ง header และ item สลับกัน
+  List<Map<String, dynamic>> convertGroupedDataToList(
+      Map<String, List<Map<String, dynamic>>> groupedData) {
+    List<Map<String, dynamic>> result = [];
+
+    groupedData.forEach((nikayaName, books) {
+      // เพิ่ม header (subtitle)
+      result.add({
+        'type': 'header',
+        'nikaya': nikayaName,
+      });
+
+      // เพิ่มข้อมูลเล่มในหมวดนั้น
+      for (var book in books) {
+        result.add({
+          'type': 'item',
+          'book': book['book'].toString(),
+          'page': book['count'].toString(),
+          'nikaya': nikayaName,
+        });
+      }
+    });
+
+    return result;
+  }
+
+  /// Scroll ไปยัง subtitle (nikaya) ที่ต้องการสำหรับ ScrollController1
+  void _scrollToNikaya1(
+      String targetNikaya, List<Map<String, dynamic>> dataList) {
+    Future.delayed(const Duration(milliseconds: 200), () {
+      if (!_scrollController1.hasClients) return;
+
+      int targetIndex = -1;
+      for (int i = 0; i < dataList.length; i++) {
+        if (dataList[i]['type'] == 'header' &&
+            dataList[i]['nikaya'] == targetNikaya) {
+          targetIndex = i;
+          break;
+        }
+      }
+
+      if (targetIndex != -1) {
+        // คำนวณ offset โดยประมาณ (header = 48px, item = 72px)
+        double estimatedOffset = 0;
+        for (int i = 0; i < targetIndex; i++) {
+          estimatedOffset += dataList[i]['type'] == 'header' ? 48.0 : 72.0;
+        }
+
+        _scrollController1.animateTo(
+          estimatedOffset,
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.easeInOut,
+        );
+      }
+    });
+  }
+
+  /// Scroll ไปยัง subtitle (nikaya) ที่ต้องการสำหรับ ScrollController2
+  void _scrollToNikaya2(
+      String targetNikaya, List<Map<String, dynamic>> dataList) {
+    Future.delayed(const Duration(milliseconds: 200), () {
+      if (!_scrollController2.hasClients) return;
+
+      int targetIndex = -1;
+      for (int i = 0; i < dataList.length; i++) {
+        if (dataList[i]['type'] == 'header' &&
+            dataList[i]['nikaya'] == targetNikaya) {
+          targetIndex = i;
+          break;
+        }
+      }
+
+      if (targetIndex != -1) {
+        double estimatedOffset = 0;
+        for (int i = 0; i < targetIndex; i++) {
+          estimatedOffset += dataList[i]['type'] == 'header' ? 48.0 : 72.0;
+        }
+
+        _scrollController2.animateTo(
+          estimatedOffset,
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.easeInOut,
+        );
+      }
+    });
+  }
+
+  /// Scroll ไปยัง subtitle (nikaya) ที่ต้องการสำหรับ ScrollController3
+  void _scrollToNikaya3(
+      String targetNikaya, List<Map<String, dynamic>> dataList) {
+    Future.delayed(const Duration(milliseconds: 200), () {
+      if (!_scrollController3.hasClients) return;
+
+      int targetIndex = -1;
+      for (int i = 0; i < dataList.length; i++) {
+        if (dataList[i]['type'] == 'header' &&
+            dataList[i]['nikaya'] == targetNikaya) {
+          targetIndex = i;
+          break;
+        }
+      }
+
+      if (targetIndex != -1) {
+        double estimatedOffset = 0;
+        for (int i = 0; i < targetIndex; i++) {
+          estimatedOffset += dataList[i]['type'] == 'header' ? 48.0 : 72.0;
+        }
+
+        _scrollController3.animateTo(
+          estimatedOffset,
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.easeInOut,
+        );
+      }
+    });
+  }
+
+  /// สร้างปุ่มเลือกนิกายสำหรับ Desktop
+  List<Widget> _buildNikayaButtons(
+      List<Map<String, dynamic>> dataList, Function(String) onNikayaTap) {
+    Set<String> nikayas = {};
+    for (var item in dataList) {
+      if (item['type'] == 'header') {
+        nikayas.add(item['nikaya']);
+      }
+    }
+
+    return nikayas.map((nikaya) {
+      return Padding(
+        padding: const EdgeInsets.only(right: 8, bottom: 8),
+        child: ElevatedButton(
+          onPressed: () => onNikayaTap(nikaya),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.blue[900],
+            foregroundColor: Colors.white,
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+          ),
+          child: Text(
+            nikaya.replaceAll('[', '').replaceAll(']', '').trim(),
+            style: TextStyle(
+              fontSize: widget.isM ? 14 : 12,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      );
+    }).toList();
+  }
+
+  /// สร้างปุ่มเลือกนิกายสำหรับ Mobile (ขนาดเล็กกว่า)
+  List<Widget> _buildNikayaButtonsMobile(
+      List<Map<String, dynamic>> dataList, Function(String) onNikayaTap) {
+    Set<String> nikayas = {};
+    for (var item in dataList) {
+      if (item['type'] == 'header') {
+        nikayas.add(item['nikaya']);
+      }
+    }
+
+    return nikayas.map((nikaya) {
+      return Padding(
+        padding: const EdgeInsets.only(right: 6, bottom: 6),
+        child: InkWell(
+          onTap: () => onNikayaTap(nikaya),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            decoration: BoxDecoration(
+              color: Colors.blue[900],
+              borderRadius: BorderRadius.circular(15),
+            ),
+            child: Text(
+              nikaya.replaceAll('[', '').replaceAll(']', '').trim(),
+              style: const TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
+      );
+    }).toList();
+  }
+
+  /// สร้าง Header (Subtitle) Widget
+  Widget _buildNikayaHeader(String nikayaName) {
+    return Container(
+      padding: EdgeInsets.symmetric(
+        vertical: widget.isM ? 8 : 10, // ← แก้ไขบรรทัดนี้
+        horizontal: widget.isM ? 12 : 16,
+      ),
+      child: Row(
+        children: [
+          Icon(
+            Icons.book,
+            color: Colors.blue[900],
+            size: widget.isM ? 16 : 18,
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              nikayaName,
+              style: TextStyle(
+                fontSize: widget.isM ? 13.0 : 15.0,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
@@ -462,133 +719,316 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                         TotalTitleSearchTri? totalTitleSearch = snapshot.data;
                         if (totalTitleSearch?.totalRecords != 0) {
                           String detail = totalTitleSearch!.detailRecords;
-                          List<Map<String, dynamic>> dataList = [];
-                          List<String> pairs = detail.split('|');
-                          for (var pair in pairs) {
-                            List<String> keyValue = pair.split('#');
-                            if (keyValue.length == 2) {
-                              String book = keyValue[0];
-                              String page = keyValue[1];
-                              Map<String, dynamic> data = {
-                                'book': book,
-                                'page': page,
-                              };
-                              if (bookSearchid1 == '0') {
-                                bookSearchid1 = book;
+
+                          // ✨ ใช้ฟังก์ชันใหม่: แยกและจัดกลุ่มตามนิกาย
+                          Map<String, List<Map<String, dynamic>>> groupedData =
+                              parseAndGroupByNikaya(detail);
+                          List<Map<String, dynamic>> dataList =
+                              convertGroupedDataToList(groupedData);
+
+                          // ตั้งค่า bookSearchid1 เริ่มต้น
+                          if (bookSearchid1 == '0' && dataList.isNotEmpty) {
+                            for (var item in dataList) {
+                              if (item['type'] == 'item') {
+                                bookSearchid1 = item['book'];
+                                break;
                               }
-                              dataList.add(data);
                             }
                           }
+
                           return widget.isM
-                              ? ListView.builder(
-                                  itemCount: dataList.length,
-                                  itemBuilder: (context, index) {
-                                    Map<String, dynamic> data = dataList[index];
-                                    String strBook = data['book'];
-                                    String strTotal =
-                                        'เล่ม $strBook พบจำนวน ${data['page']} รายการ';
-                                    return Column(
-                                      children: [
-                                        ListTile(
-                                          leading: CircleAvatar(
-                                            backgroundColor: Colors.blue[900],
-                                            foregroundColor: Colors.white,
-                                            child: Text(strBook),
+                              ? Column(
+                                  children: [
+                                    // ✨ ปุ่มเลือกนิกายสำหรับ Mobile
+                                    Container(
+                                      padding: const EdgeInsets.all(8),
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey[100],
+                                        border: Border(
+                                          bottom: BorderSide(
+                                              color: Colors.grey[300]!),
+                                        ),
+                                      ),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          const Text(
+                                            'เลือกหมวด:',
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold,
+                                            ),
                                           ),
-                                          title: SubstringHighlight(
-                                            text: strTotal,
-                                            terms:
-                                                outputList, // หาก outputList ยังไม่ได้ถูกกำหนดให้ใช้ตามความเหมาะสม
-                                            textStyle: TextStyle(
-                                                fontSize:
-                                                    widget.isM ? 18.0 : 16.0,
-                                                color: Colors.black),
-                                          ),
-                                          subtitle: Text(
-                                            getNikayaName(int.parse(strBook)),
-                                          ),
-                                          onTap: () {
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) =>
-                                                    SearchShowPages(
-                                                  title: strTotal,
-                                                  wordSearch: widget.title,
-                                                  bookid: strBook,
-                                                  isM: widget.isM,
-                                                  catalog: 'พระวินัยปิฎก',
+                                          const SizedBox(height: 8),
+                                          SizedBox(
+                                            height: 80,
+                                            child: SingleChildScrollView(
+                                              child: Wrap(
+                                                spacing: 6,
+                                                runSpacing: 6,
+                                                children:
+                                                    _buildNikayaButtonsMobile(
+                                                  dataList,
+                                                  (nikaya) => _scrollToNikaya1(
+                                                      nikaya, dataList),
                                                 ),
                                               ),
-                                            );
-                                          },
-                                        ),
-                                        const Divider(),
-                                      ],
-                                    );
-                                  },
-                                )
-                              : Row(
-                                  children: [
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    // ListView พร้อม Header
                                     Expanded(
-                                      flex: 1,
                                       child: ListView.builder(
                                         controller: _scrollController1,
                                         itemCount: dataList.length,
                                         itemBuilder: (context, index) {
                                           Map<String, dynamic> data =
                                               dataList[index];
-                                          String strBook = data['book'];
-                                          String strTotal =
-                                              'เล่ม $strBook พบจำนวน ${data['page']} รายการ';
-                                          return Column(
-                                            children: [
-                                              Container(
-                                                color: selectBookSearchIndex1 ==
-                                                        index
-                                                    ? Colors.yellow
-                                                    : Colors
-                                                        .transparent, // Highlight สีฟ้าอ่อน
 
-                                                child: ListTile(
-                                                  leading: CircleAvatar(
-                                                    backgroundColor:
-                                                        Colors.blue[900],
-                                                    foregroundColor:
-                                                        Colors.white,
-                                                    child: Text(strBook),
-                                                  ),
-                                                  title: SubstringHighlight(
-                                                    text: strTotal,
-                                                    terms:
-                                                        outputList, // หาก outputList ยังไม่ได้ถูกกำหนดให้ใช้ตามความเหมาะสม
-                                                    textStyle: TextStyle(
-                                                        fontSize: widget.isM
-                                                            ? 18.0
-                                                            : 16.0,
-                                                        color: Colors.black),
-                                                  ),
-                                                  subtitle: Text(
-                                                    getNikayaName(
-                                                        int.parse(strBook)),
-                                                  ),
+                                          if (data['type'] == 'header') {
+                                            return _buildNikayaHeader(
+                                                data['nikaya']);
+                                          } else {
+                                            String strBook = data['book'];
+                                            String strTotal =
+                                                'เล่ม $strBook พบจำนวน ${data['page']} รายการ';
+
+                                            return Column(
+                                              children: [
+                                                InkWell(
                                                   onTap: () {
-                                                    setState(() {
-                                                      bookSearchid1 = strBook;
-                                                      selectBookSearchIndex1 =
-                                                          index;
-                                                      scrollBookSearchIndexs1 =
-                                                          _scrollController1
-                                                              .offset;
-                                                      _scrollToSelectedIndex1();
-                                                    });
+                                                    Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            SearchShowPages(
+                                                          title: strTotal,
+                                                          wordSearch:
+                                                              widget.title,
+                                                          bookid: strBook,
+                                                          isM: widget.isM,
+                                                          catalog:
+                                                              'พระวินัยปิฎก',
+                                                        ),
+                                                      ),
+                                                    );
                                                   },
+                                                  child: Container(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            12),
+                                                    child: Row(
+                                                      children: [
+                                                        CircleAvatar(
+                                                          backgroundColor:
+                                                              Colors.blue[900],
+                                                          foregroundColor:
+                                                              Colors.white,
+                                                          radius: 20,
+                                                          child: Text(
+                                                            strBook,
+                                                            style:
+                                                                const TextStyle(
+                                                                    fontSize:
+                                                                        14),
+                                                          ),
+                                                        ),
+                                                        const SizedBox(
+                                                            width: 12),
+                                                        Expanded(
+                                                          child: Column(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .start,
+                                                            children: [
+                                                              SubstringHighlight(
+                                                                text: strTotal,
+                                                                terms:
+                                                                    outputList,
+                                                                textStyle:
+                                                                    const TextStyle(
+                                                                  fontSize:
+                                                                      15.0,
+                                                                  color: Colors
+                                                                      .black,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500,
+                                                                ),
+                                                              ),
+                                                              const SizedBox(
+                                                                  height: 4),
+                                                              Text(
+                                                                data['nikaya'],
+                                                                style:
+                                                                    TextStyle(
+                                                                  fontSize:
+                                                                      12.0,
+                                                                  color: Colors
+                                                                          .grey[
+                                                                      600],
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                        Icon(
+                                                            Icons.chevron_right,
+                                                            color: Colors
+                                                                .grey[400]),
+                                                      ],
+                                                    ),
+                                                  ),
                                                 ),
-                                              ),
-                                              const Divider(),
-                                            ],
-                                          );
+                                                Divider(
+                                                    height: 1,
+                                                    color: Colors.grey[300]),
+                                              ],
+                                            );
+                                          }
                                         },
+                                      ),
+                                    ),
+                                  ],
+                                )
+                              : Row(
+                                  children: [
+                                    Expanded(
+                                      flex: 1,
+                                      child: Column(
+                                        children: [
+                                          // ✨ ปุ่มเลือกนิกาย
+                                          Container(
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 8, horizontal: 16),
+                                            decoration: BoxDecoration(
+                                              color: Colors.grey[100],
+                                              border: Border(
+                                                bottom: BorderSide(
+                                                    color: Colors.grey[300]!),
+                                              ),
+                                            ),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  'เลือกหมวด:',
+                                                  style: TextStyle(
+                                                    fontSize:
+                                                        widget.isM ? 16 : 14,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.grey[700],
+                                                  ),
+                                                ),
+                                                const SizedBox(height: 8),
+                                                SizedBox(
+                                                  height:
+                                                      80, // จำกัดความสูงเพื่อให้เลื่อนได้
+                                                  child: SingleChildScrollView(
+                                                    child: Wrap(
+                                                      spacing: 8,
+                                                      runSpacing: 8,
+                                                      children:
+                                                          _buildNikayaButtons(
+                                                        dataList,
+                                                        (nikaya) =>
+                                                            _scrollToNikaya1(
+                                                                nikaya,
+                                                                dataList),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          // ListView พร้อม Header
+                                          Expanded(
+                                            child: ListView.builder(
+                                              controller: _scrollController1,
+                                              itemCount: dataList.length,
+                                              itemBuilder: (context, index) {
+                                                Map<String, dynamic> data =
+                                                    dataList[index];
+
+                                                if (data['type'] == 'header') {
+                                                  return _buildNikayaHeader(
+                                                      data['nikaya']);
+                                                } else {
+                                                  String strBook = data['book'];
+                                                  String strTotal =
+                                                      'เล่ม $strBook พบจำนวน ${data['page']} รายการ';
+
+                                                  return Column(
+                                                    children: [
+                                                      Container(
+                                                        color:
+                                                            selectBookSearchIndex1 ==
+                                                                    index
+                                                                ? Colors.yellow
+                                                                : Colors
+                                                                    .transparent,
+                                                        child: ListTile(
+                                                          leading: CircleAvatar(
+                                                            backgroundColor:
+                                                                Colors
+                                                                    .blue[900],
+                                                            foregroundColor:
+                                                                Colors.white,
+                                                            child:
+                                                                Text(strBook),
+                                                          ),
+                                                          title:
+                                                              SubstringHighlight(
+                                                            text: strTotal,
+                                                            terms: outputList,
+                                                            textStyle:
+                                                                TextStyle(
+                                                              fontSize:
+                                                                  widget.isM
+                                                                      ? 18.0
+                                                                      : 16.0,
+                                                              color:
+                                                                  Colors.black,
+                                                            ),
+                                                          ),
+                                                          subtitle: Text(
+                                                            data['nikaya'],
+                                                            style: TextStyle(
+                                                              fontSize:
+                                                                  widget.isM
+                                                                      ? 14.0
+                                                                      : 12.0,
+                                                              color: Colors
+                                                                  .grey[700],
+                                                            ),
+                                                          ),
+                                                          onTap: () {
+                                                            setState(() {
+                                                              bookSearchid1 =
+                                                                  strBook;
+                                                              selectBookSearchIndex1 =
+                                                                  index;
+                                                              scrollBookSearchIndexs1 =
+                                                                  _scrollController1
+                                                                      .offset;
+                                                              _scrollToSelectedIndex1();
+                                                            });
+                                                          },
+                                                        ),
+                                                      ),
+                                                      const Divider(height: 1),
+                                                    ],
+                                                  );
+                                                }
+                                              },
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
                                     Container(
@@ -637,139 +1077,337 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                 snapshot.data;
                             if (totalTitleSearch?.totalRecords != 0) {
                               String detail = totalTitleSearch!.detailRecords;
-                              List<Map<String, dynamic>> dataList = [];
-                              List<String> pairs = detail.split('|');
-                              for (var pair in pairs) {
-                                List<String> keyValue = pair.split('#');
-                                if (keyValue.length == 2) {
-                                  String book = keyValue[0];
-                                  String page = keyValue[1];
-                                  Map<String, dynamic> data = {
-                                    'book': book,
-                                    'page': page,
-                                  };
-                                  if (bookSearchid2 == '0') {
-                                    bookSearchid2 = book;
+
+                              // ✨ ใช้ฟังก์ชันใหม่: แยกและจัดกลุ่มตามนิกาย
+                              Map<String, List<Map<String, dynamic>>>
+                                  groupedData = parseAndGroupByNikaya(detail);
+                              List<Map<String, dynamic>> dataList =
+                                  convertGroupedDataToList(groupedData);
+
+                              // ตั้งค่า bookSearchid2 เริ่มต้น
+                              if (bookSearchid2 == '0' && dataList.isNotEmpty) {
+                                for (var item in dataList) {
+                                  if (item['type'] == 'item') {
+                                    bookSearchid2 = item['book'];
+                                    break;
                                   }
-                                  dataList.add(data);
                                 }
                               }
+
                               return widget.isM
-                                  ? ListView.builder(
-                                      itemCount: dataList.length,
-                                      itemBuilder: (context, index) {
-                                        Map<String, dynamic> data =
-                                            dataList[index];
-                                        String strBook = data['book'];
-                                        String strTotal =
-                                            'เล่ม $strBook พบจำนวน ${data['page']} รายการ';
-                                        return Column(
-                                          children: [
-                                            ListTile(
-                                              leading: CircleAvatar(
-                                                backgroundColor:
-                                                    Colors.blue[900],
-                                                foregroundColor: Colors.white,
-                                                child: Text(strBook),
+                                  ? Column(
+                                      children: [
+                                        // ✨ ปุ่มเลือกนิกายสำหรับ Mobile
+                                        Container(
+                                          padding: const EdgeInsets.all(8),
+                                          decoration: BoxDecoration(
+                                            color: Colors.grey[100],
+                                            border: Border(
+                                              bottom: BorderSide(
+                                                  color: Colors.grey[300]!),
+                                            ),
+                                          ),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              const Text(
+                                                'เลือกหมวด:',
+                                                style: TextStyle(
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
                                               ),
-                                              title: SubstringHighlight(
-                                                text: strTotal,
-                                                terms:
-                                                    outputList, // หาก outputList ยังไม่ได้ถูกกำหนดให้ใช้ตามความเหมาะสม
-                                                textStyle: TextStyle(
-                                                    fontSize: widget.isM
-                                                        ? 18.0
-                                                        : 16.0,
-                                                    color: Colors.black),
-                                              ),
-                                              subtitle: Text(
-                                                getNikayaName(
-                                                    int.parse(strBook)),
-                                              ),
-                                              onTap: () {
-                                                Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        SearchShowPages(
-                                                      title: strTotal,
-                                                      wordSearch: widget.title,
-                                                      bookid: strBook,
-                                                      isM: widget.isM,
-                                                      catalog: 'พระสุตตันตปิฎก',
+                                              const SizedBox(height: 8),
+                                              SizedBox(
+                                                height: 80,
+                                                child: SingleChildScrollView(
+                                                  child: Wrap(
+                                                    spacing: 6,
+                                                    runSpacing: 6,
+                                                    children:
+                                                        _buildNikayaButtonsMobile(
+                                                      dataList,
+                                                      (nikaya) =>
+                                                          _scrollToNikaya2(
+                                                              nikaya, dataList),
                                                     ),
                                                   ),
-                                                );
-                                              },
-                                            ),
-                                            const Divider(),
-                                          ],
-                                        );
-                                      },
-                                    )
-                                  : Row(
-                                      children: [
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        // ListView พร้อม Header
                                         Expanded(
-                                          flex: 1,
                                           child: ListView.builder(
                                             controller: _scrollController2,
                                             itemCount: dataList.length,
                                             itemBuilder: (context, index) {
                                               Map<String, dynamic> data =
                                                   dataList[index];
-                                              String strBook = data['book'];
-                                              String strTotal =
-                                                  'เล่ม $strBook พบจำนวน ${data['page']} รายการ';
-                                              return Column(
-                                                children: [
-                                                  Container(
-                                                    color:
-                                                        selectBookSearchIndex2 ==
-                                                                index
-                                                            ? Colors.yellow
-                                                            : Colors
-                                                                .transparent,
-                                                    child: ListTile(
-                                                      leading: CircleAvatar(
-                                                        backgroundColor:
-                                                            Colors.blue[900],
-                                                        foregroundColor:
-                                                            Colors.white,
-                                                        child: Text(strBook),
-                                                      ),
-                                                      title: SubstringHighlight(
-                                                        text: strTotal,
-                                                        terms:
-                                                            outputList, // หาก outputList ยังไม่ได้ถูกกำหนดให้ใช้ตามความเหมาะสม
-                                                        textStyle: TextStyle(
-                                                            fontSize: widget.isM
-                                                                ? 18.0
-                                                                : 16.0,
-                                                            color:
-                                                                Colors.black),
-                                                      ),
-                                                      subtitle: Text(
-                                                        getNikayaName(
-                                                            int.parse(strBook)),
-                                                      ),
+
+                                              if (data['type'] == 'header') {
+                                                return _buildNikayaHeader(
+                                                    data['nikaya']);
+                                              } else {
+                                                String strBook = data['book'];
+                                                String strTotal =
+                                                    'เล่ม $strBook พบจำนวน ${data['page']} รายการ';
+
+                                                return Column(
+                                                  children: [
+                                                    InkWell(
                                                       onTap: () {
-                                                        setState(() {
-                                                          bookSearchid2 =
-                                                              strBook;
-                                                          selectBookSearchIndex2 =
-                                                              index;
-                                                          scrollBookSearchIndexs2 =
-                                                              _scrollController2
-                                                                  .offset;
-                                                          _scrollToSelectedIndex2();
-                                                        });
+                                                        Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                            builder: (context) =>
+                                                                SearchShowPages(
+                                                              title: strTotal,
+                                                              wordSearch:
+                                                                  widget.title,
+                                                              bookid: strBook,
+                                                              isM: widget.isM,
+                                                              catalog:
+                                                                  'พระสุตตันตปิฎก',
+                                                            ),
+                                                          ),
+                                                        );
                                                       },
+                                                      child: Container(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(12),
+                                                        child: Row(
+                                                          children: [
+                                                            CircleAvatar(
+                                                              backgroundColor:
+                                                                  Colors.blue[
+                                                                      900],
+                                                              foregroundColor:
+                                                                  Colors.white,
+                                                              radius: 20,
+                                                              child: Text(
+                                                                strBook,
+                                                                style:
+                                                                    const TextStyle(
+                                                                        fontSize:
+                                                                            14),
+                                                              ),
+                                                            ),
+                                                            const SizedBox(
+                                                                width: 12),
+                                                            Expanded(
+                                                              child: Column(
+                                                                crossAxisAlignment:
+                                                                    CrossAxisAlignment
+                                                                        .start,
+                                                                children: [
+                                                                  SubstringHighlight(
+                                                                    text:
+                                                                        strTotal,
+                                                                    terms:
+                                                                        outputList,
+                                                                    textStyle:
+                                                                        const TextStyle(
+                                                                      fontSize:
+                                                                          15.0,
+                                                                      color: Colors
+                                                                          .black,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w500,
+                                                                    ),
+                                                                  ),
+                                                                  const SizedBox(
+                                                                      height:
+                                                                          4),
+                                                                  Text(
+                                                                    data[
+                                                                        'nikaya'],
+                                                                    style:
+                                                                        TextStyle(
+                                                                      fontSize:
+                                                                          12.0,
+                                                                      color: Colors
+                                                                              .grey[
+                                                                          600],
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                            Icon(
+                                                                Icons
+                                                                    .chevron_right,
+                                                                color: Colors
+                                                                    .grey[400]),
+                                                          ],
+                                                        ),
+                                                      ),
                                                     ),
-                                                  ),
-                                                  const Divider(),
-                                                ],
-                                              );
+                                                    Divider(
+                                                        height: 1,
+                                                        color:
+                                                            Colors.grey[300]),
+                                                  ],
+                                                );
+                                              }
                                             },
+                                          ),
+                                        ),
+                                      ],
+                                    )
+                                  : Row(
+                                      children: [
+                                        Expanded(
+                                          flex: 1,
+                                          child: Column(
+                                            children: [
+                                              // ✨ ปุ่มเลือกนิกาย
+                                              Container(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 8,
+                                                        horizontal: 16),
+                                                decoration: BoxDecoration(
+                                                  color: Colors.grey[100],
+                                                  border: Border(
+                                                    bottom: BorderSide(
+                                                        color:
+                                                            Colors.grey[300]!),
+                                                  ),
+                                                ),
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      'เลือกหมวด:',
+                                                      style: TextStyle(
+                                                        fontSize: widget.isM
+                                                            ? 16
+                                                            : 14,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color: Colors.grey[700],
+                                                      ),
+                                                    ),
+                                                    const SizedBox(height: 8),
+                                                    SizedBox(
+                                                      height: 80,
+                                                      child:
+                                                          SingleChildScrollView(
+                                                        child: Wrap(
+                                                          spacing: 8,
+                                                          runSpacing: 8,
+                                                          children:
+                                                              _buildNikayaButtons(
+                                                            dataList,
+                                                            (nikaya) =>
+                                                                _scrollToNikaya2(
+                                                                    nikaya,
+                                                                    dataList),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              // ListView พร้อม Header
+                                              Expanded(
+                                                child: ListView.builder(
+                                                  controller:
+                                                      _scrollController2,
+                                                  itemCount: dataList.length,
+                                                  itemBuilder:
+                                                      (context, index) {
+                                                    Map<String, dynamic> data =
+                                                        dataList[index];
+
+                                                    if (data['type'] ==
+                                                        'header') {
+                                                      return _buildNikayaHeader(
+                                                          data['nikaya']);
+                                                    } else {
+                                                      String strBook =
+                                                          data['book'];
+                                                      String strTotal =
+                                                          'เล่ม $strBook พบจำนวน ${data['page']} รายการ';
+
+                                                      return Column(
+                                                        children: [
+                                                          Container(
+                                                            color: selectBookSearchIndex2 ==
+                                                                    index
+                                                                ? Colors.yellow
+                                                                : Colors
+                                                                    .transparent,
+                                                            child: ListTile(
+                                                              leading:
+                                                                  CircleAvatar(
+                                                                backgroundColor:
+                                                                    Colors.blue[
+                                                                        900],
+                                                                foregroundColor:
+                                                                    Colors
+                                                                        .white,
+                                                                child: Text(
+                                                                    strBook),
+                                                              ),
+                                                              title:
+                                                                  SubstringHighlight(
+                                                                text: strTotal,
+                                                                terms:
+                                                                    outputList,
+                                                                textStyle:
+                                                                    TextStyle(
+                                                                  fontSize:
+                                                                      widget.isM
+                                                                          ? 18.0
+                                                                          : 16.0,
+                                                                  color: Colors
+                                                                      .black,
+                                                                ),
+                                                              ),
+                                                              subtitle: Text(
+                                                                data['nikaya'],
+                                                                style:
+                                                                    TextStyle(
+                                                                  fontSize:
+                                                                      widget.isM
+                                                                          ? 14.0
+                                                                          : 12.0,
+                                                                  color: Colors
+                                                                          .grey[
+                                                                      700],
+                                                                ),
+                                                              ),
+                                                              onTap: () {
+                                                                setState(() {
+                                                                  bookSearchid2 =
+                                                                      strBook;
+                                                                  selectBookSearchIndex2 =
+                                                                      index;
+                                                                  scrollBookSearchIndexs2 =
+                                                                      _scrollController2
+                                                                          .offset;
+                                                                  _scrollToSelectedIndex2();
+                                                                });
+                                                              },
+                                                            ),
+                                                          ),
+                                                          const Divider(
+                                                              height: 1),
+                                                        ],
+                                                      );
+                                                    }
+                                                  },
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                         ),
                                         Container(
@@ -819,147 +1457,358 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                 if (totalTitleSearch?.totalRecords != 0) {
                                   String detail =
                                       totalTitleSearch!.detailRecords;
-                                  List<Map<String, dynamic>> dataList = [];
-                                  List<String> pairs = detail.split('|');
-                                  for (var pair in pairs) {
-                                    List<String> keyValue = pair.split('#');
-                                    if (keyValue.length == 2) {
-                                      String book = keyValue[0];
-                                      String page = keyValue[1];
-                                      Map<String, dynamic> data = {
-                                        'book': book,
-                                        'page': page,
-                                      };
-                                      if (bookSearchid3 == '0') {
-                                        bookSearchid3 = book;
+
+                                  // ✨ ใช้ฟังก์ชันใหม่: แยกและจัดกลุ่มตามนิกาย
+                                  Map<String, List<Map<String, dynamic>>>
+                                      groupedData =
+                                      parseAndGroupByNikaya(detail);
+                                  List<Map<String, dynamic>> dataList =
+                                      convertGroupedDataToList(groupedData);
+
+                                  // ตั้งค่า bookSearchid3 เริ่มต้น
+                                  if (bookSearchid3 == '0' &&
+                                      dataList.isNotEmpty) {
+                                    for (var item in dataList) {
+                                      if (item['type'] == 'item') {
+                                        bookSearchid3 = item['book'];
+                                        break;
                                       }
-                                      dataList.add(data);
                                     }
                                   }
+
                                   return widget.isM
-                                      ? ListView.builder(
-                                          itemCount: dataList.length,
-                                          itemBuilder: (context, index) {
-                                            Map<String, dynamic> data =
-                                                dataList[index];
-                                            String strBook = data['book'];
-                                            String strTotal =
-                                                'เล่ม $strBook พบจำนวน ${data['page']} รายการ';
-                                            return Column(
-                                              children: [
-                                                ListTile(
-                                                  leading: CircleAvatar(
-                                                    backgroundColor:
-                                                        Colors.blue[900],
-                                                    foregroundColor:
-                                                        Colors.white,
-                                                    child: Text(strBook),
+                                      ? Column(
+                                          children: [
+                                            // ✨ ปุ่มเลือกนิกายสำหรับ Mobile
+                                            Container(
+                                              padding: const EdgeInsets.all(8),
+                                              decoration: BoxDecoration(
+                                                color: Colors.grey[100],
+                                                border: Border(
+                                                  bottom: BorderSide(
+                                                      color: Colors.grey[300]!),
+                                                ),
+                                              ),
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  const Text(
+                                                    'เลือกหมวด:',
+                                                    style: TextStyle(
+                                                      fontSize: 14,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
                                                   ),
-                                                  title: SubstringHighlight(
-                                                    text: strTotal,
-                                                    terms:
-                                                        outputList, // หาก outputList ยังไม่ได้ถูกกำหนดให้ใช้ตามความเหมาะสม
-                                                    textStyle: TextStyle(
-                                                        fontSize: widget.isM
-                                                            ? 18.0
-                                                            : 16.0,
-                                                        color: Colors.black),
-                                                  ),
-                                                  subtitle: Text(
-                                                    getNikayaName(
-                                                        int.parse(strBook)),
-                                                  ),
-                                                  onTap: () {
-                                                    Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            SearchShowPages(
-                                                          title: strTotal,
-                                                          wordSearch:
-                                                              widget.title,
-                                                          bookid: strBook,
-                                                          isM: widget.isM,
-                                                          catalog:
-                                                              'พระอภิธรรมปิฎก',
+                                                  const SizedBox(height: 8),
+                                                  SizedBox(
+                                                    height: 80,
+                                                    child:
+                                                        SingleChildScrollView(
+                                                      child: Wrap(
+                                                        spacing: 6,
+                                                        runSpacing: 6,
+                                                        children:
+                                                            _buildNikayaButtonsMobile(
+                                                          dataList,
+                                                          (nikaya) =>
+                                                              _scrollToNikaya3(
+                                                                  nikaya,
+                                                                  dataList),
                                                         ),
                                                       ),
-                                                    );
-                                                  },
-                                                ),
-                                                const Divider(),
-                                              ],
-                                            );
-                                          },
-                                        )
-                                      : Row(
-                                          children: [
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            // ListView พร้อม Header
                                             Expanded(
-                                              flex: 1,
                                               child: ListView.builder(
                                                 controller: _scrollController3,
                                                 itemCount: dataList.length,
                                                 itemBuilder: (context, index) {
                                                   Map<String, dynamic> data =
                                                       dataList[index];
-                                                  String strBook = data['book'];
-                                                  String strTotal =
-                                                      'เล่ม $strBook พบจำนวน ${data['page']} รายการ';
-                                                  return Column(
-                                                    children: [
-                                                      Container(
-                                                        color:
-                                                            selectBookSearchIndex3 ==
-                                                                    index
-                                                                ? Colors.yellow
-                                                                : Colors
-                                                                    .transparent,
-                                                        child: ListTile(
-                                                          leading: CircleAvatar(
-                                                            backgroundColor:
-                                                                Colors
-                                                                    .blue[900],
-                                                            foregroundColor:
-                                                                Colors.white,
-                                                            child:
-                                                                Text(strBook),
-                                                          ),
-                                                          title:
-                                                              SubstringHighlight(
-                                                            text: strTotal,
-                                                            terms:
-                                                                outputList, // หาก outputList ยังไม่ได้ถูกกำหนดให้ใช้ตามความเหมาะสม
-                                                            textStyle: TextStyle(
-                                                                fontSize:
-                                                                    widget.isM
-                                                                        ? 18.0
-                                                                        : 16.0,
-                                                                color: Colors
-                                                                    .black),
-                                                          ),
-                                                          subtitle: Text(
-                                                            getNikayaName(
-                                                                int.parse(
-                                                                    strBook)),
-                                                          ),
+
+                                                  if (data['type'] ==
+                                                      'header') {
+                                                    return _buildNikayaHeader(
+                                                        data['nikaya']);
+                                                  } else {
+                                                    String strBook =
+                                                        data['book'];
+                                                    String strTotal =
+                                                        'เล่ม $strBook พบจำนวน ${data['page']} รายการ';
+
+                                                    return Column(
+                                                      children: [
+                                                        InkWell(
                                                           onTap: () {
-                                                            setState(() {
-                                                              bookSearchid3 =
-                                                                  strBook;
-                                                              selectBookSearchIndex3 =
-                                                                  index;
-                                                              scrollBookSearchIndexs3 =
-                                                                  _scrollController3
-                                                                      .offset;
-                                                              _scrollToSelectedIndex3();
-                                                            });
+                                                            Navigator.push(
+                                                              context,
+                                                              MaterialPageRoute(
+                                                                builder:
+                                                                    (context) =>
+                                                                        SearchShowPages(
+                                                                  title:
+                                                                      strTotal,
+                                                                  wordSearch:
+                                                                      widget
+                                                                          .title,
+                                                                  bookid:
+                                                                      strBook,
+                                                                  isM: widget
+                                                                      .isM,
+                                                                  catalog:
+                                                                      'พระอภิธรรมปิฎก',
+                                                                ),
+                                                              ),
+                                                            );
                                                           },
+                                                          child: Container(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .all(12),
+                                                            child: Row(
+                                                              children: [
+                                                                CircleAvatar(
+                                                                  backgroundColor:
+                                                                      Colors.blue[
+                                                                          900],
+                                                                  foregroundColor:
+                                                                      Colors
+                                                                          .white,
+                                                                  radius: 20,
+                                                                  child: Text(
+                                                                    strBook,
+                                                                    style: const TextStyle(
+                                                                        fontSize:
+                                                                            14),
+                                                                  ),
+                                                                ),
+                                                                const SizedBox(
+                                                                    width: 12),
+                                                                Expanded(
+                                                                  child: Column(
+                                                                    crossAxisAlignment:
+                                                                        CrossAxisAlignment
+                                                                            .start,
+                                                                    children: [
+                                                                      SubstringHighlight(
+                                                                        text:
+                                                                            strTotal,
+                                                                        terms:
+                                                                            outputList,
+                                                                        textStyle:
+                                                                            const TextStyle(
+                                                                          fontSize:
+                                                                              15.0,
+                                                                          color:
+                                                                              Colors.black,
+                                                                          fontWeight:
+                                                                              FontWeight.w500,
+                                                                        ),
+                                                                      ),
+                                                                      const SizedBox(
+                                                                          height:
+                                                                              4),
+                                                                      Text(
+                                                                        data[
+                                                                            'nikaya'],
+                                                                        style:
+                                                                            TextStyle(
+                                                                          fontSize:
+                                                                              12.0,
+                                                                          color:
+                                                                              Colors.grey[600],
+                                                                        ),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                                Icon(
+                                                                    Icons
+                                                                        .chevron_right,
+                                                                    color: Colors
+                                                                            .grey[
+                                                                        400]),
+                                                              ],
+                                                            ),
+                                                          ),
                                                         ),
-                                                      ),
-                                                      const Divider(),
-                                                    ],
-                                                  );
+                                                        Divider(
+                                                            height: 1,
+                                                            color: Colors
+                                                                .grey[300]),
+                                                      ],
+                                                    );
+                                                  }
                                                 },
+                                              ),
+                                            ),
+                                          ],
+                                        )
+                                      : Row(
+                                          children: [
+                                            Expanded(
+                                              flex: 1,
+                                              child: Column(
+                                                children: [
+                                                  // ✨ ปุ่มเลือกนิกาย
+                                                  Container(
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                        vertical: 8,
+                                                        horizontal: 16),
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.grey[100],
+                                                      border: Border(
+                                                        bottom: BorderSide(
+                                                            color: Colors
+                                                                .grey[300]!),
+                                                      ),
+                                                    ),
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Text(
+                                                          'เลือกหมวด:',
+                                                          style: TextStyle(
+                                                            fontSize: widget.isM
+                                                                ? 16
+                                                                : 14,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            color: Colors
+                                                                .grey[700],
+                                                          ),
+                                                        ),
+                                                        const SizedBox(
+                                                            height: 8),
+                                                        SizedBox(
+                                                          height: 80,
+                                                          child:
+                                                              SingleChildScrollView(
+                                                            child: Wrap(
+                                                              spacing: 8,
+                                                              runSpacing: 8,
+                                                              children:
+                                                                  _buildNikayaButtons(
+                                                                dataList,
+                                                                (nikaya) =>
+                                                                    _scrollToNikaya3(
+                                                                        nikaya,
+                                                                        dataList),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  // ListView พร้อม Header
+                                                  Expanded(
+                                                    child: ListView.builder(
+                                                      controller:
+                                                          _scrollController3,
+                                                      itemCount:
+                                                          dataList.length,
+                                                      itemBuilder:
+                                                          (context, index) {
+                                                        Map<String, dynamic>
+                                                            data =
+                                                            dataList[index];
+
+                                                        if (data['type'] ==
+                                                            'header') {
+                                                          return _buildNikayaHeader(
+                                                              data['nikaya']);
+                                                        } else {
+                                                          String strBook =
+                                                              data['book'];
+                                                          String strTotal =
+                                                              'เล่ม $strBook พบจำนวน ${data['page']} รายการ';
+
+                                                          return Column(
+                                                            children: [
+                                                              Container(
+                                                                color: selectBookSearchIndex3 ==
+                                                                        index
+                                                                    ? Colors
+                                                                        .yellow
+                                                                    : Colors
+                                                                        .transparent,
+                                                                child: ListTile(
+                                                                  leading:
+                                                                      CircleAvatar(
+                                                                    backgroundColor:
+                                                                        Colors.blue[
+                                                                            900],
+                                                                    foregroundColor:
+                                                                        Colors
+                                                                            .white,
+                                                                    child: Text(
+                                                                        strBook),
+                                                                  ),
+                                                                  title:
+                                                                      SubstringHighlight(
+                                                                    text:
+                                                                        strTotal,
+                                                                    terms:
+                                                                        outputList,
+                                                                    textStyle:
+                                                                        TextStyle(
+                                                                      fontSize: widget
+                                                                              .isM
+                                                                          ? 18.0
+                                                                          : 16.0,
+                                                                      color: Colors
+                                                                          .black,
+                                                                    ),
+                                                                  ),
+                                                                  subtitle:
+                                                                      Text(
+                                                                    data[
+                                                                        'nikaya'],
+                                                                    style:
+                                                                        TextStyle(
+                                                                      fontSize: widget
+                                                                              .isM
+                                                                          ? 14.0
+                                                                          : 12.0,
+                                                                      color: Colors
+                                                                              .grey[
+                                                                          700],
+                                                                    ),
+                                                                  ),
+                                                                  onTap: () {
+                                                                    setState(
+                                                                        () {
+                                                                      bookSearchid3 =
+                                                                          strBook;
+                                                                      selectBookSearchIndex3 =
+                                                                          index;
+                                                                      scrollBookSearchIndexs3 =
+                                                                          _scrollController3
+                                                                              .offset;
+                                                                      _scrollToSelectedIndex3();
+                                                                    });
+                                                                  },
+                                                                ),
+                                                              ),
+                                                              const Divider(
+                                                                  height: 1),
+                                                            ],
+                                                          );
+                                                        }
+                                                      },
+                                                    ),
+                                                  ),
+                                                ],
                                               ),
                                             ),
                                             Container(
