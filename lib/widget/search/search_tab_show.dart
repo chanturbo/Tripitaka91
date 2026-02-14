@@ -450,10 +450,7 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
           groupedData[nikayaName] = [];
         }
 
-        groupedData[nikayaName]!.add({
-          'book': bookNo,
-          'count': count,
-        });
+        groupedData[nikayaName]!.add({'book': bookNo, 'count': count});
       }
     }
 
@@ -463,15 +460,13 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
   /// แปลงข้อมูลที่จัดกลุ่มแล้วเป็น List พร้อม subtitle (header)
   /// จะสร้างรายการที่มีทั้ง header และ item สลับกัน
   List<Map<String, dynamic>> convertGroupedDataToList(
-      Map<String, List<Map<String, dynamic>>> groupedData) {
+    Map<String, List<Map<String, dynamic>>> groupedData,
+  ) {
     List<Map<String, dynamic>> result = [];
 
     groupedData.forEach((nikayaName, books) {
       // เพิ่ม header (subtitle)
-      result.add({
-        'type': 'header',
-        'nikaya': nikayaName,
-      });
+      result.add({'type': 'header', 'nikaya': nikayaName});
 
       // เพิ่มข้อมูลเล่มในหมวดนั้น
       for (var book in books) {
@@ -489,7 +484,9 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
 
   /// Scroll ไปยัง subtitle (nikaya) ที่ต้องการสำหรับ ScrollController1
   void _scrollToNikaya1(
-      String targetNikaya, List<Map<String, dynamic>> dataList) {
+    String targetNikaya,
+    List<Map<String, dynamic>> dataList,
+  ) {
     Future.delayed(const Duration(milliseconds: 200), () {
       if (!_scrollController1.hasClients) return;
 
@@ -520,7 +517,9 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
 
   /// Scroll ไปยัง subtitle (nikaya) ที่ต้องการสำหรับ ScrollController2
   void _scrollToNikaya2(
-      String targetNikaya, List<Map<String, dynamic>> dataList) {
+    String targetNikaya,
+    List<Map<String, dynamic>> dataList,
+  ) {
     Future.delayed(const Duration(milliseconds: 200), () {
       if (!_scrollController2.hasClients) return;
 
@@ -550,7 +549,9 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
 
   /// Scroll ไปยัง subtitle (nikaya) ที่ต้องการสำหรับ ScrollController3
   void _scrollToNikaya3(
-      String targetNikaya, List<Map<String, dynamic>> dataList) {
+    String targetNikaya,
+    List<Map<String, dynamic>> dataList,
+  ) {
     Future.delayed(const Duration(milliseconds: 200), () {
       if (!_scrollController3.hasClients) return;
 
@@ -580,7 +581,9 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
 
   /// สร้างปุ่มเลือกนิกายสำหรับ Desktop
   List<Widget> _buildNikayaButtons(
-      List<Map<String, dynamic>> dataList, Function(String) onNikayaTap) {
+    List<Map<String, dynamic>> dataList,
+    Function(String) onNikayaTap,
+  ) {
     Set<String> nikayas = {};
     for (var item in dataList) {
       if (item['type'] == 'header') {
@@ -615,7 +618,9 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
 
   /// สร้างปุ่มเลือกนิกายสำหรับ Mobile (ขนาดเล็กกว่า)
   List<Widget> _buildNikayaButtonsMobile(
-      List<Map<String, dynamic>> dataList, Function(String) onNikayaTap) {
+    List<Map<String, dynamic>> dataList,
+    Function(String) onNikayaTap,
+  ) {
     Set<String> nikayas = {};
     for (var item in dataList) {
       if (item['type'] == 'header') {
@@ -653,21 +658,17 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
     return Container(
       padding: EdgeInsets.symmetric(
         vertical: widget.isM ? 8 : 10, // ← แก้ไขบรรทัดนี้
-        horizontal: widget.isM ? 12 : 16,
+        horizontal: widget.isM ? 8 : 10,
       ),
       child: Row(
         children: [
-          Icon(
-            Icons.book,
-            color: Colors.blue[900],
-            size: widget.isM ? 16 : 18,
-          ),
+          Icon(Icons.book, color: Colors.blue[900], size: widget.isM ? 16 : 18),
           const SizedBox(width: 8),
           Expanded(
             child: Text(
               nikayaName,
               style: TextStyle(
-                fontSize: widget.isM ? 13.0 : 15.0,
+                fontSize: widget.isM ? 14.0 : 16.0,
                 fontWeight: FontWeight.bold,
                 color: Colors.black,
               ),
@@ -690,10 +691,7 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
       padding: const EdgeInsets.all(2.5),
       child: Container(
         decoration: BoxDecoration(
-          border: Border.all(
-            color: Colors.blue,
-            width: 1.0,
-          ),
+          border: Border.all(color: Colors.blue, width: 1.0),
           borderRadius: BorderRadius.circular(10.0),
         ),
         padding: const EdgeInsets.all(2.5),
@@ -746,7 +744,8 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                         color: Colors.grey[100],
                                         border: Border(
                                           bottom: BorderSide(
-                                              color: Colors.grey[300]!),
+                                            color: Colors.grey[300]!,
+                                          ),
                                         ),
                                       ),
                                       child: Column(
@@ -771,7 +770,9 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                                     _buildNikayaButtonsMobile(
                                                   dataList,
                                                   (nikaya) => _scrollToNikaya1(
-                                                      nikaya, dataList),
+                                                    nikaya,
+                                                    dataList,
+                                                  ),
                                                 ),
                                               ),
                                             ),
@@ -790,7 +791,8 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
 
                                           if (data['type'] == 'header') {
                                             return _buildNikayaHeader(
-                                                data['nikaya']);
+                                              data['nikaya'],
+                                            );
                                           } else {
                                             String strBook = data['book'];
                                             String strTotal =
@@ -819,7 +821,8 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                                   child: Container(
                                                     padding:
                                                         const EdgeInsets.all(
-                                                            12),
+                                                      12,
+                                                    ),
                                                     child: Row(
                                                       children: [
                                                         CircleAvatar(
@@ -832,8 +835,8 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                                             strBook,
                                                             style:
                                                                 const TextStyle(
-                                                                    fontSize:
-                                                                        14),
+                                                              fontSize: 14,
+                                                            ),
                                                           ),
                                                         ),
                                                         const SizedBox(
@@ -851,7 +854,7 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                                                 textStyle:
                                                                     const TextStyle(
                                                                   fontSize:
-                                                                      15.0,
+                                                                      16.0,
                                                                   color: Colors
                                                                       .black,
                                                                   fontWeight:
@@ -859,33 +862,22 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                                                           .w500,
                                                                 ),
                                                               ),
-                                                              const SizedBox(
-                                                                  height: 4),
-                                                              Text(
-                                                                data['nikaya'],
-                                                                style:
-                                                                    TextStyle(
-                                                                  fontSize:
-                                                                      12.0,
-                                                                  color: Colors
-                                                                          .grey[
-                                                                      600],
-                                                                ),
-                                                              ),
                                                             ],
                                                           ),
                                                         ),
                                                         Icon(
-                                                            Icons.chevron_right,
-                                                            color: Colors
-                                                                .grey[400]),
+                                                          Icons.chevron_right,
+                                                          color:
+                                                              Colors.grey[400],
+                                                        ),
                                                       ],
                                                     ),
                                                   ),
                                                 ),
                                                 Divider(
-                                                    height: 1,
-                                                    color: Colors.grey[300]),
+                                                  height: 1,
+                                                  color: Colors.grey[300],
+                                                ),
                                               ],
                                             );
                                           }
@@ -903,12 +895,15 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                           // ✨ ปุ่มเลือกนิกาย
                                           Container(
                                             padding: const EdgeInsets.symmetric(
-                                                vertical: 8, horizontal: 16),
+                                              vertical: 8,
+                                              horizontal: 16,
+                                            ),
                                             decoration: BoxDecoration(
                                               color: Colors.grey[100],
                                               border: Border(
                                                 bottom: BorderSide(
-                                                    color: Colors.grey[300]!),
+                                                  color: Colors.grey[300]!,
+                                                ),
                                               ),
                                             ),
                                             child: Column(
@@ -937,8 +932,9 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                                         dataList,
                                                         (nikaya) =>
                                                             _scrollToNikaya1(
-                                                                nikaya,
-                                                                dataList),
+                                                          nikaya,
+                                                          dataList,
+                                                        ),
                                                       ),
                                                     ),
                                                   ),
@@ -957,7 +953,8 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
 
                                                 if (data['type'] == 'header') {
                                                   return _buildNikayaHeader(
-                                                      data['nikaya']);
+                                                    data['nikaya'],
+                                                  );
                                                 } else {
                                                   String strBook = data['book'];
                                                   String strTotal =
@@ -994,17 +991,6 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                                                       : 16.0,
                                                               color:
                                                                   Colors.black,
-                                                            ),
-                                                          ),
-                                                          subtitle: Text(
-                                                            data['nikaya'],
-                                                            style: TextStyle(
-                                                              fontSize:
-                                                                  widget.isM
-                                                                      ? 14.0
-                                                                      : 12.0,
-                                                              color: Colors
-                                                                  .grey[700],
                                                             ),
                                                           ),
                                                           onTap: () {
@@ -1104,7 +1090,8 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                             color: Colors.grey[100],
                                             border: Border(
                                               bottom: BorderSide(
-                                                  color: Colors.grey[300]!),
+                                                color: Colors.grey[300]!,
+                                              ),
                                             ),
                                           ),
                                           child: Column(
@@ -1130,7 +1117,9 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                                       dataList,
                                                       (nikaya) =>
                                                           _scrollToNikaya2(
-                                                              nikaya, dataList),
+                                                        nikaya,
+                                                        dataList,
+                                                      ),
                                                     ),
                                                   ),
                                                 ),
@@ -1149,7 +1138,8 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
 
                                               if (data['type'] == 'header') {
                                                 return _buildNikayaHeader(
-                                                    data['nikaya']);
+                                                  data['nikaya'],
+                                                );
                                               } else {
                                                 String strBook = data['book'];
                                                 String strTotal =
@@ -1178,7 +1168,9 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                                       child: Container(
                                                         padding:
                                                             const EdgeInsets
-                                                                .all(12),
+                                                                .all(
+                                                          12,
+                                                        ),
                                                         child: Row(
                                                           children: [
                                                             CircleAvatar(
@@ -1192,8 +1184,8 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                                                 strBook,
                                                                 style:
                                                                     const TextStyle(
-                                                                        fontSize:
-                                                                            14),
+                                                                  fontSize: 14,
+                                                                ),
                                                               ),
                                                             ),
                                                             const SizedBox(
@@ -1212,7 +1204,7 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                                                     textStyle:
                                                                         const TextStyle(
                                                                       fontSize:
-                                                                          15.0,
+                                                                          16.0,
                                                                       color: Colors
                                                                           .black,
                                                                       fontWeight:
@@ -1220,37 +1212,23 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                                                               .w500,
                                                                     ),
                                                                   ),
-                                                                  const SizedBox(
-                                                                      height:
-                                                                          4),
-                                                                  Text(
-                                                                    data[
-                                                                        'nikaya'],
-                                                                    style:
-                                                                        TextStyle(
-                                                                      fontSize:
-                                                                          12.0,
-                                                                      color: Colors
-                                                                              .grey[
-                                                                          600],
-                                                                    ),
-                                                                  ),
                                                                 ],
                                                               ),
                                                             ),
                                                             Icon(
-                                                                Icons
-                                                                    .chevron_right,
-                                                                color: Colors
-                                                                    .grey[400]),
+                                                              Icons
+                                                                  .chevron_right,
+                                                              color: Colors
+                                                                  .grey[400],
+                                                            ),
                                                           ],
                                                         ),
                                                       ),
                                                     ),
                                                     Divider(
-                                                        height: 1,
-                                                        color:
-                                                            Colors.grey[300]),
+                                                      height: 1,
+                                                      color: Colors.grey[300],
+                                                    ),
                                                   ],
                                                 );
                                               }
@@ -1269,14 +1247,15 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                               Container(
                                                 padding:
                                                     const EdgeInsets.symmetric(
-                                                        vertical: 8,
-                                                        horizontal: 16),
+                                                  vertical: 8,
+                                                  horizontal: 16,
+                                                ),
                                                 decoration: BoxDecoration(
                                                   color: Colors.grey[100],
                                                   border: Border(
                                                     bottom: BorderSide(
-                                                        color:
-                                                            Colors.grey[300]!),
+                                                      color: Colors.grey[300]!,
+                                                    ),
                                                   ),
                                                 ),
                                                 child: Column(
@@ -1307,8 +1286,9 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                                             dataList,
                                                             (nikaya) =>
                                                                 _scrollToNikaya2(
-                                                                    nikaya,
-                                                                    dataList),
+                                                              nikaya,
+                                                              dataList,
+                                                            ),
                                                           ),
                                                         ),
                                                       ),
@@ -1330,7 +1310,8 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                                     if (data['type'] ==
                                                         'header') {
                                                       return _buildNikayaHeader(
-                                                          data['nikaya']);
+                                                        data['nikaya'],
+                                                      );
                                                     } else {
                                                       String strBook =
                                                           data['book'];
@@ -1370,19 +1351,6 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                                                           : 16.0,
                                                                   color: Colors
                                                                       .black,
-                                                                ),
-                                                              ),
-                                                              subtitle: Text(
-                                                                data['nikaya'],
-                                                                style:
-                                                                    TextStyle(
-                                                                  fontSize:
-                                                                      widget.isM
-                                                                          ? 14.0
-                                                                          : 12.0,
-                                                                  color: Colors
-                                                                          .grey[
-                                                                      700],
                                                                 ),
                                                               ),
                                                               onTap: () {
@@ -1486,7 +1454,8 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                                 color: Colors.grey[100],
                                                 border: Border(
                                                   bottom: BorderSide(
-                                                      color: Colors.grey[300]!),
+                                                    color: Colors.grey[300]!,
+                                                  ),
                                                 ),
                                               ),
                                               child: Column(
@@ -1514,8 +1483,9 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                                           dataList,
                                                           (nikaya) =>
                                                               _scrollToNikaya3(
-                                                                  nikaya,
-                                                                  dataList),
+                                                            nikaya,
+                                                            dataList,
+                                                          ),
                                                         ),
                                                       ),
                                                     ),
@@ -1535,7 +1505,8 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                                   if (data['type'] ==
                                                       'header') {
                                                     return _buildNikayaHeader(
-                                                        data['nikaya']);
+                                                      data['nikaya'],
+                                                    );
                                                   } else {
                                                     String strBook =
                                                         data['book'];
@@ -1570,7 +1541,9 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                                           child: Container(
                                                             padding:
                                                                 const EdgeInsets
-                                                                    .all(12),
+                                                                    .all(
+                                                              12,
+                                                            ),
                                                             child: Row(
                                                               children: [
                                                                 CircleAvatar(
@@ -1583,9 +1556,11 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                                                   radius: 20,
                                                                   child: Text(
                                                                     strBook,
-                                                                    style: const TextStyle(
-                                                                        fontSize:
-                                                                            14),
+                                                                    style:
+                                                                        const TextStyle(
+                                                                      fontSize:
+                                                                          14,
+                                                                    ),
                                                                   ),
                                                                 ),
                                                                 const SizedBox(
@@ -1604,44 +1579,32 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                                                         textStyle:
                                                                             const TextStyle(
                                                                           fontSize:
-                                                                              15.0,
+                                                                              16.0,
                                                                           color:
                                                                               Colors.black,
                                                                           fontWeight:
                                                                               FontWeight.w500,
                                                                         ),
                                                                       ),
-                                                                      const SizedBox(
-                                                                          height:
-                                                                              4),
-                                                                      Text(
-                                                                        data[
-                                                                            'nikaya'],
-                                                                        style:
-                                                                            TextStyle(
-                                                                          fontSize:
-                                                                              12.0,
-                                                                          color:
-                                                                              Colors.grey[600],
-                                                                        ),
-                                                                      ),
                                                                     ],
                                                                   ),
                                                                 ),
                                                                 Icon(
-                                                                    Icons
-                                                                        .chevron_right,
-                                                                    color: Colors
-                                                                            .grey[
-                                                                        400]),
+                                                                  Icons
+                                                                      .chevron_right,
+                                                                  color: Colors
+                                                                          .grey[
+                                                                      400],
+                                                                ),
                                                               ],
                                                             ),
                                                           ),
                                                         ),
                                                         Divider(
-                                                            height: 1,
-                                                            color: Colors
-                                                                .grey[300]),
+                                                          height: 1,
+                                                          color:
+                                                              Colors.grey[300],
+                                                        ),
                                                       ],
                                                     );
                                                   }
@@ -1660,14 +1623,16 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                                   Container(
                                                     padding: const EdgeInsets
                                                         .symmetric(
-                                                        vertical: 8,
-                                                        horizontal: 16),
+                                                      vertical: 8,
+                                                      horizontal: 16,
+                                                    ),
                                                     decoration: BoxDecoration(
                                                       color: Colors.grey[100],
                                                       border: Border(
                                                         bottom: BorderSide(
-                                                            color: Colors
-                                                                .grey[300]!),
+                                                          color:
+                                                              Colors.grey[300]!,
+                                                        ),
                                                       ),
                                                     ),
                                                     child: Column(
@@ -1701,8 +1666,9 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                                                 dataList,
                                                                 (nikaya) =>
                                                                     _scrollToNikaya3(
-                                                                        nikaya,
-                                                                        dataList),
+                                                                  nikaya,
+                                                                  dataList,
+                                                                ),
                                                               ),
                                                             ),
                                                           ),
@@ -1726,7 +1692,8 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                                         if (data['type'] ==
                                                             'header') {
                                                           return _buildNikayaHeader(
-                                                              data['nikaya']);
+                                                            data['nikaya'],
+                                                          );
                                                         } else {
                                                           String strBook =
                                                               data['book'];
@@ -1768,21 +1735,6 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                                                           : 16.0,
                                                                       color: Colors
                                                                           .black,
-                                                                    ),
-                                                                  ),
-                                                                  subtitle:
-                                                                      Text(
-                                                                    data[
-                                                                        'nikaya'],
-                                                                    style:
-                                                                        TextStyle(
-                                                                      fontSize: widget
-                                                                              .isM
-                                                                          ? 14.0
-                                                                          : 12.0,
-                                                                      color: Colors
-                                                                              .grey[
-                                                                          700],
                                                                     ),
                                                                   ),
                                                                   onTap: () {
@@ -1873,9 +1825,8 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                                 'Error: ${snapshot.error}');
                                           } else {
                                             return Center(
-                                              child: Text(
-                                                  snapshot.data.toString()),
-                                            );
+                                                child: Text(
+                                                    snapshot.data.toString()));
                                           }
                                         },
                                       ),
