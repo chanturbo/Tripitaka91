@@ -9,10 +9,9 @@ PODS:
   - flutter_inappwebview_ios/Core (0.0.1):
     - Flutter
     - OrderedSet (~> 6.0.3)
-  - image_gallery_saver (2.0.2):
-    - Flutter
   - just_audio (0.0.1):
     - Flutter
+    - FlutterMacOS
   - OrderedSet (6.0.3)
   - path_provider_foundation (0.0.1):
     - Flutter
@@ -34,8 +33,7 @@ DEPENDENCIES:
   - audio_session (from `.symlinks/plugins/audio_session/ios`)
   - Flutter (from `Flutter`)
   - flutter_inappwebview_ios (from `.symlinks/plugins/flutter_inappwebview_ios/ios`)
-  - image_gallery_saver (from `.symlinks/plugins/image_gallery_saver/ios`)
-  - just_audio (from `.symlinks/plugins/just_audio/ios`)
+  - just_audio (from `.symlinks/plugins/just_audio/darwin`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
   - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
   - share_plus (from `.symlinks/plugins/share_plus/ios`)
@@ -54,10 +52,8 @@ EXTERNAL SOURCES:
     :path: Flutter
   flutter_inappwebview_ios:
     :path: ".symlinks/plugins/flutter_inappwebview_ios/ios"
-  image_gallery_saver:
-    :path: ".symlinks/plugins/image_gallery_saver/ios"
   just_audio:
-    :path: ".symlinks/plugins/just_audio/ios"
+    :path: ".symlinks/plugins/just_audio/darwin"
   path_provider_foundation:
     :path: ".symlinks/plugins/path_provider_foundation/darwin"
   permission_handler_apple:
@@ -72,15 +68,14 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/url_launcher_ios/ios"
 
 SPEC CHECKSUMS:
-  audio_session: f08db0697111ac84ba46191b55488c0563bb29c6
+  audio_session: 9bb7f6c970f21241b19f5a3658097ae459681ba0
   Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
   flutter_inappwebview_ios: b89ba3482b96fb25e00c967aae065701b66e9b99
-  image_gallery_saver: 14711d79da40581063e8842a11acf1969d781ed7
-  just_audio: 6c031bb61297cf218b4462be616638e81c058e97
+  just_audio: 4e391f57b79cad2b0674030a00453ca5ce817eed
   OrderedSet: e539b66b644ff081c73a262d24ad552a69be3a94
   path_provider_foundation: 080d55be775b7414fd5a5ef3ac137b97b097e564
   permission_handler_apple: 4ed2196e43d0651e8ff7ca3483a069d469701f2d
-  share_plus: de6030e33b4e106470e09322d87cf2a4258d2d1d
+  share_plus: 50da8cb520a8f0f65671c6c6a99b3617ed10a58a
   shared_preferences_foundation: 9e1978ff2562383bd5676f64ec4e9aa8fa06a6f7
   sqflite_darwin: 20b2a3a3b70e43edae938624ce550a3cbf66a3d0
   url_launcher_ios: 694010445543906933d732453a59da0a173ae33d
