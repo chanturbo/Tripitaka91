@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:tripitaka91/utils/constants/api_constants.dart';
 import 'package:tripitaka91/utils/play_audio/audio_manager.dart';
@@ -89,7 +90,7 @@ class _MyUserPageState extends State<MyUserPage> {
 
       if (response.statusCode == 200) {
         var json = response.body;
-        var jsonResponse = jsonDecode(json); 
+        var jsonResponse = jsonDecode(json);
 
         if (jsonResponse['success'] == true) {
           List<dynamic> newData = jsonResponse['users'];
@@ -133,15 +134,17 @@ class _MyUserPageState extends State<MyUserPage> {
           actions: <Widget>[
             TextButton(
               onPressed: () {
-                Navigator.of(context)
-                    .pop(false); // ปิดหน้าต่างและส่งค่า false กลับ
+                Navigator.of(
+                  context,
+                ).pop(false); // ปิดหน้าต่างและส่งค่า false กลับ
               },
               child: const Text('ยกเลิก'),
             ),
             ElevatedButton(
               onPressed: () {
-                Navigator.of(context)
-                    .pop(true); // ปิดหน้าต่างและส่งค่า true กลับ
+                Navigator.of(
+                  context,
+                ).pop(true); // ปิดหน้าต่างและส่งค่า true กลับ
               },
               child: const Text(' ยืนยัน '),
             ),
@@ -165,7 +168,7 @@ class _MyUserPageState extends State<MyUserPage> {
 
       if (response.statusCode == 200) {
         var json = response.body;
-        var jsonResponse = jsonDecode(json); 
+        var jsonResponse = jsonDecode(json);
 
         if (jsonResponse['success'] == true) {
           _handleAddData();
@@ -201,7 +204,7 @@ class _MyUserPageState extends State<MyUserPage> {
 
       if (response.statusCode == 200) {
         var json = response.body;
-        var jsonResponse = jsonDecode(json); 
+        var jsonResponse = jsonDecode(json);
 
         if (jsonResponse['success'] == true) {
           _handleAddData();
@@ -226,15 +229,12 @@ class _MyUserPageState extends State<MyUserPage> {
   Future<void> _fetchConfirmRegis(String user) async {
     final response = await http.post(
       Uri.parse(tURLconfirmUser),
-      body: {
-        'token': tSecretAPIKey,
-        'email': user,
-      },
+      body: {'token': tSecretAPIKey, 'email': user},
     );
 
     if (response.statusCode == 200) {
       var json = response.body;
-      var jsonResponse = jsonDecode(json); 
+      var jsonResponse = jsonDecode(json);
 
       if (jsonResponse['success'] == true) {
         _handleAddData();
@@ -253,16 +253,12 @@ class _MyUserPageState extends State<MyUserPage> {
   Future<void> _fetchResetPass(String user) async {
     final response = await http.post(
       Uri.parse(tURLresetUserPass),
-      body: {
-        'token': tSecretAPIKey,
-        'email': user,
-        'password': 'password',
-      },
+      body: {'token': tSecretAPIKey, 'email': user, 'password': 'password'},
     );
 
     if (response.statusCode == 200) {
       var json = response.body;
-      var jsonResponse = jsonDecode(json); 
+      var jsonResponse = jsonDecode(json);
 
       if (jsonResponse['success'] == true) {
         _handleAddData();
@@ -283,7 +279,8 @@ class _MyUserPageState extends State<MyUserPage> {
     return Scaffold(
       appBar: AppBar(
         title: ATextDiskplayMedium(
-            text: 'ผู้ใช้งานทั้งหมด [${widget.totalMember} ราย]'),
+          text: 'ผู้ใช้งานทั้งหมด [${widget.totalMember} ราย]',
+        ),
       ),
       body: Column(
         children: [
@@ -294,17 +291,18 @@ class _MyUserPageState extends State<MyUserPage> {
                 // Dropdown สำหรับเลือกการกรอง
                 DropdownButton<String>(
                   value: _filterType,
-                  items: <String>[
-                    'ชื่อทั้งหมด',
-                    'Admin',
-                    'รอการยืนยัน',
-                    'ผู้มีสิทธิ์ยืนยันเสียงอ่าน'
-                  ].map((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text('แสดง $value'),
-                    );
-                  }).toList(),
+                  items:
+                      <String>[
+                        'ชื่อทั้งหมด',
+                        'Admin',
+                        'รอการยืนยัน',
+                        'ผู้มีสิทธิ์ยืนยันเสียงอ่าน',
+                      ].map((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text('แสดง $value'),
+                        );
+                      }).toList(),
                   onChanged: (newValue) {
                     setState(() {
                       _filterType = newValue!;
@@ -345,8 +343,9 @@ class _MyUserPageState extends State<MyUserPage> {
                 return false;
               },
               child: Padding(
-                padding:
-                    const EdgeInsets.only(top: 16.0), // เพิ่ม padding ด้านบน
+                padding: const EdgeInsets.only(
+                  top: 16.0,
+                ), // เพิ่ม padding ด้านบน
                 child: ListView.builder(
                   controller: _scrollControllerTitle,
                   itemCount: loadedRecordsTitle + 1,
@@ -369,18 +368,41 @@ class _MyUserPageState extends State<MyUserPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               TUserMenu(
-                                  title: 'ชื่อผู้ใช้งาน',
-                                  value: '${dataTitle[index]['username']}'),
+                                title: 'ชื่อผู้ใช้งาน',
+                                value: '${dataTitle[index]['username']}',
+                              ),
                               TUserMenu(
-                                  title: 'ชื่อ-นามสกุล',
-                                  value:
-                                      '${dataTitle[index]['first_nameid']}${dataTitle[index]['firstName']} ${dataTitle[index]['lastName']}'),
+                                title: 'ชื่อ-นามสกุล',
+                                value:
+                                    '${dataTitle[index]['first_nameid']}${dataTitle[index]['firstName']} ${dataTitle[index]['lastName']}',
+                              ),
                               TUserMenu(
-                                  title: 'อีเมล',
-                                  value: '${dataTitle[index]['email']}'),
+                                title: 'อีเมล',
+                                value: '${dataTitle[index]['email']}',
+                              ),
+                              InkWell(
+                                onTap: () async {
+                                  String txtTitle =
+                                      '${dataTitle[index]['email']}';
+                                  Clipboard.setData(
+                                    ClipboardData(text: txtTitle),
+                                  );
+                                  _showSnackbar(
+                                    context,
+                                    'คัดลอกข้อมูลเรียบร้อยแล้ว',
+                                  );
+                                },
+                                child: Icon(
+                                  Icons.copy,
+                                  size: 18,
+                                  color: Colors
+                                      .blue[300], // Change color as needed
+                                ),
+                              ),
                               TUserMenu(
-                                  title: 'วันเดือนปีเกิด',
-                                  value: '${dataTitle[index]['birthDate']}'),
+                                title: 'วันเดือนปีเกิด',
+                                value: '${dataTitle[index]['birthDate']}',
+                              ),
                             ],
                           ),
                           subtitle: Column(
@@ -392,10 +414,12 @@ class _MyUserPageState extends State<MyUserPage> {
                                     onTap: () async {
                                       bool? confirm =
                                           await _showConfirmationDialog(
-                                              context);
+                                            context,
+                                          );
                                       if (confirm!) {
                                         await _fetchResetPass(
-                                            '${dataTitle[index]['username']}');
+                                          '${dataTitle[index]['username']}',
+                                        );
                                       }
                                     },
                                     child: const SizedBox(
@@ -414,10 +438,12 @@ class _MyUserPageState extends State<MyUserPage> {
                                           onTap: () async {
                                             bool? confirm =
                                                 await _showConfirmationDialog(
-                                                    context);
+                                                  context,
+                                                );
                                             if (confirm!) {
                                               await _fetchConfirmRegis(
-                                                  '${dataTitle[index]['username']}');
+                                                '${dataTitle[index]['username']}',
+                                              );
                                             }
                                           },
                                           child: const SizedBox(
@@ -441,7 +467,8 @@ class _MyUserPageState extends State<MyUserPage> {
                                           onTap: () async {
                                             bool? confirm =
                                                 await _showConfirmationDialog(
-                                                    context);
+                                                  context,
+                                                );
                                             if (confirm!) {
                                               await _fetchConfirmVoice(
                                                 '${dataTitle[index]['username']}',
@@ -462,50 +489,50 @@ class _MyUserPageState extends State<MyUserPage> {
                                           ),
                                         )
                                       : dataTitle[index]['permission_voice'] ==
-                                              1
-                                          ? Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  '[ บัญชีนี้ได้รับอนุมัติให้ยืนยันการอ่านออกเสียงแล้ว ]',
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodySmall!
-                                                      .copyWith(
-                                                          color: Colors.red),
-                                                  textAlign: TextAlign.left,
-                                                ),
-                                                dataTitle[index]['username'] !=
-                                                        tmpUser
-                                                    ? InkWell(
-                                                        onTap: () async {
-                                                          bool? confirm =
-                                                              await _showConfirmationDialog(
-                                                                  context);
-                                                          if (confirm!) {
-                                                            await _fetchConfirmVoice(
-                                                              '${dataTitle[index]['username']}',
-                                                              '0',
-                                                            );
-                                                          }
-                                                        },
-                                                        child: const SizedBox(
-                                                          child: Row(
-                                                            children: [
-                                                              Icon(Icons.edit),
-                                                              ATextTitleSmall(
-                                                                text:
-                                                                    'ยกเลิกสิทธิ์ยืนยันการอ่านออกเสียง',
-                                                              ),
-                                                            ],
+                                            1
+                                      ? Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              '[ บัญชีนี้ได้รับอนุมัติให้ยืนยันการอ่านออกเสียงแล้ว ]',
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodySmall!
+                                                  .copyWith(color: Colors.red),
+                                              textAlign: TextAlign.left,
+                                            ),
+                                            dataTitle[index]['username'] !=
+                                                    tmpUser
+                                                ? InkWell(
+                                                    onTap: () async {
+                                                      bool? confirm =
+                                                          await _showConfirmationDialog(
+                                                            context,
+                                                          );
+                                                      if (confirm!) {
+                                                        await _fetchConfirmVoice(
+                                                          '${dataTitle[index]['username']}',
+                                                          '0',
+                                                        );
+                                                      }
+                                                    },
+                                                    child: const SizedBox(
+                                                      child: Row(
+                                                        children: [
+                                                          Icon(Icons.edit),
+                                                          ATextTitleSmall(
+                                                            text:
+                                                                'ยกเลิกสิทธิ์ยืนยันการอ่านออกเสียง',
                                                           ),
-                                                        ),
-                                                      )
-                                                    : const SizedBox.shrink()
-                                              ],
-                                            )
-                                          : const Text(''),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  )
+                                                : const SizedBox.shrink(),
+                                          ],
+                                        )
+                                      : const Text(''),
                                 ],
                               ),
                               Row(
@@ -515,11 +542,13 @@ class _MyUserPageState extends State<MyUserPage> {
                                           onTap: () async {
                                             bool? confirm =
                                                 await _showConfirmationDialog(
-                                                    context);
+                                                  context,
+                                                );
                                             if (confirm!) {
                                               await _fetchConfirmAdmin(
-                                                  '${dataTitle[index]['username']}',
-                                                  '1');
+                                                '${dataTitle[index]['username']}',
+                                                '1',
+                                              );
                                             }
                                           },
                                           child: const SizedBox(
@@ -534,48 +563,49 @@ class _MyUserPageState extends State<MyUserPage> {
                                           ),
                                         )
                                       : dataTitle[index]['level_access'] == 1
-                                          ? Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  '[ บัญชีนี้มีสถานะเป็น Admin ]',
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodySmall!
-                                                      .copyWith(
-                                                          color: Colors.red),
-                                                  textAlign: TextAlign.left,
-                                                ),
-                                                dataTitle[index]['username'] !=
-                                                        tmpUser
-                                                    ? InkWell(
-                                                        onTap: () async {
-                                                          bool? confirm =
-                                                              await _showConfirmationDialog(
-                                                                  context);
-                                                          if (confirm!) {
-                                                            await _fetchConfirmAdmin(
-                                                                '${dataTitle[index]['username']}',
-                                                                '2');
-                                                          }
-                                                        },
-                                                        child: const SizedBox(
-                                                          child: Row(
-                                                            children: [
-                                                              Icon(Icons.edit),
-                                                              ATextTitleSmall(
-                                                                text:
-                                                                    'ยกเลิกสิทธิ์เป็น Admin',
-                                                              ),
-                                                            ],
+                                      ? Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              '[ บัญชีนี้มีสถานะเป็น Admin ]',
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodySmall!
+                                                  .copyWith(color: Colors.red),
+                                              textAlign: TextAlign.left,
+                                            ),
+                                            dataTitle[index]['username'] !=
+                                                    tmpUser
+                                                ? InkWell(
+                                                    onTap: () async {
+                                                      bool? confirm =
+                                                          await _showConfirmationDialog(
+                                                            context,
+                                                          );
+                                                      if (confirm!) {
+                                                        await _fetchConfirmAdmin(
+                                                          '${dataTitle[index]['username']}',
+                                                          '2',
+                                                        );
+                                                      }
+                                                    },
+                                                    child: const SizedBox(
+                                                      child: Row(
+                                                        children: [
+                                                          Icon(Icons.edit),
+                                                          ATextTitleSmall(
+                                                            text:
+                                                                'ยกเลิกสิทธิ์เป็น Admin',
                                                           ),
-                                                        ),
-                                                      )
-                                                    : const SizedBox.shrink()
-                                              ],
-                                            )
-                                          : const Text(''),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  )
+                                                : const SizedBox.shrink(),
+                                          ],
+                                        )
+                                      : const Text(''),
                                 ],
                               ),
                             ],
