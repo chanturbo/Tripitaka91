@@ -59,7 +59,7 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
     if (response.statusCode == 200) {
       // Handle success
       var json = response.body;
-      var jsonResponse = jsonDecode(utf8.decode(json.runes.toList()));
+      var jsonResponse = jsonDecode(json);
 
       if (jsonResponse['success'] == true) {
         // ถ้าสำเร็จ คืนค่าจำนวนรายการที่ได้จาก API

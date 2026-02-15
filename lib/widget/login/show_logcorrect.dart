@@ -69,7 +69,7 @@ class _LogEditScreenBackupState extends State<LogEditScreenBackup> {
 
     if (response.statusCode == 200) {
       var json = response.body;
-      var jsonResponse = jsonDecode(utf8.decode(json.runes.toList()));
+      var jsonResponse = jsonDecode(json);
 
       if (jsonResponse['success'] == true) {
         // ดึงข้อมูล logedit ออกมาจาก jsonResponse
@@ -212,7 +212,7 @@ class _LogEditScreenBackupState extends State<LogEditScreenBackup> {
 
     if (response.statusCode == 200) {
       var json = response.body;
-      var jsonResponse = jsonDecode(utf8.decode(json.runes.toList()));
+      var jsonResponse = jsonDecode(json);
       // print(jsonResponse);
       if (jsonResponse['success'] == true) {
         // print(jsonResponse['message'].toString());

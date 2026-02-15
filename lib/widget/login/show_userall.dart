@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:tripitaka91/utils/constants/api_constants.dart';
 import 'package:tripitaka91/utils/play_audio/audio_manager.dart';
@@ -89,7 +90,7 @@ class _MyUserPageState extends State<MyUserPage> {
 
       if (response.statusCode == 200) {
         var json = response.body;
-        var jsonResponse = jsonDecode(utf8.decode(json.runes.toList()));
+        var jsonResponse = jsonDecode(json);
 
         if (jsonResponse['success'] == true) {
           List<dynamic> newData = jsonResponse['users'];
@@ -165,7 +166,7 @@ class _MyUserPageState extends State<MyUserPage> {
 
       if (response.statusCode == 200) {
         var json = response.body;
-        var jsonResponse = jsonDecode(utf8.decode(json.runes.toList()));
+        var jsonResponse = jsonDecode(json);
 
         if (jsonResponse['success'] == true) {
           _handleAddData();
@@ -201,7 +202,7 @@ class _MyUserPageState extends State<MyUserPage> {
 
       if (response.statusCode == 200) {
         var json = response.body;
-        var jsonResponse = jsonDecode(utf8.decode(json.runes.toList()));
+        var jsonResponse = jsonDecode(json);
 
         if (jsonResponse['success'] == true) {
           _handleAddData();
@@ -234,7 +235,7 @@ class _MyUserPageState extends State<MyUserPage> {
 
     if (response.statusCode == 200) {
       var json = response.body;
-      var jsonResponse = jsonDecode(utf8.decode(json.runes.toList()));
+      var jsonResponse = jsonDecode(json);
 
       if (jsonResponse['success'] == true) {
         _handleAddData();
@@ -262,7 +263,7 @@ class _MyUserPageState extends State<MyUserPage> {
 
     if (response.statusCode == 200) {
       var json = response.body;
-      var jsonResponse = jsonDecode(utf8.decode(json.runes.toList()));
+      var jsonResponse = jsonDecode(json);
 
       if (jsonResponse['success'] == true) {
         _handleAddData();
@@ -378,6 +379,23 @@ class _MyUserPageState extends State<MyUserPage> {
                               TUserMenu(
                                   title: 'อีเมล',
                                   value: '${dataTitle[index]['email']}'),
+                              InkWell(
+                                onTap: () async {
+                                  String txtTitle =
+                                      '${dataTitle[index]['email']}';
+                                  Clipboard.setData(
+                                    ClipboardData(text: txtTitle),
+                                  );
+                                  _showSnackbar(
+                                      context, 'คัดลอกข้อมูลเรียบร้อยแล้ว');
+                                },
+                                child: Icon(
+                                  Icons.copy,
+                                  size: 18,
+                                  color: Colors
+                                      .blue[300], // Change color as needed
+                                ),
+                              ),
                               TUserMenu(
                                   title: 'วันเดือนปีเกิด',
                                   value: '${dataTitle[index]['birthDate']}'),

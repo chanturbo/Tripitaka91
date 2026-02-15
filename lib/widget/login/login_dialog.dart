@@ -223,7 +223,7 @@ class _LoginPageDialogState extends State<LoginPageDialog> {
 
       if (response.statusCode == 200) {
         var json = response.body;
-        var decodedJson = jsonDecode(utf8.decode(json.runes.toList()));
+        var decodedJson = jsonDecode(json);
         // print('print ${decodedJson['user']['level_access']}');
         usersLogin = UsersLogin.fromJson(decodedJson);
         saveValueCorrect(int.parse(usersLogin.user.counterWordcorrec));
