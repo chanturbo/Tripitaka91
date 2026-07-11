@@ -49,6 +49,7 @@ class DataSearch extends SearchDelegate<String> {
       // ทำการค้นหาข้อมูลจาก API และแสดงผลลัพธ์ในหน้าใหม่ (TabBar)
       // โดยใช้ Navigator.push เพื่อเปิดหน้าใหม่
       Future.delayed(Duration.zero, () {
+        if (!context.mounted) return;
         close(context, '');
         final volumeHelper = VolumeHelper();
         Navigator.push(
@@ -206,6 +207,7 @@ class DataSearch extends SearchDelegate<String> {
             if (index < suggestionList.length) {
               query = suggestionList[index];
               Future.delayed(Duration.zero, () {
+                if (!context.mounted) return;
                 close(context, '');
                 Navigator.of(context).push(
                   MaterialPageRoute(

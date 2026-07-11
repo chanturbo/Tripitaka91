@@ -187,8 +187,9 @@ class _ShowPagesDictbtList2State extends State<ShowPagesDictbtList2> {
                           String txtTitle =
                               '${textTitleReplace.getWordDict(dataDict[index])}\n- ${textTitleReplace.getWordDictDetail(dataDict[index])}';
                           txtTitle += ' ข้อความจากพจนานุกรม ไทย-บาลี';
-                          await Share.share(txtTitle,
-                              subject: 'พจนานุกรม ไทย-บาลี');
+                          await SharePlus.instance.share(ShareParams(
+                              text: txtTitle,
+                              subject: 'พจนานุกรม ไทย-บาลี'));
                         },
                         child: Icon(
                           Icons.share,

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 import 'dart:convert'; // เพิ่มการนำเข้าเพื่อใช้ jsonEncode
 import 'package:shared_preferences/shared_preferences.dart';
@@ -204,8 +205,7 @@ class DatabaseHelper {
       }
     } catch (e) {
       // จัดการข้อผิดพลาดในกรณีเกิด Exception
-      // ignore: avoid_print
-      print('Error retrieving data from SQLite: $e');
+      debugPrint('Error retrieving data from SQLite: $e');
       return null;
     }
   }
@@ -230,8 +230,7 @@ class DatabaseHelper {
       }
     } catch (e) {
       // ถ้าเกิดข้อผิดพลาดในระหว่างการดึงข้อมูล
-      // ignore: avoid_print
-      print('Error retrieving data from SQLite: $e');
+      debugPrint('Error retrieving data from SQLite: $e');
       return null;
     }
   }
@@ -627,10 +626,6 @@ class DatabaseHelper {
           // รวมข้อมูลด้วย |
           String detailRecords = detailParts.join('|');
 
-          print(
-            'พบข้อมูลครบในฐานข้อมูลแล้ว (เล่ม $bookid-$bookidend): $totalInRange รายการ',
-          );
-          print('detailRecords: $detailRecords');
           needToSearch = false; // ไม่ต้องค้นหาใหม่
 
           return TotalTitleSearchTri(
@@ -638,7 +633,6 @@ class DatabaseHelper {
             detailRecords: detailRecords,
           );
         } else if (!hasAllDataInRange) {
-          print('ข้อมูลไม่ครบ ขาดเล่ม: $missingBooks - จะค้นหาใหม่');
           needToSearch = true; // ต้องค้นหาใหม่
         }
       }
@@ -646,8 +640,6 @@ class DatabaseHelper {
 
     // ถ้าต้องค้นหาใหม่ (ไม่มีข้อมูลหรือข้อมูลไม่ครบ)
     if (needToSearch) {
-      print('กำลังค้นหาข้อมูล เล่ม $bookid-$bookidend...');
-
       // แปลงเลขอารบิกใน wordsearch เป็นเลขไทย
       String wordsearchThai = arabicToThaiNumbers(wordsearch);
 
@@ -703,8 +695,6 @@ class DatabaseHelper {
 
       // บันทึกลง SharedPreferences ก่อน
       saveDataSet(wordsearch.replaceAll('%', '-'), '1', jsonData);
-
-      print('set1 batch ($bookid-$bookidend) = $jsonData');
 
       // บันทึกข้อมูลลงในฐานข้อมูล (จะรวมกับข้อมูลเดิม)
       await saveHisSearchSet1_3(wordsearch.replaceAll('%', ' '), jsonData, '1');
@@ -781,10 +771,6 @@ class DatabaseHelper {
           // รวมข้อมูลด้วย |
           String detailRecords = detailParts.join('|');
 
-          print(
-            'พบข้อมูลครบในฐานข้อมูลแล้ว (เล่ม $bookid-$bookidend): $totalInRange รายการ',
-          );
-          print('detailRecords: $detailRecords');
           needToSearch = false; // ไม่ต้องค้นหาใหม่
 
           return TotalTitleSearchTri(
@@ -792,7 +778,6 @@ class DatabaseHelper {
             detailRecords: detailRecords,
           );
         } else if (!hasAllDataInRange) {
-          print('ข้อมูลไม่ครบ ขาดเล่ม: $missingBooks - จะค้นหาใหม่');
           needToSearch = true; // ต้องค้นหาใหม่
         }
       }
@@ -800,8 +785,6 @@ class DatabaseHelper {
 
     // ถ้าต้องค้นหาใหม่ (ไม่มีข้อมูลหรือข้อมูลไม่ครบ)
     if (needToSearch) {
-      print('กำลังค้นหาข้อมูล เล่ม $bookid-$bookidend...');
-
       // แปลงเลขอารบิกใน wordsearch เป็นเลขไทย
       String wordsearchThai = arabicToThaiNumbers(wordsearch);
 
@@ -857,8 +840,6 @@ class DatabaseHelper {
 
       // บันทึกลง SharedPreferences ก่อน (เปลี่ยนเป็น set2)
       saveDataSet(wordsearch.replaceAll('%', '-'), '2', jsonData);
-
-      print('set2 batch ($bookid-$bookidend) = $jsonData');
 
       // บันทึกข้อมูลลงในฐานข้อมูล (จะรวมกับข้อมูลเดิม) (เปลี่ยนเป็น set2)
       await saveHisSearchSet1_3(wordsearch.replaceAll('%', ' '), jsonData, '2');
@@ -935,10 +916,6 @@ class DatabaseHelper {
           // รวมข้อมูลด้วย |
           String detailRecords = detailParts.join('|');
 
-          print(
-            'พบข้อมูลครบในฐานข้อมูลแล้ว (เล่ม $bookid-$bookidend): $totalInRange รายการ',
-          );
-          print('detailRecords: $detailRecords');
           needToSearch = false; // ไม่ต้องค้นหาใหม่
 
           return TotalTitleSearchTri(
@@ -946,7 +923,6 @@ class DatabaseHelper {
             detailRecords: detailRecords,
           );
         } else if (!hasAllDataInRange) {
-          print('ข้อมูลไม่ครบ ขาดเล่ม: $missingBooks - จะค้นหาใหม่');
           needToSearch = true; // ต้องค้นหาใหม่
         }
       }
@@ -954,8 +930,6 @@ class DatabaseHelper {
 
     // ถ้าต้องค้นหาใหม่ (ไม่มีข้อมูลหรือข้อมูลไม่ครบ)
     if (needToSearch) {
-      print('กำลังค้นหาข้อมูล เล่ม $bookid-$bookidend...');
-
       // แปลงเลขอารบิกใน wordsearch เป็นเลขไทย
       String wordsearchThai = arabicToThaiNumbers(wordsearch);
 
@@ -1011,8 +985,6 @@ class DatabaseHelper {
 
       // บันทึกลง SharedPreferences ก่อน (เปลี่ยนเป็น set3)
       saveDataSet(wordsearch.replaceAll('%', '-'), '3', jsonData);
-
-      print('set3 batch ($bookid-$bookidend) = $jsonData');
 
       // บันทึกข้อมูลลงในฐานข้อมูล (จะรวมกับข้อมูลเดิม) (เปลี่ยนเป็น set3)
       await saveHisSearchSet1_3(wordsearch.replaceAll('%', ' '), jsonData, '3');
@@ -1237,7 +1209,7 @@ class DatabaseHelper {
             jsonData["set2"]["set2"] = existingSet2;
           }
         } catch (e) {
-          print('Error decoding set2: $e');
+          debugPrint('Error decoding set2: $e');
         }
       }
       if (set_3 != null) {
@@ -1266,7 +1238,7 @@ class DatabaseHelper {
             jsonData["set3"]["set3"] = existingSet3;
           }
         } catch (e) {
-          print('Error decoding set3: $e');
+          debugPrint('Error decoding set3: $e');
         }
       }
     } else if (setNo == '2') {
@@ -1296,7 +1268,7 @@ class DatabaseHelper {
             jsonData["set1"]["set1"] = existingSet1;
           }
         } catch (e) {
-          print('Error decoding set1: $e');
+          debugPrint('Error decoding set1: $e');
         }
       }
       if (set_3 != null) {
@@ -1325,7 +1297,7 @@ class DatabaseHelper {
             jsonData["set3"]["set3"] = existingSet3;
           }
         } catch (e) {
-          print('Error decoding set3: $e');
+          debugPrint('Error decoding set3: $e');
         }
       }
     } else {
@@ -1355,7 +1327,7 @@ class DatabaseHelper {
             jsonData["set1"]["set1"] = existingSet1;
           }
         } catch (e) {
-          print('Error decoding set1: $e');
+          debugPrint('Error decoding set1: $e');
         }
       }
       if (set_2 != null) {
@@ -1384,14 +1356,13 @@ class DatabaseHelper {
             jsonData["set2"]["set2"] = existingSet2;
           }
         } catch (e) {
-          print('Error decoding set2: $e');
+          debugPrint('Error decoding set2: $e');
         }
       }
     }
 
     // แปลง jsonData เป็น JSON string
     String jsonString = jsonEncode(jsonData);
-    print('jsonData = $jsonData');
 
     if (result == 0) {
       await dbClient.rawInsert(

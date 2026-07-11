@@ -5,11 +5,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
+import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:tripitaka91/utils/models/users.dart';
-import 'package:tripitaka91/utils/shared_preferences/shared_user.dart';
+import 'package:tripitaka91/utils/constants/api_constants.dart';
 import 'package:tripitaka91/utils/theme/theme.dart';
 import 'package:tripitaka91/utils/theme/theme_provider.dart';
 import 'package:tripitaka91/widget/my_home_page.dart';
@@ -97,7 +97,6 @@ class UnzipScreen extends StatefulWidget {
 class _UnzipScreenState extends State<UnzipScreen> {
   bool isLoading = false;
   String unzipStatus = 'Idle';
-  Users? usersChk;
   bool online = false;
 
   @override
@@ -115,18 +114,13 @@ class _UnzipScreenState extends State<UnzipScreen> {
     try {
       // Call the loadFromFuture function
       await loadFromFuture();
-      usersChk = await getUsersList();
+      online = await _checkInternetConnection();
 
-      // print('คือ $usersChk');
       setState(() {
-        if (usersChk != null) {
-          online = true;
-        }
         unzipStatus = 'ประมวลผลสำเร็จ!';
       });
-      // print(online);
       // Navigate to MyHomePage after unzip is complete
-      // ignore: use_build_context_synchronously
+      if (!mounted) return;
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => MyHomePage(online: online)),
@@ -139,6 +133,20 @@ class _UnzipScreenState extends State<UnzipScreen> {
       setState(() {
         isLoading = false;
       });
+    }
+  }
+
+  // Actually probes the backend instead of inferring connectivity from a
+  // cached login, so remote-vs-local data source selection downstream
+  // (widget.online) reflects real reachability.
+  Future<bool> _checkInternetConnection() async {
+    try {
+      final response = await http
+          .get(Uri.parse(tURLmain))
+          .timeout(const Duration(seconds: 5));
+      return response.statusCode == 200;
+    } catch (_) {
+      return false;
     }
   }
 
@@ -211,7 +219,7 @@ Future<void> loadFromFuture() async {
       for (final file in archive) {
         final filename = file.name;
         if (file.isFile) {
-          final data = await file.content as List<int>;
+          final data = file.content as List<int>;
           File('$dir/$filename')
             ..createSync(recursive: true)
             ..writeAsBytesSync(data);

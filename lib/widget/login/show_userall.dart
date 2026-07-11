@@ -84,7 +84,7 @@ class _MyUserPageState extends State<MyUserPage> {
           'token': tSecretAPIKey,
           'page': pageTitle.toString(),
           'filter': filter,
-          if (searchText != null) 'searchText': searchText,
+          'searchText': ?searchText,
         },
       );
 

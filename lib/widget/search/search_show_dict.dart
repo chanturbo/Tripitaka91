@@ -236,8 +236,9 @@ class _SearchShowPagesDictState extends State<SearchShowPagesDict> {
                           String txtTitle =
                               '${textTitleReplace.getWordDict(dataDict[index])}\n- ${textTitleReplace.getWordDictDetail(dataDict[index])}';
                           txtTitle += ' ข้อความจากพจนานุกรม ฉบับประมวลศัพท์';
-                          await Share.share(txtTitle,
-                              subject: 'พจนานุกรม ฉบับประมวลศัพท์');
+                          await SharePlus.instance.share(ShareParams(
+                              text: txtTitle,
+                              subject: 'พจนานุกรม ฉบับประมวลศัพท์'));
                         },
                         child: Icon(
                           Icons.share,

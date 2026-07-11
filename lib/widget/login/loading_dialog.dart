@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tripitaka91/widget/auto_text/auto_text.dart';
 
 class LoadingDialog {
-  static show(BuildContext context) {
+  static void show(BuildContext context) {
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -24,7 +24,7 @@ class LoadingDialog {
     );
   }
 
-  static hide(BuildContext context) {
+  static void hide(BuildContext context) {
     Navigator.of(context, rootNavigator: true).pop();
   }
 }

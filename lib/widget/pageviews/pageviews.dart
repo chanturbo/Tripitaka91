@@ -275,9 +275,12 @@ class _Tri91PageViewHtml1State extends State<Tri91PageViewHtml1> {
                                             '${textTitleReplace.getWordDict(dataDict[index])}\n- ${textTitleReplace.getWordDictDetail(dataDict[index])}';
                                         txtTitle +=
                                             ' ข้อความจากพจนานุกรม ฉบับประมวลศัพท์';
-                                        await Share.share(txtTitle,
-                                            subject:
-                                                'พจนานุกรม ฉบับประมวลศัพท์');
+                                        await SharePlus.instance.share(
+                                            ShareParams(
+                                          text: txtTitle,
+                                          subject:
+                                              'พจนานุกรม ฉบับประมวลศัพท์',
+                                        ));
                                       },
                                       child: Icon(
                                         Icons.share,
@@ -884,9 +887,10 @@ class _Tri91PageViewHtml1State extends State<Tri91PageViewHtml1> {
                           textReplacer.replaceText(triTitle, bookBlue);
                       txtTitle +=
                           'สรุปเนื้อความจากพระไตรปิฎก ฉบับ มมร. เล่ม $bookIds หน้า $pageId บรรทัด $bookLine';
-                      await Share.share(
-                          '$txtTitle อ่านรายละเอียด -> $tURLmain$bookIds-$pageId-$bookLine.htm',
-                          subject: 'สรุปหัวข้อธรรมจากพระไตรปิฎก');
+                      await SharePlus.instance.share(ShareParams(
+                          text:
+                              '$txtTitle อ่านรายละเอียด -> $tURLmain$bookIds-$pageId-$bookLine.htm',
+                          subject: 'สรุปหัวข้อธรรมจากพระไตรปิฎก'));
                     },
                     child: Icon(
                       Icons.share,

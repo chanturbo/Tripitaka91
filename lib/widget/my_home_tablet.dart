@@ -370,7 +370,7 @@ class _MyHomeTabletState extends State<MyHomeTablet> {
     );
   }
 
-  sideBar() {
+  Widget sideBar() {
     return Container(
       width: 125,
       height: MediaQuery.of(context).size.height,
@@ -399,7 +399,7 @@ class _MyHomeTabletState extends State<MyHomeTablet> {
     );
   }
 
-  sideBarItem(
+  Widget sideBarItem(
       IconData iconData, String text, bool isprimary, int index, Color bColor) {
     return MaterialButton(
         color: index == sidebarButtonNo ? Colors.grey[200] : Colors.transparent,

@@ -53,7 +53,7 @@ class _LoginPageDialogState extends State<LoginPageDialog> {
     );
   }
 
-  _inputField(context) {
+  Widget _inputField(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -66,7 +66,7 @@ class _LoginPageDialogState extends State<LoginPageDialog> {
             border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(18),
                 borderSide: BorderSide.none),
-            fillColor: Theme.of(context).primaryColor.withOpacity(0.1),
+            fillColor: Theme.of(context).primaryColor.withValues(alpha: 0.1),
             filled: true,
             prefixIcon: const Icon(Icons.person),
           ),
@@ -83,7 +83,7 @@ class _LoginPageDialogState extends State<LoginPageDialog> {
             border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(18),
                 borderSide: BorderSide.none),
-            fillColor: Theme.of(context).primaryColor.withOpacity(0.1),
+            fillColor: Theme.of(context).primaryColor.withValues(alpha: 0.1),
             filled: true,
             prefixIcon: const Icon(Icons.person),
           ),

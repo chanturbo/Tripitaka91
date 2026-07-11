@@ -408,7 +408,7 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
     return Color(int.parse(code.substring(1, 7), radix: 16) + 0xFF000000);
   }
 
-  _setColour(int index) async {
+  Future<void> _setColour(int index) async {
     String bgColor = '#ffffff';
     String fontColor = '#475859';
     if (index == 0) {
@@ -570,9 +570,12 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
                                             '${textTitleReplace.getWordDict(dataDict[index])}\n- ${textTitleReplace.getWordDictDetail(dataDict[index])}';
                                         txtTitle +=
                                             ' ข้อความจากพจนานุกรม ฉบับประมวลศัพท์';
-                                        await Share.share(
-                                          txtTitle,
-                                          subject: 'พจนานุกรม ฉบับประมวลศัพท์',
+                                        await SharePlus.instance.share(
+                                          ShareParams(
+                                            text: txtTitle,
+                                            subject:
+                                                'พจนานุกรม ฉบับประมวลศัพท์',
+                                          ),
                                         );
                                       },
                                       child: Icon(
@@ -931,9 +934,12 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
             if (pageChanged == pageids) {
               tmpLine = tribookline.toString();
             }
-            await Share.share(
-              '$tURLmain${widget.triBookid}-$pageChanged-$tmpLine.htm',
-              subject: 'พระไตรปิฎก',
+            await SharePlus.instance.share(
+              ShareParams(
+                text:
+                    '$tURLmain${widget.triBookid}-$pageChanged-$tmpLine.htm',
+                subject: 'พระไตรปิฎก',
+              ),
             );
           },
           child: Icon(

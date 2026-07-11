@@ -133,25 +133,27 @@ class _AppBarCustomState extends State<AppBarCustom> {
                                           textAlign: TextAlign.left,
                                         ),
                                         const SizedBox(height: 5),
-                                        RadioListTile<bool>(
-                                          title: const Text('เสียงผู้ชาย'),
-                                          value: true,
+                                        RadioGroup<bool>(
                                           groupValue: isMaleVoice,
                                           onChanged: (value) {
                                             setState(() {
                                               isMaleVoice = value!;
                                             });
                                           },
-                                        ),
-                                        RadioListTile<bool>(
-                                          title: const Text('เสียงผู้หญิง'),
-                                          value: false,
-                                          groupValue: isMaleVoice,
-                                          onChanged: (value) {
-                                            setState(() {
-                                              isMaleVoice = value!;
-                                            });
-                                          },
+                                          child: Column(
+                                            children: [
+                                              RadioListTile<bool>(
+                                                title: const Text(
+                                                    'เสียงผู้ชาย'),
+                                                value: true,
+                                              ),
+                                              RadioListTile<bool>(
+                                                title: const Text(
+                                                    'เสียงผู้หญิง'),
+                                                value: false,
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                         const SizedBox(height: 10),
                                         TextField(

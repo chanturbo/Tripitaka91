@@ -227,7 +227,7 @@ class _BookShowTitleState extends State<BookShowTitle> {
     }
 
     // แสดง Dialog ยืนยัน
-    // ignore: use_build_context_synchronously
+    if (!mounted) return;
     bool? confirm = await showDialog<bool>(
       context: context,
       builder: (BuildContext context) {
@@ -250,7 +250,7 @@ class _BookShowTitleState extends State<BookShowTitle> {
 
     // ถ้าผู้ใช้กดยืนยัน ให้นำทางไปยังหน้าใหม่
     if (confirm == true) {
-      // ignore: use_build_context_synchronously
+      if (!mounted) return;
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -700,11 +700,12 @@ class _BookShowTitleState extends State<BookShowTitle> {
                               color: Colors.black,
                               icon: const Icon(Icons.share),
                               onPressed: () {
-                                Share.share(
-                                  'tripitaka91_1.php?book_code=${widget.triBookid}',
+                                SharePlus.instance.share(ShareParams(
+                                  text:
+                                      'tripitaka91_1.php?book_code=${widget.triBookid}',
                                   subject:
                                       'สารบัญหัวข้อธรรม เล่ม ${widget.triBookid}',
-                                );
+                                ));
                               },
                             ),
                           ],
@@ -1289,8 +1290,9 @@ class _BookShowTitleState extends State<BookShowTitle> {
                         onPressed: () async {
                           String code = widget.triBookid;
                           String linkPhp = 'tripitaka91_1.php';
-                          await Share.share('$tURLmain$linkPhp?book_code=$code',
-                              subject: 'สารบัญหัวข้อธรรม เล่ม $code');
+                          await SharePlus.instance.share(ShareParams(
+                              text: '$tURLmain$linkPhp?book_code=$code',
+                              subject: 'สารบัญหัวข้อธรรม เล่ม $code'));
                         },
                       ),
                     ],

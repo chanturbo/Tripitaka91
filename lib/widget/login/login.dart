@@ -57,7 +57,7 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  _header(context) {
+  Widget _header(BuildContext context) {
     return const Column(
       children: [
         Text(
@@ -69,7 +69,7 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  _inputField(context) {
+  Widget _inputField(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -82,7 +82,7 @@ class _LoginPageState extends State<LoginPage> {
             border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(18),
                 borderSide: BorderSide.none),
-            fillColor: Theme.of(context).primaryColor.withOpacity(0.1),
+            fillColor: Theme.of(context).primaryColor.withValues(alpha: 0.1),
             filled: true,
             prefixIcon: const Icon(Icons.person),
           ),
@@ -99,7 +99,7 @@ class _LoginPageState extends State<LoginPage> {
             border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(18),
                 borderSide: BorderSide.none),
-            fillColor: Theme.of(context).primaryColor.withOpacity(0.1),
+            fillColor: Theme.of(context).primaryColor.withValues(alpha: 0.1),
             filled: true,
             prefixIcon: const Icon(Icons.person),
           ),
@@ -285,7 +285,7 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  _forgotPassword(context) {
+  Widget _forgotPassword(BuildContext context) {
     return TextButton(
         onPressed: () {
           _showDialogResetPass(context);
@@ -293,7 +293,7 @@ class _LoginPageState extends State<LoginPage> {
         child: const Text(TTexts.forgetPassword));
   }
 
-  _signup(context) {
+  Widget _signup(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [

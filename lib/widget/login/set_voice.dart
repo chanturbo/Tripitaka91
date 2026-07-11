@@ -65,25 +65,25 @@ class _SetVoiceState extends State<SetVoice> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            RadioListTile(
-              title: const Text('เสียงผู้ชาย'),
-              value: 'เสียงผู้ชาย',
+            RadioGroup<String>(
               groupValue: selectedVoice,
               onChanged: (value) {
                 setState(() {
                   selectedVoice = value!;
                 });
               },
-            ),
-            RadioListTile(
-              title: const Text('เสียงผู้หญิง'),
-              value: 'เสียงผู้หญิง',
-              groupValue: selectedVoice,
-              onChanged: (value) {
-                setState(() {
-                  selectedVoice = value!;
-                });
-              },
+              child: Column(
+                children: [
+                  RadioListTile(
+                    title: const Text('เสียงผู้ชาย'),
+                    value: 'เสียงผู้ชาย',
+                  ),
+                  RadioListTile(
+                    title: const Text('เสียงผู้หญิง'),
+                    value: 'เสียงผู้หญิง',
+                  ),
+                ],
+              ),
             ),
           ],
         ),

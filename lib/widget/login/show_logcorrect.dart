@@ -101,7 +101,7 @@ class _LogEditScreenBackupState extends State<LogEditScreenBackup> {
     try {
       final messages = await fetchData(bookid, pageid, lineid);
       if (messages.isEmpty) {
-        // ignore: use_build_context_synchronously
+        if (!context.mounted) return;
         showDialog(
           context: context,
           builder: (BuildContext context) {
@@ -122,7 +122,7 @@ class _LogEditScreenBackupState extends State<LogEditScreenBackup> {
       } else {
         // ใส่โค้ดที่ต้องการแสดงผลเมื่อมีข้อมูลที่ได้จาก fetchData ที่ไม่ว่าง
         // print('พบข้อมูล: ${messages[0]['book_detail']}');
-        // ignore: use_build_context_synchronously
+        if (!context.mounted) return;
         showDialog(
           context: context,
           builder: (BuildContext context) {
@@ -177,7 +177,7 @@ class _LogEditScreenBackupState extends State<LogEditScreenBackup> {
         );
       }
     } catch (e) {
-      // ignore: use_build_context_synchronously
+      if (!context.mounted) return;
       showDialog(
         context: context,
         builder: (BuildContext context) {

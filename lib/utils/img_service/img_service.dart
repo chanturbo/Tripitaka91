@@ -47,9 +47,10 @@ class ImageCaptureService {
       await imgFile.writeAsBytes(capturedImage);
 
       // แชร์ไฟล์รูปภาพ
-      await Share.shareXFiles([XFile(imgFile.path)],
+      await SharePlus.instance.share(ShareParams(
+          files: [XFile(imgFile.path)],
           text:
-              '$title เล่ม $bookid หน้า $pageid บรรทัด $lineid อ่านรายละเอียด -> $link');
+              '$title เล่ม $bookid หน้า $pageid บรรทัด $lineid อ่านรายละเอียด -> $link'));
       // }
     } catch (e) {
       // คุณสามารถจัดการข้อผิดพลาดได้ตามต้องการ

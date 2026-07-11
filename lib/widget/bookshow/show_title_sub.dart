@@ -426,12 +426,14 @@ class _ShowTitlePagesState extends State<ShowTitlePages> {
               String sub = widget.menuList[index][1];
               String linkPhp = 'tripitaka91_1.php';
               if (sub1.isNotEmpty) {
-                await Share.share(
-                    '$tURLmain$linkPhp?book_code=$code&sub=$sub&sub1=$sub1',
-                    subject: bookcode);
+                await SharePlus.instance.share(ShareParams(
+                    text:
+                        '$tURLmain$linkPhp?book_code=$code&sub=$sub&sub1=$sub1',
+                    subject: bookcode));
               } else {
-                await Share.share('$tURLmain$linkPhp?book_code=$code&sub=$sub',
-                    subject: bookcode);
+                await SharePlus.instance.share(ShareParams(
+                    text: '$tURLmain$linkPhp?book_code=$code&sub=$sub',
+                    subject: bookcode));
               }
             },
           ),

@@ -702,12 +702,11 @@ class _ShowSpeechSaveState extends State<ShowSpeechSave> {
                                   InkWell(
                                     onTap: () async {
                                       Users? users = await getUsersList();
+                                      if (!context.mounted) return;
                                       if (users?.permissionVoice == '0') {
-                                        // ignore: use_build_context_synchronously
                                         showPermissionDialog(context);
                                       } else {
                                         bool? confirm =
-                                            // ignore: use_build_context_synchronously
                                             await _showConfirmationDialog(
                                                 context);
                                         if (confirm!) {
@@ -866,6 +865,9 @@ class _ShowSpeechSaveState extends State<ShowSpeechSave> {
                                                   onTap: () async {
                                                     Users? users =
                                                         await getUsersList();
+                                                    if (!context.mounted) {
+                                                      return;
+                                                    }
                                                     String tmpLevel = '2';
                                                     if (users != null) {
                                                       tmpLevel =
@@ -873,17 +875,20 @@ class _ShowSpeechSaveState extends State<ShowSpeechSave> {
                                                     }
                                                     if (tmpLevel == '1') {
                                                       bool? confirm =
-                                                          // ignore: use_build_context_synchronously
                                                           await _showConfirmationDialog(
                                                               context);
+                                                      if (!context.mounted) {
+                                                        return;
+                                                      }
                                                       if (confirm!) {
-                                                        // ignore: use_build_context_synchronously
                                                         LoadingDialog.show(
                                                             context);
                                                         await _fetchSpeakConfirmSuscess(
                                                             '${dataTitle[index]['words']}',
                                                             '${dataTitle[index]['words_speak']}');
-                                                        // ignore: use_build_context_synchronously
+                                                        if (!context.mounted) {
+                                                          return;
+                                                        }
                                                         LoadingDialog.hide(
                                                             context);
                                                         // print(
@@ -891,7 +896,6 @@ class _ShowSpeechSaveState extends State<ShowSpeechSave> {
                                                         // print('${dataTitle[index]['words']}');
                                                       }
                                                     } else {
-                                                      // ignore: use_build_context_synchronously
                                                       _showSnackbar(context,
                                                           'คุณยังไม่ได้รับสิทธิ์ยืนยันการแก้ไขข้อมูล');
                                                     }

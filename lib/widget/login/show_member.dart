@@ -89,8 +89,8 @@ class _MemberDisplayState extends State<MemberDisplay> {
               if (textController.text.trim().toLowerCase() == 'delete') {
                 Navigator.pop(ctx); // ปิด dialog
                 bool success = await deleteUser(username);
+                if (!context.mounted) return;
                 if (success) {
-                  // ignore: use_build_context_synchronously
                   await showDialog(
                     context: context,
                     builder: (context) => AlertDialog(
@@ -111,7 +111,7 @@ class _MemberDisplayState extends State<MemberDisplay> {
                   clearUsersList();
 
                   // ปิดหน้าจอหลังจากทำงานเสร็จ
-                  // ignore: use_build_context_synchronously
+                  if (!context.mounted) return;
                   Phoenix.rebirth(context);
                   /*Navigator.pushReplacement(
                     context,
@@ -119,7 +119,6 @@ class _MemberDisplayState extends State<MemberDisplay> {
                         builder: (context) => const MyApp()), // แทนที่หน้าเดิม
                   );*/
                 } else {
-                  // ignore: use_build_context_synchronously
                   await showDialog(
                     context: context,
                     builder: (context) => AlertDialog(
@@ -400,17 +399,17 @@ class _MemberDisplayState extends State<MemberDisplay> {
                     backgroundColor:
                         WidgetStateProperty.all<Color>(Colors.orange),
                   ),
-                  onPressed: () {
-                    showDialog(
+                  onPressed: () async {
+                    final value = await showDialog(
                       context: context,
                       builder: (BuildContext context) {
                         return const ChangePasswordDialog();
                       },
-                    ).then((value) {
-                      if (value == true) {
-                        Navigator.of(context).pop();
-                      }
-                    });
+                    );
+                    if (!context.mounted) return;
+                    if (value == true) {
+                      Navigator.of(context).pop();
+                    }
                   },
                   child: const ATextDiskplayMedium(
                     text: 'เปลี่ยนรหัสผ่าน',

@@ -223,8 +223,9 @@ class _ShowPagesDictList2State extends State<ShowPagesDictList2> {
                               '${textTitleReplace.getWordDict(dataDict[index])}\n- ${textTitleReplace.getWordDictDetail(dataDict[index])}';
                           txtTitle +=
                               ' ข้อความจากพจนานุกรม ฉบับประมวลศัพท์ รวบรวมโดย พระพรหมคุณาภรณ์ (ป.อ. ปยุตฺโต)';
-                          await Share.share(txtTitle,
-                              subject: 'พจนานุกรม ฉบับประมวลศัพท์');
+                          await SharePlus.instance.share(ShareParams(
+                              text: txtTitle,
+                              subject: 'พจนานุกรม ฉบับประมวลศัพท์'));
                         },
                         child: Icon(
                           Icons.share,

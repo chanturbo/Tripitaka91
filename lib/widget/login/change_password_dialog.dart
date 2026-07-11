@@ -88,7 +88,7 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
         // );
       } else {
         // ถ้าไม่สำเร็จ คืนค่าว่าง
-        // ignore: use_build_context_synchronously
+        if (!mounted) return;
         showDialog(
           context: context,
           builder: (BuildContext context) {
@@ -109,7 +109,7 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
       }
     } else {
       // Handle error
-      // ignore: use_build_context_synchronously
+      if (!mounted) return;
       showDialog(
         context: context,
         builder: (BuildContext context) {
