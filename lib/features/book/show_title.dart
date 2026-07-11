@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:tripitaka91/utils/theme/theme_helpers.dart';
 import 'package:tripitaka91/widget/auto_text/auto_text.dart';
-import 'package:tripitaka91/widget/bookshow/show_title_sub.dart';
+import 'package:tripitaka91/features/book/show_title_sub.dart';
 
 class SubShowTitle extends StatefulWidget {
   final String titleText;
@@ -36,7 +37,7 @@ class _SubShowTitleState extends State<SubShowTitle> {
             return ListTile(
               contentPadding:
                   const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              tileColor: Colors.white, // สีพื้นหลัง
+              tileColor: adaptiveSurfaceColor(innerContext), // สีพื้นหลัง
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),

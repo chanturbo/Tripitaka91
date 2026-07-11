@@ -20,9 +20,10 @@ import 'package:tripitaka91/utils/shared_preferences/shared_user.dart';
 import 'package:tripitaka91/utils/text_title_replace/text_title_replace.dart';
 import 'package:tripitaka91/widget/audio/edit_speak.dart';
 import 'package:tripitaka91/widget/auto_text/auto_text.dart';
-import 'package:tripitaka91/widget/bookshow/show_title_list.dart';
+import 'package:tripitaka91/features/book/show_title_list.dart';
 import 'package:tripitaka91/widget/login/loading_dialog.dart';
-import 'package:tripitaka91/widget/pageviews/pageviews_html.dart';
+import 'package:tripitaka91/features/book/pageviews_html.dart';
+import 'package:tripitaka91/utils/theme/theme_helpers.dart';
 import 'package:tripitaka91/widget/right_clipper/center_clipper.dart';
 import 'package:tripitaka91/widget/volume_helper/volume_helper.dart';
 
@@ -682,7 +683,7 @@ class _BookShowTitleState extends State<BookShowTitle> {
                             const ATextBodyMedium(text: ' สารบัญหัวข้อธรรม'),
                             const SizedBox(width: 10),
                             IconButton(
-                              color: Colors.black,
+                              color: adaptiveTextColor(context),
                               icon: const Icon(Icons.copy),
                               onPressed: () {
                                 String code = widget.triBookid;
@@ -697,7 +698,7 @@ class _BookShowTitleState extends State<BookShowTitle> {
                               },
                             ),
                             IconButton(
-                              color: Colors.black,
+                              color: adaptiveTextColor(context),
                               icon: const Icon(Icons.share),
                               onPressed: () {
                                 SharePlus.instance.share(ShareParams(
@@ -1271,7 +1272,7 @@ class _BookShowTitleState extends State<BookShowTitle> {
                       const ATextBodyMedium(text: ' สารบัญหัวข้อธรรม'),
                       const SizedBox(width: 10),
                       IconButton(
-                        color: Colors.black,
+                        color: adaptiveTextColor(context),
                         icon: const Icon(Icons.copy),
                         onPressed: () {
                           String code = widget.triBookid;
@@ -1285,7 +1286,7 @@ class _BookShowTitleState extends State<BookShowTitle> {
                       ),
                       const SizedBox(width: 5),
                       IconButton(
-                        color: Colors.black,
+                        color: adaptiveTextColor(context),
                         icon: const Icon(Icons.share),
                         onPressed: () async {
                           String code = widget.triBookid;

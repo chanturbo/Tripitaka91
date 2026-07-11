@@ -29,7 +29,8 @@ import 'package:tripitaka91/widget/last_read/save_last.dart';
 import 'package:tripitaka91/widget/login/loading_dialog.dart';
 import 'package:tripitaka91/widget/login/login_dialog.dart';
 import 'package:tripitaka91/widget/login/show_logedit_save_with_page.dart';
-import 'package:tripitaka91/widget/pageviews/pageviews_edit.dart';
+import 'package:tripitaka91/features/book/pageviews_edit.dart';
+import 'package:tripitaka91/utils/theme/theme_helpers.dart';
 import 'package:tripitaka91/widget/screen/respond_screen.dart';
 import 'package:tripitaka91/widget/volume_helper/volume_helper.dart';
 
@@ -509,7 +510,7 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
                         borderRadius: BorderRadius.circular(10.0),
                         child: Card(
                           margin: const EdgeInsets.all(5),
-                          color: Colors.white,
+                          color: adaptiveSurfaceColor(context),
                           child: Column(
                             children: [
                               ListTile(
@@ -1075,12 +1076,12 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
               ? Container(
                   alignment: Alignment.topCenter,
                   width: 250.0,
-                  color: Colors.white,
+                  color: adaptiveSurfaceColor(context),
                   child: Text(txtShowEmpty),
                 )
               : Container(
                   width: 250.0,
-                  color: Colors.white,
+                  color: adaptiveSurfaceColor(context),
                   child: ListView.builder(
                     controller: _scrollControllerListTitle,
                     itemCount: numRecord,
@@ -1172,12 +1173,12 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
               ? Container(
                   alignment: Alignment.topCenter,
                   width: 350.0,
-                  color: Colors.white,
+                  color: adaptiveSurfaceColor(context),
                   child: Text(txtShowEmpty),
                 )
               : Container(
                   width: 350.0,
-                  color: Colors.white,
+                  color: adaptiveSurfaceColor(context),
                   child: ListView.builder(
                     controller: _scrollControllerListTitle,
                     itemCount: numRecord,
@@ -1312,7 +1313,7 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
       borderRadius: BorderRadius.circular(10.0),
       child: Card(
         margin: const EdgeInsets.all(5),
-        color: Colors.white,
+        color: adaptiveSurfaceColor(context),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
@@ -1344,7 +1345,7 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
                       terms: outputList,
                       textStyle: TextStyle(
                         fontSize: isMobile ? 18.0 : 16.0,
-                        color: Colors.black,
+                        color: adaptiveTextColor(context),
                       ),
                     )
                   : SubstringHighlight(
@@ -1354,7 +1355,8 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
                         fontSize: isMobile ? 18.0 : 16.0,
                         color: Colors.red,
                       ),
-                      textStyleHighlight: const TextStyle(color: Colors.black),
+                      textStyleHighlight:
+                          TextStyle(color: adaptiveTextColor(context)),
                     ),
               subtitle: Row(
                 children: [
@@ -1483,7 +1485,7 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
               borderRadius: BorderRadius.all(Radius.circular(32.0)),
             ),
             contentPadding: const EdgeInsets.only(top: 10.0),
-            backgroundColor: Colors.white,
+            backgroundColor: adaptiveSurfaceColor(context),
             title: const Text('เข้าสู่ระบบ'),
             content: const LoginPageDialog(),
             actions: <Widget>[
@@ -2478,7 +2480,7 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
                   context: context,
                   builder: (BuildContext context) {
                     return AlertDialog(
-                      backgroundColor: Colors.white,
+                      backgroundColor: adaptiveSurfaceColor(context),
                       title: const Text('รายงาน'),
                       content: RichText(
                         text: TextSpan(children: getWordSpans(link)),

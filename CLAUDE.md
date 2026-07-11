@@ -50,7 +50,9 @@ The app has three separate layout implementations selected by screen width, not 
 
 ### Content navigation model
 
-The 91 volumes are organized into three menu ranges reflected throughout the codebase: books 1–10 (Vinaya), 11–74 (Sutta), 75–91 (Abhidhamma) — see `lib/widget/menu/list_menu_tri1_10.dart`, `list_menu_tri11_74.dart`, `list_menu_tri75_91.dart`, and the raw title lists in `lib/widget/menu/data_menu.dart` (`book_1`, `book_2`, ... as flat Thai-title string lists per volume group). Book/page display widgets live under `lib/widget/showbook/` (multiple numbered variants: `show_book1.dart`, `show_book2.dart`, `show_book3.dart` — check which is actually wired into the current menu flow before assuming one is dead code) and dictionary entries under `lib/widget/showdict/`.
+The 91 volumes are organized into three menu ranges reflected throughout the codebase: books 1–10 (Vinaya), 11–74 (Sutta), 75–91 (Abhidhamma) — see `lib/widget/menu/list_menu_tri1_10.dart`, `list_menu_tri11_74.dart`, `list_menu_tri75_91.dart`, and the raw title lists in `lib/widget/menu/data_menu.dart` (`book_1`, `book_2`, ... as flat Thai-title string lists per volume group). Book/page display and reading-flow widgets (formerly split across `lib/widget/showbook/`, `lib/widget/bookshow/`, `lib/widget/pageviews/`) now live together under `lib/features/book/` (multiple numbered variants: `show_book1.dart`, `show_book2.dart`, `show_book3.dart` — check which is actually wired into the current menu flow before assuming one is dead code) and dictionary entries under `lib/widget/showdict/`.
+
+`lib/features/book/` is the first (and so far only) domain pulled out of the old `lib/widget/` split-by-type layout into a feature-first grouping. The rest of `lib/widget/` (login, search, menu, showdict, etc.) is still organized by widget type, not by feature — don't assume the whole tree follows `lib/features/*` yet.
 
 ### Theming
 

@@ -4,10 +4,10 @@ import 'package:tripitaka91/widget/auto_text/auto_text.dart';
 import 'package:tripitaka91/widget/info/info.dart';
 import 'package:tripitaka91/widget/menu/data_menu.dart';
 import 'package:tripitaka91/widget/right_clipper/right_clipper.dart';
-import 'package:tripitaka91/widget/showbook/show_book1.dart';
-import 'package:tripitaka91/widget/showbook/show_book2.dart';
-import 'package:tripitaka91/widget/showbook/show_book3.dart';
-import 'package:tripitaka91/widget/showbook/show_title.dart';
+import 'package:tripitaka91/features/book/show_book1.dart';
+import 'package:tripitaka91/features/book/show_book2.dart';
+import 'package:tripitaka91/features/book/show_book3.dart';
+import 'package:tripitaka91/features/book/show_title.dart';
 import 'package:tripitaka91/widget/showdict/dictshow_dict.dart';
 import 'package:tripitaka91/widget/showdict/dictshow_dictbt.dart';
 

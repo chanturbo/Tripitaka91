@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
+import 'package:share_plus/share_plus.dart';
 import 'package:substring_highlight/substring_highlight.dart';
 import 'package:tripitaka91/utils/constants/api_constants.dart';
 import 'package:tripitaka91/utils/db_helper/db_helper.dart';
@@ -14,27 +15,30 @@ import 'package:tripitaka91/utils/text_title_replace/text_title_replace.dart';
 import 'package:tripitaka91/widget/audio/edit_speak.dart';
 import 'package:tripitaka91/widget/auto_text/auto_text.dart';
 import 'package:tripitaka91/widget/login/loading_dialog.dart';
-import 'package:tripitaka91/widget/pageviews/pageviews_html.dart';
+import 'package:tripitaka91/features/book/pageviews_html.dart';
 import 'package:tripitaka91/widget/right_clipper/center_clipper.dart';
 import 'package:tripitaka91/widget/volume_helper/volume_helper.dart';
 
-class SearchShowPagesTitleList extends StatefulWidget {
-  final String bookid;
-  final bool isMobile;
+class ShowTitlePages extends StatefulWidget {
+  final String wordSearch;
+  final bool isM;
+  final String menuMain;
+  final List<List<String>> menuList;
   final bool online;
-  const SearchShowPagesTitleList({
+  const ShowTitlePages({
     super.key,
-    required this.bookid,
-    required this.isMobile,
+    required this.wordSearch,
+    required this.isM,
+    required this.menuMain,
+    required this.menuList,
     required this.online,
   });
 
   @override
-  State<SearchShowPagesTitleList> createState() =>
-      _SearchShowPagesTitleListState();
+  State<ShowTitlePages> createState() => _ShowTitlePagesState();
 }
 
-class _SearchShowPagesTitleListState extends State<SearchShowPagesTitleList> {
+class _ShowTitlePagesState extends State<ShowTitlePages> {
   List<String> dataTitle = [];
   int loadedRecordsTitle = 0;
   bool loadingTitle = false;
@@ -53,7 +57,7 @@ class _SearchShowPagesTitleListState extends State<SearchShowPagesTitleList> {
     super.initState();
     textTitleReplace = TextTitleReplace();
     _scrollControllerTitle.addListener(_scrollListener);
-    widget.online ? _fetchDataTitle() : _fetchDataTitleInBook();
+    widget.online ? _fetchDataTitle() : _fetchDataTitleDB();
     getUser();
   }
 
@@ -63,19 +67,19 @@ class _SearchShowPagesTitleListState extends State<SearchShowPagesTitleList> {
     super.dispose();
   }
 
-  void _scrollListener() {
-    if (_scrollControllerTitle.offset >=
-            _scrollControllerTitle.position.maxScrollExtent &&
-        !_scrollControllerTitle.position.outOfRange) {
-      widget.online ? _fetchDataTitle() : _fetchDataTitleInBook();
-    }
-  }
-
   void getUser() async {
     usersChk = await getUsersList();
   }
 
-  Future<void> _fetchDataTitleInBook() async {
+  void _scrollListener() {
+    if (_scrollControllerTitle.offset >=
+            _scrollControllerTitle.position.maxScrollExtent &&
+        !_scrollControllerTitle.position.outOfRange) {
+      widget.online ? _fetchDataTitle() : _fetchDataTitleDB();
+    }
+  }
+
+  Future<void> _fetchDataTitleDB() async {
     int recordsPerPage = 10;
     if (!loadingTitle) {
       setState(() {
@@ -83,8 +87,8 @@ class _SearchShowPagesTitleListState extends State<SearchShowPagesTitleList> {
       });
 
       try {
-        List<String> newData = await DatabaseHelper().fetchTitlesInBook(
-          widget.bookid,
+        List<String> newData = await DatabaseHelper().fetchTitlesDetail(
+          widget.wordSearch.replaceAll(' ', '%'),
           (pageTitle - 1) * recordsPerPage,
           recordsPerPage,
         );
@@ -118,9 +122,9 @@ class _SearchShowPagesTitleListState extends State<SearchShowPagesTitleList> {
       }
 
       final response = await http.post(
-        Uri.parse(tURLtitleShowInPage),
+        Uri.parse(tURLtitleShow),
         body: {
-          'bookid': widget.bookid,
+          'wordsearch': widget.wordSearch.replaceAll(' ', '%'),
           'token': tSecretAPIKey,
           'username': tmpUser,
           'page': pageTitle.toString(),
@@ -162,21 +166,22 @@ class _SearchShowPagesTitleListState extends State<SearchShowPagesTitleList> {
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
-  Widget _showText(String title, String mark) {
+  Widget _showText(
+      String title, String mark, String bookid, String pageid, String lineid) {
     if (mark == 'TRUE') {
       return SubstringHighlight(
-        text: widget.isMobile
+        text: widget.isM
             ? title
             // : '[เล่ม $bookid หน้า $pageid บรรทัด $lineid] \n$title',
             : title,
         term: title,
         textStyle: TextStyle(
-          fontFamily: widget.isMobile
+          fontFamily: widget.isM
               ? 'Roboto'
               : kIsWeb
                   ? 'THSarabunNew'
                   : 'Roboto',
-          fontSize: widget.isMobile
+          fontSize: widget.isM
               ? 18.0
               : kIsWeb
                   ? 24.0
@@ -184,7 +189,7 @@ class _SearchShowPagesTitleListState extends State<SearchShowPagesTitleList> {
         ),
       );
     } else {
-      return widget.isMobile
+      return widget.isM
           ? Text(
               title,
               style: const TextStyle(
@@ -196,12 +201,12 @@ class _SearchShowPagesTitleListState extends State<SearchShowPagesTitleList> {
               // '[เล่ม $bookid หน้า $pageid บรรทัด $lineid] \n$title',
               title,
               style: TextStyle(
-                fontFamily: widget.isMobile
+                fontFamily: widget.isM
                     ? 'Roboto'
                     : kIsWeb
                         ? 'THSarabunNew'
                         : 'Roboto',
-                fontSize: widget.isMobile
+                fontSize: widget.isM
                     ? 18.0
                     : kIsWeb
                         ? 24.0
@@ -299,7 +304,7 @@ class _SearchShowPagesTitleListState extends State<SearchShowPagesTitleList> {
         loadedRecordsTitle = 0;
         loadingTitle = false;
         pageTitle = 1;
-        widget.online ? _fetchDataTitle() : _fetchDataTitleInBook();
+        widget.online ? _fetchDataTitle() : _fetchDataTitleDB();
         // ignore: use_build_context_synchronously
         _showSnackbar(context, 'บันทึกข้อมูลเรียบร้อยแล้ว');
       } else {
@@ -343,11 +348,102 @@ class _SearchShowPagesTitleListState extends State<SearchShowPagesTitleList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: ATextDiskplayMedium(
+          text: widget.wordSearch,
+        ),
+        actions: [
+          IconButton(
+            color: Colors.white,
+            icon: const Icon(Icons.copy),
+            onPressed: () {
+              String searchText = widget.wordSearch;
+              int index = widget.menuList
+                  .indexWhere((element) => element[0] == searchText);
+              String bookcode = widget.menuList[index][0];
+              String sub1 = '';
+              if (widget.menuMain != '9.3') {
+                String text = bookcode;
+
+                // หาข้อความที่อยู่ในวงเล็บโดยใช้ Regex
+                RegExp regExp = RegExp(r"\((.*?)\)");
+                Iterable<Match> matches = regExp.allMatches(text);
+                List<String> extractedTexts = [];
+                for (Match match in matches) {
+                  // เพิ่มข้อความที่อยู่ในวงเล็บลงใน List
+                  extractedTexts.add(match.group(1)!);
+                }
+                if (extractedTexts.isNotEmpty) {
+                  sub1 = "(${extractedTexts.join(", ")})";
+                }
+              }
+
+              String code = widget.menuMain;
+              String sub = widget.menuList[index][1];
+              String linkPhp = 'tripitaka91_1.php';
+              if (sub1.isNotEmpty) {
+                Clipboard.setData(
+                  ClipboardData(
+                      text:
+                          '$tURLmain$linkPhp?book_code=$code&sub=$sub&sub1=$sub1'),
+                );
+              } else {
+                Clipboard.setData(
+                  ClipboardData(
+                      text: '$tURLmain$linkPhp?book_code=$code&sub=$sub'),
+                );
+              }
+
+              _showSnackbar(context, 'คัดลอกข้อมูลเรียบร้อยแล้ว');
+            },
+          ),
+          IconButton(
+            color: Colors.white,
+            icon: const Icon(Icons.share),
+            onPressed: () async {
+              String searchText = widget.wordSearch;
+              int index = widget.menuList
+                  .indexWhere((element) => element[0] == searchText);
+              String bookcode = widget.menuList[index][0];
+              String sub1 = '';
+              if (widget.menuMain != '9.3') {
+                String text = bookcode;
+
+                // หาข้อความที่อยู่ในวงเล็บโดยใช้ Regex
+                RegExp regExp = RegExp(r"\((.*?)\)");
+                Iterable<Match> matches = regExp.allMatches(text);
+                List<String> extractedTexts = [];
+                for (Match match in matches) {
+                  // เพิ่มข้อความที่อยู่ในวงเล็บลงใน List
+                  extractedTexts.add(match.group(1)!);
+                }
+                if (extractedTexts.isNotEmpty) {
+                  sub1 = "(${extractedTexts.join(", ")})";
+                }
+              }
+
+              String code = widget.menuMain;
+              String sub = widget.menuList[index][1];
+              String linkPhp = 'tripitaka91_1.php';
+              if (sub1.isNotEmpty) {
+                await SharePlus.instance.share(ShareParams(
+                    text:
+                        '$tURLmain$linkPhp?book_code=$code&sub=$sub&sub1=$sub1',
+                    subject: bookcode));
+              } else {
+                await SharePlus.instance.share(ShareParams(
+                    text: '$tURLmain$linkPhp?book_code=$code&sub=$sub',
+                    subject: bookcode));
+              }
+            },
+          ),
+        ],
+      ),
       body: NotificationListener(
         onNotification: (ScrollNotification scrollInfo) {
           if (scrollInfo is ScrollEndNotification &&
               scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
-            widget.online ? _fetchDataTitle() : _fetchDataTitleInBook();
+            widget.online ? _fetchDataTitle() : _fetchDataTitleDB();
           }
           return false;
         },
@@ -358,27 +454,7 @@ class _SearchShowPagesTitleListState extends State<SearchShowPagesTitleList> {
             if (index == loadedRecordsTitle) {
               return loadingTitle
                   ? const Center(child: CircularProgressIndicator())
-                  : (loadedRecordsTitle == 0)
-                      ? SizedBox(
-                          child: Column(
-                            children: [
-                              Center(
-                                child: ATextTitleLarge(
-                                    text:
-                                        'เล่ม ${widget.bookid} ไม่พบหัวข้อธรรมสำหรับแสดงผล'),
-                              ),
-                              const SizedBox(
-                                height: 15,
-                              ),
-                              const Center(
-                                child: ATextTitleLarge(
-                                    text:
-                                        'กรุณาคลิกที่ปุ่มเปิดหน้าที่อ่านล่าสุด'),
-                              ),
-                            ],
-                          ),
-                        )
-                      : const SizedBox.shrink();
+                  : const SizedBox.shrink();
             }
             return Column(
               children: [
@@ -391,11 +467,10 @@ class _SearchShowPagesTitleListState extends State<SearchShowPagesTitleList> {
                   title: _showText(
                     '${textTitleReplace.extractText(dataTitle[index]).replaceAll(textTitleReplace.getBookBlue(dataTitle[index]), '')} ',
                     textTitleReplace.getMark(dataTitle[index]),
+                    textTitleReplace.getBookId(dataTitle[index]),
+                    textTitleReplace.getPageId(dataTitle[index]),
+                    textTitleReplace.getLineId(dataTitle[index]),
                   ),
-                  // title: ATextTitleMedium(
-                  //   text:
-                  //       '${textTitleReplace.extractText(dataTitle[index]).replaceAll(textTitleReplace.getBookBlue(dataTitle[index]), '')} ',
-                  // ),
                   subtitle: Column(
                     children: [
                       Row(
@@ -428,13 +503,12 @@ class _SearchShowPagesTitleListState extends State<SearchShowPagesTitleList> {
                                         '$filename-$noTitle-$bookIds-$pageId-$bookLine';
                                     await audioPlayerManager.playAudio(
                                         '1', filename, txtTitle);
-
                                     // ignore: use_build_context_synchronously
                                     LoadingDialog.hide(context);
                                   },
                                   child: Icon(
                                     Icons.volume_up,
-                                    size: widget.isMobile ? 25 : 20,
+                                    size: widget.isM ? 25 : 20,
                                     color: Colors.blue[300],
                                   ),
                                 )
@@ -471,7 +545,7 @@ class _SearchShowPagesTitleListState extends State<SearchShowPagesTitleList> {
                             },
                             child: Icon(
                               Icons.share,
-                              size: 16,
+                              size: widget.isM ? 21 : 16,
                               color: Colors.blue[300],
                             ),
                           ),
@@ -498,7 +572,7 @@ class _SearchShowPagesTitleListState extends State<SearchShowPagesTitleList> {
                             },
                             child: Icon(
                               Icons.copy,
-                              size: widget.isMobile ? 21 : 16,
+                              size: widget.isM ? 21 : 16,
                               color: Colors.blue[300],
                             ),
                           ),
@@ -519,7 +593,7 @@ class _SearchShowPagesTitleListState extends State<SearchShowPagesTitleList> {
                                   },
                                   child: Icon(
                                     Icons.edit,
-                                    size: widget.isMobile ? 21 : 16,
+                                    size: widget.isM ? 21 : 16,
                                     color: Colors.blue[300],
                                   ),
                                 )
@@ -558,7 +632,7 @@ class _SearchShowPagesTitleListState extends State<SearchShowPagesTitleList> {
                                   },
                                   child: Icon(
                                     Icons.edit_document,
-                                    size: widget.isMobile ? 21 : 16,
+                                    size: widget.isM ? 21 : 16,
                                     color: Colors.blue[300],
                                   ),
                                 )
@@ -568,7 +642,7 @@ class _SearchShowPagesTitleListState extends State<SearchShowPagesTitleList> {
                               child: Text(''),
                             ),
                           ),
-                          widget.isMobile
+                          widget.isM
                               ? const SizedBox.shrink()
                               : Align(
                                   alignment: Alignment.centerLeft,
@@ -584,10 +658,10 @@ class _SearchShowPagesTitleListState extends State<SearchShowPagesTitleList> {
                                     ),
                                   ),
                                 ),
-                          widget.isMobile
+                          widget.isM
                               ? const SizedBox.shrink()
                               : const SizedBox(width: 10),
-                          widget.isMobile
+                          widget.isM
                               ? const SizedBox.shrink()
                               : Align(
                                   alignment: Alignment.centerRight,
@@ -612,7 +686,7 @@ class _SearchShowPagesTitleListState extends State<SearchShowPagesTitleList> {
                         scrollDirection: Axis.horizontal,
                         child: Row(
                           children: [
-                            widget.isMobile
+                            widget.isM
                                 ? Align(
                                     alignment: Alignment.centerLeft,
                                     child: ClipPath(
@@ -628,10 +702,10 @@ class _SearchShowPagesTitleListState extends State<SearchShowPagesTitleList> {
                                     ),
                                   )
                                 : const SizedBox.shrink(),
-                            widget.isMobile
+                            widget.isM
                                 ? const SizedBox(width: 10)
                                 : const SizedBox.shrink(),
-                            widget.isMobile
+                            widget.isM
                                 ? Align(
                                     alignment: Alignment.centerRight,
                                     child: ClipPath(
@@ -657,22 +731,40 @@ class _SearchShowPagesTitleListState extends State<SearchShowPagesTitleList> {
                   ),
                   onTap: () {
                     audioPlayerManager.stop();
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => Tri91PageViewHtml(
-                          triBookid:
-                              textTitleReplace.getBookId(dataTitle[index]),
-                          triPageid: int.parse(
-                              textTitleReplace.getPageId(dataTitle[index])),
-                          triBookline:
-                              textTitleReplace.getLineId(dataTitle[index]),
-                          chkSearch: '',
-                          isMobile: widget.isMobile,
-                          online: widget.online,
+                    if ((textTitleReplace.getBookId(dataTitle[index]) == '0') ||
+                        (dataTitle[index].contains("กฎหมายทั่วไป"))) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Tri91PageViewHtml(
+                            triBookid: '1',
+                            triPageid: 0,
+                            triBookline:
+                                textTitleReplace.getLineId(dataTitle[index]),
+                            chkSearch: widget.wordSearch,
+                            isMobile: widget.isM,
+                            online: widget.online,
+                          ),
                         ),
-                      ),
-                    );
+                      );
+                    } else {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Tri91PageViewHtml(
+                            triBookid:
+                                textTitleReplace.getBookId(dataTitle[index]),
+                            triPageid: int.parse(
+                                textTitleReplace.getPageId(dataTitle[index])),
+                            triBookline:
+                                textTitleReplace.getLineId(dataTitle[index]),
+                            chkSearch: widget.wordSearch,
+                            isMobile: widget.isM,
+                            online: widget.online,
+                          ),
+                        ),
+                      );
+                    }
                   },
                 ),
                 const Divider(),

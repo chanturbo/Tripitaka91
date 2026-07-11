@@ -3,7 +3,7 @@ import 'package:tripitaka91/utils/api_connect/remote_service.dart';
 import 'package:tripitaka91/utils/db_helper/db_helper.dart';
 import 'package:tripitaka91/utils/models/last_book_access.dart';
 import 'package:tripitaka91/widget/auto_text/auto_text.dart';
-import 'package:tripitaka91/widget/bookshow/bookshow_title.dart';
+import 'package:tripitaka91/features/book/bookshow_title.dart';
 
 class DummyLastBookAccessData extends StatefulWidget {
   final bool isMobile;

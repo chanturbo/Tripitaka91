@@ -11,10 +11,11 @@ import 'package:tripitaka91/utils/shared_preferences/shared_user.dart';
 import 'package:tripitaka91/utils/text_title_replace/text_title_replace.dart';
 import 'package:tripitaka91/widget/auto_text/auto_text.dart';
 import 'package:tripitaka91/widget/login/loading_dialog.dart';
-import 'package:tripitaka91/widget/pageviews/pageviews_html.dart';
+import 'package:tripitaka91/features/book/pageviews_html.dart';
 import 'package:tripitaka91/widget/right_clipper/center_clipper.dart';
 import 'package:tripitaka91/utils/play_audio/audio_manager.dart';
 import 'package:tripitaka91/utils/img_service/shared_image_book.dart';
+import 'package:tripitaka91/utils/theme/theme_helpers.dart';
 import 'package:tripitaka91/widget/volume_helper/volume_helper.dart';
 
 class SearchShowPagesOnPage extends StatefulWidget {
@@ -234,7 +235,7 @@ class _SearchShowPagesOnPageState extends State<SearchShowPagesOnPage> {
                             : kIsWeb
                                 ? 24.0
                                 : 16.0,
-                        color: Colors.black),
+                        color: adaptiveTextColor(context)),
                   ),
                   subtitle: Row(
                     children: [
