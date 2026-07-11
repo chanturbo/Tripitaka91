@@ -32,7 +32,7 @@ class TextTitleReplace {
     List<String> parts = fullText.split('|');
 
     // เรียกใช้ค่าที่ต้องการ (ในที่นี้คือ index 1)
-    String extractedText = parts.isNotEmpty ? parts[1] : '';
+    String extractedText = parts.length > 1 ? parts[1] : '';
 
     return extractedText;
   }

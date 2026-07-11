@@ -53,7 +53,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isGrayscale = context.watch<ThemeProvider>().isGrayscale;
+    final themeProvider = context.watch<ThemeProvider>();
+    final isGrayscale = themeProvider.isGrayscale;
 
     return ColorFiltered(
       colorFilter: isGrayscale
@@ -61,7 +62,8 @@ class MyApp extends StatelessWidget {
           : const ColorFilter.mode(Colors.transparent, BlendMode.dst),
       child: MaterialApp(
         title: 'พระไตรปิฎกและอรรถกถาแปลชุด 91 เล่ม ฉบับ มมร. (เล่มสีน้ำเงิน)',
-        themeMode: ThemeMode.light,
+        themeMode:
+            themeProvider.isDarkMode ? ThemeMode.dark : ThemeMode.light,
         theme: TAppTheme.lightTheme,
         darkTheme: TAppTheme.darkTheme,
         debugShowCheckedModeBanner: false,

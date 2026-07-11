@@ -64,7 +64,7 @@ class TValidator {
       return 'รหัสผ่านต้องมีความยาวอย่างน้อย 6 ตัวอักษร.';
     }
 
-    // Check for uppercase letters
+    // Check for at least one lowercase English letter
     if (!value.contains(RegExp(r'[a-z]'))) {
       return 'รหัสผ่านต้องเป็นภาษาอังกฤษเท่านั้น';
     }
