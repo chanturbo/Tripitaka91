@@ -51,10 +51,10 @@ class TAppTheme {
     outlinedButtonTheme: TOutlinedButtonTheme.darkOutlinedButtonTheme,
     inputDecorationTheme: TTextFormFieldTheme.darkInputDecorationTheme,
     drawerTheme: const DrawerThemeData(
-      backgroundColor: TColors.white,
+      backgroundColor: TColors.black,
     ),
     dialogTheme: const DialogThemeData(
       backgroundColor: Colors.black,
-    ), 
+    ),
   );
 }

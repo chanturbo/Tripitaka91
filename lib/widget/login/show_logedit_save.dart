@@ -6,6 +6,7 @@ import 'package:tripitaka91/utils/constants/api_constants.dart';
 import 'package:tripitaka91/utils/models/users.dart';
 import 'package:tripitaka91/utils/shared_preferences/shared_user.dart';
 import 'package:tripitaka91/utils/text_title_replace/text_title_replace.dart';
+import 'package:tripitaka91/utils/theme/theme_helpers.dart';
 import 'package:tripitaka91/widget/auto_text/auto_text.dart';
 import 'package:tripitaka91/widget/auto_text/text_span.dart';
 import 'package:tripitaka91/widget/login/loading_dialog.dart';
@@ -559,16 +560,15 @@ class _ShowCorrectSaveState extends State<ShowCorrectSave> {
                                           Color>(opt ==
                                               '0'
                                           ? Colors.orange
-                                          : Colors
-                                              .white), // กำหนดสีพื้นหลังเป็นสีขาว
+                                          : adaptiveSurfaceColor(context)),
                                       shape: WidgetStateProperty.all<
                                           RoundedRectangleBorder>(
                                         RoundedRectangleBorder(
                                           borderRadius: BorderRadius.circular(
                                               18.0), // กำหนดขนาดของเส้นขอบ
-                                          side: const BorderSide(
-                                              color: Colors
-                                                  .black), // กำหนดสีของเส้นขอบ
+                                          side: BorderSide(
+                                              color:
+                                                  adaptiveBorderColor(context)),
                                         ),
                                       ),
                                     ),
@@ -589,16 +589,15 @@ class _ShowCorrectSaveState extends State<ShowCorrectSave> {
                                           Color>(opt ==
                                               '1'
                                           ? Colors.orange
-                                          : Colors
-                                              .white), // กำหนดสีพื้นหลังเป็นสีขาว
+                                          : adaptiveSurfaceColor(context)),
                                       shape: WidgetStateProperty.all<
                                           RoundedRectangleBorder>(
                                         RoundedRectangleBorder(
                                           borderRadius: BorderRadius.circular(
                                               18.0), // กำหนดขนาดของเส้นขอบ
-                                          side: const BorderSide(
-                                              color: Colors
-                                                  .black), // กำหนดสีของเส้นขอบ
+                                          side: BorderSide(
+                                              color:
+                                                  adaptiveBorderColor(context)),
                                         ),
                                       ),
                                     ),
@@ -619,16 +618,15 @@ class _ShowCorrectSaveState extends State<ShowCorrectSave> {
                                           Color>(opt ==
                                               '2'
                                           ? Colors.orange
-                                          : Colors
-                                              .white), // กำหนดสีพื้นหลังเป็นสีขาว
+                                          : adaptiveSurfaceColor(context)),
                                       shape: WidgetStateProperty.all<
                                           RoundedRectangleBorder>(
                                         RoundedRectangleBorder(
                                           borderRadius: BorderRadius.circular(
                                               18.0), // กำหนดขนาดของเส้นขอบ
-                                          side: const BorderSide(
-                                              color: Colors
-                                                  .black), // กำหนดสีของเส้นขอบ
+                                          side: BorderSide(
+                                              color:
+                                                  adaptiveBorderColor(context)),
                                         ),
                                       ),
                                     ),
@@ -668,14 +666,14 @@ class _ShowCorrectSaveState extends State<ShowCorrectSave> {
                             backgroundColor: WidgetStateProperty.all<Color>(
                                 opt == '0'
                                     ? Colors.orange
-                                    : Colors.white), // กำหนดสีพื้นหลังเป็นสีขาว
+                                    : adaptiveSurfaceColor(context)),
                             shape:
                                 WidgetStateProperty.all<RoundedRectangleBorder>(
                               RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(
                                     18.0), // กำหนดขนาดของเส้นขอบ
-                                side: const BorderSide(
-                                    color: Colors.black), // กำหนดสีของเส้นขอบ
+                                side: BorderSide(
+                                    color: adaptiveBorderColor(context)),
                               ),
                             ),
                           ),
@@ -693,14 +691,14 @@ class _ShowCorrectSaveState extends State<ShowCorrectSave> {
                             backgroundColor: WidgetStateProperty.all<Color>(
                                 opt == '1'
                                     ? Colors.orange
-                                    : Colors.white), // กำหนดสีพื้นหลังเป็นสีขาว
+                                    : adaptiveSurfaceColor(context)),
                             shape:
                                 WidgetStateProperty.all<RoundedRectangleBorder>(
                               RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(
                                     18.0), // กำหนดขนาดของเส้นขอบ
-                                side: const BorderSide(
-                                    color: Colors.black), // กำหนดสีของเส้นขอบ
+                                side: BorderSide(
+                                    color: adaptiveBorderColor(context)),
                               ),
                             ),
                           ),
@@ -718,14 +716,14 @@ class _ShowCorrectSaveState extends State<ShowCorrectSave> {
                             backgroundColor: WidgetStateProperty.all<Color>(
                                 opt == '2'
                                     ? Colors.orange
-                                    : Colors.white), // กำหนดสีพื้นหลังเป็นสีขาว
+                                    : adaptiveSurfaceColor(context)),
                             shape:
                                 WidgetStateProperty.all<RoundedRectangleBorder>(
                               RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(
                                     18.0), // กำหนดขนาดของเส้นขอบ
-                                side: const BorderSide(
-                                    color: Colors.black), // กำหนดสีของเส้นขอบ
+                                side: BorderSide(
+                                    color: adaptiveBorderColor(context)),
                               ),
                             ),
                           ),

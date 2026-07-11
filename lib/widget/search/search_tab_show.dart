@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:substring_highlight/substring_highlight.dart';
 import 'package:tripitaka91/utils/constants/colors.dart';
+import 'package:tripitaka91/utils/theme/theme_helpers.dart';
 import 'package:tripitaka91/utils/models/rand_title.dart';
 import 'package:tripitaka91/utils/models/totalsearchtitle.dart';
 import 'package:tripitaka91/utils/models/totalsearchtri.dart';
@@ -700,7 +701,7 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
               style: TextStyle(
                 fontSize: widget.isM ? 14.0 : 16.0,
                 fontWeight: FontWeight.bold,
-                color: Colors.black,
+                color: adaptiveTextColor(context),
               ),
             ),
           ),
@@ -879,11 +880,12 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                                             text: strTotal,
                                                             terms: outputList,
                                                             textStyle:
-                                                                const TextStyle(
+                                                                TextStyle(
                                                                   fontSize:
                                                                       16.0,
-                                                                  color: Colors
-                                                                      .black,
+                                                                  color:
+                                                                      adaptiveTextColor(
+                                                                          context),
                                                                   fontWeight:
                                                                       FontWeight
                                                                           .w500,
@@ -1007,7 +1009,9 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                                           fontSize: widget.isM
                                                               ? 18.0
                                                               : 16.0,
-                                                          color: Colors.black,
+                                                          color:
+                                                              adaptiveTextColor(
+                                                                  context),
                                                         ),
                                                       ),
 
@@ -1209,11 +1213,12 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                                             text: strTotal,
                                                             terms: outputList,
                                                             textStyle:
-                                                                const TextStyle(
+                                                                TextStyle(
                                                                   fontSize:
                                                                       16.0,
-                                                                  color: Colors
-                                                                      .black,
+                                                                  color:
+                                                                      adaptiveTextColor(
+                                                                          context),
                                                                   fontWeight:
                                                                       FontWeight
                                                                           .w500,
@@ -1336,7 +1341,9 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                                           fontSize: widget.isM
                                                               ? 18.0
                                                               : 16.0,
-                                                          color: Colors.black,
+                                                          color:
+                                                              adaptiveTextColor(
+                                                                  context),
                                                         ),
                                                       ),
 
@@ -1538,11 +1545,12 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                                             text: strTotal,
                                                             terms: outputList,
                                                             textStyle:
-                                                                const TextStyle(
+                                                                TextStyle(
                                                                   fontSize:
                                                                       16.0,
-                                                                  color: Colors
-                                                                      .black,
+                                                                  color:
+                                                                      adaptiveTextColor(
+                                                                          context),
                                                                   fontWeight:
                                                                       FontWeight
                                                                           .w500,
@@ -1665,7 +1673,9 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                                           fontSize: widget.isM
                                                               ? 18.0
                                                               : 16.0,
-                                                          color: Colors.black,
+                                                          color:
+                                                              adaptiveTextColor(
+                                                                  context),
                                                         ),
                                                       ),
 

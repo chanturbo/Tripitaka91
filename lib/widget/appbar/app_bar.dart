@@ -4,6 +4,7 @@ import 'package:tripitaka91/utils/constants/colors.dart';
 import 'package:tripitaka91/utils/constants/sizes.dart';
 import 'package:tripitaka91/utils/models/users.dart';
 import 'package:tripitaka91/utils/shared_preferences/shared_value.dart';
+import 'package:tripitaka91/utils/theme/theme_helpers.dart';
 import 'package:tripitaka91/widget/auto_text/auto_text.dart';
 import 'package:tripitaka91/widget/search/data_search_widget.dart';
 
@@ -106,7 +107,7 @@ class _AppBarCustomState extends State<AppBarCustom> {
             //         ? const SizedBox.shrink()
             //         : const SizedBox(width: 8),
             const SizedBox(width: 8),
-            widget.online
+            !widget.online
                 ? const SizedBox.shrink()
                 : InkWell(
                     onTap: () {
@@ -261,29 +262,25 @@ class _AppBarCustomState extends State<AppBarCustom> {
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
                         color: valueSpeech == 0
-                            ? Colors.blue
-                            : Colors.red, // สีพื้นหลัง
+                            ? TColors.info
+                            : TColors.error, // สีพื้นหลัง
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
+                          Icon(
+                            valueSpeech == 0
+                                ? Icons.podcasts_outlined
+                                : Icons.podcasts,
+                            color: TColors.textWhite,
+                            size: 16,
+                          ),
+                          const SizedBox(width: 4),
                           ATextDiskplayMedium(
                             text: valueSpeech == 0
-                                ? widget.isDesktop == false &&
-                                        widget.isTablet == false
-                                    ? "ONLINE"
-                                    : widget.isDesktop == false &&
-                                            widget.isTablet == true
-                                        ? "เปิด ONLINE"
-                                        : "เปิดเวอร์ชั่น ONLINE"
-                                : widget.isDesktop == false &&
-                                        widget.isTablet == false
-                                    ? "OFFLINE"
-                                    : widget.isDesktop == false &&
-                                            widget.isTablet == true
-                                        ? "ปิด ONLINE"
-                                        : "ปิดเวอร์ชั่น ONLINE",
+                                ? 'เปิด ONLINE'
+                                : 'ปิด ONLINE',
                           ),
                         ],
                       ),
@@ -315,15 +312,15 @@ class _AppBarCustomState extends State<AppBarCustom> {
                         border: Border.all(color: TColors.grey),
                         borderRadius:
                             BorderRadius.circular(TSizes.cardRadiusLg),
-                        color: TColors.textWhite,
+                        color: adaptiveSurfaceColor(context),
                       ),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           const SizedBox(width: 10),
-                          const Icon(
+                          Icon(
                             Icons.search,
-                            color: TColors.black,
+                            color: adaptiveTextColor(context),
                           ),
                           const SizedBox(width: TSizes.spaceBtwItems),
                           Text(

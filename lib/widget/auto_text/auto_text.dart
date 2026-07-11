@@ -117,6 +117,29 @@ class ATextTitleMedium18 extends StatelessWidget {
   }
 }
 
+// Picks between the fixed-18px mobile title style and the themed
+// titleMedium style based on the caller's isTablet/isDesktop flags, so call
+// sites don't each have to repeat the same breakpoint ternary.
+class AResponsiveTitleText extends StatelessWidget {
+  final String text;
+  final bool isTablet;
+  final bool isDesktop;
+
+  const AResponsiveTitleText({
+    super.key,
+    required this.text,
+    required this.isTablet,
+    required this.isDesktop,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return (!isTablet && !isDesktop)
+        ? ATextTitleMedium18(text: text)
+        : ATextTitleMedium(text: text);
+  }
+}
+
 class ATextTitleMediumColor extends StatelessWidget {
   final String text;
   final Color color; // เพิ่มพารามิเตอร์สำหรับระบุสี

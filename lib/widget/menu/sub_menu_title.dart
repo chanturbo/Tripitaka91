@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tripitaka91/widget/auto_text/auto_text.dart';
-import 'package:tripitaka91/widget/bookshow/show_title_sub.dart';
+import 'package:tripitaka91/features/book/show_title_sub.dart';
 
 class SubMenuNoIconExpansionTile extends StatelessWidget {
   final String titleText;
@@ -23,18 +23,22 @@ class SubMenuNoIconExpansionTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ExpansionTile(
-      title: (!isTablet && !isDesktop)
-          ? ATextTitleMedium18(text: titleText)
-          : ATextTitleMedium(text: titleText),
+      title: AResponsiveTitleText(
+        text: titleText,
+        isTablet: isTablet,
+        isDesktop: isDesktop,
+      ),
       children: [
         Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: List.generate(
             menuList.length,
             (index) => ListTile(
-              title: (!isTablet && !isDesktop)
-                  ? ATextTitleMedium18(text: menuList[index][0])
-                  : ATextTitleMedium(text: menuList[index][0]),
+              title: AResponsiveTitleText(
+                text: menuList[index][0],
+                isTablet: isTablet,
+                isDesktop: isDesktop,
+              ),
               onTap: () {
                 Navigator.push(
                   context,

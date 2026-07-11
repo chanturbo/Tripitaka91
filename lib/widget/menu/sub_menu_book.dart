@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tripitaka91/utils/constants/colors.dart';
 import 'package:tripitaka91/widget/auto_text/auto_text.dart';
-import 'package:tripitaka91/widget/bookshow/bookshow_title.dart';
+import 'package:tripitaka91/features/book/bookshow_title.dart';
 
 class SubMenuExpansionTile extends StatelessWidget {
   final String titleText;
@@ -40,9 +40,11 @@ class SubMenuExpansionTile extends StatelessWidget {
           children: menuList.map((item) {
             int index = menuList.indexOf(item);
             return ListTile(
-              title: (!isTablet && !isDesktop)
-                  ? ATextTitleMedium18(text: item)
-                  : ATextTitleMedium(text: item),
+              title: AResponsiveTitleText(
+                text: item,
+                isTablet: isTablet,
+                isDesktop: isDesktop,
+              ),
               onTap: () {
                 Navigator.push(
                   context,

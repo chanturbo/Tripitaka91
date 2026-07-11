@@ -11,9 +11,10 @@ import 'package:tripitaka91/utils/text_title_replace/text_title_replace.dart';
 import 'package:tripitaka91/widget/audio/edit_speak.dart';
 import 'package:tripitaka91/widget/auto_text/auto_text.dart';
 import 'package:tripitaka91/widget/login/loading_dialog.dart';
-import 'package:tripitaka91/widget/pageviews/pageviews_html.dart';
+import 'package:tripitaka91/features/book/pageviews_html.dart';
 import 'package:tripitaka91/widget/right_clipper/center_clipper.dart';
 import 'package:http/http.dart' as http;
+import 'package:tripitaka91/utils/theme/theme_helpers.dart';
 import 'package:tripitaka91/widget/volume_helper/volume_helper.dart';
 
 class TitleCard extends StatefulWidget {
@@ -203,7 +204,7 @@ class _TitleCardState extends State<TitleCard> {
     return ClipRRect(
       borderRadius: BorderRadius.circular(30.0),
       child: Card(
-        color: Colors.white,
+        color: adaptiveSurfaceColor(context),
         margin: const EdgeInsets.all(10),
         child: Column(
           mainAxisSize: MainAxisSize.min,

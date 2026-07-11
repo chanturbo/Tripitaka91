@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tripitaka91/utils/constants/colors.dart';
 import 'package:tripitaka91/utils/constants/sizes.dart';
+import 'package:tripitaka91/utils/theme/theme_helpers.dart';
 import 'package:tripitaka91/widget/search/data_search_widget.dart';
 
 class SearchMobileScreen extends StatefulWidget {
@@ -40,15 +41,15 @@ class _SearchMobileScreenState extends State<SearchMobileScreen> {
             decoration: BoxDecoration(
               border: Border.all(color: TColors.grey),
               borderRadius: BorderRadius.circular(TSizes.cardRadiusLg),
-              color: TColors.textWhite,
+              color: adaptiveSurfaceColor(context),
             ),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 const SizedBox(width: 10),
-                const Icon(
+                Icon(
                   Icons.search,
-                  color: TColors.black,
+                  color: adaptiveTextColor(context),
                 ),
                 const SizedBox(width: TSizes.spaceBtwItems),
                 Text(

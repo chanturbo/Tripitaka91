@@ -163,11 +163,11 @@ class ListMenu extends StatelessWidget {
           ),
         ),
         ListTile(
-          title: (!isTablet && !isDesktop)
-              ? const ATextTitleMedium18(text: 'พจนานุกรม ฉบับประมวลศัพท์')
-              : const ATextTitleMedium(
-                  text: 'พจนานุกรม ฉบับประมวลศัพท์',
-                ),
+          title: AResponsiveTitleText(
+            text: 'พจนานุกรม ฉบับประมวลศัพท์',
+            isTablet: isTablet,
+            isDesktop: isDesktop,
+          ),
           onTap: () {
             Navigator.push(
               context,
@@ -181,11 +181,11 @@ class ListMenu extends StatelessWidget {
         ),
         online
             ? ListTile(
-                title: (!isTablet && !isDesktop)
-                    ? const ATextTitleMedium18(text: 'พจนานุกรม ไทย-บาลี')
-                    : const ATextTitleMedium(
-                        text: 'พจนานุกรม ไทย-บาลี',
-                      ),
+                title: AResponsiveTitleText(
+                  text: 'พจนานุกรม ไทย-บาลี',
+                  isTablet: isTablet,
+                  isDesktop: isDesktop,
+                ),
                 onTap: () {
                   Navigator.push(
                     context,
