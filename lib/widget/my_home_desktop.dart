@@ -1,28 +1,19 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tripitaka91/utils/api_connect/remote_service.dart';
-import 'package:tripitaka91/utils/auth/authentication_service.dart';
 import 'package:tripitaka91/utils/constants/colors.dart';
-import 'package:tripitaka91/utils/db_helper/db_helper.dart';
-import 'package:tripitaka91/utils/models/rand_title.dart';
-import 'package:tripitaka91/utils/models/users.dart';
-import 'package:tripitaka91/utils/shared_preferences/shared_user.dart';
 import 'package:tripitaka91/utils/theme/theme_provider.dart';
 import 'package:tripitaka91/widget/appbar/app_bar.dart';
 import 'package:tripitaka91/widget/auto_text/auto_text.dart';
 import 'package:tripitaka91/widget/card/title_card.dart';
+import 'package:tripitaka91/widget/home_state_mixin.dart';
 import 'package:tripitaka91/widget/last_read/show_last.dart';
 import 'package:tripitaka91/widget/last_read/show_last2.dart';
 import 'package:tripitaka91/widget/line_custom/mylinepainter.dart';
-import 'package:tripitaka91/widget/login/login.dart';
-import 'package:tripitaka91/widget/login/member_tab_show.dart';
 import 'package:tripitaka91/widget/menu/list_menu.dart';
-import 'package:tripitaka91/widget/pageviews/pageviews_html.dart';
+import 'package:tripitaka91/utils/theme/theme_helpers.dart';
 import 'package:tripitaka91/widget/right_clipper/center_clipper.dart';
 import 'package:tripitaka91/widget/right_clipper/right_clipper.dart';
-import 'package:tripitaka91/widget/showbook/show_book.dart';
+import 'package:tripitaka91/features/book/show_book.dart';
 
 class MyHomeDesktop extends StatefulWidget {
   const MyHomeDesktop({
@@ -38,148 +29,12 @@ class MyHomeDesktop extends StatefulWidget {
   State<MyHomeDesktop> createState() => _MyHomeDesktopState();
 }
 
-class _MyHomeDesktopState extends State<MyHomeDesktop> {
-  var isLoadedTitle = false;
-  bool loadLastRead = false;
-  List<RandTitle>? randTitle;
-  String triCatage = 'โหลดข้อมูล...';
-  String triTitle = 'โหลดข้อมูล...';
-  String bookBlue = 'โหลดข้อมูล...';
-  String bookRed = 'โหลดข้อมูล...';
-  String noTitle = '1';
-  String noTitleCate = '9.1';
-  String triBookid = '1';
-  int triPageid = 1;
-  String triBookline = '1';
-
-  late Users? usersList;
-  String? book;
-  String? page;
-  String? line;
-  late Timer _timer;
-
-  final dbHelper = DatabaseHelper();
-
-  final AuthenticationService _authService = AuthenticationService();
-  bool isLoggedIn = false;
-
+class _MyHomeDesktopState extends State<MyHomeDesktop>
+    with HomeStateMixin<MyHomeDesktop> {
   @override
-  void initState() {
-    super.initState();
-    getDataRandTitle();
-    userOnline();
-    _checkArguments();
-    _timer = Timer(const Duration(seconds: 1), _onTimerFinished);
-  }
-
-  void _onTimerFinished() {
-    if (mounted) {
-      // ทำงานก็ต่อเมื่อ widget ยังไม่ถูก dispose
-
-      if ((book != null) && (page != null) && (line != null)) {
-        // print('Timer finished book = $book page = $page line = $line');
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => Tri91PageViewHtml(
-              triBookid: book!,
-              triPageid: int.parse(page!),
-              triBookline: line!,
-              chkSearch: '',
-              isMobile: false,
-              online: widget.online,
-            ),
-          ),
-        );
-      }
-    }
-  }
-
-  Future<void> _checkLoginStatus() async {
-    isLoggedIn = await _authService.checkLoginStatus();
-    if (!mounted) return;
-    if (isLoggedIn) {
-      // ignore: use_build_context_synchronously
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => const MemberTabShow(indexShow: 0)),
-      );
-    } else {
-      // ignore: use_build_context_synchronously
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const LoginPage(),
-        ),
-      );
-    }
-  }
-
-  void _checkArguments() {
-    final uri = Uri.base;
-    final Map<String, String> queryParameters = uri.queryParameters;
-
-    setState(() {
-      book = queryParameters['book'];
-      page = queryParameters['page'];
-      line = queryParameters['line'];
-    });
-  }
-
+  bool get online => widget.online;
   @override
-  void dispose() {
-    _timer.cancel();
-    logOutUser();
-    super.dispose();
-  }
-
-  Future<void> logOutUser() async {
-    // clearUsersList();
-  }
-
-  Future<void> userOnline() async {
-    usersList = await getUsersList();
-  }
-
-  Future<void> getDataRandTitle() async {
-    try {
-      widget.online
-          ? randTitle = await RemoteServiceRandTitle().getRandTitleAPI()
-          : randTitle = await dbHelper.getRandTitleDB();
-      if (randTitle != null) {
-        setState(() {
-          triCatage = randTitle![0].tripitaka91Category;
-          triTitle = randTitle![0].tripitaka91Title;
-          bookBlue = randTitle![0].tripitaka91BookBlue;
-          bookRed = randTitle![0].tripitaka91BookRed;
-          triBookid = randTitle![0].tripitaka91Book.toString();
-          triPageid = randTitle![0].tripitaka91Page;
-          triBookline = randTitle![0].tripitaka91Line.toString();
-          noTitle = randTitle![0].tripitaka91No.toString();
-          noTitleCate = randTitle![0].tripitaka91Code.toString();
-          loadRead();
-        });
-      } else {
-        triCatage = 'โหลดข้อมูล...';
-        triTitle = 'โหลดข้อมูล...';
-        bookBlue = 'โหลดข้อมูล...';
-        bookRed = 'โหลดข้อมูล...';
-      }
-    } catch (e) {
-      // ignore: avoid_print
-      print('Error occurred: $e');
-    }
-  }
-
-  bool loadRead() {
-    if (loadLastRead) {
-      loadLastRead = false;
-    } else {
-      loadLastRead = true;
-    }
-    return loadLastRead;
-  }
+  bool get isMobileLayout => false;
 
   @override
   Widget build(BuildContext context) {
@@ -197,7 +52,7 @@ class _MyHomeDesktopState extends State<MyHomeDesktop> {
           IconButton(
             icon: const Icon(Icons.person),
             color: Colors.white,
-            onPressed: _checkLoginStatus,
+            onPressed: checkLoginStatus,
           ),
           IconButton(
             icon: Icon(
@@ -213,6 +68,20 @@ class _MyHomeDesktopState extends State<MyHomeDesktop> {
               context.read<ThemeProvider>().toggleGrayscale();
             },
           ),
+          IconButton(
+            icon: Icon(
+              context.watch<ThemeProvider>().isDarkMode
+                  ? Icons.light_mode
+                  : Icons.dark_mode,
+            ),
+            color: Colors.white,
+            tooltip: context.watch<ThemeProvider>().isDarkMode
+                ? 'ปิดโหมดกลางคืน'
+                : 'เปิดโหมดกลางคืน',
+            onPressed: () {
+              context.read<ThemeProvider>().toggleDarkMode();
+            },
+          ),
         ],
       ),
       body: Container(
@@ -220,7 +89,7 @@ class _MyHomeDesktopState extends State<MyHomeDesktop> {
         child: Row(
           children: [
             Container(
-              color: TColors.white,
+              color: adaptiveSurfaceColor(context),
               padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
               width: 290,
               child: ListMenu(
