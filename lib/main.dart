@@ -10,6 +10,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tripitaka91/utils/constants/api_constants.dart';
+import 'package:tripitaka91/utils/providers/online_speech_provider.dart';
+import 'package:tripitaka91/utils/providers/user_provider.dart';
 import 'package:tripitaka91/utils/theme/theme.dart';
 import 'package:tripitaka91/utils/theme/theme_provider.dart';
 import 'package:tripitaka91/widget/my_home_page.dart';
@@ -17,8 +19,12 @@ import 'package:tripitaka91/widget/my_home_page.dart';
 void main() {
   runApp(
     Phoenix(
-      child: ChangeNotifierProvider(
-        create: (_) => ThemeProvider(),
+      child: MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (_) => ThemeProvider()),
+          ChangeNotifierProvider(create: (_) => UserProvider()),
+          ChangeNotifierProvider(create: (_) => OnlineSpeechProvider()),
+        ],
         child: const MyApp(),
       ),
     ),
@@ -62,8 +68,7 @@ class MyApp extends StatelessWidget {
           : const ColorFilter.mode(Colors.transparent, BlendMode.dst),
       child: MaterialApp(
         title: 'พระไตรปิฎกและอรรถกถาแปลชุด 91 เล่ม ฉบับ มมร. (เล่มสีน้ำเงิน)',
-        themeMode:
-            themeProvider.isDarkMode ? ThemeMode.dark : ThemeMode.light,
+        themeMode: themeProvider.isDarkMode ? ThemeMode.dark : ThemeMode.light,
         theme: TAppTheme.lightTheme,
         darkTheme: TAppTheme.darkTheme,
         debugShowCheckedModeBanner: false,
@@ -81,7 +86,10 @@ class PlatformCheckerScreen extends StatelessWidget {
     // Check if the app is running on Web, Android, or iOS
     if (kIsWeb) {
       return const WebNotSupportedScreen();
-    } else if (Platform.isAndroid || Platform.isIOS || Platform.isWindows) {
+    } else if (Platform.isAndroid ||
+        Platform.isIOS ||
+        Platform.isMacOS ||
+        Platform.isWindows) {
       return const UnzipScreen();
     } else {
       return const UnsupportedPlatformScreen();
@@ -155,9 +163,7 @@ class _UnzipScreenState extends State<UnzipScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('ประมวลผลฐานข้อมูล'),
-      ),
+      appBar: AppBar(title: const Text('ประมวลผลฐานข้อมูล')),
       body: Center(
         child: isLoading
             ? Column(
@@ -170,9 +176,7 @@ class _UnzipScreenState extends State<UnzipScreen> {
               )
             : Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(unzipStatus),
-                ],
+                children: [Text(unzipStatus)],
               ),
       ),
     );
@@ -239,7 +243,8 @@ Future<void> loadFromFuture() async {
 Future<void> writeToFile(ByteData data, String path) async {
   final buffer = data.buffer;
   return File(path).writeAsBytesSync(
-      buffer.asUint8List(data.offsetInBytes, data.lengthInBytes));
+    buffer.asUint8List(data.offsetInBytes, data.lengthInBytes),
+  );
 }
 
 Future<void> deleteFile(File file) async {
@@ -258,9 +263,7 @@ class WebNotSupportedScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Web Not Supported'),
-      ),
+      appBar: AppBar(title: const Text('Web Not Supported')),
       body: const Center(
         child: Text('Unzipping files is not supported on the web.'),
       ),
@@ -274,9 +277,7 @@ class UnsupportedPlatformScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Unsupported Platform'),
-      ),
+      appBar: AppBar(title: const Text('Unsupported Platform')),
       body: const Center(
         child: Text('This platform is not supported for unzipping files.'),
       ),

@@ -14,6 +14,7 @@ import 'package:tripitaka91/utils/shared_preferences/shared_user.dart';
 import 'package:tripitaka91/utils/text_title_replace/text_title_replace.dart';
 import 'package:tripitaka91/widget/audio/edit_speak.dart';
 import 'package:tripitaka91/widget/auto_text/auto_text.dart';
+import 'package:tripitaka91/widget/dialogs/online_speech_consent_dialog.dart';
 import 'package:tripitaka91/widget/login/loading_dialog.dart';
 import 'package:tripitaka91/features/book/pageviews_html.dart';
 import 'package:tripitaka91/widget/right_clipper/center_clipper.dart';
@@ -478,6 +479,12 @@ class _ShowTitlePagesState extends State<ShowTitlePages> {
                           widget.online || volumeHelper.showVolume
                               ? InkWell(
                                   onTap: () async {
+                                    if (!await ensureOnlineSpeechConsent(
+                                      context,
+                                    )) {
+                                      return;
+                                    }
+                                    // ignore: use_build_context_synchronously
                                     LoadingDialog.show(context);
                                     String bookIds = textTitleReplace
                                         .getBookId(dataTitle[index]);

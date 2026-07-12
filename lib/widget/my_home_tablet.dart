@@ -51,6 +51,7 @@ class _MyHomeTabletState extends State<MyHomeTablet>
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
+        titleSpacing: 0,
         title: AppBarCustom(
           isDesktop: false,
           isTablet: true,
@@ -60,6 +61,7 @@ class _MyHomeTabletState extends State<MyHomeTablet>
           IconButton(
             icon: const Icon(Icons.person),
             color: Colors.white,
+            tooltip: 'เข้าสู่ระบบ',
             onPressed: checkLoginStatus,
           ),
           IconButton(
@@ -247,31 +249,29 @@ class _MyHomeTabletState extends State<MyHomeTablet>
       child: ListView(
         children: <Widget>[
           Container(),
-          sideBarItem(Icons.home, 'หน้าแรก', true, 0, Colors.blue),
+          sideBarItem(Icons.home, 'หน้าแรก', 0),
           const Divider(height: 5),
-          sideBarItem(
-              Icons.book_outlined, 'พระวินัยปิฎก', true, 1, Colors.blue),
-          sideBarItem(
-              Icons.book_outlined, 'พระสุตตันตปิฎก', true, 2, Colors.blue),
-          sideBarItem(
-              Icons.book_outlined, 'พระอภิธรรมปิฎก', true, 3, Colors.blue),
+          sideBarItem(Icons.book_outlined, 'พระวินัยปิฎก', 1),
+          sideBarItem(Icons.book_outlined, 'พระสุตตันตปิฎก', 2),
+          sideBarItem(Icons.book_outlined, 'พระอภิธรรมปิฎก', 3),
           const Divider(height: 5),
-          sideBarItem(Icons.book, 'หัวข้อธรรมสำคัญ', true, 4, Colors.blue),
+          sideBarItem(Icons.book, 'หัวข้อธรรมสำคัญ', 4),
           const Divider(height: 5),
-          sideBarItem(Icons.book, 'พจนานุกรม', true, 5, Colors.blue),
+          sideBarItem(Icons.book, 'พจนานุกรม', 5),
           const Divider(height: 5),
-          sideBarItem(
-              Icons.account_balance, 'เกี่ยวกับโปรแกรม', true, 6, Colors.blue),
+          sideBarItem(Icons.account_balance, 'เกี่ยวกับโปรแกรม', 6),
           const Divider(height: 5),
         ],
       ),
     );
   }
 
-  Widget sideBarItem(
-      IconData iconData, String text, bool isprimary, int index, Color bColor) {
+  Widget sideBarItem(IconData iconData, String text, int index) {
+    final bool isSelected = index == sidebarButtonNo;
     return MaterialButton(
-        color: index == sidebarButtonNo ? Colors.grey[200] : Colors.transparent,
+        color: isSelected
+            ? TColors.primary1.withValues(alpha: 0.15)
+            : Colors.transparent,
         height: 80,
         highlightElevation: 0,
         elevation: 0,
@@ -296,13 +296,10 @@ class _MyHomeTabletState extends State<MyHomeTablet>
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             CircleAvatar(
-              //color: Color(0XFF18bc9c),
-              //backgroundColor: Color(0XFFf5b931),
-              backgroundColor: index == sidebarButtonNo
-                  ? Colors.white
-                  : const Color(0XFFf5b931), //Colors.grey[300],
+              backgroundColor:
+                  isSelected ? TColors.white : TColors.primary1,
               child: Icon(iconData,
-                  color: index == sidebarButtonNo ? Colors.red : Colors.white,
+                  color: isSelected ? TColors.primary : TColors.white,
                   size: 25),
             ),
             const SizedBox(

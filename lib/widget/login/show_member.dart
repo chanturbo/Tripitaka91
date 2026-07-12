@@ -1,9 +1,11 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
+import 'package:provider/provider.dart';
 import 'package:tripitaka91/utils/constants/api_constants.dart';
 import 'package:tripitaka91/utils/format_date/format_date.dart';
 import 'package:tripitaka91/utils/models/users.dart';
+import 'package:tripitaka91/utils/providers/user_provider.dart';
 import 'package:tripitaka91/utils/shared_preferences/shared_user.dart';
 import 'package:tripitaka91/utils/shared_preferences/shared_value.dart';
 import 'package:tripitaka91/widget/auto_text/auto_text.dart';
@@ -363,29 +365,25 @@ class _MemberDisplayState extends State<MemberDisplay> {
                         WidgetStateProperty.all<Color>(Colors.orange),
                   ),
                   onPressed: () {
-                    showDialog(
+                    showDialog<String>(
                       context: context,
                       builder: (BuildContext context) {
                         return SetVoice(
                             tmpUser:
                                 users.username); // ส่งค่า tmpUser ไปที่ dialog
                       },
-                    ).then((value) async {
-                      if (value == true) {
-                        // ทำงาน async นอก setState()
-                        await _logOut();
-                        clearUsersList();
-
-                        // ปิดหน้าจอหลังจากทำงานเสร็จ
-                        // ignore: use_build_context_synchronously
-                        Phoenix.rebirth(context);
-                        /*Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  const MyApp()), // แทนที่หน้าเดิม
-                        );*/
-                      }
+                    ).then((newVoiceChoice) async {
+                      if (newVoiceChoice == null) return;
+                      // อัปเดตผ่าน UserProvider เพื่อให้ทั้งแอป (AppBar ฯลฯ)
+                      // เห็นค่าใหม่ทันที ไม่ต้อง logout/รีสตาร์ทแอป
+                      users.voiceChoice = newVoiceChoice;
+                      // ignore: use_build_context_synchronously
+                      context.read<UserProvider>().updateVoiceChoice(
+                        newVoiceChoice,
+                      );
+                      setState(() {
+                        _usersFuture = Future.value(users);
+                      });
                     });
                   },
                   child: const ATextDiskplayMedium(

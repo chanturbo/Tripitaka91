@@ -1,9 +1,49 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tripitaka91/utils/constants/online_label.dart';
 import 'package:tripitaka91/widget/auto_text/auto_text.dart';
 import 'package:tripitaka91/widget/right_clipper/center_clipper.dart';
 
 class TripitakaInfoWidget extends StatelessWidget {
   const TripitakaInfoWidget({super.key});
+
+  Future<void> _confirmResetAppData(BuildContext context) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('ยืนยันเคลียร์ข้อมูลทั้งหมด'),
+        content: Text(
+          'การดำเนินการนี้จะล้างข้อมูลการเข้าสู่ระบบ การตั้งค่าโหมดกลางคืน/ขาวดำ '
+          'สถานะยอมรับ $kOnlineModeLabel และการตั้งค่าอื่น ๆ ที่บันทึกไว้ในเครื่องทั้งหมด '
+          'แล้วรีสตาร์ทแอปเหมือนเปิดใช้งานครั้งแรก ไม่สามารถย้อนกลับได้ '
+          'ต้องการดำเนินการต่อหรือไม่?',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('ยกเลิก'),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(context, true),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+            ),
+            child: const Text('เคลียร์ข้อมูลทั้งหมด'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.clear();
+
+    // ignore: use_build_context_synchronously
+    if (!context.mounted) return;
+    Phoenix.rebirth(context);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,6 +106,22 @@ class TripitakaInfoWidget extends StatelessWidget {
                 const ATextTitleMedium(
                   text:
                       'หมายเหตุ : แอปพลิเคชันแห่งนี้จัดทำขึ้นมีวัตถุประสงค์เพื่อเปิดเผยพระธรรมวินัย ไม่ได้มุ่งหมายทำการค้าแต่อย่างใด โดยนำหัวข้อธรรมที่ทางคณะวัดสามแยกได้จัดทำขึ้นมาดำเนินการ และหากมีรูปภาพหรือข้อความส่วนใดที่ละเมิดลิขสิทธิ์ กรุณาแจ้งที่ อีเมล์ chanturbo@hotmail.com เพื่อจะดำเนินการลบข้อมูลออกจากแอปพลิเคชันต่อไป',
+                ),
+                const SizedBox(height: 16.0),
+                const Divider(),
+                const SizedBox(height: 16.0),
+                Center(
+                  child: OutlinedButton.icon(
+                    onPressed: () => _confirmResetAppData(context),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: Colors.red,
+                      side: const BorderSide(color: Colors.red),
+                    ),
+                    icon: const Icon(Icons.restore),
+                    label: const Text(
+                      'เคลียร์ข้อมูลทั้งหมด (เริ่มต้นแอพใหม่)',
+                    ),
+                  ),
                 ),
                 const SizedBox(height: 16.0),
                 SizedBox(

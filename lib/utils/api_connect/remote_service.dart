@@ -332,16 +332,21 @@ class RemoteServiceSoundsGetLink {
     var client = http.Client();
     Users? users = await getUsersList();
 
-    var uri = users?.voiceChoice == 'เสียงผู้หญิง'
-        ? Uri.parse(tURLSoundsGetLink)
-        : Uri.parse(tURLSoundsGetLinkM);
-
-    int valueBetaSpeech = await getValueBetaFurture();
-    if (valueBetaSpeech == 1) {
-      int valueBetaSpeechFuture = await getValueBetaSpeechFurture();
-      valueBetaSpeechFuture == 0
-          ? uri = Uri.parse(tURLSoundsGetLinkM)
-          : uri = Uri.parse(tURLSoundsGetLink);
+    // Logged-in users always get the voice saved on their account; the
+    // local ONLINE voice toggle only applies to anonymous (not logged in)
+    // playback, so it never overrides a signed-in user's own preference.
+    Uri uri;
+    if (users != null) {
+      uri = users.voiceChoice == 'เสียงผู้หญิง'
+          ? Uri.parse(tURLSoundsGetLink)
+          : Uri.parse(tURLSoundsGetLinkM);
+    } else {
+      int valueBetaSpeech = await getValueBetaFurture();
+      if (valueBetaSpeech == 1 && await getValueBetaSpeechFurture() == 1) {
+        uri = Uri.parse(tURLSoundsGetLink);
+      } else {
+        uri = Uri.parse(tURLSoundsGetLinkM);
+      }
     }
 
     // สร้าง Map ที่มีข้อมูลที่ต้องการส่งไปด้วย

@@ -1,11 +1,12 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:tripitaka91/utils/api_connect/remote_service.dart';
-import 'package:tripitaka91/utils/auth/authentication_service.dart';
 import 'package:tripitaka91/utils/db_helper/db_helper.dart';
 import 'package:tripitaka91/utils/models/rand_title.dart';
 import 'package:tripitaka91/utils/models/users.dart';
+import 'package:tripitaka91/utils/providers/user_provider.dart';
 import 'package:tripitaka91/utils/shared_preferences/shared_user.dart';
 import 'package:tripitaka91/widget/login/login.dart';
 import 'package:tripitaka91/widget/login/member_tab_show.dart';
@@ -38,7 +39,6 @@ mixin HomeStateMixin<T extends StatefulWidget> on State<T> {
   late Timer homeTimer;
 
   final dbHelper = DatabaseHelper();
-  final authService = AuthenticationService();
   bool isLoggedIn = false;
 
   @override
@@ -71,9 +71,8 @@ mixin HomeStateMixin<T extends StatefulWidget> on State<T> {
     }
   }
 
-  Future<void> checkLoginStatus() async {
-    isLoggedIn = await authService.checkLoginStatus();
-    if (!mounted) return;
+  void checkLoginStatus() {
+    isLoggedIn = context.read<UserProvider>().isLoggedIn;
     if (isLoggedIn) {
       Navigator.push(
         context,

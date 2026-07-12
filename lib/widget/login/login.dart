@@ -1,14 +1,15 @@
 import 'dart:convert';
-import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:tripitaka91/utils/constants/api_constants.dart';
 import 'package:tripitaka91/utils/constants/colors.dart';
 import 'package:tripitaka91/utils/constants/text_strings.dart';
 import 'package:tripitaka91/utils/models/users.dart';
 import 'package:tripitaka91/utils/models/users_login.dart';
-import 'package:tripitaka91/utils/shared_preferences/shared_user.dart';
+import 'package:tripitaka91/utils/providers/user_provider.dart';
 import 'package:tripitaka91/utils/shared_preferences/shared_value.dart';
+import 'package:tripitaka91/widget/login/member_tab_show.dart';
 import 'package:tripitaka91/widget/login/signup_screen.dart';
 import 'package:url_launcher/link.dart';
 
@@ -135,28 +136,18 @@ class _LoginPageState extends State<LoginPage> {
       );
     } else {
       bool chkLogin = await loginUser(username, password, tSecretAPIKey);
+      if (!context.mounted) return;
       if (chkLogin) {
-        saveUsersList(createUserModel());
-        clearValueBeta();
-        // await Future.delayed(const Duration(seconds: 2));
-        // ignore: use_build_context_synchronously
-        Phoenix.rebirth(context);
-        // ignore: use_build_context_synchronously
-        /*Navigator.pushAndRemoveUntil(
+        context.read<UserProvider>().setUser(createUserModel());
+        // UserProvider notifies the whole app (AppBar, home chrome, etc.)
+        // immediately, so we can go straight to the member page instead of
+        // a full Phoenix.rebirth() restart back to the home screen.
+        Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => const MyApp(),
+            builder: (context) => const MemberTabShow(indexShow: 0),
           ),
-          (route) => false,
-        );*/
-        // // ignore: use_build_context_synchronously
-        // Navigator.pushReplacement(
-        //   context,
-        //   MaterialPageRoute(
-        //       builder: (context) => const MemberTabShow(
-        //             indexShow: 0,
-        //           )),
-        // );
+        );
       } else {
         // ignore: use_build_context_synchronously
         await showCustomDialog(context);
@@ -297,15 +288,25 @@ class _LoginPageState extends State<LoginPage> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const Text(TTexts.dontNotAccount),
-        TextButton(
-          onPressed: () {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => const SignUpScreen()),
-            );
-          },
-          child: const Text(TTexts.signUp),
+        Flexible(
+          child: Text(
+            TTexts.dontNotAccount,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+        Flexible(
+          child: TextButton(
+            onPressed: () {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const SignUpScreen()),
+              );
+            },
+            child: const Text(
+              TTexts.signUp,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
         )
       ],
     );

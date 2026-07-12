@@ -43,6 +43,7 @@ class _MyHomeDesktopState extends State<MyHomeDesktop>
 
     return Scaffold(
       appBar: AppBar(
+        titleSpacing: 0,
         title: AppBarCustom(
           isDesktop: true,
           isTablet: false,
@@ -52,6 +53,7 @@ class _MyHomeDesktopState extends State<MyHomeDesktop>
           IconButton(
             icon: const Icon(Icons.person),
             color: Colors.white,
+            tooltip: 'เข้าสู่ระบบ',
             onPressed: checkLoginStatus,
           ),
           IconButton(

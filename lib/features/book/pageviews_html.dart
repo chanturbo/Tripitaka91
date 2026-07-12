@@ -26,6 +26,7 @@ import 'package:tripitaka91/widget/audio/edit_speak.dart';
 import 'package:tripitaka91/widget/auto_text/auto_text.dart';
 import 'package:tripitaka91/utils/models/rand_title.dart';
 import 'package:tripitaka91/widget/last_read/save_last.dart';
+import 'package:tripitaka91/widget/dialogs/online_speech_consent_dialog.dart';
 import 'package:tripitaka91/widget/login/loading_dialog.dart';
 import 'package:tripitaka91/widget/login/login_dialog.dart';
 import 'package:tripitaka91/widget/login/show_logedit_save_with_page.dart';
@@ -182,7 +183,7 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
   }
 
   void _onTimerFinished() {
-    if (mounted) {
+    if (mounted && _scrollController.hasClients) {
       double midpoint = _scrollController.position.maxScrollExtent / 2;
       double onepoint = _scrollController.position.maxScrollExtent / 4;
       double position1 = _scrollController.position.minScrollExtent;
@@ -223,21 +224,18 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
         }
       }
 
-      if ((_scrollController.positions.isNotEmpty) &&
-          (_scrollController.hasClients)) {
-        _scrollController.animateTo(
-          midpoint,
-          duration: const Duration(
-            milliseconds: 500,
-          ), // หรือค่าอื่น ๆ ตามต้องการ
-          curve: Curves.easeOut, // หรือค่าอื่น ๆ ตามต้องการ
-        );
-      }
+      _scrollController.animateTo(
+        midpoint,
+        duration: const Duration(
+          milliseconds: 500,
+        ), // หรือค่าอื่น ๆ ตามต้องการ
+        curve: Curves.easeOut, // หรือค่าอื่น ๆ ตามต้องการ
+      );
     }
   }
 
   void _onTimerFinished2() {
-    if (mounted) {
+    if (mounted && _scrollController.hasClients) {
       double midpoint = _scrollController.position.maxScrollExtent / 2;
       double onepoint = _scrollController.position.maxScrollExtent / 4;
       double position1 = _scrollController.position.minScrollExtent;
@@ -278,16 +276,13 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
         }
       }
 
-      if ((_scrollController.positions.isNotEmpty) &&
-          (_scrollController.hasClients)) {
-        _scrollController.animateTo(
-          midpoint,
-          duration: const Duration(
-            milliseconds: 500,
-          ), // หรือค่าอื่น ๆ ตามต้องการ
-          curve: Curves.easeOut, // หรือค่าอื่น ๆ ตามต้องการ
-        );
-      }
+      _scrollController.animateTo(
+        midpoint,
+        duration: const Duration(
+          milliseconds: 500,
+        ), // หรือค่าอื่น ๆ ตามต้องการ
+        curve: Curves.easeOut, // หรือค่าอื่น ๆ ตามต้องการ
+      );
     }
   }
 
@@ -533,6 +528,12 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
                                     widget.online || volumeHelper.showVolume
                                         ? InkWell(
                                             onTap: () async {
+                                              if (!await ensureOnlineSpeechConsent(
+                                                context,
+                                              )) {
+                                                return;
+                                              }
+                                              // ignore: use_build_context_synchronously
                                               LoadingDialog.show(context);
                                               String txtTitle =
                                                   '${textTitleReplace.getWordDict(dataDict[index])} - ${textTitleReplace.getWordDictDetail(dataDict[index])}';
@@ -1068,6 +1069,55 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
     return Row(children: [pageview(true, false)]);
   }
 
+  // ปุ่ม toggle ซ่อน/แสดงสารบัญ ระหว่างแผงสารบัญกับเนื้อหา ใช้ร่วมกันทั้ง
+  // buildBodyTablet() และ buildBody() (เดิมโค้ดซ้ำกันทั้งสองที่)
+  Widget _buildPanelToggle() {
+    final lineColor = adaptiveBorderColor(context).withValues(alpha: 0.25);
+    return Container(
+      width: 25,
+      color: adaptiveSurfaceColor(context),
+      child: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(width: 1, height: 100, color: lineColor),
+            const SizedBox(height: 6),
+            Tooltip(
+              message: _showLeftPanel ? 'ซ่อนสารบัญ' : 'แสดงสารบัญ',
+              child: Material(
+                color: TColors.primary1,
+                shape: const CircleBorder(),
+                elevation: 3,
+                child: InkWell(
+                  customBorder: const CircleBorder(),
+                  onTap: () async {
+                    setState(() {
+                      _showLeftPanel = !_showLeftPanel;
+                    });
+                    await _saveShowLeftPanel();
+                    _scrollToSelectedIndex1();
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(6),
+                    child: Icon(
+                      _showLeftPanel
+                          ? Icons.arrow_back_ios_new
+                          : Icons.arrow_forward_ios,
+                      size: 14,
+                      color: TColors.white,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 6),
+            Container(width: 1, height: 100, color: lineColor),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget buildBodyTablet() {
     return Row(
       children: [
@@ -1117,49 +1167,7 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
                     },
                   ),
                 ),
-        // คั่นกลาง: ปุ่ม toggle + เส้น
-        Container(
-          width: 25,
-          color: Colors.grey[200],
-          child: Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(width: 1, height: 100, color: Colors.grey),
-                const SizedBox(height: 4),
-                Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Colors.grey, // สีของเส้นขอบ
-                      width: 1, // ความหนาของเส้นขอบ
-                    ),
-                    borderRadius: BorderRadius.circular(
-                      8,
-                    ), // มุมโค้ง (ถ้าต้องการ)
-                  ),
-                  child: IconButton(
-                    icon: Icon(
-                      _showLeftPanel
-                          ? Icons.arrow_back_ios
-                          : Icons.arrow_forward_ios,
-                      size: 18,
-                      color: Colors.grey,
-                    ),
-                    onPressed: () async {
-                      setState(() {
-                        _showLeftPanel = !_showLeftPanel;
-                      });
-                      await _saveShowLeftPanel();
-                      _scrollToSelectedIndex1();
-                    },
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Container(width: 1, height: 100, color: Colors.grey),
-              ],
-            ),
-          ),
-        ),
+        _buildPanelToggle(),
         pageview(false, true),
       ],
     );
@@ -1214,49 +1222,7 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
                     },
                   ),
                 ),
-        // คั่นกลาง: ปุ่ม toggle + เส้น
-        Container(
-          width: 25,
-          color: Colors.grey[200],
-          child: Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(width: 1, height: 100, color: Colors.grey),
-                const SizedBox(height: 4),
-                Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Colors.grey, // สีของเส้นขอบ
-                      width: 1, // ความหนาของเส้นขอบ
-                    ),
-                    borderRadius: BorderRadius.circular(
-                      8,
-                    ), // มุมโค้ง (ถ้าต้องการ)
-                  ),
-                  child: IconButton(
-                    icon: Icon(
-                      _showLeftPanel
-                          ? Icons.arrow_back_ios
-                          : Icons.arrow_forward_ios,
-                      size: 18,
-                      color: Colors.grey,
-                    ),
-                    onPressed: () async {
-                      setState(() {
-                        _showLeftPanel = !_showLeftPanel;
-                      });
-                      await _saveShowLeftPanel();
-                      _scrollToSelectedIndex1();
-                    },
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Container(width: 1, height: 100, color: Colors.grey),
-              ],
-            ),
-          ),
-        ),
+        _buildPanelToggle(),
         pageview(false, false),
       ],
     );
@@ -1363,6 +1329,10 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
                   widget.online || volumeHelper.showVolume
                       ? InkWell(
                           onTap: () async {
+                            if (!await ensureOnlineSpeechConsent(context)) {
+                              return;
+                            }
+                            // ignore: use_build_context_synchronously
                             LoadingDialog.show(context);
                             String txtTitle = textReplacer.replaceText(
                               triTitle,
@@ -1529,6 +1499,12 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
                               icon: const Icon(Icons.volume_up),
                               color: TColors.secondary,
                               onPressed: () async {
+                                if (!await ensureOnlineSpeechConsent(
+                                  context,
+                                )) {
+                                  return;
+                                }
+                                if (!mounted) return;
                                 if (currentPlaylist.isNotEmpty) {
                                   LoadingDialog.show(context);
                                   currentPlaylist.clear();
@@ -1664,6 +1640,12 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
                                 IconButton(
                                   icon: const Icon(Icons.circle_outlined),
                                   onPressed: () async {
+                                    if (!await ensureOnlineSpeechConsent(
+                                      context,
+                                    )) {
+                                      return;
+                                    }
+                                    if (!mounted) return;
                                     audioPlayerManager.pause();
                                     setState(() {
                                       if (audioPlayerManager.chkStatePlay()) {
@@ -1698,6 +1680,12 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
                                 IconButton(
                                   icon: const Icon(Icons.circle_outlined),
                                   onPressed: () async {
+                                    if (!await ensureOnlineSpeechConsent(
+                                      context,
+                                    )) {
+                                      return;
+                                    }
+                                    if (!mounted) return;
                                     audioPlayerManager.pause();
                                     setState(() {
                                       if (audioPlayerManager.chkStatePlay()) {
@@ -1732,6 +1720,12 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
                                 IconButton(
                                   icon: const Icon(Icons.circle_outlined),
                                   onPressed: () async {
+                                    if (!await ensureOnlineSpeechConsent(
+                                      context,
+                                    )) {
+                                      return;
+                                    }
+                                    if (!mounted) return;
                                     audioPlayerManager.pause();
                                     setState(() {
                                       if (audioPlayerManager.chkStatePlay()) {
@@ -1766,6 +1760,12 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
                                 IconButton(
                                   icon: const Icon(Icons.circle_outlined),
                                   onPressed: () async {
+                                    if (!await ensureOnlineSpeechConsent(
+                                      context,
+                                    )) {
+                                      return;
+                                    }
+                                    if (!mounted) return;
                                     audioPlayerManager.pause();
                                     setState(() {
                                       if (audioPlayerManager.chkStatePlay()) {
@@ -1800,6 +1800,12 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
                                 IconButton(
                                   icon: const Icon(Icons.circle_outlined),
                                   onPressed: () async {
+                                    if (!await ensureOnlineSpeechConsent(
+                                      context,
+                                    )) {
+                                      return;
+                                    }
+                                    if (!mounted) return;
                                     audioPlayerManager.pause();
                                     setState(() {
                                       if (audioPlayerManager.chkStatePlay()) {
@@ -1848,9 +1854,13 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
                       _setColour(
                         selectedIndex,
                       ); // หรือจะใช้ค่าที่ส่งกลับมาไป setState()
-                      // ignore: use_build_context_synchronously
-                      Navigator.of(context).pop();
-                      // ignore: use_build_context_synchronously
+                      // showAlertDialog already pops itself (via its own
+                      // Navigator.pop(index) when an option is tapped), so
+                      // popping again here was closing this reading page
+                      // instead of the dialog — then the SnackBar call
+                      // below crashed with "deactivated widget" on the
+                      // now-popped page.
+                      if (!mounted) return;
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           content: Text(
@@ -2202,7 +2212,11 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
                 child: SelectableText.rich(
                   textSpan,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(height: -0.8),
+                  style: TextStyle(
+                    height: MediaQuery.of(context).size.width <= 600
+                        ? 0.3
+                        : 0.1,
+                  ),
                 ),
               ),
             );
@@ -2551,7 +2565,11 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
               child: SelectableText.rich(
                 textSpan,
                 textAlign: TextAlign.center,
-                style: const TextStyle(height: -0.8),
+                style: TextStyle(
+                  height: MediaQuery.of(context).size.width <= 600
+                      ? 0.3
+                      : 0.1,
+                ),
               ),
             ),
           );

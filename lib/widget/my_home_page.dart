@@ -35,14 +35,18 @@ class _MyHomePageState extends State<MyHomePage> {
 
     if (isFirstRun) {
       // ขอ permission สำหรับการเขียน storage
-      PermissionStatus status = await Permission.storage.request();
+      // permission_handler has no macOS implementation, so this throws
+      // MissingPluginException there — catch it rather than crash.
+      try {
+        PermissionStatus status = await Permission.storage.request();
 
-      if (status.isGranted) {
-        // ignore: avoid_print
-        print("Storage permission granted");
-      } else {
-        // ignore: avoid_print
-        print("Storage permission denied");
+        if (status.isGranted) {
+          debugPrint("Storage permission granted");
+        } else {
+          debugPrint("Storage permission denied");
+        }
+      } catch (e) {
+        debugPrint("Storage permission request unavailable: $e");
       }
 
       // บันทึกว่าแอปนี้ได้รันครั้งแรกไปแล้ว

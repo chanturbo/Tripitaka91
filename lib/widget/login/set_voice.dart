@@ -14,7 +14,7 @@ class SetVoice extends StatefulWidget {
 class _SetVoiceState extends State<SetVoice> {
   String selectedVoice = 'เสียงผู้ชาย'; // ค่าเริ่มต้นเป็นเสียงผู้ชาย
 
-  Future<void> _fetchConfirmVoiceChoice(String voiceChoice) async {
+  Future<bool> _fetchConfirmVoiceChoice(String voiceChoice) async {
     try {
       final response = await http.post(
         Uri.parse(tURLconfirmVoiceChoice),
@@ -32,19 +32,23 @@ class _SetVoiceState extends State<SetVoice> {
         if (jsonResponse['success'] == true) {
           // ignore: use_build_context_synchronously
           _showSnackbar(context, 'กำหนดเสียงอ่านเรียบร้อยแล้ว');
+          return true;
         } else {
           // ignore: use_build_context_synchronously
           _showSnackbar(context, '${jsonResponse['message']}');
+          return false;
         }
       } else {
         // print('HTTP Error: ${response.statusCode}');
         // ignore: use_build_context_synchronously
         _showSnackbar(context, 'เกิดข้อผิดพลาดใน HTTP: ${response.statusCode}');
+        return false;
       }
     } catch (e) {
       // print('Error: $e');
       // ignore: use_build_context_synchronously
       _showSnackbar(context, 'เกิดข้อผิดพลาด: $e');
+      return false;
     }
   }
 
@@ -97,9 +101,10 @@ class _SetVoiceState extends State<SetVoice> {
         ),
         TextButton(
           onPressed: () async {
-            await _fetchConfirmVoiceChoice(selectedVoice);
+            final success = await _fetchConfirmVoiceChoice(selectedVoice);
+            if (!success) return;
             // ignore: use_build_context_synchronously
-            Navigator.of(context).pop(true);
+            Navigator.of(context).pop(selectedVoice);
           },
           child: const Text('ยืนยันเปลี่ยนเสียงอ่าน'),
         ),

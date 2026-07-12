@@ -1,9 +1,9 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
-void saveValueCorrect(int value) async {
+Future<void> saveValueCorrect(int value) async {
   final prefs = await SharedPreferences.getInstance();
   const key = 'valueCorrect';
-  prefs.setInt(key, value);
+  await prefs.setInt(key, value);
 }
 
 Future<int> getValueCorrectFurture() async {
@@ -13,10 +13,10 @@ Future<int> getValueCorrectFurture() async {
   return value;
 }
 
-void saveValueSpeech(int value) async {
+Future<void> saveValueSpeech(int value) async {
   final prefs = await SharedPreferences.getInstance();
   const key = 'valueSpeech';
-  prefs.setInt(key, value);
+  await prefs.setInt(key, value);
 }
 
 Future<int> getValueSpeechFurture() async {
@@ -26,10 +26,10 @@ Future<int> getValueSpeechFurture() async {
   return value;
 }
 
-void saveValueBeta(int value) async {
+Future<void> saveValueBeta(int value) async {
   final prefs = await SharedPreferences.getInstance();
   const key = 'valueBeta';
-  prefs.setInt(key, value);
+  await prefs.setInt(key, value);
 }
 
 void clearValueBeta() async {
@@ -45,10 +45,10 @@ Future<int> getValueBetaFurture() async {
   return value;
 }
 
-void saveValueBetaSpeech(int value) async {
+Future<void> saveValueBetaSpeech(int value) async {
   final prefs = await SharedPreferences.getInstance();
   const key = 'valueBetaSpeech';
-  prefs.setInt(key, value);
+  await prefs.setInt(key, value);
 }
 
 Future<int> getValueBetaSpeechFurture() async {

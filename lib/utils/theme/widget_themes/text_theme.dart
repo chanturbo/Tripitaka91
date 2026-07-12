@@ -46,11 +46,11 @@ class TTextTheme {
   /// Customizable Dark Text Theme
   static TextTheme darkTextTheme = TextTheme(
     displayLarge: const TextStyle().copyWith(
-        fontSize: 18.0, fontWeight: FontWeight.normal, color: TColors.dark),
+        fontSize: 18.0, fontWeight: FontWeight.normal, color: TColors.light),
     displayMedium: const TextStyle().copyWith(
-        fontSize: 16.0, fontWeight: FontWeight.w500, color: TColors.dark),
+        fontSize: 16.0, fontWeight: FontWeight.w500, color: TColors.light),
     displaySmall: const TextStyle().copyWith(
-        fontSize: 14.0, fontWeight: FontWeight.normal, color: TColors.dark),
+        fontSize: 14.0, fontWeight: FontWeight.normal, color: TColors.light),
     headlineLarge: const TextStyle().copyWith(
         fontSize: 32.0, fontWeight: FontWeight.bold, color: TColors.light),
     headlineMedium: const TextStyle().copyWith(

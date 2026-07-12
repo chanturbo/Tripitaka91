@@ -58,6 +58,7 @@ class _MyHomeMobileState extends State<MyHomeMobile>
           IconButton(
             icon: const Icon(Icons.person),
             color: Colors.white,
+            tooltip: 'เข้าสู่ระบบ',
             onPressed: checkLoginStatus,
           ),
           IconButton(

@@ -1,11 +1,12 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:tripitaka91/utils/constants/api_constants.dart';
 import 'package:tripitaka91/utils/constants/text_strings.dart';
 import 'package:tripitaka91/utils/models/users.dart';
 import 'package:tripitaka91/utils/models/users_login.dart';
-import 'package:tripitaka91/utils/shared_preferences/shared_user.dart';
+import 'package:tripitaka91/utils/providers/user_provider.dart';
 import 'package:tripitaka91/utils/shared_preferences/shared_value.dart';
 import 'package:tripitaka91/widget/auto_text/auto_text.dart';
 
@@ -150,9 +151,9 @@ class _LoginPageDialogState extends State<LoginPageDialog> {
       );
     } else {
       bool chkLogin = await loginUser(username, password, tSecretAPIKey);
+      if (!context.mounted) return;
       if (chkLogin) {
-        saveUsersList(createUserModel());
-        // ignore: use_build_context_synchronously
+        context.read<UserProvider>().setUser(createUserModel());
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('เข้าสู่ระบบเรียบร้อยแล้ว'),
