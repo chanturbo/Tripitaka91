@@ -5,11 +5,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
-import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:tripitaka91/utils/constants/api_constants.dart';
+import 'package:tripitaka91/utils/connectivity/check_internet_connection.dart';
 import 'package:tripitaka91/utils/providers/online_speech_provider.dart';
 import 'package:tripitaka91/utils/providers/user_provider.dart';
 import 'package:tripitaka91/utils/theme/theme.dart';
@@ -83,9 +82,12 @@ class PlatformCheckerScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Check if the app is running on Web, Android, or iOS
+    // The web build has no bundled SQLite database (sqflite has no web
+    // backend here), so it skips straight to MyHomePage in online mode —
+    // every widget already branches on `online` to call the remote API
+    // instead of DatabaseHelper.
     if (kIsWeb) {
-      return const WebNotSupportedScreen();
+      return const MyHomePage(online: true);
     } else if (Platform.isAndroid ||
         Platform.isIOS ||
         Platform.isMacOS ||
@@ -124,7 +126,7 @@ class _UnzipScreenState extends State<UnzipScreen> {
     try {
       // Call the loadFromFuture function
       await loadFromFuture();
-      online = await _checkInternetConnection();
+      online = await checkInternetConnection();
 
       setState(() {
         unzipStatus = 'ประมวลผลสำเร็จ!';
@@ -143,20 +145,6 @@ class _UnzipScreenState extends State<UnzipScreen> {
       setState(() {
         isLoading = false;
       });
-    }
-  }
-
-  // Actually probes the backend instead of inferring connectivity from a
-  // cached login, so remote-vs-local data source selection downstream
-  // (widget.online) reflects real reachability.
-  Future<bool> _checkInternetConnection() async {
-    try {
-      final response = await http
-          .get(Uri.parse(tURLmain))
-          .timeout(const Duration(seconds: 5));
-      return response.statusCode == 200;
-    } catch (_) {
-      return false;
     }
   }
 
@@ -254,20 +242,6 @@ Future<void> deleteFile(File file) async {
     }
   } catch (e) {
     // Handle errors
-  }
-}
-
-class WebNotSupportedScreen extends StatelessWidget {
-  const WebNotSupportedScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Web Not Supported')),
-      body: const Center(
-        child: Text('Unzipping files is not supported on the web.'),
-      ),
-    );
   }
 }
 

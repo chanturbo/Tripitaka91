@@ -49,8 +49,9 @@ class TripitakaInfoWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title:
-            const ATextDiskplayLarge(text: 'เกี่ยวกับแอปพลิเคชัน TRIPITAKA91'),
+        title: const ATextDiskplayLarge(
+          text: 'เกี่ยวกับแอปพลิเคชัน TRIPITAKA91',
+        ),
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -60,9 +61,7 @@ class TripitakaInfoWidget extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const ATextTitleLarge(
-                  text: 'เกี่ยวกับแอปพลิเคชัน TRIPITAKA91',
-                ),
+                const ATextTitleLarge(text: 'เกี่ยวกับแอปพลิเคชัน TRIPITAKA91'),
                 const SizedBox(height: 8.0),
                 const ATextTitleMedium(
                   text:
@@ -74,9 +73,7 @@ class TripitakaInfoWidget extends StatelessWidget {
                       '          สำหรับพระไตรปิฎกนั้น สรุปโดยย่อ คือ เป็นการจัดรวบรวมคำสอนของพระพุทธเจ้า ออกเป็นหมวดหมู่ และซักซ้อมทบทวนกันจนลงตัว ในระยะแรก พระไตรปิฎกถ่ายทอดต่อกันมาโดยการท่องจำปากเปล่า จนกระทั่งราว พ.ศ. 460 จึงมีการจารึกลงเป็นลายลักษณ์อักษร กล่าวได้ว่าพระพุทธศาสนาสืบทอดมาพร้อมกับพระไตรปิฎก จากสมัยพุทธกาลจนถึงวันนี้เป็นเวลากว่า 2,500 ปี พระไตรปิฎกบาลีของพระพุทธศาสนาฝ่ายเถรวาท เป็นที่ยอมรับกันว่า เป็นบันทึกคำสอนของพระพุทธเจ้าที่เก่าแก่ที่สุด ดั้งเดิมที่สุด สมบูรณ์ที่สุด และถูกต้องแม่นยำที่สุด ที่ยังคงมีอยู่ในปัจจุบัน',
                 ),
                 const SizedBox(height: 16.0),
-                const ATextTitleLarge(
-                  text: 'ข้อมูลอ้างอิง',
-                ),
+                const ATextTitleLarge(text: 'ข้อมูลอ้างอิง'),
                 const SizedBox(height: 8.0),
                 const ATextTitleMedium(
                   text:
@@ -118,9 +115,7 @@ class TripitakaInfoWidget extends StatelessWidget {
                       side: const BorderSide(color: Colors.red),
                     ),
                     icon: const Icon(Icons.restore),
-                    label: const Text(
-                      'เคลียร์ข้อมูลทั้งหมด (เริ่มต้นแอพใหม่)',
-                    ),
+                    label: const Text('เคลียร์ข้อมูลทั้งหมด (เริ่มต้นแอพใหม่)'),
                   ),
                 ),
                 const SizedBox(height: 16.0),
@@ -144,9 +139,7 @@ class TripitakaInfoWidget extends StatelessWidget {
                               padding: const EdgeInsets.all(0.0),
                               color: Colors.red, // Change color as needed
                               child: const Center(
-                                child: ATextDiskplayMedium(
-                                  text: 'ย้อนกลับ',
-                                ),
+                                child: ATextDiskplayMedium(text: 'ย้อนกลับ'),
                               ),
                             ),
                           ),

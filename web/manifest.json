@@ -1,11 +1,11 @@
 {
-    "name": "tripitaka91",
-    "short_name": "tripitaka91",
+    "name": "TRIPITAKA91 - พระไตรปิฎกและอรรถกถาแปล ชุด 91 เล่ม",
+    "short_name": "TRIPITAKA91",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#FFFFFF",
+    "theme_color": "#f5b931",
+    "description": "พระไตรปิฎกและอรรถกถาแปล ชุด 91 เล่ม ฉบับ มมร. (เล่มสีน้ำเงิน)",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

@@ -1,5 +1,10 @@
 import 'dart:io';
 
-/// Android keeps the legacy "BETA" wording for the online read-aloud mode;
-/// iOS/macOS/Windows use "ONLINE".
-final String kOnlineModeLabel = Platform.isAndroid ? 'BETA' : 'ONLINE';
+import 'package:flutter/foundation.dart';
+
+/// iOS/macOS use "ONLINE"; Android, Windows, and web all keep the legacy
+/// "BETA" wording. kIsWeb must short-circuit first — dart:io's Platform
+/// throws on web instead of returning false.
+final String kOnlineModeLabel = !kIsWeb && (Platform.isIOS || Platform.isMacOS)
+    ? 'ONLINE'
+    : 'BETA';
