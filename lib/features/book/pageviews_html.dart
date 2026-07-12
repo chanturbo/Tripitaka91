@@ -226,9 +226,7 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
 
       _scrollController.animateTo(
         midpoint,
-        duration: const Duration(
-          milliseconds: 500,
-        ), // หรือค่าอื่น ๆ ตามต้องการ
+        duration: const Duration(milliseconds: 500), // หรือค่าอื่น ๆ ตามต้องการ
         curve: Curves.easeOut, // หรือค่าอื่น ๆ ตามต้องการ
       );
     }
@@ -278,9 +276,7 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
 
       _scrollController.animateTo(
         midpoint,
-        duration: const Duration(
-          milliseconds: 500,
-        ), // หรือค่าอื่น ๆ ตามต้องการ
+        duration: const Duration(milliseconds: 500), // หรือค่าอื่น ๆ ตามต้องการ
         curve: Curves.easeOut, // หรือค่าอื่น ๆ ตามต้องการ
       );
     }
@@ -405,25 +401,31 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
   }
 
   Future<void> _setColour(int index) async {
-    String bgColor = '#ffffff';
-    String fontColor = '#475859';
+    String newBgColor = '#ffffff';
+    String newFontColor = '#475859';
     if (index == 0) {
-      bgColor = '#ffffff';
-      fontColor = '#475859';
+      newBgColor = '#ffffff';
+      newFontColor = '#475859';
     } else if (index == 1) {
-      bgColor = '#f8f1e4';
-      fontColor = '#475859';
+      newBgColor = '#f8f1e4';
+      newFontColor = '#475859';
     } else if (index == 2) {
-      bgColor = '#6b6b6e';
-      fontColor = '#ffffff';
+      newBgColor = '#6b6b6e';
+      newFontColor = '#ffffff';
     } else if (index == 3) {
-      bgColor = '#121212';
-      fontColor = '#ffffff';
+      newBgColor = '#121212';
+      newFontColor = '#ffffff';
     }
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString('color_bg', bgColor);
-    prefs.setString('color_font', fontColor);
+    await prefs.setString('color_bg', newBgColor);
+    await prefs.setString('color_font', newFontColor);
+
+    if (!mounted) return;
+    setState(() {
+      bgColor = newBgColor;
+      fontColor = newFontColor;
+    });
   }
 
   Future<int?> showAlertDialog(BuildContext context) {
@@ -938,8 +940,7 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
             }
             await SharePlus.instance.share(
               ShareParams(
-                text:
-                    '$tURLmain${widget.triBookid}-$pageChanged-$tmpLine.htm',
+                text: '$tURLmain${widget.triBookid}-$pageChanged-$tmpLine.htm',
                 subject: 'พระไตรปิฎก',
               ),
             );
@@ -1126,12 +1127,12 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
               ? Container(
                   alignment: Alignment.topCenter,
                   width: 250.0,
-                  color: adaptiveSurfaceColor(context),
+                  color: hexToColor(bgColor),
                   child: Text(txtShowEmpty),
                 )
               : Container(
                   width: 250.0,
-                  color: adaptiveSurfaceColor(context),
+                  color: hexToColor(bgColor),
                   child: ListView.builder(
                     controller: _scrollControllerListTitle,
                     itemCount: numRecord,
@@ -1181,12 +1182,12 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
               ? Container(
                   alignment: Alignment.topCenter,
                   width: 350.0,
-                  color: adaptiveSurfaceColor(context),
+                  color: hexToColor(bgColor),
                   child: Text(txtShowEmpty),
                 )
               : Container(
                   width: 350.0,
-                  color: adaptiveSurfaceColor(context),
+                  color: hexToColor(bgColor),
                   child: ListView.builder(
                     controller: _scrollControllerListTitle,
                     itemCount: numRecord,
@@ -1279,7 +1280,7 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
       borderRadius: BorderRadius.circular(10.0),
       child: Card(
         margin: const EdgeInsets.all(5),
-        color: adaptiveSurfaceColor(context),
+        color: hexToColor(bgColor),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
@@ -1311,7 +1312,7 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
                       terms: outputList,
                       textStyle: TextStyle(
                         fontSize: isMobile ? 18.0 : 16.0,
-                        color: adaptiveTextColor(context),
+                        color: HexColor(fontColor),
                       ),
                     )
                   : SubstringHighlight(
@@ -1321,8 +1322,7 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
                         fontSize: isMobile ? 18.0 : 16.0,
                         color: Colors.red,
                       ),
-                      textStyleHighlight:
-                          TextStyle(color: adaptiveTextColor(context)),
+                      textStyleHighlight: TextStyle(color: HexColor(fontColor)),
                     ),
               subtitle: Row(
                 children: [
@@ -1499,9 +1499,7 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
                               icon: const Icon(Icons.volume_up),
                               color: TColors.secondary,
                               onPressed: () async {
-                                if (!await ensureOnlineSpeechConsent(
-                                  context,
-                                )) {
+                                if (!await ensureOnlineSpeechConsent(context)) {
                                   return;
                                 }
                                 if (!mounted) return;
@@ -1851,9 +1849,7 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
                   onPressed: () async {
                     final selectedIndex = await showAlertDialog(context);
                     if (selectedIndex != null) {
-                      _setColour(
-                        selectedIndex,
-                      ); // หรือจะใช้ค่าที่ส่งกลับมาไป setState()
+                      await _setColour(selectedIndex);
                       // showAlertDialog already pops itself (via its own
                       // Navigator.pop(index) when an option is tapped), so
                       // popping again here was closing this reading page
@@ -1862,12 +1858,7 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
                       // now-popped page.
                       if (!mounted) return;
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text(
-                            'เปลี่ยนสีพื้นหลังแล้ว\n\nเพื่อทำการปรับปรุงพื้นหลังใหม่\nกรุณาคลิกเข้าอ่านพระไตรปิฎกอีกครั้งหนึ่ง\n\n',
-                          ),
-                          duration: Duration(seconds: 4),
-                        ),
+                        const SnackBar(content: Text('เปลี่ยนสีพื้นหลังแล้ว')),
                       );
                     }
                   },
@@ -2566,9 +2557,7 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
                 textSpan,
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  height: MediaQuery.of(context).size.width <= 600
-                      ? 0.3
-                      : 0.1,
+                  height: MediaQuery.of(context).size.width <= 600 ? 0.3 : 0.1,
                 ),
               ),
             ),
