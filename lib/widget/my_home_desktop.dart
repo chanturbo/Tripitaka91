@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tripitaka91/utils/connectivity/refresh_connectivity.dart';
 import 'package:tripitaka91/utils/constants/colors.dart';
 import 'package:tripitaka91/utils/theme/theme_provider.dart';
 import 'package:tripitaka91/widget/appbar/app_bar.dart';
@@ -16,11 +17,7 @@ import 'package:tripitaka91/widget/right_clipper/right_clipper.dart';
 import 'package:tripitaka91/features/book/show_book.dart';
 
 class MyHomeDesktop extends StatefulWidget {
-  const MyHomeDesktop({
-    super.key,
-    required this.title,
-    required this.online,
-  });
+  const MyHomeDesktop({super.key, required this.title, required this.online});
 
   final String title;
   final bool online;
@@ -84,6 +81,22 @@ class _MyHomeDesktopState extends State<MyHomeDesktop>
               context.read<ThemeProvider>().toggleDarkMode();
             },
           ),
+          IconButton(
+            icon: Icon(widget.online ? Icons.wifi : Icons.wifi_off),
+            color: widget.online ? TColors.success : TColors.error,
+            tooltip: widget.online ? 'ONLINE' : 'OFFLINE',
+            onPressed: () {
+              if (widget.online) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('กำลังเชื่อมต่ออินเทอร์เน็ต (ONLINE)'),
+                  ),
+                );
+              } else {
+                refreshConnectivityAndRebirthIfOnline(context);
+              }
+            },
+          ),
         ],
       ),
       body: Container(
@@ -110,9 +123,7 @@ class _MyHomeDesktopState extends State<MyHomeDesktop>
             Expanded(
               child: Column(
                 children: [
-                  Container(
-                    height: 10,
-                  ),
+                  Container(height: 10),
                   Row(
                     children: [
                       Container(
@@ -142,9 +153,7 @@ class _MyHomeDesktopState extends State<MyHomeDesktop>
                             ),
                     ],
                   ),
-                  Container(
-                    height: 10,
-                  ),
+                  Container(height: 10),
                   Expanded(
                     child: SingleChildScrollView(
                       child: Column(
@@ -182,13 +191,8 @@ class _MyHomeDesktopState extends State<MyHomeDesktop>
                             isMobile: false,
                             online: widget.online,
                           ),
-                          Container(
-                            height: 20,
-                          ),
-                          ShowBookSlide(
-                            isMobile: false,
-                            online: widget.online,
-                          ),
+                          Container(height: 20),
+                          ShowBookSlide(isMobile: false, online: widget.online),
                         ],
                       ),
                     ),

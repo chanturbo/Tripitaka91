@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tripitaka91/utils/connectivity/refresh_connectivity.dart';
 import 'package:tripitaka91/utils/theme/theme_provider.dart';
 import 'package:tripitaka91/widget/appbar/app_bar.dart';
 import 'package:tripitaka91/utils/constants/colors.dart';
@@ -15,11 +16,7 @@ import 'package:tripitaka91/widget/search/screen_mobile.dart';
 import 'package:tripitaka91/features/book/show_book.dart';
 
 class MyHomeMobile extends StatefulWidget {
-  const MyHomeMobile({
-    super.key,
-    required this.title,
-    required this.online,
-  });
+  const MyHomeMobile({super.key, required this.title, required this.online});
 
   final String title;
   final bool online;
@@ -43,11 +40,12 @@ class _MyHomeMobileState extends State<MyHomeMobile>
     return Scaffold(
       key: _scaffoldKey,
       drawer: Drawer(
-          child: ListMenu(
-        isTablet: false,
-        isDesktop: false,
-        online: widget.online,
-      )),
+        child: ListMenu(
+          isTablet: false,
+          isDesktop: false,
+          online: widget.online,
+        ),
+      ),
       appBar: AppBar(
         title: AppBarCustom(
           isDesktop: false,
@@ -89,6 +87,22 @@ class _MyHomeMobileState extends State<MyHomeMobile>
               context.read<ThemeProvider>().toggleDarkMode();
             },
           ),
+          IconButton(
+            icon: Icon(widget.online ? Icons.wifi : Icons.wifi_off),
+            color: widget.online ? TColors.success : TColors.error,
+            tooltip: widget.online ? 'ONLINE' : 'OFFLINE',
+            onPressed: () {
+              if (widget.online) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('กำลังเชื่อมต่ออินเทอร์เน็ต (ONLINE)'),
+                  ),
+                );
+              } else {
+                refreshConnectivityAndRebirthIfOnline(context);
+              }
+            },
+          ),
         ],
       ),
       body: Container(
@@ -105,19 +119,12 @@ class _MyHomeMobileState extends State<MyHomeMobile>
             Expanded(
               child: Column(
                 children: [
+                  Container(color: TColors.primary, height: 10),
                   Container(
                     color: TColors.primary,
-                    height: 10,
+                    child: SearchMobileScreen(online: widget.online),
                   ),
-                  Container(
-                      color: TColors.primary,
-                      child: SearchMobileScreen(
-                        online: widget.online,
-                      )),
-                  Container(
-                    height: 10,
-                    color: TColors.primary,
-                  ),
+                  Container(height: 10, color: TColors.primary),
                   Row(
                     children: [
                       Container(
@@ -147,16 +154,12 @@ class _MyHomeMobileState extends State<MyHomeMobile>
                             ),
                     ],
                   ),
-                  Container(
-                    height: 10,
-                  ),
+                  Container(height: 10),
                   Expanded(
                     child: SingleChildScrollView(
                       child: Column(
                         children: [
-                          Container(
-                            height: 10,
-                          ),
+                          Container(height: 10),
                           SizedBox(
                             width: 85,
                             height: 30,
@@ -190,17 +193,12 @@ class _MyHomeMobileState extends State<MyHomeMobile>
                             isMobile: true,
                             online: widget.online,
                           ),
-                          Container(
-                            height: 20,
-                          ),
-                          ShowBookSlide(
-                            isMobile: true,
-                            online: widget.online,
-                          ),
+                          Container(height: 20),
+                          ShowBookSlide(isMobile: true, online: widget.online),
                         ],
                       ),
                     ),
-                  )
+                  ),
                 ],
               ),
             ),

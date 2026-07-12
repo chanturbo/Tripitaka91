@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tripitaka91/utils/connectivity/refresh_connectivity.dart';
 import 'package:tripitaka91/utils/constants/colors.dart';
 import 'package:tripitaka91/utils/theme/theme_provider.dart';
 import 'package:tripitaka91/widget/appbar/app_bar.dart';
@@ -22,11 +23,7 @@ import 'package:tripitaka91/widget/right_clipper/right_clipper.dart';
 import 'package:tripitaka91/features/book/show_book.dart';
 
 class MyHomeTablet extends StatefulWidget {
-  const MyHomeTablet({
-    super.key,
-    required this.title,
-    required this.online,
-  });
+  const MyHomeTablet({super.key, required this.title, required this.online});
 
   final String title;
   final bool online;
@@ -92,6 +89,22 @@ class _MyHomeTabletState extends State<MyHomeTablet>
               context.read<ThemeProvider>().toggleDarkMode();
             },
           ),
+          IconButton(
+            icon: Icon(widget.online ? Icons.wifi : Icons.wifi_off),
+            color: widget.online ? TColors.success : TColors.error,
+            tooltip: widget.online ? 'ONLINE' : 'OFFLINE',
+            onPressed: () {
+              if (widget.online) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('กำลังเชื่อมต่ออินเทอร์เน็ต (ONLINE)'),
+                  ),
+                );
+              } else {
+                refreshConnectivityAndRebirthIfOnline(context);
+              }
+            },
+          ),
         ],
       ),
       drawer: Container(
@@ -105,34 +118,30 @@ class _MyHomeTabletState extends State<MyHomeTablet>
                 online: widget.online,
               )
             : sidebarButtonNo == 2
-                ? ListMenuTri2(
-                    isDesktop: true,
-                    isTablet: false,
-                    online: widget.online,
-                  )
-                : sidebarButtonNo == 3
-                    ? ListMenuTri3(
-                        isDesktop: true,
-                        isTablet: false,
-                        online: widget.online,
-                      )
-                    : sidebarButtonNo == 4
-                        ? ListMenuTitle(
-                            isDesktop: true,
-                            isTablet: false,
-                            online: widget.online,
-                          )
-                        : sidebarButtonNo == 5
-                            ? ListMenuDict(
-                                isDesktop: true,
-                                isTablet: false,
-                                online: widget.online,
-                              )
-                            : ListMenu(
-                                isDesktop: true,
-                                isTablet: false,
-                                online: widget.online,
-                              ),
+            ? ListMenuTri2(
+                isDesktop: true,
+                isTablet: false,
+                online: widget.online,
+              )
+            : sidebarButtonNo == 3
+            ? ListMenuTri3(
+                isDesktop: true,
+                isTablet: false,
+                online: widget.online,
+              )
+            : sidebarButtonNo == 4
+            ? ListMenuTitle(
+                isDesktop: true,
+                isTablet: false,
+                online: widget.online,
+              )
+            : sidebarButtonNo == 5
+            ? ListMenuDict(
+                isDesktop: true,
+                isTablet: false,
+                online: widget.online,
+              )
+            : ListMenu(isDesktop: true, isTablet: false, online: widget.online),
       ),
       body: Container(
         padding: const EdgeInsets.all(0),
@@ -149,9 +158,7 @@ class _MyHomeTabletState extends State<MyHomeTablet>
             Expanded(
               child: Column(
                 children: [
-                  Container(
-                    height: 10,
-                  ),
+                  Container(height: 10),
                   Row(
                     children: [
                       Container(
@@ -181,9 +188,7 @@ class _MyHomeTabletState extends State<MyHomeTablet>
                             ),
                     ],
                   ),
-                  Container(
-                    height: 10,
-                  ),
+                  Container(height: 10),
                   Expanded(
                     child: SingleChildScrollView(
                       child: Column(
@@ -221,13 +226,8 @@ class _MyHomeTabletState extends State<MyHomeTablet>
                             isMobile: false,
                             online: widget.online,
                           ),
-                          Container(
-                            height: 20,
-                          ),
-                          ShowBookSlide(
-                            isMobile: false,
-                            online: widget.online,
-                          ),
+                          Container(height: 20),
+                          ShowBookSlide(isMobile: false, online: widget.online),
                         ],
                       ),
                     ),
@@ -269,50 +269,48 @@ class _MyHomeTabletState extends State<MyHomeTablet>
   Widget sideBarItem(IconData iconData, String text, int index) {
     final bool isSelected = index == sidebarButtonNo;
     return MaterialButton(
-        color: isSelected
-            ? TColors.primary1.withValues(alpha: 0.15)
-            : Colors.transparent,
-        height: 80,
-        highlightElevation: 0,
-        elevation: 0,
-        hoverElevation: 0,
-        onPressed: () {
-          setState(() {
-            sidebarButtonNo = index;
-            if (sidebarButtonNo == 6) {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const TripitakaInfoWidget(),
-                ),
-              );
-            } else {
-              _scaffoldKey.currentState?.openDrawer();
-            }
-          });
-        },
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            CircleAvatar(
-              backgroundColor:
-                  isSelected ? TColors.white : TColors.primary1,
-              child: Icon(iconData,
-                  color: isSelected ? TColors.primary : TColors.white,
-                  size: 25),
+      color: isSelected
+          ? TColors.primary1.withValues(alpha: 0.15)
+          : Colors.transparent,
+      height: 80,
+      highlightElevation: 0,
+      elevation: 0,
+      hoverElevation: 0,
+      onPressed: () {
+        setState(() {
+          sidebarButtonNo = index;
+          if (sidebarButtonNo == 6) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const TripitakaInfoWidget(),
+              ),
+            );
+          } else {
+            _scaffoldKey.currentState?.openDrawer();
+          }
+        });
+      },
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          CircleAvatar(
+            backgroundColor: isSelected ? TColors.white : TColors.primary1,
+            child: Icon(
+              iconData,
+              color: isSelected ? TColors.primary : TColors.white,
+              size: 25,
             ),
-            const SizedBox(
-              height: 5,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                ATextBodySmall(text: text),
-              ],
-            )
-          ],
-        ));
+          ),
+          const SizedBox(height: 5),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [ATextBodySmall(text: text)],
+          ),
+        ],
+      ),
+    );
   }
 }
