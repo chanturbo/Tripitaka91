@@ -7,6 +7,7 @@ import 'package:tripitaka91/widget/right_clipper/right_clipper.dart';
 import 'package:tripitaka91/widget/scroll/scroll_button.dart';
 import 'package:tripitaka91/features/book/show_title.dart';
 import 'package:url_launcher/link.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ShowBookSlide extends StatefulWidget {
   final bool isMobile;
@@ -531,7 +532,170 @@ class _ShowBookSlideState extends State<ShowBookSlide> {
                 ),
               )
             : const SizedBox.shrink(),
+        const SizedBox(height: 20),
+        SizedBox(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'APP Tripitaka91 สำหรับ iPhone, iPad',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 10),
+                const Text(
+                  'สามารถเข้าไปดาวน์โหลดได้แล้ว คลิกที่ลิงก์ด้านล่าง หรือเข้า App Store แล้วพิมพ์คำค้นหา "tripitaka 91"',
+                  textAlign: TextAlign.justify,
+                ),
+                const SizedBox(height: 10),
+                _buildDownloadButton(
+                  platform: 'iTunes App Store',
+                  url:
+                      'https://apps.apple.com/us/app/tripitaka-91-v3-0/id1087390266',
+                  iconPath: 'assets/web/appstore.png',
+                ),
+                const Divider(height: 30),
+                const Text(
+                  'APP Tripitaka91 สำหรับเครื่อง Android',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 10),
+                const Text(
+                  'สามารถเข้าไปดาวน์โหลดได้แล้ว คลิกที่ลิงก์ด้านล่าง หรือเข้า Play Store แล้วพิมพ์คำค้นหา "tripitaka91" และเลือกเวอร์ชั่น 2.1+',
+                  textAlign: TextAlign.justify,
+                ),
+                const SizedBox(height: 10),
+                _buildDownloadButton(
+                  platform: 'Google Play Store',
+                  url:
+                      'https://play.google.com/store/apps/details?id=com.tripitaka91.tripitaka91&hl=th',
+                  iconPath: 'assets/web/playstore.png',
+                ),
+              ],
+            ),
+          ),
+        ),
+        const Divider(height: 20),
+        SizedBox(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'YouTube',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 10),
+                const Text(
+                  'วีดีโอจาก YouTube ช่องของวัดสามแยก และช่องอื่น ๆ สำหรับศึกษา',
+                  textAlign: TextAlign.justify,
+                ),
+                const SizedBox(height: 16),
+                _buildChannelItem(
+                  icon: Icons.play_circle_fill,
+                  title: 'ช่อง SamyaekMedia',
+                  url:
+                      'https://www.youtube.com/channel/UC2D_YsjJOr_Iuf3jd9xkZhA',
+                ),
+                _buildChannelItem(
+                  icon: Icons.play_circle_fill,
+                  title: 'ช่อง SamyaekTV',
+                  url:
+                      'https://www.youtube.com/channel/UCQwFnDCExBLIzYAItp8PE8Q',
+                ),
+                _buildChannelItem(
+                  icon: Icons.play_circle_fill,
+                  title: 'ช่อง Amarin Karnsri',
+                  url:
+                      'https://www.youtube.com/channel/UCzlSiuxxnZzSz0uP2nuPq4w',
+                ),
+                _buildChannelItem(
+                  icon: Icons.play_circle_fill,
+                  title: 'ช่อง เจษฎา อังศุโชติ',
+                  url:
+                      'https://www.youtube.com/channel/UC3EF2G7ECDg6Jihf3o_VdkA',
+                ),
+                _buildChannelItem(
+                  icon: Icons.play_circle_fill,
+                  title: 'เว็บไซต์ Dhamma Youtube Timstamp (Thailand)',
+                  url: 'https://dhamma-youtube-timestamp.blogspot.com/',
+                ),
+                _buildChannelItem(
+                  icon: Icons.headset,
+                  title: 'เสียงอ่านพระไตรปิฎก',
+                  url: 'https://www.youtube.com/user/puttomsong/videos',
+                ),
+              ],
+            ),
+          ),
+        ),
+        const Divider(height: 20),
       ],
+    );
+  }
+
+  Widget _buildChannelItem(
+      {required IconData icon, required String title, required String url}) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8.0),
+      child: InkWell(
+        onTap: () async {
+          Uri uri = Uri.parse(url);
+          if (await canLaunchUrl(uri)) {
+            await launchUrl(uri, mode: LaunchMode.externalApplication);
+          } else {
+            throw 'Could not launch $url';
+          }
+        },
+        child: Row(
+          children: [
+            Icon(icon, color: Colors.blue),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Text(
+                title,
+                style: const TextStyle(fontSize: 16, color: Colors.blue),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDownloadButton(
+      {required String platform,
+      required String url,
+      required String iconPath}) {
+    return InkWell(
+      onTap: () async {
+        Uri uri = Uri.parse(url);
+        if (await canLaunchUrl(uri)) {
+          await launchUrl(uri, mode: LaunchMode.externalApplication);
+        } else {
+          throw 'Could not launch $url';
+        }
+      },
+      child: Row(
+        children: [
+          Image.asset(
+            iconPath,
+            width: 150,
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              platform,
+              style: const TextStyle(
+                  fontSize: 16,
+                  color: Colors.blue,
+                  decoration: TextDecoration.underline),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

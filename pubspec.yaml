@@ -53,6 +53,7 @@ flutter:
      - assets/fonts/
      - assets/pdf/
      - assets/db/
+     - assets/web/
      - assets/fonts/CupertinoIcons.ttf
      - assets/fonts/MaterialIcons-Regular.otf
   fonts:
