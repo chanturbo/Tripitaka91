@@ -62,30 +62,26 @@ class _SetVoiceState extends State<SetVoice> {
     return AlertDialog(
       title: const Text('เปลี่ยนเสียงอ่าน'),
       content: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            RadioListTile(
-              title: const Text('เสียงผู้ชาย'),
-              value: 'เสียงผู้ชาย',
-              groupValue: selectedVoice,
-              onChanged: (value) {
-                setState(() {
-                  selectedVoice = value!;
-                });
-              },
-            ),
-            RadioListTile(
-              title: const Text('เสียงผู้หญิง'),
-              value: 'เสียงผู้หญิง',
-              groupValue: selectedVoice,
-              onChanged: (value) {
-                setState(() {
-                  selectedVoice = value!;
-                });
-              },
-            ),
-          ],
+        child: RadioGroup<String>(
+          groupValue: selectedVoice,
+          onChanged: (value) {
+            setState(() {
+              selectedVoice = value!;
+            });
+          },
+          child: const Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              RadioListTile<String>(
+                title: Text('เสียงผู้ชาย'),
+                value: 'เสียงผู้ชาย',
+              ),
+              RadioListTile<String>(
+                title: Text('เสียงผู้หญิง'),
+                value: 'เสียงผู้หญิง',
+              ),
+            ],
+          ),
         ),
       ),
       actions: [

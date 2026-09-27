@@ -555,13 +555,13 @@ class _ShowCorrectSaveState extends State<ShowCorrectSave> {
                                       _handleAddData();
                                     },
                                     style: ButtonStyle(
-                                      backgroundColor: MaterialStateProperty.all<
+                                      backgroundColor: WidgetStateProperty.all<
                                           Color>(opt ==
                                               '0'
                                           ? Colors.orange
                                           : Colors
                                               .white), // กำหนดสีพื้นหลังเป็นสีขาว
-                                      shape: MaterialStateProperty.all<
+                                      shape: WidgetStateProperty.all<
                                           RoundedRectangleBorder>(
                                         RoundedRectangleBorder(
                                           borderRadius: BorderRadius.circular(
@@ -585,13 +585,13 @@ class _ShowCorrectSaveState extends State<ShowCorrectSave> {
                                       _handleAddData();
                                     },
                                     style: ButtonStyle(
-                                      backgroundColor: MaterialStateProperty.all<
+                                      backgroundColor: WidgetStateProperty.all<
                                           Color>(opt ==
                                               '1'
                                           ? Colors.orange
                                           : Colors
                                               .white), // กำหนดสีพื้นหลังเป็นสีขาว
-                                      shape: MaterialStateProperty.all<
+                                      shape: WidgetStateProperty.all<
                                           RoundedRectangleBorder>(
                                         RoundedRectangleBorder(
                                           borderRadius: BorderRadius.circular(
@@ -615,13 +615,13 @@ class _ShowCorrectSaveState extends State<ShowCorrectSave> {
                                       _handleAddData();
                                     },
                                     style: ButtonStyle(
-                                      backgroundColor: MaterialStateProperty.all<
+                                      backgroundColor: WidgetStateProperty.all<
                                           Color>(opt ==
                                               '2'
                                           ? Colors.orange
                                           : Colors
                                               .white), // กำหนดสีพื้นหลังเป็นสีขาว
-                                      shape: MaterialStateProperty.all<
+                                      shape: WidgetStateProperty.all<
                                           RoundedRectangleBorder>(
                                         RoundedRectangleBorder(
                                           borderRadius: BorderRadius.circular(
@@ -665,11 +665,11 @@ class _ShowCorrectSaveState extends State<ShowCorrectSave> {
                             _handleAddData();
                           },
                           style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all<Color>(
+                            backgroundColor: WidgetStateProperty.all<Color>(
                                 opt == '0'
                                     ? Colors.orange
                                     : Colors.white), // กำหนดสีพื้นหลังเป็นสีขาว
-                            shape: MaterialStateProperty.all<
+                            shape: WidgetStateProperty.all<
                                 RoundedRectangleBorder>(
                               RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(
@@ -690,11 +690,11 @@ class _ShowCorrectSaveState extends State<ShowCorrectSave> {
                             _handleAddData();
                           },
                           style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all<Color>(
+                            backgroundColor: WidgetStateProperty.all<Color>(
                                 opt == '1'
                                     ? Colors.orange
                                     : Colors.white), // กำหนดสีพื้นหลังเป็นสีขาว
-                            shape: MaterialStateProperty.all<
+                            shape: WidgetStateProperty.all<
                                 RoundedRectangleBorder>(
                               RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(
@@ -715,11 +715,11 @@ class _ShowCorrectSaveState extends State<ShowCorrectSave> {
                             _handleAddData();
                           },
                           style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all<Color>(
+                            backgroundColor: WidgetStateProperty.all<Color>(
                                 opt == '2'
                                     ? Colors.orange
                                     : Colors.white), // กำหนดสีพื้นหลังเป็นสีขาว
-                            shape: MaterialStateProperty.all<
+                            shape: WidgetStateProperty.all<
                                 RoundedRectangleBorder>(
                               RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(
@@ -836,12 +836,11 @@ class _ShowCorrectSaveState extends State<ShowCorrectSave> {
                                       InkWell(
                                         onTap: () async {
                                           Users? users = await getUsersList();
+                                          if (!context.mounted) return;
                                           if (users?.permissionLogEdit == '0') {
-                                            // ignore: use_build_context_synchronously
                                             showPermissionDialog(context);
                                           } else {
                                             bool? confirm =
-                                                // ignore: use_build_context_synchronously
                                                 await _showConfirmationDialog(
                                                     context);
                                             if (confirm!) {
@@ -960,20 +959,28 @@ class _ShowCorrectSaveState extends State<ShowCorrectSave> {
                                                           tmpLevel =
                                                               users.levelAccess;
                                                         }
+                                                        if (!context.mounted) {
+                                                          return;
+                                                        }
                                                         if (tmpLevel == '1') {
                                                           bool? confirm =
-                                                              // ignore: use_build_context_synchronously
                                                               await _showConfirmationDialog(
                                                                   context);
                                                           if (confirm!) {
-                                                            // ignore: use_build_context_synchronously
+                                                            if (!context
+                                                                .mounted) {
+                                                              return;
+                                                            }
                                                             LoadingDialog.show(
                                                                 context);
                                                             await _fetchConfirmSuscess(
                                                                 '${dataTitle[index]['tripitaka91_book']}',
                                                                 '${dataTitle[index]['tripitaka91_page']}',
                                                                 '${dataTitle[index]['tripitaka91_line']}');
-                                                            // ignore: use_build_context_synchronously
+                                                            if (!context
+                                                                .mounted) {
+                                                              return;
+                                                            }
                                                             LoadingDialog.hide(
                                                                 context);
                                                             // print(

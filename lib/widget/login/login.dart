@@ -10,8 +10,7 @@ import 'package:tripitaka91/utils/shared_preferences/shared_user.dart';
 import 'package:tripitaka91/utils/shared_preferences/shared_value.dart';
 import 'package:tripitaka91/widget/login/signup_screen.dart';
 import 'package:url_launcher/link.dart';
-// ignore: avoid_web_libraries_in_flutter
-import 'dart:html' as html;
+import 'package:universal_html/html.dart' as html;
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -83,7 +82,7 @@ class _LoginPageState extends State<LoginPage> {
             border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(18),
                 borderSide: BorderSide.none),
-            fillColor: Theme.of(context).primaryColor.withOpacity(0.1),
+            fillColor: Theme.of(context).primaryColor.withValues(alpha: 0.1),
             filled: true,
             prefixIcon: const Icon(Icons.person),
           ),
@@ -100,7 +99,7 @@ class _LoginPageState extends State<LoginPage> {
             border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(18),
                 borderSide: BorderSide.none),
-            fillColor: Theme.of(context).primaryColor.withOpacity(0.1),
+            fillColor: Theme.of(context).primaryColor.withValues(alpha: 0.1),
             filled: true,
             prefixIcon: const Icon(Icons.person),
           ),

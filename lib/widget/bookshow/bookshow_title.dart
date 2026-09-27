@@ -171,15 +171,15 @@ class _BookShowTitleState extends State<BookShowTitle> {
     // ดึงข้อมูล
     await _getLastBook();
 
+    if (!mounted) return;
+
     // ปิด Dialog เมื่อโหลดเสร็จ
-    // ignore: use_build_context_synchronously
     // Navigator.pop(context);
 
     int lastInt = 1;
 
     // ถ้าไม่มีข้อมูลให้แจ้งเตือน
     if (lastBookAccess.isEmpty) {
-      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("ไม่พบหน้าที่อ่านล่าสุด")),
       );
@@ -188,7 +188,6 @@ class _BookShowTitleState extends State<BookShowTitle> {
     }
 
     // แสดง Dialog ยืนยัน
-    // ignore: use_build_context_synchronously
     bool? confirm = await showDialog<bool>(
       context: context,
       builder: (BuildContext context) {
@@ -211,7 +210,7 @@ class _BookShowTitleState extends State<BookShowTitle> {
 
     // ถ้าผู้ใช้กดยืนยัน ให้นำทางไปยังหน้าใหม่
     if (confirm == true) {
-      // ignore: use_build_context_synchronously
+      if (!mounted) return;
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -500,7 +499,7 @@ class _BookShowTitleState extends State<BookShowTitle> {
                                       TextButton(
                                         style: ButtonStyle(
                                           backgroundColor:
-                                              MaterialStateProperty.all<Color>(
+                                              WidgetStateProperty.all<Color>(
                                                   Colors.orange),
                                         ),
                                         onPressed: () {
@@ -516,7 +515,7 @@ class _BookShowTitleState extends State<BookShowTitle> {
                                     TextButton(
                                       style: ButtonStyle(
                                         backgroundColor:
-                                            MaterialStateProperty.all<Color>(
+                                            WidgetStateProperty.all<Color>(
                                                 Colors.orange),
                                       ),
                                       onPressed: () {
@@ -1090,7 +1089,7 @@ class _BookShowTitleState extends State<BookShowTitle> {
                                           : TextButton(
                                               style: ButtonStyle(
                                                 backgroundColor:
-                                                    MaterialStateProperty.all<
+                                                    WidgetStateProperty.all<
                                                         Color>(Colors.orange),
                                               ),
                                               onPressed: () {
@@ -1106,7 +1105,7 @@ class _BookShowTitleState extends State<BookShowTitle> {
                                       TextButton(
                                         style: ButtonStyle(
                                           backgroundColor:
-                                              MaterialStateProperty.all<Color>(
+                                              WidgetStateProperty.all<Color>(
                                                   Colors.orange),
                                         ),
                                         onPressed: () {

@@ -5,9 +5,8 @@ import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:tripitaka91/utils/constants/api_constants.dart';
-// สำหรับการใช้งานเว็บ
-// ignore: avoid_web_libraries_in_flutter
-import 'dart:html' as html; // ไม่ควรใช้ในแพลตฟอร์มอื่นนอกจากเว็บ
+// สำหรับการใช้งานเว็บ (universal_html ใช้ได้ทุกแพลตฟอร์ม)
+import 'package:universal_html/html.dart' as html;
 
 class ImageCaptureService {
   Future<void> captureAndSharePng(Uint8List capturedImage, String bookid,

@@ -165,7 +165,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               hintText: TTexts.dateOfBirth,
               hintStyle:
                   const TextStyle(color: Color.fromARGB(255, 204, 204, 204)),
-              fillColor: Theme.of(context).primaryColor.withOpacity(0.1),
+              fillColor: Theme.of(context).primaryColor.withValues(alpha: 0.1),
               filled: true,
               prefixIcon: const Icon(Icons.calendar_today),
               border: OutlineInputBorder(
@@ -218,12 +218,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 // Perform data submission
                 bool loginResult =
                     await loginUser(_userNameController.text, tSecretAPIKey);
+                if (!context.mounted) return;
                 if (loginResult) {
-                  // ignore: use_build_context_synchronously
                   showCustomDialog(context);
                 } else {
                   // แสดง process dialog ระหว่างตรวจสอบข้อมูลกับ Server API
-                  // ignore: use_build_context_synchronously
                   LoadingDialog.show(context);
 
                   // เรียก API เพื่อตรวจสอบข้อมูล (ในตัวอย่างนี้จะใช้ Future.delayed แทน)
@@ -234,12 +233,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   users = createUserModel();
                   saveValueCorrect(int.parse('0'));
                   bool loginSucess = await saveUser(users, tSecretAPIKey);
-                  // ignore: use_build_context_synchronously
+                  if (!context.mounted) return;
                   LoadingDialog.hide(context);
                   if (loginSucess) {
                     // saveUsersList(users);
                     clearUsersList();
-                    // ignore: use_build_context_synchronously
                     await showDialog(
                       context: context,
                       builder: (context) => AlertDialog(
@@ -256,14 +254,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         ],
                       ),
                     );
-                    // ignore: use_build_context_synchronously
+                    if (!context.mounted) return;
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
                           builder: (context) => const LoginPage()),
                     );
 
-                    // ignore: use_build_context_synchronously
                     /*Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
@@ -413,7 +410,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       decoration: InputDecoration(
         hintText: hintText,
         hintStyle: const TextStyle(color: Color.fromARGB(255, 204, 204, 204)),
-        fillColor: Theme.of(context).primaryColor.withOpacity(0.1),
+        fillColor: Theme.of(context).primaryColor.withValues(alpha: 0.1),
         filled: true,
         prefixIcon: Icon(prefixIcon),
         border: OutlineInputBorder(

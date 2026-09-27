@@ -60,15 +60,15 @@ class _AppBarCustomState extends State<AppBarCustom> {
   Future<void> _checkLoginStatus() async {
     isLoggedIn = await _authService.checkLoginStatus();
 
+    if (!mounted) return;
+
     if (isLoggedIn) {
-      // ignore: use_build_context_synchronously
       Navigator.push(
         context,
         MaterialPageRoute(
             builder: (context) => const MemberTabShow(indexShow: 0)),
       );
     } else {
-      // ignore: use_build_context_synchronously
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -163,25 +163,26 @@ class _AppBarCustomState extends State<AppBarCustom> {
                                           textAlign: TextAlign.left,
                                         ),
                                         const SizedBox(height: 5),
-                                        RadioListTile<bool>(
-                                          title: const Text('เสียงผู้ชาย'),
-                                          value: true,
+                                        RadioGroup<bool>(
                                           groupValue: isMaleVoice,
                                           onChanged: (value) {
                                             setState(() {
                                               isMaleVoice = value!;
                                             });
                                           },
-                                        ),
-                                        RadioListTile<bool>(
-                                          title: const Text('เสียงผู้หญิง'),
-                                          value: false,
-                                          groupValue: isMaleVoice,
-                                          onChanged: (value) {
-                                            setState(() {
-                                              isMaleVoice = value!;
-                                            });
-                                          },
+                                          child: const Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              RadioListTile<bool>(
+                                                title: Text('เสียงผู้ชาย'),
+                                                value: true,
+                                              ),
+                                              RadioListTile<bool>(
+                                                title: Text('เสียงผู้หญิง'),
+                                                value: false,
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                         const SizedBox(height: 10),
                                         TextField(

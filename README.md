@@ -1,16 +1,147 @@
-# tripitaka91
+# Tripitaka91
 
-Tripitaka 91 Project By Flutter.
+แอปพลิเคชันพระไตรปิฎกและอรรถกถาแปล ชุด 91 เล่ม ฉบับ มมร. พัฒนาด้วย Flutter สำหรับอ่าน ค้นหา ฟังเสียง และจัดการข้อมูลประกอบการศึกษาพระไตรปิฎก
 
-## Getting Started
+## ภาพรวม
 
-This project is a starting point for a Flutter application.
+Tripitaka91 เป็นแอปอ่านพระไตรปิฎกที่รองรับหลายแพลตฟอร์ม ได้แก่ Android, iOS, Web, Windows, macOS และ Linux โครงสร้างแอปออกแบบให้ใช้งานได้ทั้งหน้าจอมือถือ แท็บเล็ต และเดสก์ท็อป โดยหน้าแรกจะแสดงเมนูเล่มพระไตรปิฎก หัวข้อธรรมแบบสุ่ม เล่มที่อ่านล่าสุด และเครื่องมือค้นหา
 
-A few resources to get you started if this is your first Flutter project:
+ข้อมูลหลักของแอปเชื่อมต่อกับ API ของ `tripitaka91.com` เพื่อดึงเนื้อหาหนังสือ หัวข้อธรรม พจนานุกรม ระบบสมาชิก ประวัติการอ่าน รายงานแก้ไขข้อความ และเสียงอ่าน
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## ฟีเจอร์หลัก
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- อ่านพระไตรปิฎก 91 เล่ม แยกตามหมวดพระวินัยปิฎก พระสุตตันตปิฎก และพระอภิธรรมปิฎก
+- ค้นหาเนื้อหาจากพระไตรปิฎก หัวข้อธรรมสำคัญ พจนานุกรมฉบับประมวลศัพท์ และพจนานุกรมไทย-บาลี
+- แสดงหัวข้อธรรมแบบสุ่มจากฐานข้อมูล
+- บันทึกและแสดงเล่ม/หน้าที่อ่านล่าสุด
+- เปิดหน้าหนังสือผ่าน query string เช่น `book`, `page`, `line` สำหรับใช้งานบนเว็บหรือแชร์ลิงก์
+- ปรับขนาดตัวอักษรและสีพื้นหลัง/สีตัวอักษรของหน้าอ่าน
+- โหมดขาว-ดำผ่าน `ThemeProvider`
+- ฟังเสียงอ่านข้อความและคำศัพท์ โดยใช้ `just_audio`
+- ระบบสมาชิก: เข้าสู่ระบบ ลงทะเบียน เปลี่ยนรหัสผ่าน ดูข้อมูลสมาชิก และจัดการสิทธิ์บางส่วน
+- ระบบรายงาน/ตรวจแก้ข้อความ และบันทึกเสียงอ่านสำหรับผู้ใช้งานที่มีสิทธิ์
+- รองรับการแชร์ภาพหรือข้อความจากเนื้อหาในแอป
+
+## เทคโนโลยีที่ใช้
+
+- Flutter / Dart
+- Provider สำหรับจัดการ state ของธีม
+- HTTP API ผ่านแพ็กเกจ `http`
+- SharedPreferences สำหรับบันทึกค่าผู้ใช้และค่าการอ่าน
+- just_audio สำหรับเล่นเสียง
+- simple_html_css และ flutter_inappwebview สำหรับแสดงเนื้อหารูปแบบ HTML
+- share_plus, screenshot และ url_launcher สำหรับงานแชร์/เปิดลิงก์
+- sqflite และ sqflite_common_ffi ถูกเตรียมไว้สำหรับงานฐานข้อมูลภายในเครื่อง
+
+## โครงสร้างโปรเจกต์
+
+```text
+lib/
+  main.dart                         จุดเริ่มต้นของแอป
+  widget/
+    my_home_page.dart               เลือก layout ตามขนาดหน้าจอ
+    my_home_mobile.dart             หน้าแรกสำหรับมือถือ
+    my_home_tablet.dart             หน้าแรกสำหรับแท็บเล็ต
+    my_home_desktop.dart            หน้าแรกสำหรับเดสก์ท็อป
+    menu/                           เมนูเล่มพระไตรปิฎกและหมวดหัวข้อธรรม
+    search/                         หน้าค้นหาและแสดงผลการค้นหา
+    pageviews/                      หน้าอ่านเนื้อหาพระไตรปิฎก
+    login/                          ระบบสมาชิกและหน้าจอจัดการผู้ใช้
+    last_read/                      บันทึกและแสดงรายการอ่านล่าสุด
+    audio/                          ส่วนจัดการเสียงอ่าน/บันทึกเสียง
+    showbook/, bookshow/            รายการหนังสือและหัวข้อหนังสือ
+  utils/
+    api_connect/remote_service.dart ชั้นเชื่อมต่อ API
+    constants/                      ค่าคงที่ สี รูปภาพ ขนาด และ API endpoint
+    models/                         model สำหรับแปลง JSON จาก API
+    shared_preferences/             helper อ่าน/เขียนข้อมูลในเครื่อง
+    play_audio/                     ตัวจัดการเล่นเสียง
+    theme/                          ธีมและ grayscale mode
+assets/
+  images/                           โลโก้ splash รูปประกอบ และปกหนังสือ
+  images/bookcover/                 ปกหนังสือ Tripitaka91 ทั้ง 91 เล่ม
+  images/ebook/                     รูปประกอบ e-book
+  images/title/                     รูปหัวข้อ/หมวด
+  fonts/                            ฟอนต์ Roboto, TH Sarabun New, Noto Sans Thai
+  pdf/                              ไฟล์ PDF ประกอบ
+  web/                              asset สำหรับหน้าเว็บและ store badge
+```
+
+## การติดตั้งและรันโปรเจกต์
+
+ต้องมี Flutter SDK เวอร์ชันที่รองรับ Dart SDK `>=3.2.0 <4.0.0`
+
+```bash
+flutter pub get
+flutter run
+```
+
+ตัวอย่างการรันแยกแพลตฟอร์ม:
+
+```bash
+flutter run -d chrome
+flutter run -d windows
+flutter run -d android
+```
+
+สร้าง build สำหรับใช้งานจริง:
+
+```bash
+flutter build web
+flutter build apk
+flutter build windows
+```
+
+## การเชื่อมต่อ API
+
+ค่าการเชื่อมต่อ API อยู่ที่:
+
+```text
+lib/utils/constants/api_constants.dart
+```
+
+ไฟล์นี้รวม URL หลัก, endpoint ต่าง ๆ และ token สำหรับเรียก API เช่น ข้อมูลหนังสือ ค้นหา ระบบสมาชิก เสียงอ่าน และบันทึกประวัติการอ่าน หากจะเผยแพร่ซอร์สโค้ดสู่สาธารณะ ควรย้าย token/secret ออกจาก repository หรือเปลี่ยนไปใช้ระบบ configuration ที่ปลอดภัยกว่า
+
+## ข้อมูลเนื้อหา
+
+เมนูหนังสือหลักอยู่ที่ `lib/widget/menu/data_menu.dart` โดยแบ่งเป็น:
+
+- เล่ม 1-10: พระวินัยปิฎก
+- เล่ม 11-74: พระสุตตันตปิฎก
+- เล่ม 75-91: พระอภิธรรมปิฎก
+- หมวดหัวข้อธรรมสำคัญหลายชุด
+- พจนานุกรมฉบับประมวลศัพท์ และไทย-บาลี
+
+เนื้อหาหนังสือและผลค้นหาถูกดึงจาก API เป็นหลัก ส่วน asset ภายในโปรเจกต์ใช้สำหรับโลโก้ รูปปก หนังสือ ภาพประกอบ ฟอนต์ PDF และไฟล์สนับสนุนสำหรับเว็บ
+
+## จุดเริ่มต้นของแอป
+
+`lib/main.dart` สร้าง `MaterialApp` และครอบด้วย `ChangeNotifierProvider` สำหรับ `ThemeProvider` จากนั้นเปิดหน้า `MyHomePage`
+
+`MyHomePage` ใช้ `ResponsiveLayoutClass` เพื่อเลือกหน้าแสดงผลตามขนาดหน้าจอ:
+
+- กว้างไม่เกิน 600 หรือสูงไม่เกิน 650: mobile
+- กว้างมากกว่า 600 ถึง 900: tablet
+- มากกว่า 900: desktop
+
+## หมายเหตุสำหรับนักพัฒนา
+
+- โปรเจกต์นี้มีข้อความภาษาไทยจำนวนมาก ควรบันทึกไฟล์เป็น UTF-8 เสมอ
+- บางไฟล์มีข้อความภาษาไทยที่อาจแสดงเพี้ยนได้หาก terminal หรือ editor ไม่ได้เปิดด้วย encoding ที่ถูกต้อง
+- หน้าอ่านมี logic จำนวนมากใน `lib/widget/pageviews/pageviews_html.dart` เช่น การโหลดหน้า การไฮไลต์คำค้น การเล่นเสียง การรายงานคำผิด และการบันทึกหน้าล่าสุด
+- การทำงานหลายส่วนต้องเชื่อมต่ออินเทอร์เน็ตและ API ภายนอก
+- ก่อนปล่อย production ควรตรวจสอบ secret/token, permission ของแพลตฟอร์ม, และ endpoint ที่ใช้งานจริง
+
+## การทดสอบ
+
+รัน test พื้นฐานด้วยคำสั่ง:
+
+```bash
+flutter test
+```
+
+หากเพิ่มฟีเจอร์ใหม่ ควรทดสอบอย่างน้อยใน 3 กลุ่มนี้:
+
+- การแสดงผล mobile/tablet/desktop
+- การค้นหาและเปิดหน้าอ่านจากผลค้นหา
+- การเข้าสู่ระบบ บันทึกอ่านล่าสุด และเล่นเสียงอ่าน

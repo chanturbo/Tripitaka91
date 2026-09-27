@@ -1268,7 +1268,7 @@ class _Tri91PageViewHtml1State extends State<Tri91PageViewHtml1> {
                           child: TextButton(
                             style: ButtonStyle(
                               backgroundColor:
-                                  MaterialStateProperty.all<Color>(Colors.blue),
+                                  WidgetStateProperty.all<Color>(Colors.blue),
                             ),
                             child: const ATextDiskplaySmall(
                                 text: 'สารบัญหัวข้อธรรม'),
@@ -1285,7 +1285,7 @@ class _Tri91PageViewHtml1State extends State<Tri91PageViewHtml1> {
                       child: TextButton(
                         style: ButtonStyle(
                           backgroundColor:
-                              MaterialStateProperty.all<Color>(Colors.blue),
+                              WidgetStateProperty.all<Color>(Colors.blue),
                         ),
                         child: const ATextDiskplaySmall(text: 'พจนานุกรม'),
                         onPressed: () async {

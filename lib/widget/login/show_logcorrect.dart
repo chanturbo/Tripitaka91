@@ -100,8 +100,8 @@ class _LogEditScreenBackupState extends State<LogEditScreenBackup> {
       String comments, BuildContext context) async {
     try {
       final messages = await fetchData(bookid, pageid, lineid);
+      if (!context.mounted) return;
       if (messages.isEmpty) {
-        // ignore: use_build_context_synchronously
         showDialog(
           context: context,
           builder: (BuildContext context) {
@@ -122,7 +122,6 @@ class _LogEditScreenBackupState extends State<LogEditScreenBackup> {
       } else {
         // ใส่โค้ดที่ต้องการแสดงผลเมื่อมีข้อมูลที่ได้จาก fetchData ที่ไม่ว่าง
         // print('พบข้อมูล: ${messages[0]['book_detail']}');
-        // ignore: use_build_context_synchronously
         showDialog(
           context: context,
           builder: (BuildContext context) {
@@ -177,7 +176,7 @@ class _LogEditScreenBackupState extends State<LogEditScreenBackup> {
         );
       }
     } catch (e) {
-      // ignore: use_build_context_synchronously
+      if (!context.mounted) return;
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -349,7 +348,7 @@ class _LogEditScreenBackupState extends State<LogEditScreenBackup> {
                         ElevatedButton(
                           style: ButtonStyle(
                             backgroundColor:
-                                MaterialStateProperty.all<Color>(Colors.red),
+                                WidgetStateProperty.all<Color>(Colors.red),
                           ),
                           onPressed: _loadBackPage, // เรียกใช้เมธอดเมื่อกดปุ่ม
                           child:
@@ -361,7 +360,7 @@ class _LogEditScreenBackupState extends State<LogEditScreenBackup> {
                         ElevatedButton(
                           style: ButtonStyle(
                             backgroundColor:
-                                MaterialStateProperty.all<Color>(Colors.red),
+                                WidgetStateProperty.all<Color>(Colors.red),
                           ),
                           onPressed: _loadNextPage, // เรียกใช้เมธอดเมื่อกดปุ่ม
                           child:

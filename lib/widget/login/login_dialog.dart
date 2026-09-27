@@ -66,7 +66,7 @@ class _LoginPageDialogState extends State<LoginPageDialog> {
             border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(18),
                 borderSide: BorderSide.none),
-            fillColor: Theme.of(context).primaryColor.withOpacity(0.1),
+            fillColor: Theme.of(context).primaryColor.withValues(alpha: 0.1),
             filled: true,
             prefixIcon: const Icon(Icons.person),
           ),
@@ -83,7 +83,7 @@ class _LoginPageDialogState extends State<LoginPageDialog> {
             border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(18),
                 borderSide: BorderSide.none),
-            fillColor: Theme.of(context).primaryColor.withOpacity(0.1),
+            fillColor: Theme.of(context).primaryColor.withValues(alpha: 0.1),
             filled: true,
             prefixIcon: const Icon(Icons.person),
           ),
@@ -95,7 +95,7 @@ class _LoginPageDialogState extends State<LoginPageDialog> {
             children: [
               TextButton(
                 style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
+                  backgroundColor: WidgetStateProperty.all<Color>(Colors.red),
                 ),
                 onPressed: () {
                   _login(context);
@@ -109,7 +109,7 @@ class _LoginPageDialogState extends State<LoginPageDialog> {
               ),
               TextButton(
                 style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
+                  backgroundColor: WidgetStateProperty.all<Color>(Colors.red),
                 ),
                 onPressed: () {
                   Navigator.pop(context, false);

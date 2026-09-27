@@ -56,6 +56,9 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
     });
 
     final responseData = json.decode(response.body);
+
+    if (!mounted) return;
+
     if (response.statusCode == 200) {
       // Handle success
       var json = response.body;
@@ -63,10 +66,8 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
 
       if (jsonResponse['success'] == true) {
         // ถ้าสำเร็จ คืนค่าจำนวนรายการที่ได้จาก API
-        // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('เปลี่ยนรหัสผ่านสำเร็จ')));
-        // ignore: use_build_context_synchronously
         Navigator.of(context).pop(true);
 
         // showDialog(
@@ -88,7 +89,6 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
         // );
       } else {
         // ถ้าไม่สำเร็จ คืนค่าว่าง
-        // ignore: use_build_context_synchronously
         showDialog(
           context: context,
           builder: (BuildContext context) {
@@ -109,7 +109,6 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
       }
     } else {
       // Handle error
-      // ignore: use_build_context_synchronously
       showDialog(
         context: context,
         builder: (BuildContext context) {

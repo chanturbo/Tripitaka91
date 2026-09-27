@@ -95,15 +95,15 @@ class _MyHomeMobileState extends State<MyHomeMobile> {
   Future<void> _checkLoginStatus() async {
     isLoggedIn = await _authService.checkLoginStatus();
 
+    if (!mounted) return;
+
     if (isLoggedIn) {
-      // ignore: use_build_context_synchronously
       Navigator.push(
         context,
         MaterialPageRoute(
             builder: (context) => const MemberTabShow(indexShow: 0)),
       );
     } else {
-      // ignore: use_build_context_synchronously
       Navigator.push(
         context,
         MaterialPageRoute(

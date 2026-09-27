@@ -178,11 +178,11 @@ class _ShowBookSlideState extends State<ShowBookSlide> {
                       child: Center(
                         child: Container(
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.7),
+                            color: Colors.white.withValues(alpha: 0.7),
                             shape: BoxShape.circle,
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withOpacity(0.2),
+                                color: Colors.black.withValues(alpha: 0.2),
                                 blurRadius: 4,
                                 offset: const Offset(2, 2),
                               ),
@@ -217,11 +217,11 @@ class _ShowBookSlideState extends State<ShowBookSlide> {
                       child: Center(
                         child: Container(
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.7),
+                            color: Colors.white.withValues(alpha: 0.7),
                             shape: BoxShape.circle,
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withOpacity(0.2),
+                                color: Colors.black.withValues(alpha: 0.2),
                                 blurRadius: 4,
                                 offset: const Offset(2, 2),
                               ),
@@ -349,11 +349,11 @@ class _ShowBookSlideState extends State<ShowBookSlide> {
                       child: Center(
                         child: Container(
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.7),
+                            color: Colors.white.withValues(alpha: 0.7),
                             shape: BoxShape.circle,
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withOpacity(0.2),
+                                color: Colors.black.withValues(alpha: 0.2),
                                 blurRadius: 4,
                                 offset: const Offset(2, 2),
                               ),
@@ -388,11 +388,11 @@ class _ShowBookSlideState extends State<ShowBookSlide> {
                       child: Center(
                         child: Container(
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.7),
+                            color: Colors.white.withValues(alpha: 0.7),
                             shape: BoxShape.circle,
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withOpacity(0.2),
+                                color: Colors.black.withValues(alpha: 0.2),
                                 blurRadius: 4,
                                 offset: const Offset(2, 2),
                               ),
@@ -519,11 +519,11 @@ class _ShowBookSlideState extends State<ShowBookSlide> {
                       child: Center(
                         child: Container(
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.7),
+                            color: Colors.white.withValues(alpha: 0.7),
                             shape: BoxShape.circle,
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withOpacity(0.2),
+                                color: Colors.black.withValues(alpha: 0.2),
                                 blurRadius: 4,
                                 offset: const Offset(2, 2),
                               ),
@@ -558,11 +558,11 @@ class _ShowBookSlideState extends State<ShowBookSlide> {
                       child: Center(
                         child: Container(
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.7),
+                            color: Colors.white.withValues(alpha: 0.7),
                             shape: BoxShape.circle,
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withOpacity(0.2),
+                                color: Colors.black.withValues(alpha: 0.2),
                                 blurRadius: 4,
                                 offset: const Offset(2, 2),
                               ),
@@ -691,11 +691,11 @@ class _ShowBookSlideState extends State<ShowBookSlide> {
                       child: Center(
                         child: Container(
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.7),
+                            color: Colors.white.withValues(alpha: 0.7),
                             shape: BoxShape.circle,
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withOpacity(0.2),
+                                color: Colors.black.withValues(alpha: 0.2),
                                 blurRadius: 4,
                                 offset: const Offset(2, 2),
                               ),
@@ -731,11 +731,11 @@ class _ShowBookSlideState extends State<ShowBookSlide> {
                         child: Container(
                           decoration: BoxDecoration(
                             color: Colors.white
-                                .withOpacity(0.7), // พื้นหลังขาวแบบโปร่งใส
+                                .withValues(alpha: 0.7), // พื้นหลังขาวแบบโปร่งใส
                             shape: BoxShape.circle,
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withOpacity(0.2),
+                                color: Colors.black.withValues(alpha: 0.2),
                                 blurRadius: 4,
                                 offset: const Offset(2, 2),
                               ),
@@ -856,11 +856,11 @@ class _ShowBookSlideState extends State<ShowBookSlide> {
                       child: Center(
                         child: Container(
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.7),
+                            color: Colors.white.withValues(alpha: 0.7),
                             shape: BoxShape.circle,
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withOpacity(0.2),
+                                color: Colors.black.withValues(alpha: 0.2),
                                 blurRadius: 4,
                                 offset: const Offset(2, 2),
                               ),
@@ -895,11 +895,11 @@ class _ShowBookSlideState extends State<ShowBookSlide> {
                       child: Center(
                         child: Container(
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.7),
+                            color: Colors.white.withValues(alpha: 0.7),
                             shape: BoxShape.circle,
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withOpacity(0.2),
+                                color: Colors.black.withValues(alpha: 0.2),
                                 blurRadius: 4,
                                 offset: const Offset(2, 2),
                               ),
