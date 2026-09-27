@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:tripitaka91/utils/constants/api_constants.dart';
 import 'package:tripitaka91/utils/constants/colors.dart';
+import 'package:tripitaka91/utils/constants/sizes.dart';
 import 'package:tripitaka91/utils/img_service/shared_image_generator.dart';
 import 'package:tripitaka91/utils/models/users.dart';
 import 'package:tripitaka91/utils/play_audio/audio_manager.dart';
@@ -204,14 +205,14 @@ class _TitleCardState extends State<TitleCard> {
   Widget build(BuildContext context) {
     //final audioPlayerProvider = context.watch<AudioPlayerProvider>();
     return ClipRRect(
-      borderRadius: BorderRadius.circular(30.0),
+      borderRadius: BorderRadius.circular(TSizes.cardRadiusLg),
       child: Card(
         color: adaptiveSurfaceColor(context),
         margin: const EdgeInsets.all(10),
         elevation: 4,
         shadowColor: TColors.primary1.withValues(alpha: 0.4),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(30.0),
+          borderRadius: BorderRadius.circular(TSizes.cardRadiusLg),
           side: BorderSide(color: TColors.primary1, width: 1.5),
         ),
         child: Column(

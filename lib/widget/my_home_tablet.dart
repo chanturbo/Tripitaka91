@@ -108,40 +108,46 @@ class _MyHomeTabletState extends State<MyHomeTablet>
         ],
       ),
       drawer: Container(
-        color: adaptiveSurfaceColor(context),
         padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
         width: 290,
-        child: sidebarButtonNo == 1
-            ? ListMenuTri1(
-                isDesktop: true,
-                isTablet: false,
-                online: widget.online,
-              )
-            : sidebarButtonNo == 2
-            ? ListMenuTri2(
-                isDesktop: true,
-                isTablet: false,
-                online: widget.online,
-              )
-            : sidebarButtonNo == 3
-            ? ListMenuTri3(
-                isDesktop: true,
-                isTablet: false,
-                online: widget.online,
-              )
-            : sidebarButtonNo == 4
-            ? ListMenuTitle(
-                isDesktop: true,
-                isTablet: false,
-                online: widget.online,
-              )
-            : sidebarButtonNo == 5
-            ? ListMenuDict(
-                isDesktop: true,
-                isTablet: false,
-                online: widget.online,
-              )
-            : ListMenu(isDesktop: true, isTablet: false, online: widget.online),
+        child: Material(
+          color: adaptiveSurfaceColor(context),
+          child: sidebarButtonNo == 1
+              ? ListMenuTri1(
+                  isDesktop: true,
+                  isTablet: false,
+                  online: widget.online,
+                )
+              : sidebarButtonNo == 2
+              ? ListMenuTri2(
+                  isDesktop: true,
+                  isTablet: false,
+                  online: widget.online,
+                )
+              : sidebarButtonNo == 3
+              ? ListMenuTri3(
+                  isDesktop: true,
+                  isTablet: false,
+                  online: widget.online,
+                )
+              : sidebarButtonNo == 4
+              ? ListMenuTitle(
+                  isDesktop: true,
+                  isTablet: false,
+                  online: widget.online,
+                )
+              : sidebarButtonNo == 5
+              ? ListMenuDict(
+                  isDesktop: true,
+                  isTablet: false,
+                  online: widget.online,
+                )
+              : ListMenu(
+                  isDesktop: true,
+                  isTablet: false,
+                  online: widget.online,
+                ),
+        ),
       ),
       body: Container(
         padding: const EdgeInsets.all(0),

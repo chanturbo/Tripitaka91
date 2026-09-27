@@ -104,13 +104,15 @@ class _MyHomeDesktopState extends State<MyHomeDesktop>
         child: Row(
           children: [
             Container(
-              color: adaptiveSurfaceColor(context),
               padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
               width: 290,
-              child: ListMenu(
-                isDesktop: true,
-                isTablet: false,
-                online: widget.online,
+              child: Material(
+                color: adaptiveSurfaceColor(context),
+                child: ListMenu(
+                  isDesktop: true,
+                  isTablet: false,
+                  online: widget.online,
+                ),
               ),
             ),
             Container(
