@@ -11,6 +11,7 @@ import 'package:tripitaka91/utils/shared_preferences/shared_user.dart';
 import 'package:tripitaka91/utils/text_title_replace/text_title_replace.dart';
 import 'package:tripitaka91/widget/auto_text/auto_text.dart';
 import 'package:tripitaka91/widget/login/loading_dialog.dart';
+import 'package:tripitaka91/widget/showdict/dict_entry_tile.dart';
 import 'package:tripitaka91/widget/volume_helper/volume_helper.dart';
 
 class ShowPagesDictList2 extends StatefulWidget {
@@ -167,101 +168,50 @@ class _ShowPagesDictList2State extends State<ShowPagesDictList2> {
               return loadingDict
                   ? const Center(child: CircularProgressIndicator())
                   : (loadedRecordsDict == 0)
-                      ? SizedBox(
-                          child: Center(
-                            child: ATextTitleLarge(
-                                text:
-                                    'คำศัพท์หมวด \'${widget.wordSearch}\' ไม่พบข้อมูล'),
-                          ),
-                        )
-                      : const SizedBox.shrink();
+                  ? SizedBox(
+                      child: Center(
+                        child: ATextTitleLarge(
+                          text:
+                              'คำศัพท์หมวด \'${widget.wordSearch}\' ไม่พบข้อมูล',
+                        ),
+                      ),
+                    )
+                  : const SizedBox.shrink();
             }
-            return Column(
-              children: [
-                ListTile(
-                  leading: CircleAvatar(
-                    backgroundColor: Colors.blue[900],
-                    foregroundColor: Colors.white,
-                    child: ATextDiskplayMedium(text: '${index + 1}'),
+            final word = textTitleReplace.getWordDict(dataDict[index]);
+            final detail = textTitleReplace.getWordDictDetail(dataDict[index]);
+            return DictEntryTile(
+              index: index + 1,
+              word: word,
+              detail: detail,
+              showAudioButton: widget.online || volumeHelper.showVolume,
+              onPlayAudio: () async {
+                LoadingDialog.show(context);
+                String txtTitle = '$word - $detail';
+                String namesave = word.trim().replaceAll(RegExp(r'\s+'), '');
+                String filename = 'dict-$namesave';
+                await audioPlayerManager.playAudio('3', filename, txtTitle);
+                // ignore: use_build_context_synchronously
+                LoadingDialog.hide(context);
+              },
+              onShare: () async {
+                String txtTitle =
+                    '$word\n- $detail'
+                    ' ข้อความจากพจนานุกรม ฉบับประมวลศัพท์ รวบรวมโดย พระพรหมคุณาภรณ์ (ป.อ. ปยุตฺโต)';
+                await SharePlus.instance.share(
+                  ShareParams(
+                    text: txtTitle,
+                    subject: 'พจนานุกรม ฉบับประมวลศัพท์',
                   ),
-                  title: ATextTitleMediumTH(
-                    text:
-                        '${textTitleReplace.getWordDict(dataDict[index])}\n- ${textTitleReplace.getWordDictDetail(dataDict[index])}',
-                  ),
-                  subtitle: Row(
-                    children: [
-                      widget.online || volumeHelper.showVolume
-                          ? InkWell(
-                              onTap: () async {
-                                LoadingDialog.show(context);
-                                String txtTitle =
-                                    '${textTitleReplace.getWordDict(dataDict[index])} - ${textTitleReplace.getWordDictDetail(dataDict[index])}';
-                                String namesave = textTitleReplace
-                                    .getWordDict(dataDict[index])
-                                    .trim()
-                                    .replaceAll(RegExp(r'\s+'), '');
-
-                                String filename = 'dict-$namesave';
-                                await audioPlayerManager.playAudio(
-                                    '3', filename, txtTitle);
-                                // ignore: use_build_context_synchronously
-                                LoadingDialog.hide(context);
-                              },
-                              child: Icon(
-                                Icons.volume_up,
-                                size: 20,
-                                color: Colors.blue[300],
-                              ),
-                            )
-                          : const Text(''),
-                      widget.online || volumeHelper.showVolume
-                          ? const SizedBox(width: 10)
-                          : const SizedBox.shrink(),
-                      InkWell(
-                        onTap: () async {
-                          String txtTitle =
-                              '${textTitleReplace.getWordDict(dataDict[index])}\n- ${textTitleReplace.getWordDictDetail(dataDict[index])}';
-                          txtTitle +=
-                              ' ข้อความจากพจนานุกรม ฉบับประมวลศัพท์ รวบรวมโดย พระพรหมคุณาภรณ์ (ป.อ. ปยุตฺโต)';
-                          await SharePlus.instance.share(ShareParams(
-                              text: txtTitle,
-                              subject: 'พจนานุกรม ฉบับประมวลศัพท์'));
-                        },
-                        child: Icon(
-                          Icons.share,
-                          size: 16,
-                          color: Colors.blue[300],
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      InkWell(
-                        onTap: () async {
-                          String txtTitle =
-                              '${textTitleReplace.getWordDict(dataDict[index])}\n${textTitleReplace.getWordDictDetail(dataDict[index])}';
-                          txtTitle +=
-                              ' ข้อความจากพจนานุกรม ฉบับประมวลศัพท์ รวบรวมโดย พระพรหมคุณาภรณ์ (ป.อ. ปยุตฺโต)';
-                          Clipboard.setData(
-                            ClipboardData(text: txtTitle),
-                          );
-                          _showSnackbar(context, 'คัดลอกข้อมูลเรียบร้อยแล้ว');
-                        },
-                        child: Icon(
-                          Icons.copy,
-                          size: 16,
-                          color: Colors.blue[300],
-                        ),
-                      ),
-                      const Expanded(
-                        child: SizedBox(
-                          child: Text(''),
-                        ),
-                      ),
-                    ],
-                  ),
-                  onTap: () {},
-                ),
-                const Divider(),
-              ],
+                );
+              },
+              onCopy: () {
+                String txtTitle =
+                    '$word\n$detail'
+                    ' ข้อความจากพจนานุกรม ฉบับประมวลศัพท์ รวบรวมโดย พระพรหมคุณาภรณ์ (ป.อ. ปยุตฺโต)';
+                Clipboard.setData(ClipboardData(text: txtTitle));
+                _showSnackbar(context, 'คัดลอกข้อมูลเรียบร้อยแล้ว');
+              },
             );
           },
         ),

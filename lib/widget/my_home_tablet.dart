@@ -199,26 +199,52 @@ class _MyHomeTabletState extends State<MyHomeTablet>
                     child: SingleChildScrollView(
                       child: Column(
                         children: [
-                          SizedBox(
-                            width: 85,
-                            height: 30,
-                            child: InkWell(
-                              onTap: () async {
-                                getDataRandTitle();
-                              },
-                              child: ClipPath(
-                                clipper: DoubleTriangleRectangleClipper(),
-                                child: Container(
-                                  padding: const EdgeInsets.all(0.0),
-                                  color: Colors.red, // Change color as needed
-                                  child: const Center(
-                                    child: ATextDiskplaySmall(
-                                      text: 'สุ่มหัวข้อธรรม',
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                width: 85,
+                                height: 30,
+                                child: InkWell(
+                                  onTap: () async {
+                                    getDataRandTitle();
+                                  },
+                                  child: ClipPath(
+                                    clipper: DoubleTriangleRectangleClipper(),
+                                    child: Container(
+                                      padding: const EdgeInsets.all(0.0),
+                                      color:
+                                          Colors.red, // Change color as needed
+                                      child: const Center(
+                                        child: ATextDiskplaySmall(
+                                          text: 'สุ่มหัวข้อธรรม',
+                                        ),
+                                      ),
                                     ),
                                   ),
                                 ),
                               ),
-                            ),
+                              const SizedBox(width: 10),
+                              SizedBox(
+                                width: 140,
+                                height: 30,
+                                child: InkWell(
+                                  onTap: showJumpToLocationDialog,
+                                  child: ClipPath(
+                                    clipper: DoubleTriangleRectangleClipper(),
+                                    child: Container(
+                                      padding: const EdgeInsets.all(0.0),
+                                      color: Colors.blue,
+                                      child: const Center(
+                                        child: ATextDiskplaySmall(
+                                          text: 'ระบุเล่ม/หน้า/บรรทัด',
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                           TitleCard(
                             triTitle: triTitle,

@@ -9,13 +9,14 @@ class ScrollControlButton extends StatelessWidget {
   final String buttonText;
   final bool isLeftButton;
   final Color color;
-  const ScrollControlButton(
-      {super.key,
-      required this.scrollController,
-      required this.offset,
-      required this.buttonText,
-      required this.isLeftButton,
-      required this.color});
+  const ScrollControlButton({
+    super.key,
+    required this.scrollController,
+    required this.offset,
+    required this.buttonText,
+    required this.isLeftButton,
+    required this.color,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -41,11 +42,7 @@ class ScrollControlButton extends StatelessWidget {
             width: 60.0,
             height: 25.0,
             color: color,
-            child: Center(
-              child: ATextDiskplaySmall(
-                text: buttonText,
-              ),
-            ),
+            child: Center(child: ATextDiskplaySmall(text: buttonText)),
           ),
         ),
       ),

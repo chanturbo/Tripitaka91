@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:tripitaka91/utils/constants/colors.dart';
+import 'package:tripitaka91/utils/theme/theme_helpers.dart';
 import 'package:tripitaka91/widget/auto_text/auto_text.dart';
 import 'package:tripitaka91/widget/info/info.dart';
 import 'package:tripitaka91/widget/menu/data_menu.dart';
 import 'package:tripitaka91/widget/menu/sub_menu_book.dart';
 import 'package:tripitaka91/widget/menu/sub_menu_title.dart';
-import 'package:tripitaka91/widget/right_clipper/right_clipper.dart';
 import 'package:tripitaka91/widget/showdict/dictshow_dict.dart';
 import 'package:tripitaka91/widget/showdict/dictshow_dictbt.dart';
+
+// Accent colors for the three piṭaka categories. Chosen dark enough to hold
+// 4.5:1 contrast for the white badge/icon text drawn on top of them.
+const Color _kVinayaAccent = Color(0xFF1F3A5F);
+const Color _kSuttaAccent = Color(0xFF1E6F5C);
+const Color _kAbhidhammaAccent = Color(0xFF6B2E5C);
 
 class ListMenu extends StatelessWidget {
   final bool isTablet;
@@ -23,22 +29,11 @@ class ListMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView(
+      padding: EdgeInsets.zero,
       children: [
-        Container(
-          height: 10,
-        ),
-        ClipPath(
-          clipper: RightTriangleRectangleClipper(),
-          child: Container(
-            width: 100,
-            height: 25,
-            color: TColors.primary1,
-            child: const Center(
-              child: ATextDiskplayMedium(
-                text: 'หมวดพระไตรปิฎก',
-              ),
-            ),
-          ),
+        const SizedBox(height: 10),
+        const _MenuSectionLabel(
+          text: 'หมวดพระไตรปิฎก',
         ),
         SubMenuExpansionTile(
           titleText: 'พระวินัยปิฎก',
@@ -47,6 +42,7 @@ class ListMenu extends StatelessWidget {
           isTablet: isTablet,
           isDesktop: isDesktop,
           online: online,
+          accentColor: _kVinayaAccent,
         ),
         SubMenuExpansionTile(
           titleText: 'พระสุตตันตปิฎก',
@@ -55,6 +51,7 @@ class ListMenu extends StatelessWidget {
           isTablet: isTablet,
           isDesktop: isDesktop,
           online: online,
+          accentColor: _kSuttaAccent,
         ),
         SubMenuExpansionTile(
           titleText: 'พระอภิธรรมปิฎก',
@@ -63,19 +60,11 @@ class ListMenu extends StatelessWidget {
           isTablet: isTablet,
           isDesktop: isDesktop,
           online: online,
+          accentColor: _kAbhidhammaAccent,
         ),
-        ClipPath(
-          clipper: RightTriangleRectangleClipper(),
-          child: Container(
-            width: 100,
-            height: 25,
-            color: TColors.primary1,
-            child: const Center(
-              child: ATextDiskplayMedium(
-                text: 'หมวดหัวข้อธรรมสำคัญ',
-              ),
-            ),
-          ),
+        const SizedBox(height: 12),
+        const _MenuSectionLabel(
+          text: 'หมวดหัวข้อธรรมสำคัญ',
         ),
         SubMenuNoIconExpansionTile(
           titleText: '1.รวมชุดข้อมูลและหัวข้อพระไตรปิฎก',
@@ -149,25 +138,15 @@ class ListMenu extends StatelessWidget {
           isDesktop: isDesktop,
           online: online,
         ),
-        ClipPath(
-          clipper: RightTriangleRectangleClipper(),
-          child: Container(
-            width: 100,
-            height: 25,
-            color: TColors.primary1,
-            child: const Center(
-              child: ATextDiskplayMedium(
-                text: 'พจนานุกรม',
-              ),
-            ),
-          ),
+        const SizedBox(height: 12),
+        const _MenuSectionLabel(
+          text: 'พจนานุกรม',
         ),
-        ListTile(
-          title: AResponsiveTitleText(
-            text: 'พจนานุกรม ฉบับประมวลศัพท์',
-            isTablet: isTablet,
-            isDesktop: isDesktop,
-          ),
+        _MenuNavTile(
+          icon: Icons.menu_book_outlined,
+          text: 'พจนานุกรม ฉบับประมวลศัพท์',
+          isTablet: isTablet,
+          isDesktop: isDesktop,
           onTap: () {
             Navigator.push(
               context,
@@ -180,12 +159,11 @@ class ListMenu extends StatelessWidget {
           },
         ),
         online
-            ? ListTile(
-                title: AResponsiveTitleText(
-                  text: 'พจนานุกรม ไทย-บาลี',
-                  isTablet: isTablet,
-                  isDesktop: isDesktop,
-                ),
+            ? _MenuNavTile(
+                icon: Icons.translate_outlined,
+                text: 'พจนานุกรม ไทย-บาลี',
+                isTablet: isTablet,
+                isDesktop: isDesktop,
                 onTap: () {
                   Navigator.push(
                     context,
@@ -198,25 +176,15 @@ class ListMenu extends StatelessWidget {
                 },
               )
             : const SizedBox.shrink(),
-        ClipPath(
-          clipper: RightTriangleRectangleClipper(),
-          child: Container(
-            width: 100,
-            height: 25,
-            color: TColors.primary1,
-            child: const Center(
-              child: ATextDiskplayMedium(
-                text: 'เกี่ยวกับโปรแกรม',
-              ),
-            ),
-          ),
+        const SizedBox(height: 12),
+        const _MenuSectionLabel(
+          text: 'เกี่ยวกับโปรแกรม',
         ),
-        ListTile(
-          title: (!isTablet && !isDesktop)
-              ? const ATextTitleMedium18(text: 'เกี่ยวกับโปรแกรม')
-              : const Text(
-                  'เกี่ยวกับโปรแกรม',
-                ),
+        _MenuNavTile(
+          icon: Icons.info_outline,
+          text: 'เกี่ยวกับโปรแกรม',
+          isTablet: isTablet,
+          isDesktop: isDesktop,
           onTap: () {
             Navigator.push(
               context,
@@ -226,7 +194,81 @@ class ListMenu extends StatelessWidget {
             );
           },
         ),
+        const SizedBox(height: 16),
       ],
+    );
+  }
+}
+
+// Section header used throughout the drawer in place of the old orange
+// flag-shaped banner: a short accent bar plus a muted, letter-spaced label.
+class _MenuSectionLabel extends StatelessWidget {
+  final String text;
+
+  const _MenuSectionLabel({required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(18, 0, 18, 8),
+      child: Row(
+        children: [
+          Container(
+            width: 3,
+            height: 13,
+            decoration: BoxDecoration(
+              color: TColors.primary1,
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+          const SizedBox(width: 6),
+          Text(
+            text,
+            style: TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w700,
+              letterSpacing: 1.1,
+              color: adaptiveTextColor(context).withValues(alpha: 0.55),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// Plain navigation row (dictionary / about): a quiet icon beside the title,
+// no card or badge, matching the rest of the drawer's light-touch styling.
+class _MenuNavTile extends StatelessWidget {
+  final IconData icon;
+  final String text;
+  final bool isTablet;
+  final bool isDesktop;
+  final VoidCallback onTap;
+
+  const _MenuNavTile({
+    required this.icon,
+    required this.text,
+    required this.isTablet,
+    required this.isDesktop,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      contentPadding: const EdgeInsets.symmetric(horizontal: 18),
+      leading: Icon(
+        icon,
+        size: 18,
+        color: adaptiveTextColor(context).withValues(alpha: 0.55),
+      ),
+      title: AResponsiveTitleText(
+        text: text,
+        isTablet: isTablet,
+        isDesktop: isDesktop,
+      ),
+      onTap: onTap,
     );
   }
 }
