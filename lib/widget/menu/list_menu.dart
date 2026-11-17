@@ -8,12 +8,14 @@ import 'package:tripitaka91/widget/menu/sub_menu_book.dart';
 import 'package:tripitaka91/widget/menu/sub_menu_title.dart';
 import 'package:tripitaka91/widget/showdict/dictshow_dict.dart';
 import 'package:tripitaka91/widget/showdict/dictshow_dictbt.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 // Accent colors for the three piṭaka categories. Chosen dark enough to hold
 // 4.5:1 contrast for the white badge/icon text drawn on top of them.
 const Color _kVinayaAccent = Color(0xFF1F3A5F);
 const Color _kSuttaAccent = Color(0xFF1E6F5C);
 const Color _kAbhidhammaAccent = Color(0xFF6B2E5C);
+const Color _kYoutubeAccent = Color(0xFFB3261E);
 
 class ListMenu extends StatelessWidget {
   final bool isTablet;
@@ -61,6 +63,25 @@ class ListMenu extends StatelessWidget {
           isDesktop: isDesktop,
           online: online,
           accentColor: _kAbhidhammaAccent,
+        ),
+        const SizedBox(height: 12),
+        const _MenuSectionLabel(
+          text: 'หมวดสื่อเสริมจาก YouTube',
+        ),
+        _MenuLinkTile(
+          icon: Icons.play_arrow,
+          titleText: 'สรุปหัวข้อธรรมจาก YouTube',
+          description:
+              'ค้นหาและสรุปหัวข้อธรรมที่เคยบรรยายใน YouTube พร้อมลิงก์กระโดดไปยังช่วงเวลาที่กล่าวถึงโดยตรง',
+          isTablet: isTablet,
+          isDesktop: isDesktop,
+          accentColor: _kYoutubeAccent,
+          onTap: () async {
+            final uri = Uri.parse('http://localhost:8081/');
+            if (await canLaunchUrl(uri)) {
+              await launchUrl(uri, mode: LaunchMode.externalApplication);
+            }
+          },
         ),
         const SizedBox(height: 12),
         const _MenuSectionLabel(
@@ -269,6 +290,77 @@ class _MenuNavTile extends StatelessWidget {
         isDesktop: isDesktop,
       ),
       onTap: onTap,
+    );
+  }
+}
+
+// Single-tap link tile styled the same as SubMenuExpansionTile's collapsed
+// row (bordered card, tinted icon badge, accent color) so an external link
+// like the YouTube dharma-summary tool reads as part of the same "หมวด
+// พระไตรปิฎก" family of tiles instead of a one-off banner. Unlike
+// SubMenuExpansionTile, it has no children to expand — onTap fires directly.
+class _MenuLinkTile extends StatelessWidget {
+  final IconData icon;
+  final String titleText;
+  final String description;
+  final bool isTablet;
+  final bool isDesktop;
+  final Color accentColor;
+  final VoidCallback onTap;
+
+  const _MenuLinkTile({
+    required this.icon,
+    required this.titleText,
+    required this.description,
+    required this.isTablet,
+    required this.isDesktop,
+    required this.accentColor,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final borderColor = adaptiveTextColor(context).withValues(alpha: 0.12);
+    final mutedColor = adaptiveTextColor(context).withValues(alpha: 0.45);
+    final iconTint = Color.alphaBlend(
+      accentColor.withValues(alpha: 0.14),
+      adaptiveSurfaceColor(context),
+    );
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
+      child: Material(
+        color: adaptiveSurfaceColor(context),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+          side: BorderSide(color: borderColor),
+        ),
+        clipBehavior: Clip.antiAlias,
+        child: ListTile(
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 10,
+            vertical: 2,
+          ),
+          leading: CircleAvatar(
+            radius: 14,
+            backgroundColor: iconTint,
+            child: Icon(icon, color: accentColor, size: 14),
+          ),
+          title: AResponsiveTitleText(
+            text: titleText,
+            isTablet: isTablet,
+            isDesktop: isDesktop,
+          ),
+          subtitle: Text(
+            description,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(fontSize: 10.5, color: mutedColor),
+          ),
+          trailing: Icon(Icons.open_in_new, color: mutedColor, size: 16),
+          onTap: onTap,
+        ),
+      ),
     );
   }
 }

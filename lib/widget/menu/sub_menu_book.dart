@@ -94,7 +94,7 @@ class SubMenuExpansionTile extends StatelessWidget {
                       builder: (context) => BookShowTitle(
                         triBookid: (index + bookAdd).toString(),
                         chkSearch: '',
-                        isMobile: (!isTablet && !isDesktop) ? true : isTablet,
+                        isMobile: !isTablet && !isDesktop,
                         online: online,
                       ),
                     ),

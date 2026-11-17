@@ -21,12 +21,58 @@ import 'package:tripitaka91/utils/text_title_replace/text_title_replace.dart';
 import 'package:tripitaka91/widget/audio/edit_speak.dart';
 import 'package:tripitaka91/widget/auto_text/auto_text.dart';
 import 'package:tripitaka91/features/book/show_title_list.dart';
+import 'package:tripitaka91/widget/common/circular_icon_button.dart';
 import 'package:tripitaka91/widget/dialogs/online_speech_consent_dialog.dart';
 import 'package:tripitaka91/widget/login/loading_dialog.dart';
 import 'package:tripitaka91/features/book/pageviews_html.dart';
 import 'package:tripitaka91/utils/theme/theme_helpers.dart';
 import 'package:tripitaka91/widget/right_clipper/center_clipper.dart';
 import 'package:tripitaka91/widget/volume_helper/volume_helper.dart';
+
+// Pulsing grey placeholder block shown while the header/title data is
+// still loading, instead of the literal 'โหลดข้อมูล...' text.
+class _SkeletonBox extends StatefulWidget {
+  final double width;
+  final double height;
+
+  const _SkeletonBox({this.width = double.infinity, this.height = 16});
+
+  @override
+  State<_SkeletonBox> createState() => _SkeletonBoxState();
+}
+
+class _SkeletonBoxState extends State<_SkeletonBox>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 900),
+  )..repeat(reverse: true);
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final baseColor = adaptiveTextColor(context).withValues(alpha: 0.08);
+    final highColor = adaptiveTextColor(context).withValues(alpha: 0.16);
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, child) {
+        return Container(
+          width: widget.width,
+          height: widget.height,
+          decoration: BoxDecoration(
+            color: Color.lerp(baseColor, highColor, _controller.value),
+            borderRadius: const BorderRadius.all(Radius.circular(4)),
+          ),
+        );
+      },
+    );
+  }
+}
 
 class BookShowTitle extends StatefulWidget {
   final String triBookid;
@@ -71,6 +117,9 @@ class _BookShowTitleState extends State<BookShowTitle> {
   Users? usersChk;
   final SharedImageLocal sharedImageLocal = SharedImageLocal();
   final volumeHelper = VolumeHelper();
+  final TextEditingController _filterController = TextEditingController();
+  String _filterQuery = '';
+  bool _headerLoaded = false;
 
   @override
   void initState() {
@@ -84,7 +133,16 @@ class _BookShowTitleState extends State<BookShowTitle> {
 
   @override
   void dispose() {
+    _filterController.dispose();
     super.dispose();
+  }
+
+  List<String> _visibleTitles() {
+    if (_filterQuery.trim().isEmpty) return dataTitle;
+    final query = _filterQuery.trim();
+    return dataTitle
+        .where((t) => textTitleReplace.extractText(t).contains(query))
+        .toList();
   }
 
   Future<void> _fetchDataTitleInBook() async {
@@ -221,7 +279,8 @@ class _BookShowTitleState extends State<BookShowTitle> {
     // ถ้าไม่มีข้อมูลให้แจ้งเตือน
     if (lastBookAccess.isEmpty) {
       // ignore: use_build_context_synchronously
-      ScaffoldMessenger.of(context).showSnackBar(
+      final messenger = ScaffoldMessenger.of(context);
+      messenger.showSnackBar(
         const SnackBar(content: Text("ไม่พบหน้าที่อ่านล่าสุด")),
       );
     } else {
@@ -273,11 +332,14 @@ class _BookShowTitleState extends State<BookShowTitle> {
     if (widget.online) {
       GetLastRead getLastRead = GetLastRead();
       List<LastBookAccess> result = await getLastRead.fetchLastBookAccessList();
-      int targetBookAccess =
-          int.parse(widget.triBookid); // เปลี่ยนตามที่คุณต้องการ
+      int targetBookAccess = int.parse(
+        widget.triBookid,
+      ); // เปลี่ยนตามที่คุณต้องการ
       List<LastBookAccess> filteredResult = result
-          .where((lastBookAccess) =>
-              lastBookAccess.bookLastAccess == targetBookAccess)
+          .where(
+            (lastBookAccess) =>
+                lastBookAccess.bookLastAccess == targetBookAccess,
+          )
           .toList();
 
       lastBookAccess = filteredResult;
@@ -286,8 +348,8 @@ class _BookShowTitleState extends State<BookShowTitle> {
       // print(lastBookAccess[0].timeLastAccess);
       // print(lastBookAccess[0].username);
     } else {
-      List<LastBookAccess> dbLastBookAccess =
-          await dbHelper.getLastReadWithBook(widget.triBookid);
+      List<LastBookAccess> dbLastBookAccess = await dbHelper
+          .getLastReadWithBook(widget.triBookid);
       lastBookAccess = dbLastBookAccess;
     }
   }
@@ -325,9 +387,11 @@ class _BookShowTitleState extends State<BookShowTitle> {
   void getDataTri91() async {
     try {
       tri91BookAll = (widget.online
-          ? await RemoteServiceBookTri91All()
-                  .getBookTri91All(widget.triBookid, tSecretAPIKey) ??
-              []
+          ? await RemoteServiceBookTri91All().getBookTri91All(
+                  widget.triBookid,
+                  tSecretAPIKey,
+                ) ??
+                []
           : await dbHelper.getBookTri91All(widget.triBookid))!;
       if (tri91BookAll.isNotEmpty) {
         setState(() {
@@ -338,15 +402,20 @@ class _BookShowTitleState extends State<BookShowTitle> {
           bookLastAccess = tri91BookAll[0].bookLastAccess;
           bookLastPages = tri91BookAll[0].bookLastPages;
           bookLastLine = tri91BookAll[0].bookLastLine;
+          _headerLoaded = true;
         });
       } else {
-        triCatage = 'โหลดข้อมูล...';
-        bookTitleTri91 = 'โหลดข้อมูล...';
+        setState(() {
+          triCatage = 'ไม่พบข้อมูลเล่มนี้';
+          bookTitleTri91 = '';
+          _headerLoaded = true;
+        });
       }
     } catch (e) {
       // ignore: avoid_print
       print('Error occurred: $e');
       // Show a user-friendly error message if needed
+      setState(() => _headerLoaded = true);
     }
   }
 
@@ -354,24 +423,27 @@ class _BookShowTitleState extends State<BookShowTitle> {
     if (mark == 'TRUE') {
       return Text(
         title,
-        style:
-            TextStyle(fontSize: widget.isMobile ? 18 : 16, color: Colors.red),
+        style: TextStyle(
+          fontSize: widget.isMobile ? 18 : 16,
+          color: Colors.red,
+        ),
       );
     } else {
       return widget.isMobile
-          ? ATextTitleMedium18(
-              text: title,
-            )
-          : ATextTitleMedium(
-              text: title,
-            );
+          ? ATextTitleMedium18(text: title)
+          : ATextTitleMedium(text: title);
     }
   }
 
-  void _showInputDialog(BuildContext context, String initialText,
-      String tripitaka91No, String tripitaka91Code) {
-    final TextEditingController textController =
-        TextEditingController(text: initialText);
+  void _showInputDialog(
+    BuildContext context,
+    String initialText,
+    String tripitaka91No,
+    String tripitaka91Code,
+  ) {
+    final TextEditingController textController = TextEditingController(
+      text: initialText,
+    );
 
     showDialog(
       context: context,
@@ -385,9 +457,7 @@ class _BookShowTitleState extends State<BookShowTitle> {
           content: TextFormField(
             style: const TextStyle(fontFamily: 'THSarabunNew', fontSize: 26),
             controller: textController,
-            decoration: const InputDecoration(
-              hintText: 'กรอกข้อมูลที่นี่',
-            ),
+            decoration: const InputDecoration(hintText: 'กรอกข้อมูลที่นี่'),
           ),
           actions: <Widget>[
             TextButton(
@@ -413,7 +483,10 @@ class _BookShowTitleState extends State<BookShowTitle> {
                     bool? confirm = await _showConfirmationDialog(context);
                     if (confirm!) {
                       await _fetchUpdateTitle(
-                          inputData, tripitaka91No, tripitaka91Code);
+                        inputData,
+                        tripitaka91No,
+                        tripitaka91Code,
+                      );
                       // ignore: use_build_context_synchronously
                       Navigator.of(context).pop(); // ปิดหน้าต่าง
                     }
@@ -435,7 +508,10 @@ class _BookShowTitleState extends State<BookShowTitle> {
   }
 
   Future<void> _fetchUpdateTitle(
-      String initialText, String tripitaka91No, String tripitaka91Code) async {
+    String initialText,
+    String tripitaka91No,
+    String tripitaka91Code,
+  ) async {
     final response = await http.post(
       Uri.parse(tURLtitleEdit),
       body: {
@@ -479,15 +555,17 @@ class _BookShowTitleState extends State<BookShowTitle> {
           actions: <Widget>[
             TextButton(
               onPressed: () {
-                Navigator.of(context)
-                    .pop(false); // ปิดหน้าต่างและส่งค่า false กลับ
+                Navigator.of(
+                  context,
+                ).pop(false); // ปิดหน้าต่างและส่งค่า false กลับ
               },
               child: const Text('ยกเลิก'),
             ),
             ElevatedButton(
               onPressed: () {
-                Navigator.of(context)
-                    .pop(true); // ปิดหน้าต่างและส่งค่า true กลับ
+                Navigator.of(
+                  context,
+                ).pop(true); // ปิดหน้าต่างและส่งค่า true กลับ
               },
               child: const Text(' ยืนยัน '),
             ),
@@ -499,6 +577,7 @@ class _BookShowTitleState extends State<BookShowTitle> {
 
   @override
   Widget build(BuildContext context) {
+    final visibleItems = _visibleTitles();
     return widget.isMobile
         ? Scaffold(
             body: CustomScrollView(
@@ -509,11 +588,18 @@ class _BookShowTitleState extends State<BookShowTitle> {
                   pinned: true,
                   flexibleSpace: FlexibleSpaceBar(
                     titlePadding: const EdgeInsets.only(
-                        left: 72.0, bottom: 16.0), // ปรับซ้ายให้พ้นลูกศร
-                    title: ATextTitleMediumColor(
-                      text: 'เล่ม $bookid $bookTitleTri91',
-                      color: TColors.white,
-                    ),
+                      left: 72.0,
+                      bottom: 16.0,
+                    ), // ปรับซ้ายให้พ้นลูกศร
+                    title: !_headerLoaded
+                        ? const SizedBox(
+                            width: 160,
+                            child: _SkeletonBox(height: 18),
+                          )
+                        : ATextTitleMediumColor(
+                            text: 'เล่ม $bookid $bookTitleTri91',
+                            color: TColors.white,
+                          ),
                   ),
                 ),
                 SliverToBoxAdapter(
@@ -522,156 +608,226 @@ class _BookShowTitleState extends State<BookShowTitle> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[
                         Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(8.0),
-                                child: Image.asset(
-                                  'assets/images/bookcover/tripitaka91_book${widget.triBookid}.png',
-                                  width: 100,
+                          padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+                          child: Container(
+                            padding: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              color: adaptiveSurfaceColor(context),
+                              borderRadius: BorderRadius.circular(14),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withValues(alpha: 0.05),
+                                  blurRadius: 8,
+                                  offset: const Offset(0, 2),
                                 ),
-                              ),
-                              const SizedBox(width: 8.0),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    ATextTitleMedium(text: '[ $triCatage ]'),
-                                    ATextTitleMedium(
-                                        text: 'มีทั้งหมด $numPageAll หน้า'),
-                                    if (lastBookAccess.isNotEmpty)
+                              ],
+                            ),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                  child: Image.asset(
+                                    'assets/images/bookcover/tripitaka91_book${widget.triBookid}.png',
+                                    width: 100,
+                                  ),
+                                ),
+                                const SizedBox(width: 10.0),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      if (!_headerLoaded) ...[
+                                        const _SkeletonBox(
+                                          height: 14,
+                                          width: 160,
+                                        ),
+                                        const SizedBox(height: 6),
+                                        const _SkeletonBox(
+                                          height: 14,
+                                          width: 100,
+                                        ),
+                                        const SizedBox(height: 6),
+                                      ] else ...[
+                                        ATextTitleMedium(
+                                          text: '[ $triCatage ]',
+                                        ),
+                                        ATextTitleMedium(
+                                          text: 'มีทั้งหมด $numPageAll หน้า',
+                                        ),
+                                        if (bookLastPages > 0 &&
+                                            numPageAll > 0) ...[
+                                          const SizedBox(height: 6),
+                                          ClipRRect(
+                                            borderRadius: BorderRadius.circular(
+                                              4,
+                                            ),
+                                            child: LinearProgressIndicator(
+                                              value:
+                                                  (bookLastPages / numPageAll)
+                                                      .clamp(0.0, 1.0),
+                                              minHeight: 6,
+                                              backgroundColor:
+                                                  adaptiveTextColor(
+                                                    context,
+                                                  ).withValues(alpha: 0.1),
+                                              valueColor:
+                                                  const AlwaysStoppedAnimation<
+                                                    Color
+                                                  >(TColors.buttonPrimary),
+                                            ),
+                                          ),
+                                          const SizedBox(height: 4),
+                                          ATextLabelSmall(
+                                            text:
+                                                'อ่านแล้ว $bookLastPages จาก $numPageAll หน้า (${((bookLastPages / numPageAll) * 100).clamp(0, 100).toStringAsFixed(0)}%)',
+                                          ),
+                                        ],
+                                      ],
+                                      const SizedBox(height: 5),
+                                      if (lastBookAccess.isNotEmpty)
+                                        TextButton(
+                                          style: ButtonStyle(
+                                            backgroundColor:
+                                                WidgetStateProperty.all<Color>(
+                                                  TColors.buttonPrimary,
+                                                ),
+                                          ),
+                                          onPressed: () {
+                                            _handleLastBookAccess(
+                                              widget.isMobile,
+                                            );
+                                          },
+                                          child: const ATextDiskplayMedium(
+                                            text:
+                                                'เปิดหน้าที่อ่านล่าสุด', // เล่ม ${lastBookAccess[0].bookLastAccess} หน้า ${lastBookAccess[0].pageLastAccess}',
+                                          ),
+                                        ),
+                                      const SizedBox(height: 5),
                                       TextButton(
                                         style: ButtonStyle(
                                           backgroundColor:
                                               WidgetStateProperty.all<Color>(
-                                                  Colors.orange),
+                                                TColors.buttonPrimary,
+                                              ),
                                         ),
                                         onPressed: () {
-                                          _handleLastBookAccess(
-                                              widget.isMobile);
-                                        },
-                                        child: const ATextDiskplayMedium(
-                                          text:
-                                              'เปิดหน้าที่อ่านล่าสุด', // เล่ม ${lastBookAccess[0].bookLastAccess} หน้า ${lastBookAccess[0].pageLastAccess}',
-                                        ),
-                                      ),
-                                    const SizedBox(height: 5),
-                                    TextButton(
-                                      style: ButtonStyle(
-                                        backgroundColor:
-                                            WidgetStateProperty.all<Color>(
-                                                Colors.orange),
-                                      ),
-                                      onPressed: () {
-                                        showDialog(
-                                          context: context,
-                                          builder: (BuildContext context) {
-                                            TextEditingController
-                                                pageController =
-                                                TextEditingController();
-                                            String?
-                                                errorMessage; // ข้อความแจ้งเตือน
+                                          showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              TextEditingController
+                                              pageController =
+                                                  TextEditingController();
+                                              String?
+                                              errorMessage; // ข้อความแจ้งเตือน
 
-                                            return StatefulBuilder(
-                                              builder: (context, setState) {
-                                                return AlertDialog(
-                                                  title:
-                                                      const Text('ป้อนเลขหน้า'),
-                                                  content: Column(
-                                                    mainAxisSize:
-                                                        MainAxisSize.min,
-                                                    children: [
-                                                      TextField(
-                                                        controller:
-                                                            pageController,
-                                                        keyboardType:
-                                                            TextInputType
-                                                                .number,
-                                                        decoration:
-                                                            InputDecoration(
-                                                          hintText:
-                                                              "เลขหน้าที่ต้องการ",
-                                                          errorText:
-                                                              errorMessage, // แสดงข้อความแจ้งเตือน
+                                              return StatefulBuilder(
+                                                builder: (context, setState) {
+                                                  return AlertDialog(
+                                                    title: const Text(
+                                                      'ป้อนเลขหน้า',
+                                                    ),
+                                                    content: Column(
+                                                      mainAxisSize:
+                                                          MainAxisSize.min,
+                                                      children: [
+                                                        TextField(
+                                                          controller:
+                                                              pageController,
+                                                          keyboardType:
+                                                              TextInputType
+                                                                  .number,
+                                                          decoration: InputDecoration(
+                                                            hintText:
+                                                                "เลขหน้าที่ต้องการ",
+                                                            errorText:
+                                                                errorMessage, // แสดงข้อความแจ้งเตือน
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    actions: [
+                                                      TextButton(
+                                                        onPressed: () =>
+                                                            Navigator.pop(
+                                                              context,
+                                                            ), // ปิด dialog
+                                                        child: const Text(
+                                                          'ยกเลิก',
+                                                        ),
+                                                      ),
+                                                      TextButton(
+                                                        onPressed: () {
+                                                          if (pageController
+                                                              .text
+                                                              .isNotEmpty) {
+                                                            int pageNumber =
+                                                                int.tryParse(
+                                                                  pageController
+                                                                      .text,
+                                                                ) ??
+                                                                1;
+
+                                                            if (pageNumber <
+                                                                    1 ||
+                                                                pageNumber >
+                                                                    numPageAll) {
+                                                              // อัปเดตข้อความแจ้งเตือน
+                                                              setState(() {
+                                                                errorMessage =
+                                                                    "กรุณาป้อนเลขหน้า 1 - $numPageAll";
+                                                              });
+                                                            } else {
+                                                              Navigator.pop(
+                                                                context,
+                                                              ); // ปิด dialog
+
+                                                              // เปิดหน้าใหม่โดยใช้ bookid เดิม และเปลี่ยนเฉพาะ pageid
+                                                              //bool? returned = await
+                                                              Navigator.push(
+                                                                context,
+                                                                MaterialPageRoute(
+                                                                  builder: (context) => Tri91PageViewHtml(
+                                                                    triBookid:
+                                                                        widget
+                                                                            .triBookid, // ใช้ค่าเดิม
+                                                                    triPageid:
+                                                                        pageNumber, // ใช้ค่าที่ป้อนมา
+                                                                    triBookline:
+                                                                        '1',
+                                                                    chkSearch:
+                                                                        '',
+                                                                    isMobile: widget
+                                                                        .isMobile,
+                                                                    online: widget
+                                                                        .online,
+                                                                  ),
+                                                                ),
+                                                              );
+                                                            }
+                                                          }
+                                                        },
+                                                        child: const Text(
+                                                          'ยืนยัน',
                                                         ),
                                                       ),
                                                     ],
-                                                  ),
-                                                  actions: [
-                                                    TextButton(
-                                                      onPressed: () =>
-                                                          Navigator.pop(
-                                                              context), // ปิด dialog
-                                                      child:
-                                                          const Text('ยกเลิก'),
-                                                    ),
-                                                    TextButton(
-                                                      onPressed: () {
-                                                        if (pageController
-                                                            .text.isNotEmpty) {
-                                                          int pageNumber =
-                                                              int.tryParse(
-                                                                      pageController
-                                                                          .text) ??
-                                                                  1;
-
-                                                          if (pageNumber < 1 ||
-                                                              pageNumber >
-                                                                  numPageAll) {
-                                                            // อัปเดตข้อความแจ้งเตือน
-                                                            setState(() {
-                                                              errorMessage =
-                                                                  "กรุณาป้อนเลขหน้า 1 - $numPageAll";
-                                                            });
-                                                          } else {
-                                                            Navigator.pop(
-                                                                context); // ปิด dialog
-
-                                                            // เปิดหน้าใหม่โดยใช้ bookid เดิม และเปลี่ยนเฉพาะ pageid
-                                                            //bool? returned = await
-                                                            Navigator.push(
-                                                              context,
-                                                              MaterialPageRoute(
-                                                                builder:
-                                                                    (context) =>
-                                                                        Tri91PageViewHtml(
-                                                                  triBookid: widget
-                                                                      .triBookid, // ใช้ค่าเดิม
-                                                                  triPageid:
-                                                                      pageNumber, // ใช้ค่าที่ป้อนมา
-                                                                  triBookline:
-                                                                      '1',
-                                                                  chkSearch: '',
-                                                                  isMobile: widget
-                                                                      .isMobile,
-                                                                  online: widget
-                                                                      .online,
-                                                                ),
-                                                              ),
-                                                            );
-                                                          }
-                                                        }
-                                                      },
-                                                      child:
-                                                          const Text('ยืนยัน'),
-                                                    ),
-                                                  ],
-                                                );
-                                              },
-                                            );
-                                          },
-                                        );
-                                      },
-                                      child: const ATextDiskplayMedium(
-                                        text: 'เปิดระบุหน้า',
+                                                  );
+                                                },
+                                              );
+                                            },
+                                          );
+                                        },
+                                        child: const ATextDiskplayMedium(
+                                          text: 'เปิดระบุหน้า',
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
                         Row(
@@ -691,28 +847,70 @@ class _BookShowTitleState extends State<BookShowTitle> {
                                 String linkPhp = 'tripitaka91_1.php';
                                 Clipboard.setData(
                                   ClipboardData(
-                                      text:
-                                          '$tURLmain$linkPhp?book_code=$code'),
+                                    text: '$tURLmain$linkPhp?book_code=$code',
+                                  ),
                                 );
                                 _showSnackbar(
-                                    context, 'คัดลอกข้อมูลเรียบร้อยแล้ว');
+                                  context,
+                                  'คัดลอกข้อมูลเรียบร้อยแล้ว',
+                                );
                               },
                             ),
                             IconButton(
                               color: adaptiveTextColor(context),
                               icon: const Icon(Icons.share),
                               onPressed: () {
-                                SharePlus.instance.share(ShareParams(
-                                  text:
-                                      'tripitaka91_1.php?book_code=${widget.triBookid}',
-                                  subject:
-                                      'สารบัญหัวข้อธรรม เล่ม ${widget.triBookid}',
-                                ));
+                                SharePlus.instance.share(
+                                  ShareParams(
+                                    text:
+                                        'tripitaka91_1.php?book_code=${widget.triBookid}',
+                                    subject:
+                                        'สารบัญหัวข้อธรรม เล่ม ${widget.triBookid}',
+                                  ),
+                                );
                               },
                             ),
                           ],
                         ),
                         const SizedBox(height: 10),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: TextField(
+                            controller: _filterController,
+                            onChanged: (value) =>
+                                setState(() => _filterQuery = value),
+                            decoration: InputDecoration(
+                              isDense: true,
+                              hintText: 'ค้นหาหัวข้อในเล่มนี้...',
+                              prefixIcon: const Icon(Icons.search, size: 20),
+                              suffixIcon: _filterQuery.isEmpty
+                                  ? null
+                                  : IconButton(
+                                      icon: const Icon(Icons.clear, size: 18),
+                                      onPressed: () {
+                                        _filterController.clear();
+                                        setState(() => _filterQuery = '');
+                                      },
+                                    ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              contentPadding: const EdgeInsets.symmetric(
+                                vertical: 8,
+                                horizontal: 12,
+                              ),
+                            ),
+                          ),
+                        ),
+                        if (_filterQuery.isNotEmpty && hasMoreData)
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(8, 4, 8, 0),
+                            child: ATextLabelSmall(
+                              text:
+                                  'ค้นเฉพาะหัวข้อที่โหลดมาแล้ว (${dataTitle.length} รายการ) อาจยังไม่ครบทั้งเล่ม',
+                            ),
+                          ),
+                        const SizedBox(height: 8),
                       ],
                     ),
                   ),
@@ -720,299 +918,237 @@ class _BookShowTitleState extends State<BookShowTitle> {
                 SliverList(
                   delegate: SliverChildBuilderDelegate(
                     (BuildContext context, int index) {
-                      // print('index : $index < dataTitle : ${dataTitle.length}');
-                      if (index < dataTitle.length) {
+                      final items = visibleItems;
+                      if (index < items.length) {
+                        final title = items[index];
                         // จัดการข้อมูลที่จะแสดงใน ListTile
                         return ListTile(
+                          dense: true,
+                          contentPadding: const EdgeInsets.fromLTRB(
+                            12,
+                            8,
+                            12,
+                            2,
+                          ),
                           leading: CircleAvatar(
+                            radius: 16,
                             backgroundColor: Colors.blue[900],
                             foregroundColor: Colors.white,
                             child: ATextDiskplayMedium(text: '${index + 1}'),
                           ),
                           title: _showText(
-                            '${textTitleReplace.extractText(dataTitle[index]).replaceAll(textTitleReplace.getBookBlue(dataTitle[index]), '')} ',
-                            textTitleReplace.getMark(dataTitle[index]),
+                            '${textTitleReplace.extractText(title).replaceAll(textTitleReplace.getBookBlue(title), '')} ',
+                            textTitleReplace.getMark(title),
                           ),
                           subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Row(
                                 children: [
-                                  widget.online || volumeHelper.showVolume
-                                      ? InkWell(
-                                          onTap: () async {
-                                            if (!await ensureOnlineSpeechConsent(
-                                              context,
-                                            )) {
-                                              return;
-                                            }
-                                            // ignore: use_build_context_synchronously
-                                            LoadingDialog.show(context);
-                                            String bookIds = textTitleReplace
-                                                .getBookId(dataTitle[index]);
-                                            String pageId = textTitleReplace
-                                                .getPageId(dataTitle[index]);
-                                            String bookLine = textTitleReplace
-                                                .getLineId(dataTitle[index]);
-                                            String noTitleCate =
-                                                textTitleReplace
-                                                    .getCate(dataTitle[index]);
-                                            String noTitle = textTitleReplace
-                                                .getNo(dataTitle[index]);
+                                  if (widget.online || volumeHelper.showVolume)
+                                    CircularIconButton(
+                                      icon: Icons.volume_up,
+                                      size: widget.isMobile ? 22 : 18,
+                                      color: Colors.blue[300]!,
+                                      onTap: () async {
+                                        if (!await ensureOnlineSpeechConsent(
+                                          context,
+                                        )) {
+                                          return;
+                                        }
+                                        // ignore: use_build_context_synchronously
+                                        LoadingDialog.show(context);
+                                        String bookIds = textTitleReplace
+                                            .getBookId(title);
+                                        String pageId = textTitleReplace
+                                            .getPageId(title);
+                                        String bookLine = textTitleReplace
+                                            .getLineId(title);
+                                        String noTitleCate = textTitleReplace
+                                            .getCate(title);
+                                        String noTitle = textTitleReplace.getNo(
+                                          title,
+                                        );
 
-                                            String txtTitle =
-                                                textTitleReplace.replaceText(
-                                                    textTitleReplace
-                                                        .extractText(
-                                                            dataTitle[index]),
-                                                    textTitleReplace
-                                                        .getBookBlue(
-                                                            dataTitle[index]));
+                                        String
+                                        txtTitle = textTitleReplace.replaceText(
+                                          textTitleReplace.extractText(title),
+                                          textTitleReplace.getBookBlue(title),
+                                        );
 
-                                            String filename =
-                                                noTitleCate.replaceAll('.', '');
-                                            filename =
-                                                '$filename-$noTitle-$bookIds-$pageId-$bookLine';
-                                            await audioPlayerManager.playAudio(
-                                                '1', filename, txtTitle);
+                                        String filename = noTitleCate
+                                            .replaceAll('.', '');
+                                        filename =
+                                            '$filename-$noTitle-$bookIds-$pageId-$bookLine';
+                                        await audioPlayerManager.playAudio(
+                                          '1',
+                                          filename,
+                                          txtTitle,
+                                        );
 
-                                            // ignore: use_build_context_synchronously
-                                            LoadingDialog.hide(context);
-                                          },
-                                          child: Icon(
-                                            Icons.volume_up,
-                                            size: widget.isMobile ? 25 : 20,
-                                            color: Colors.blue[300],
-                                          ),
-                                        )
-                                      : const Text(''),
-                                  widget.online || volumeHelper.showVolume
-                                      ? const SizedBox(width: 10)
-                                      : const SizedBox.shrink(),
-                                  InkWell(
-                                    onTap: () async {
+                                        // ignore: use_build_context_synchronously
+                                        LoadingDialog.hide(context);
+                                      },
+                                    ),
+                                  CircularIconButton(
+                                    icon: Icons.share,
+                                    size: widget.isMobile ? 21 : 16,
+                                    color: Colors.blue[300]!,
+                                    onTap: () {
                                       String bookIds = textTitleReplace
-                                          .getBookId(dataTitle[index]);
+                                          .getBookId(title);
                                       String pageId = textTitleReplace
-                                          .getPageId(dataTitle[index]);
+                                          .getPageId(title);
                                       String bookLine = textTitleReplace
-                                          .getLineId(dataTitle[index]);
+                                          .getLineId(title);
                                       String txtTitle =
-                                          '${textTitleReplace.extractText(dataTitle[index]).replaceAll(textTitleReplace.getBookBlue(dataTitle[index]), '')} ';
-                                      // txtTitle +=
-                                      //     'สรุปเนื้อความจากพระไตรปิฎก ฉบับ มมร. เล่ม $bookIds หน้า $pageId บรรทัด $bookLine';
-                                      // await Share.share(
-                                      //     '$txtTitle อ่านรายละเอียด -> $tURLmain$bookIds-$pageId-$bookLine.htm',
-                                      //     subject: 'สรุปหัวข้อธรรมจากพระไตรปิฎก');
+                                          '${textTitleReplace.extractText(title).replaceAll(textTitleReplace.getBookBlue(title), '')} ';
                                       sharedImageGenerator.generateAndShare(
                                         context: context,
-                                        bookTitle: txtTitle.replaceAll('', ''),
+                                        bookTitle: txtTitle.replaceAll('', ''),
                                         bookid: bookIds,
                                         pageid: pageId.toString(),
                                         lineid: bookLine,
-                                        bookBlue: textTitleReplace
-                                            .getBookBlue(dataTitle[index]),
-                                        bookRed: textTitleReplace
-                                            .getBookRed(dataTitle[index]),
+                                        bookBlue: textTitleReplace.getBookBlue(
+                                          title,
+                                        ),
+                                        bookRed: textTitleReplace.getBookRed(
+                                          title,
+                                        ),
                                       );
                                     },
-                                    child: Icon(
-                                      Icons.share,
-                                      size: 16,
-                                      color: Colors.blue[300],
-                                    ),
                                   ),
-                                  const SizedBox(width: 10),
-                                  InkWell(
-                                    onTap: () async {
+                                  CircularIconButton(
+                                    icon: Icons.copy,
+                                    size: widget.isMobile ? 21 : 16,
+                                    color: Colors.blue[300]!,
+                                    onTap: () {
                                       String bookIds = textTitleReplace
-                                          .getBookId(dataTitle[index]);
+                                          .getBookId(title);
                                       String pageId = textTitleReplace
-                                          .getPageId(dataTitle[index]);
+                                          .getPageId(title);
                                       String bookLine = textTitleReplace
-                                          .getLineId(dataTitle[index]);
+                                          .getLineId(title);
                                       String txtTitle =
-                                          '${textTitleReplace.extractText(dataTitle[index]).replaceAll(textTitleReplace.getBookBlue(dataTitle[index]), '')} ';
+                                          '${textTitleReplace.extractText(title).replaceAll(textTitleReplace.getBookBlue(title), '')} ';
                                       txtTitle +=
                                           'สรุปเนื้อความจากพระไตรปิฎก ฉบับ มมร. เล่ม $bookIds หน้า $pageId บรรทัด $bookLine';
                                       Clipboard.setData(
                                         ClipboardData(
-                                            text:
-                                                '$txtTitle อ่านรายละเอียด -> $tURLmain$bookIds-$pageId-$bookLine.htm'),
+                                          text:
+                                              '$txtTitle อ่านรายละเอียด -> $tURLmain$bookIds-$pageId-$bookLine.htm',
+                                        ),
                                       );
                                       _showSnackbar(
-                                          context, 'คัดลอกข้อมูลเรียบร้อยแล้ว');
+                                        context,
+                                        'คัดลอกข้อมูลเรียบร้อยแล้ว',
+                                      );
                                     },
-                                    child: Icon(
-                                      Icons.copy,
+                                  ),
+                                  if (usersChk != null &&
+                                      usersChk?.levelAccess == '1')
+                                    CircularIconButton(
+                                      icon: Icons.edit,
                                       size: widget.isMobile ? 21 : 16,
-                                      color: Colors.blue[300],
+                                      color: Colors.blue[300]!,
+                                      onTap: () {
+                                        _showInputDialog(
+                                          context,
+                                          textTitleReplace.extractText(title),
+                                          textTitleReplace.getNo(title),
+                                          textTitleReplace.getCate(title),
+                                        );
+                                      },
                                     ),
-                                  ),
-                                  (usersChk != null) &&
-                                          (usersChk?.levelAccess == '1')
-                                      ? const SizedBox(width: 10)
-                                      : const SizedBox.shrink(),
-                                  (usersChk != null) &&
-                                          (usersChk?.levelAccess == '1')
-                                      ? InkWell(
-                                          onTap: () async {
-                                            _showInputDialog(
-                                              context,
-                                              textTitleReplace.extractText(
-                                                  dataTitle[index]),
-                                              textTitleReplace
-                                                  .getNo(dataTitle[index]),
-                                              textTitleReplace
-                                                  .getCate(dataTitle[index]),
-                                            );
-                                          },
-                                          child: Icon(
-                                            Icons.edit,
-                                            size: widget.isMobile ? 21 : 16,
-                                            color: Colors.blue[300],
-                                          ),
-                                        )
-                                      : const SizedBox.shrink(),
-                                  (usersChk != null)
-                                      ? const SizedBox(width: 10)
-                                      : const SizedBox.shrink(),
-                                  (usersChk != null)
-                                      ? InkWell(
-                                          onTap: () async {
-                                            showDialog(
-                                              context: context,
-                                              builder: (BuildContext context) {
-                                                return AlertDialog(
-                                                  contentPadding:
-                                                      const EdgeInsets.all(5),
-                                                  title: const Text(
-                                                      'แจ้งการอ่านออกเสียง'),
-                                                  content: const SizedBox(
-                                                    width: double.maxFinite,
-                                                    child: EditSpeakScreen(
-                                                      comments: '-',
-                                                    ),
-                                                  ),
-                                                  actions: <Widget>[
-                                                    TextButton(
-                                                      onPressed: () {
-                                                        Navigator.of(context)
-                                                            .pop();
-                                                      },
-                                                      child: const Text(
-                                                          'ปิดหน้าจอ'),
-                                                    ),
-                                                  ],
-                                                );
-                                              },
-                                            );
-                                          },
-                                          child: Icon(
-                                            Icons.edit_document,
-                                            size: widget.isMobile ? 21 : 16,
-                                            color: Colors.blue[300],
-                                          ),
-                                        )
-                                      : const SizedBox.shrink(),
-                                  const Expanded(
-                                    child: SizedBox(
-                                      child: Text(''),
-                                    ),
-                                  ),
-                                  widget.isMobile
-                                      ? const SizedBox.shrink()
-                                      : Align(
-                                          alignment: Alignment.centerLeft,
-                                          child: ClipPath(
-                                            clipper:
-                                                DoubleTriangleRectangleClipper(),
-                                            child: Container(
-                                              padding:
-                                                  const EdgeInsets.all(3.0),
-                                              color: Colors.blue[900],
-                                              child: ATextLabelSmall(
-                                                text:
-                                                    '${textTitleReplace.extractRemainingText(dataTitle[index])} ',
+                                  if (usersChk != null)
+                                    CircularIconButton(
+                                      icon: Icons.edit_document,
+                                      size: widget.isMobile ? 21 : 16,
+                                      color: Colors.blue[300]!,
+                                      onTap: () {
+                                        showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return AlertDialog(
+                                              contentPadding:
+                                                  const EdgeInsets.all(5),
+                                              title: const Text(
+                                                'แจ้งการอ่านออกเสียง',
                                               ),
-                                            ),
-                                          ),
-                                        ),
-                                  widget.isMobile
-                                      ? const SizedBox.shrink()
-                                      : const SizedBox(width: 10),
-                                  widget.isMobile
-                                      ? const SizedBox.shrink()
-                                      : Align(
-                                          alignment: Alignment.centerRight,
-                                          child: ClipPath(
-                                            clipper:
-                                                DoubleTriangleRectangleClipper(),
-                                            child: Container(
-                                              padding:
-                                                  const EdgeInsets.all(3.0),
-                                              color: Colors
-                                                  .red, // Change color as needed
-                                              child: Center(
-                                                child: ATextLabelSmall(
-                                                  text:
-                                                      'เล่มสีแดง ${textTitleReplace.getBookRed(dataTitle[index])}', // Access widget property
+                                              content: const SizedBox(
+                                                width: double.maxFinite,
+                                                child: EditSpeakScreen(
+                                                  comments: '-',
                                                 ),
                                               ),
-                                            ),
-                                          ),
-                                        ),
-                                ],
-                              ),
-                              SingleChildScrollView(
-                                scrollDirection: Axis.horizontal,
-                                child: Row(
-                                  children: [
-                                    widget.isMobile
-                                        ? Align(
-                                            alignment: Alignment.centerLeft,
-                                            child: ClipPath(
+                                              actions: <Widget>[
+                                                TextButton(
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                  child: const Text(
+                                                    'ปิดหน้าจอ',
+                                                  ),
+                                                ),
+                                              ],
+                                            );
+                                          },
+                                        );
+                                      },
+                                    ),
+                                  Expanded(
+                                    child: Align(
+                                      alignment: Alignment.centerRight,
+                                      child: SingleChildScrollView(
+                                        scrollDirection: Axis.horizontal,
+                                        reverse: true,
+                                        child: Row(
+                                          children: [
+                                            ClipPath(
                                               clipper:
                                                   DoubleTriangleRectangleClipper(),
                                               child: Container(
-                                                padding:
-                                                    const EdgeInsets.all(3.0),
+                                                padding: const EdgeInsets.all(
+                                                  3.0,
+                                                ),
                                                 color: Colors.blue[900],
                                                 child: ATextLabelSmall(
                                                   text:
-                                                      '${textTitleReplace.extractRemainingText(dataTitle[index])} ',
+                                                      '${textTitleReplace.extractRemainingText(title)} ',
                                                 ),
                                               ),
                                             ),
-                                          )
-                                        : const SizedBox.shrink(),
-                                    widget.isMobile
-                                        ? const SizedBox(width: 10)
-                                        : const SizedBox.shrink(),
-                                    widget.isMobile
-                                        ? Align(
-                                            alignment: Alignment.centerRight,
-                                            child: ClipPath(
+                                            const SizedBox(width: 10),
+                                            ClipPath(
                                               clipper:
                                                   DoubleTriangleRectangleClipper(),
                                               child: Container(
-                                                padding:
-                                                    const EdgeInsets.all(3.0),
+                                                padding: const EdgeInsets.all(
+                                                  3.0,
+                                                ),
                                                 color: Colors
                                                     .red, // Change color as needed
                                                 child: Center(
                                                   child: ATextLabelSmall(
                                                     text:
-                                                        'เล่มสีแดง ${textTitleReplace.getBookRed(dataTitle[index])}', // Access widget property
+                                                        'เล่มสีแดง ${textTitleReplace.getBookRed(title)}', // Access widget property
                                                   ),
                                                 ),
                                               ),
                                             ),
-                                          )
-                                        : const SizedBox.shrink(),
-                                  ],
-                                ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
-                              const Divider(),
+                              const Divider(
+                                height: 1,
+                                thickness: 0.6,
+                                indent: 12,
+                                endIndent: 12,
+                              ),
                             ],
                           ),
                           onTap: () {
@@ -1021,12 +1157,13 @@ class _BookShowTitleState extends State<BookShowTitle> {
                               context,
                               MaterialPageRoute(
                                 builder: (context) => Tri91PageViewHtml(
-                                  triBookid: textTitleReplace
-                                      .getBookId(dataTitle[index]),
-                                  triPageid: int.parse(textTitleReplace
-                                      .getPageId(dataTitle[index])),
-                                  triBookline: textTitleReplace
-                                      .getLineId(dataTitle[index]),
+                                  triBookid: textTitleReplace.getBookId(title),
+                                  triPageid: int.parse(
+                                    textTitleReplace.getPageId(title),
+                                  ),
+                                  triBookline: textTitleReplace.getLineId(
+                                    title,
+                                  ),
                                   chkSearch: '',
                                   isMobile: widget.isMobile,
                                   online: widget.online,
@@ -1034,6 +1171,26 @@ class _BookShowTitleState extends State<BookShowTitle> {
                               ),
                             );
                           },
+                        );
+                      } else if (_filterQuery.trim().isNotEmpty) {
+                        // ค้นหาแล้วไม่พบหัวข้อที่ตรงกัน (เฉพาะในส่วนที่โหลดมาแล้ว)
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 32),
+                          child: Column(
+                            children: [
+                              Icon(
+                                Icons.search_off,
+                                size: 48,
+                                color: adaptiveTextColor(
+                                  context,
+                                ).withValues(alpha: 0.3),
+                              ),
+                              const SizedBox(height: 8),
+                              const ATextBodyMedium(
+                                text: 'ไม่พบหัวข้อที่ตรงกับคำค้นหา',
+                              ),
+                            ],
+                          ),
                         );
                       } else {
                         // ตรวจสอบว่ามีข้อมูลเพิ่มเติมให้โหลดหรือไม่
@@ -1044,25 +1201,34 @@ class _BookShowTitleState extends State<BookShowTitle> {
                                 : _fetchDataTitleInBook();
                           });
                           return const Center(
-                              child: CircularProgressIndicator());
+                            child: CircularProgressIndicator(),
+                          );
                         } else {
                           if (pageTitle == 1) {
                             // print('pageTitle == $pageTitle');
                             return SizedBox(
                               child: Column(
                                 children: [
+                                  Icon(
+                                    Icons.menu_book_outlined,
+                                    size: 56,
+                                    color: adaptiveTextColor(
+                                      context,
+                                    ).withValues(alpha: 0.3),
+                                  ),
+                                  const SizedBox(height: 12),
                                   Center(
                                     child: ATextTitleLarge(
-                                        text:
-                                            'เล่ม ${widget.triBookid} ไม่พบหัวข้อธรรมสำหรับแสดงผล'),
+                                      text:
+                                          'เล่ม ${widget.triBookid} ไม่พบหัวข้อธรรมสำหรับแสดงผล',
+                                    ),
                                   ),
-                                  const SizedBox(
-                                    height: 15,
-                                  ),
+                                  const SizedBox(height: 15),
                                   const Center(
                                     child: ATextTitleLarge(
-                                        text:
-                                            'กรุณาคลิกที่ปุ่มเปิดหน้าที่อ่านล่าสุด'),
+                                      text:
+                                          'กรุณาคลิกที่ปุ่มเปิดหน้าที่อ่านล่าสุด',
+                                    ),
                                   ),
                                 ],
                               ),
@@ -1073,8 +1239,10 @@ class _BookShowTitleState extends State<BookShowTitle> {
                         }
                       }
                     },
-                    childCount: dataTitle.length +
-                        1, // เพิ่ม 1 เพื่อแสดง Loader ถ้ายังมีข้อมูลเหลือ
+                    childCount: _filterQuery.trim().isNotEmpty
+                        ? (visibleItems.isEmpty ? 1 : visibleItems.length)
+                        : dataTitle.length +
+                              1, // เพิ่ม 1 เพื่อแสดง Loader ถ้ายังมีข้อมูลเหลือ
                   ),
                 ),
               ],
@@ -1082,9 +1250,7 @@ class _BookShowTitleState extends State<BookShowTitle> {
           )
         : Scaffold(
             appBar: AppBar(
-              title: ATextDiskplayMedium(
-                text: 'เล่ม $bookid $bookTitleTri91',
-              ),
+              title: ATextDiskplayMedium(text: 'เล่ม $bookid $bookTitleTri91'),
             ),
             body: SizedBox(
               //color: Colors.grey[200],
@@ -1093,189 +1259,225 @@ class _BookShowTitleState extends State<BookShowTitle> {
                 children: <Widget>[
                   Expanded(
                     flex: widget.isMobile ? 2 : 1, //_size.width >= 750 ? 2 : 1,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(8.0),
-                            child: Image.asset(
-                              'assets/images/bookcover/tripitaka91_book${widget.triBookid}.png',
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+                      child: Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: adaptiveSurfaceColor(context),
+                          borderRadius: BorderRadius.circular(14),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.05),
+                              blurRadius: 8,
+                              offset: const Offset(0, 2),
                             ),
-                          ),
+                          ],
                         ),
-                        Expanded(
-                          flex: 1,
-                          child: Row(
-                            children: <Widget>[
-                              lastBookAccess.isEmpty
-                                  ? const SizedBox.shrink()
-                                  : TextButton(
-                                      style: ButtonStyle(
-                                        backgroundColor:
-                                            WidgetStateProperty.all<Color>(
-                                                Colors.orange),
-                                      ),
-                                      onPressed: () {
-                                        _handleLastBookAccess(widget.isMobile);
-                                      },
-                                      child: const ATextDiskplayMedium(
-                                        text:
-                                            'เปิดหน้าที่อ่านล่าสุด', // เล่ม ${lastBookAccess[0].bookLastAccess} หน้า ${lastBookAccess[0].pageLastAccess}',
-                                      ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(8.0),
+                              child: Image.asset(
+                                'assets/images/bookcover/tripitaka91_book${widget.triBookid}.png',
+                              ),
+                            ),
+                            const SizedBox(width: 10.0),
+                            Expanded(
+                              flex: 1,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  if (!_headerLoaded) ...[
+                                    const _SkeletonBox(height: 14, width: 160),
+                                    const SizedBox(height: 6),
+                                    const _SkeletonBox(height: 14, width: 100),
+                                    const SizedBox(height: 6),
+                                  ] else ...[
+                                    ATextTitleMedium(text: '[ $triCatage ]'),
+                                    ATextTitleMedium(
+                                      text: 'มีทั้งหมด $numPageAll หน้า',
                                     ),
-                              const SizedBox(width: 5),
-                              TextButton(
-                                style: ButtonStyle(
-                                  backgroundColor:
-                                      WidgetStateProperty.all<Color>(
-                                          Colors.orange),
-                                ),
-                                onPressed: () {
-                                  showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      TextEditingController pageController =
-                                          TextEditingController();
-                                      String? errorMessage; // ข้อความแจ้งเตือน
-
-                                      return StatefulBuilder(
-                                        builder: (context, setState) {
-                                          return AlertDialog(
-                                            title: const Text('ป้อนเลขหน้า'),
-                                            content: Column(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                TextField(
-                                                  controller: pageController,
-                                                  keyboardType:
-                                                      TextInputType.number,
-                                                  decoration: InputDecoration(
-                                                    hintText:
-                                                        "เลขหน้าที่ต้องการ",
-                                                    errorText:
-                                                        errorMessage, // แสดงข้อความแจ้งเตือน
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                            actions: [
-                                              TextButton(
-                                                onPressed: () => Navigator.pop(
-                                                    context), // ปิด dialog
-                                                child: const Text('ยกเลิก'),
+                                    if (bookLastPages > 0 &&
+                                        numPageAll > 0) ...[
+                                      const SizedBox(height: 6),
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.circular(4),
+                                        child: LinearProgressIndicator(
+                                          value: (bookLastPages / numPageAll)
+                                              .clamp(0.0, 1.0),
+                                          minHeight: 6,
+                                          backgroundColor: adaptiveTextColor(
+                                            context,
+                                          ).withValues(alpha: 0.1),
+                                          valueColor:
+                                              const AlwaysStoppedAnimation<
+                                                Color
+                                              >(TColors.buttonPrimary),
+                                        ),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      ATextLabelSmall(
+                                        text:
+                                            'อ่านแล้ว $bookLastPages จาก $numPageAll หน้า (${((bookLastPages / numPageAll) * 100).clamp(0, 100).toStringAsFixed(0)}%)',
+                                      ),
+                                    ],
+                                  ],
+                                  const SizedBox(height: 8),
+                                  Row(
+                                    children: <Widget>[
+                                      lastBookAccess.isEmpty
+                                          ? const SizedBox.shrink()
+                                          : TextButton(
+                                              style: ButtonStyle(
+                                                backgroundColor:
+                                                    WidgetStateProperty.all<
+                                                      Color
+                                                    >(TColors.buttonPrimary),
                                               ),
-                                              TextButton(
-                                                onPressed: () {
-                                                  if (pageController
-                                                      .text.isNotEmpty) {
-                                                    int pageNumber =
-                                                        int.tryParse(
-                                                                pageController
-                                                                    .text) ??
-                                                            1;
+                                              onPressed: () {
+                                                _handleLastBookAccess(
+                                                  widget.isMobile,
+                                                );
+                                              },
+                                              child: const ATextDiskplayMedium(
+                                                text:
+                                                    'เปิดหน้าที่อ่านล่าสุด', // เล่ม ${lastBookAccess[0].bookLastAccess} หน้า ${lastBookAccess[0].pageLastAccess}',
+                                              ),
+                                            ),
+                                      const SizedBox(width: 5),
+                                      TextButton(
+                                        style: ButtonStyle(
+                                          backgroundColor:
+                                              WidgetStateProperty.all<Color>(
+                                                TColors.buttonPrimary,
+                                              ),
+                                        ),
+                                        onPressed: () {
+                                          showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              TextEditingController
+                                              pageController =
+                                                  TextEditingController();
+                                              String?
+                                              errorMessage; // ข้อความแจ้งเตือน
 
-                                                    if (pageNumber < 1 ||
-                                                        pageNumber >
-                                                            numPageAll) {
-                                                      // อัปเดตข้อความแจ้งเตือน
-                                                      setState(() {
-                                                        errorMessage =
-                                                            "กรุณาป้อนเลขหน้า 1 - $numPageAll";
-                                                      });
-                                                    } else {
-                                                      Navigator.pop(
-                                                          context); // ปิด dialog
-
-                                                      // เปิดหน้าใหม่โดยใช้ bookid เดิม และเปลี่ยนเฉพาะ pageid
-                                                      //bool? returned = await
-                                                      Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                          builder: (context) =>
-                                                              Tri91PageViewHtml(
-                                                            triBookid: widget
-                                                                .triBookid, // ใช้ค่าเดิม
-                                                            triPageid:
-                                                                pageNumber, // ใช้ค่าที่ป้อนมา
-                                                            triBookline: '1',
-                                                            chkSearch: '',
-                                                            isMobile:
-                                                                widget.isMobile,
-                                                            online:
-                                                                widget.online,
+                                              return StatefulBuilder(
+                                                builder: (context, setState) {
+                                                  return AlertDialog(
+                                                    title: const Text(
+                                                      'ป้อนเลขหน้า',
+                                                    ),
+                                                    content: Column(
+                                                      mainAxisSize:
+                                                          MainAxisSize.min,
+                                                      children: [
+                                                        TextField(
+                                                          controller:
+                                                              pageController,
+                                                          keyboardType:
+                                                              TextInputType
+                                                                  .number,
+                                                          decoration: InputDecoration(
+                                                            hintText:
+                                                                "เลขหน้าที่ต้องการ",
+                                                            errorText:
+                                                                errorMessage, // แสดงข้อความแจ้งเตือน
                                                           ),
                                                         ),
-                                                      );
-                                                    }
-                                                  }
+                                                      ],
+                                                    ),
+                                                    actions: [
+                                                      TextButton(
+                                                        onPressed: () =>
+                                                            Navigator.pop(
+                                                              context,
+                                                            ), // ปิด dialog
+                                                        child: const Text(
+                                                          'ยกเลิก',
+                                                        ),
+                                                      ),
+                                                      TextButton(
+                                                        onPressed: () {
+                                                          if (pageController
+                                                              .text
+                                                              .isNotEmpty) {
+                                                            int pageNumber =
+                                                                int.tryParse(
+                                                                  pageController
+                                                                      .text,
+                                                                ) ??
+                                                                1;
+
+                                                            if (pageNumber <
+                                                                    1 ||
+                                                                pageNumber >
+                                                                    numPageAll) {
+                                                              // อัปเดตข้อความแจ้งเตือน
+                                                              setState(() {
+                                                                errorMessage =
+                                                                    "กรุณาป้อนเลขหน้า 1 - $numPageAll";
+                                                              });
+                                                            } else {
+                                                              Navigator.pop(
+                                                                context,
+                                                              ); // ปิด dialog
+
+                                                              // เปิดหน้าใหม่โดยใช้ bookid เดิม และเปลี่ยนเฉพาะ pageid
+                                                              //bool? returned = await
+                                                              Navigator.push(
+                                                                context,
+                                                                MaterialPageRoute(
+                                                                  builder: (context) => Tri91PageViewHtml(
+                                                                    triBookid:
+                                                                        widget
+                                                                            .triBookid, // ใช้ค่าเดิม
+                                                                    triPageid:
+                                                                        pageNumber, // ใช้ค่าที่ป้อนมา
+                                                                    triBookline:
+                                                                        '1',
+                                                                    chkSearch:
+                                                                        '',
+                                                                    isMobile: widget
+                                                                        .isMobile,
+                                                                    online: widget
+                                                                        .online,
+                                                                  ),
+                                                                ),
+                                                              );
+                                                            }
+                                                          }
+                                                        },
+                                                        child: const Text(
+                                                          'ยืนยัน',
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  );
                                                 },
-                                                child: const Text('ยืนยัน'),
-                                              ),
-                                            ],
+                                              );
+                                            },
                                           );
                                         },
-                                      );
-                                    },
-                                  );
-                                },
-                                child: const ATextDiskplayMedium(
-                                  text: 'เปิดระบุหน้า',
-                                ),
+                                        child: const ATextDiskplayMedium(
+                                          text: 'เปิดระบุหน้า',
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
                   ),
-                  widget.isMobile
-                      ? const SizedBox(width: 10)
-                      : const SizedBox.shrink(),
-                  widget.isMobile
-                      ? lastBookAccess.isEmpty
-                          ? const SizedBox.shrink()
-                          : TextButton(
-                              style: ButtonStyle(
-                                backgroundColor: WidgetStateProperty.all<Color>(
-                                    Colors.orange),
-                              ),
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => Tri91PageViewHtml(
-                                      triBookid: widget.triBookid,
-                                      triPageid: int.parse(
-                                        lastBookAccess[0]
-                                            .pageLastAccess
-                                            .toString(),
-                                      ),
-                                      triBookline: '1',
-                                      chkSearch: '',
-                                      isMobile: widget.isMobile,
-                                      online: widget.online,
-                                    ),
-                                  ),
-                                );
-                              },
-                              child: ATextDiskplayMedium(
-                                text:
-                                    'เปิดหน้าที่อ่านล่าสุด เล่ม ${lastBookAccess[0].bookLastAccess} หน้า ${lastBookAccess[0].pageLastAccess}',
-                              ),
-                            )
-                      : const SizedBox.shrink(),
-                  widget.isMobile
-                      ? const SizedBox(height: 10)
-                      : const SizedBox.shrink(),
                   Row(
                     children: <Widget>[
-                      const Icon(
-                        Icons.book,
-                        size: 20,
-                        color: Colors.blue,
-                      ),
+                      const Icon(Icons.book, size: 20, color: Colors.blue),
                       const ATextBodyMedium(text: ' สารบัญหัวข้อธรรม'),
                       const SizedBox(width: 10),
                       IconButton(
@@ -1286,7 +1488,8 @@ class _BookShowTitleState extends State<BookShowTitle> {
                           String linkPhp = 'tripitaka91_1.php';
                           Clipboard.setData(
                             ClipboardData(
-                                text: '$tURLmain$linkPhp?book_code=$code'),
+                              text: '$tURLmain$linkPhp?book_code=$code',
+                            ),
                           );
                           _showSnackbar(context, 'คัดลอกข้อมูลเรียบร้อยแล้ว');
                         },
@@ -1298,16 +1501,17 @@ class _BookShowTitleState extends State<BookShowTitle> {
                         onPressed: () async {
                           String code = widget.triBookid;
                           String linkPhp = 'tripitaka91_1.php';
-                          await SharePlus.instance.share(ShareParams(
+                          await SharePlus.instance.share(
+                            ShareParams(
                               text: '$tURLmain$linkPhp?book_code=$code',
-                              subject: 'สารบัญหัวข้อธรรม เล่ม $code'));
+                              subject: 'สารบัญหัวข้อธรรม เล่ม $code',
+                            ),
+                          );
                         },
                       ),
                     ],
                   ),
-                  const SizedBox(
-                    height: 10,
-                  ),
+                  const SizedBox(height: 10),
                   Expanded(
                     flex: widget.isMobile ? 4 : 3,
                     child: SearchShowPagesTitleList(

@@ -198,7 +198,7 @@ class _MyHomeMobileState extends State<MyHomeMobile>
                                       color: Colors.blue,
                                       child: const Center(
                                         child: ATextDiskplaySmall(
-                                          text: 'ระบุเล่ม/หน้า/บรรทัด',
+                                          text: 'เปิดระบุเล่ม/หน้า/บรรทัด',
                                         ),
                                       ),
                                     ),

@@ -20,3 +20,15 @@ Color adaptiveBorderColor(BuildContext context) =>
 // Same light/dark flip as adaptiveBorderColor, named for its other common
 // use: readable primary text that isn't sitting on a fixed-color badge.
 Color adaptiveTextColor(BuildContext context) => adaptiveBorderColor(context);
+
+// A page background one step away from adaptiveSurfaceColor, so a card using
+// adaptiveSurfaceColor actually stands out instead of blending into a
+// same-colour Scaffold (both resolved to white in light mode / the same dark
+// grey in dark mode before this existed, which read as a flat, low-contrast
+// "all white" screen). Use this as the Scaffold/body background behind
+// card-based layouts; leave plain, non-card screens on the theme's own
+// scaffoldBackgroundColor.
+Color adaptivePageColor(BuildContext context) =>
+    Theme.of(context).brightness == Brightness.dark
+        ? const Color(0xFF121212)
+        : const Color(0xFFF2F3F5);

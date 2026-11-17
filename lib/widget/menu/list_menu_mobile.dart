@@ -10,6 +10,7 @@ import 'package:tripitaka91/features/book/show_book3.dart';
 import 'package:tripitaka91/features/book/show_title.dart';
 import 'package:tripitaka91/widget/showdict/dictshow_dict.dart';
 import 'package:tripitaka91/widget/showdict/dictshow_dictbt.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ListMenuMobile extends StatelessWidget {
   final bool online;
@@ -78,6 +79,33 @@ class ListMenuMobile extends StatelessWidget {
                 ),
               ),
             );
+          },
+        ),
+        ClipPath(
+          clipper: RightTriangleRectangleClipper(),
+          child: Container(
+            width: 100,
+            height: 25,
+            color: TColors.primary,
+            child: const Center(
+              child: ATextDiskplayMedium(
+                text: 'หมวดสื่อเสริมจาก YouTube',
+              ),
+            ),
+          ),
+        ),
+        ListTile(
+          title: const ATextTitleMedium18(text: 'สรุปหัวข้อธรรมจาก YouTube'),
+          subtitle: const Text(
+            'ค้นหาและสรุปหัวข้อธรรมที่เคยบรรยายใน YouTube '
+            'พร้อมลิงก์กระโดดไปยังช่วงเวลาที่กล่าวถึงโดยตรง',
+            style: TextStyle(fontSize: 12),
+          ),
+          onTap: () async {
+            final uri = Uri.parse('http://localhost:8081/');
+            if (await canLaunchUrl(uri)) {
+              await launchUrl(uri, mode: LaunchMode.externalApplication);
+            }
           },
         ),
         ClipPath(

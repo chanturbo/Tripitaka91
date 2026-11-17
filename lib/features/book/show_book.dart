@@ -414,6 +414,7 @@ class _ShowBookSlideState extends State<ShowBookSlide> {
                                 menuList: item['menuList'],
                                 menuMain: item['menuMain'],
                                 online: widget.online,
+                                isMobile: widget.isMobile,
                               ),
                             ),
                           );
@@ -484,7 +485,7 @@ class _ShowBookSlideState extends State<ShowBookSlide> {
                   controller: _scrollControllerListView4,
                   scrollDirection: Axis.horizontal,
                   shrinkWrap: true,
-                  itemCount: 6,
+                  itemCount: 4,
                   itemBuilder: (BuildContext context, int index) {
                     return Card(
                       margin: const EdgeInsets.all(10),

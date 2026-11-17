@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:tripitaka91/utils/constants/sizes.dart';
 import 'package:tripitaka91/utils/shared_preferences/shared_value.dart';
+import 'package:tripitaka91/widget/login/profile_menu.dart';
 
 class TProfileMenuSpeechFuture extends StatelessWidget {
   const TProfileMenuSpeechFuture({
@@ -8,7 +8,7 @@ class TProfileMenuSpeechFuture extends StatelessWidget {
     required this.onPressed,
     required this.title,
     required this.valueFuture,
-    this.icon = Icons.arrow_right,
+    this.icon = Icons.record_voice_over_outlined,
   });
 
   final IconData icon;
@@ -22,34 +22,28 @@ class TProfileMenuSpeechFuture extends StatelessWidget {
       future: valueFuture,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
+          return TProfileInfoRow(
+            icon: icon,
+            title: title,
+            value: const SizedBox(
+              width: 14,
+              height: 14,
+              child: CircularProgressIndicator(strokeWidth: 2),
+            ),
+          );
         } else if (snapshot.hasError) {
-          return Text('เกิดข้อผิดพลาดในการโหลดข้อมูล: ${snapshot.error}');
+          return TProfileInfoRow(
+            icon: icon,
+            title: title,
+            value: Text('เกิดข้อผิดพลาดในการโหลดข้อมูล: ${snapshot.error}'),
+          );
         } else {
           final value = snapshot.data ?? '0';
           saveValueSpeech(int.parse(value));
-          return GestureDetector(
-            onTap: onPressed,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                  vertical: TSizes.spaceBtwItems / 1.5),
-              child: Row(
-                children: [
-                  Expanded(
-                      flex: 3,
-                      child: Text(title,
-                          style: Theme.of(context).textTheme.bodySmall)),
-                  Expanded(
-                    flex: 5,
-                    child: Text('$value รายการ',
-                        style: Theme.of(context).textTheme.bodyMedium,
-                        overflow: TextOverflow.ellipsis),
-                  ),
-                  const Expanded(child: Text('')),
-                  // Expanded(child: Icon(icon, size: 18)),
-                ],
-              ),
-            ),
+          return TProfileInfoRow(
+            icon: icon,
+            title: title,
+            value: Text('$value รายการ'),
           );
         }
       },

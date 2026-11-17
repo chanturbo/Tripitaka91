@@ -1,9 +1,63 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:tripitaka91/utils/constants/online_label.dart';
 import 'package:tripitaka91/widget/auto_text/auto_text.dart';
 import 'package:tripitaka91/widget/right_clipper/center_clipper.dart';
+
+final _urlRegExp = RegExp(r'https?://\S+');
+
+Future<void> _launchExternalUrl(String url) async {
+  final uri = Uri.parse(url);
+  if (await canLaunchUrl(uri)) {
+    await launchUrl(uri, mode: LaunchMode.externalApplication);
+  }
+}
+
+// Renders ATextTitleMedium-styled text, turning any http(s) URL inside it
+// into a tappable link that opens in the device's default browser/app.
+class _LinkifiedTitleMedium extends StatelessWidget {
+  final String text;
+
+  const _LinkifiedTitleMedium({required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    final baseStyle = Theme.of(context).textTheme.titleMedium;
+    final matches = _urlRegExp.allMatches(text).toList();
+    if (matches.isEmpty) {
+      return Text(text, style: baseStyle);
+    }
+
+    final spans = <InlineSpan>[];
+    var last = 0;
+    for (final match in matches) {
+      if (match.start > last) {
+        spans.add(TextSpan(text: text.substring(last, match.start)));
+      }
+      final url = match.group(0)!;
+      spans.add(
+        TextSpan(
+          text: url,
+          style: const TextStyle(
+            color: Colors.blue,
+            decoration: TextDecoration.underline,
+          ),
+          recognizer: TapGestureRecognizer()
+            ..onTap = () => _launchExternalUrl(url),
+        ),
+      );
+      last = match.end;
+    }
+    if (last < text.length) {
+      spans.add(TextSpan(text: text.substring(last)));
+    }
+
+    return RichText(text: TextSpan(style: baseStyle, children: spans));
+  }
+}
 
 class TripitakaInfoWidget extends StatelessWidget {
   const TripitakaInfoWidget({super.key});
@@ -79,19 +133,19 @@ class TripitakaInfoWidget extends StatelessWidget {
                   text:
                       '          พระไตรปิฎก-> อ้างอิงจาก พระไตรปิฎกและอรรถกถาแปล ชุด 91 เล่ม ฉบับ มหามกุฏราชวิทยาลัย (เล่มสีน้ำเงิน)',
                 ),
-                const ATextTitleMedium(
+                const _LinkifiedTitleMedium(
                   text:
                       '          สำหรับฐานข้อมูลพระไตรปิฎกได้มาจากโปรแกรม E-Tipitaka เว็บไซต์ http://etipitaka.com/ ซึ่งอนุญาตแจกจ่ายได้ ฟรี ภายใต้สัญญา Apache License, Version 2.0',
                 ),
-                const ATextTitleMedium(
+                const _LinkifiedTitleMedium(
                   text:
                       '          หัวข้อธรรม -> เป็นหัวข้อธรรมที่รวบรวมโดยคณะวัดสามแยก http://www.samyaek.com',
                 ),
-                const ATextTitleMedium(
+                const _LinkifiedTitleMedium(
                   text:
                       '          พจนานุกรม ฉบับประมวลศัพท์ -> รวบรวมโดย พระพรหมคุณาภรณ์ (ป.อ. ปยุตฺโต) ฐานข้อมูลได้มาจาก เว็บไซต์ http://www.mahamodo.com/downloads/programsdetail.aspx?id=999995',
                 ),
-                const ATextTitleMedium(
+                const _LinkifiedTitleMedium(
                   text:
                       '          พจนานุกรม ไทย-บาลี -> ฐานข้อมูลได้มาจากโปรแกรม E-Tipitaka เว็บไซต์ http://etipitaka.com/ ซึ่งอนุญาตแจกจ่ายได้ ฟรี ภายใต้สัญญา Apache License, Version 2.0',
                 ),

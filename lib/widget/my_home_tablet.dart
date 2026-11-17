@@ -12,11 +12,6 @@ import 'package:tripitaka91/widget/last_read/show_last.dart';
 import 'package:tripitaka91/widget/last_read/show_last2.dart';
 import 'package:tripitaka91/widget/line_custom/mylinepainter.dart';
 import 'package:tripitaka91/widget/menu/list_menu.dart';
-import 'package:tripitaka91/widget/menu/list_menu_dict.dart';
-import 'package:tripitaka91/widget/menu/list_menu_title.dart';
-import 'package:tripitaka91/widget/menu/list_menu_tri11_74.dart';
-import 'package:tripitaka91/widget/menu/list_menu_tri1_10.dart';
-import 'package:tripitaka91/widget/menu/list_menu_tri75_91.dart';
 import 'package:tripitaka91/utils/theme/theme_helpers.dart';
 import 'package:tripitaka91/widget/right_clipper/center_clipper.dart';
 import 'package:tripitaka91/widget/right_clipper/right_clipper.dart';
@@ -35,7 +30,6 @@ class MyHomeTablet extends StatefulWidget {
 class _MyHomeTabletState extends State<MyHomeTablet>
     with HomeStateMixin<MyHomeTablet> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  int sidebarButtonNo = 0;
 
   @override
   bool get online => widget.online;
@@ -47,6 +41,37 @@ class _MyHomeTabletState extends State<MyHomeTablet>
     double screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       key: _scaffoldKey,
+      drawer: Container(
+        padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
+        width: 290,
+        child: Material(
+          color: adaptiveSurfaceColor(context),
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(12, 8, 4, 8),
+                child: Row(
+                  children: [
+                    const Expanded(child: ATextTitleMedium(text: 'เมนู')),
+                    IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () => Navigator.of(context).pop(),
+                    ),
+                  ],
+                ),
+              ),
+              const Divider(height: 1),
+              Expanded(
+                child: ListMenu(
+                  isDesktop: false,
+                  isTablet: true,
+                  online: widget.online,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
       appBar: AppBar(
         titleSpacing: 0,
         title: AppBarCustom(
@@ -107,53 +132,37 @@ class _MyHomeTabletState extends State<MyHomeTablet>
           ),
         ],
       ),
-      drawer: Container(
-        padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
-        width: 290,
-        child: Material(
-          color: adaptiveSurfaceColor(context),
-          child: sidebarButtonNo == 1
-              ? ListMenuTri1(
-                  isDesktop: true,
-                  isTablet: false,
-                  online: widget.online,
-                )
-              : sidebarButtonNo == 2
-              ? ListMenuTri2(
-                  isDesktop: true,
-                  isTablet: false,
-                  online: widget.online,
-                )
-              : sidebarButtonNo == 3
-              ? ListMenuTri3(
-                  isDesktop: true,
-                  isTablet: false,
-                  online: widget.online,
-                )
-              : sidebarButtonNo == 4
-              ? ListMenuTitle(
-                  isDesktop: true,
-                  isTablet: false,
-                  online: widget.online,
-                )
-              : sidebarButtonNo == 5
-              ? ListMenuDict(
-                  isDesktop: true,
-                  isTablet: false,
-                  online: widget.online,
-                )
-              : ListMenu(
-                  isDesktop: true,
-                  isTablet: false,
-                  online: widget.online,
-                ),
-        ),
-      ),
       body: Container(
         padding: const EdgeInsets.all(0),
         child: Row(
           children: [
-            sideBar(),
+            NavigationRail(
+              backgroundColor: adaptiveSurfaceColor(context),
+              labelType: NavigationRailLabelType.all,
+              selectedIndex: null,
+              onDestinationSelected: (index) {
+                if (index == 0) {
+                  _scaffoldKey.currentState?.openDrawer();
+                } else {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const TripitakaInfoWidget(),
+                    ),
+                  );
+                }
+              },
+              destinations: const [
+                NavigationRailDestination(
+                  icon: Icon(Icons.menu_book_outlined),
+                  label: Text('เมนู'),
+                ),
+                NavigationRailDestination(
+                  icon: Icon(Icons.info_outline),
+                  label: Text('เกี่ยวกับ'),
+                ),
+              ],
+            ),
             Container(
               alignment: Alignment.topCenter,
               child: CustomPaint(
@@ -237,7 +246,7 @@ class _MyHomeTabletState extends State<MyHomeTablet>
                                       color: Colors.blue,
                                       child: const Center(
                                         child: ATextDiskplaySmall(
-                                          text: 'ระบุเล่ม/หน้า/บรรทัด',
+                                          text: 'เปิดระบุเล่ม/หน้า/บรรทัด',
                                         ),
                                       ),
                                     ),
@@ -269,79 +278,6 @@ class _MyHomeTabletState extends State<MyHomeTablet>
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget sideBar() {
-    return Container(
-      width: 125,
-      height: MediaQuery.of(context).size.height,
-      color: adaptiveSurfaceColor(context),
-      child: ListView(
-        children: <Widget>[
-          Container(),
-          sideBarItem(Icons.home, 'หน้าแรก', 0),
-          const Divider(height: 5),
-          sideBarItem(Icons.book_outlined, 'พระวินัยปิฎก', 1),
-          sideBarItem(Icons.book_outlined, 'พระสุตตันตปิฎก', 2),
-          sideBarItem(Icons.book_outlined, 'พระอภิธรรมปิฎก', 3),
-          const Divider(height: 5),
-          sideBarItem(Icons.book, 'หัวข้อธรรมสำคัญ', 4),
-          const Divider(height: 5),
-          sideBarItem(Icons.book, 'พจนานุกรม', 5),
-          const Divider(height: 5),
-          sideBarItem(Icons.account_balance, 'เกี่ยวกับโปรแกรม', 6),
-          const Divider(height: 5),
-        ],
-      ),
-    );
-  }
-
-  Widget sideBarItem(IconData iconData, String text, int index) {
-    final bool isSelected = index == sidebarButtonNo;
-    return MaterialButton(
-      color: isSelected
-          ? TColors.primary1.withValues(alpha: 0.15)
-          : Colors.transparent,
-      height: 80,
-      highlightElevation: 0,
-      elevation: 0,
-      hoverElevation: 0,
-      onPressed: () {
-        setState(() {
-          sidebarButtonNo = index;
-          if (sidebarButtonNo == 6) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const TripitakaInfoWidget(),
-              ),
-            );
-          } else {
-            _scaffoldKey.currentState?.openDrawer();
-          }
-        });
-      },
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          CircleAvatar(
-            backgroundColor: isSelected ? TColors.white : TColors.primary1,
-            child: Icon(
-              iconData,
-              color: isSelected ? TColors.primary : TColors.white,
-              size: 25,
-            ),
-          ),
-          const SizedBox(height: 5),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [ATextBodySmall(text: text)],
-          ),
-        ],
       ),
     );
   }

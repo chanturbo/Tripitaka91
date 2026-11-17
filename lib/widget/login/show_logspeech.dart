@@ -2,10 +2,13 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:tripitaka91/utils/constants/api_constants.dart';
+import 'package:tripitaka91/utils/constants/colors.dart';
 import 'package:tripitaka91/utils/models/users.dart';
 import 'package:tripitaka91/utils/play_audio/audio_manager.dart';
 import 'package:tripitaka91/utils/shared_preferences/shared_user.dart';
-import 'package:tripitaka91/widget/auto_text/auto_text.dart';
+import 'package:tripitaka91/utils/theme/theme_helpers.dart';
+import 'package:tripitaka91/widget/common/circular_icon_button.dart';
+import 'package:tripitaka91/widget/common/index_badge.dart';
 import 'package:tripitaka91/widget/login/loading_dialog.dart';
 
 class LogSpeechScreen extends StatefulWidget {
@@ -18,10 +21,10 @@ class LogSpeechScreen extends StatefulWidget {
 
 class _LogSpeechScreenState extends State<LogSpeechScreen> {
   List<dynamic> dataTitle = [];
-  int loadedRecordsTitle = 0;
   bool loadingTitle = false;
   int pageTitle = 1;
-
+  int loadedRecordsTitle = 0;
+  bool _isListView = false;
   final ScrollController _scrollControllerTitle = ScrollController();
 
   AudioPlayerManager audioPlayerManager = AudioPlayerManager();
@@ -34,80 +37,84 @@ class _LogSpeechScreenState extends State<LogSpeechScreen> {
   @override
   void initState() {
     super.initState();
-    _scrollControllerTitle.addListener(_scrollListener);
     _fetchDataSpeech();
+    _scrollControllerTitle.addListener(_scrollListener);
   }
 
   @override
   void dispose() {
+    _scrollControllerTitle.removeListener(_scrollListener);
+    _scrollControllerTitle.dispose();
     audioPlayerManager.dispose();
     super.dispose();
-  }
-
-  void _handleAddData() {
-    // ทำการ setState() เพื่ออัปเดตข้อมูลใหม่
-    setState(() {
-      dataTitle = [];
-      loadedRecordsTitle = 0;
-      loadingTitle = false;
-      pageTitle = 1;
-      _fetchDataSpeech();
-    });
   }
 
   void _scrollListener() {
     if (_scrollControllerTitle.offset >=
             _scrollControllerTitle.position.maxScrollExtent &&
-        !_scrollControllerTitle.position.outOfRange) {
+        !loadingTitle) {
       _fetchDataSpeech();
     }
   }
 
+  // รีเฟรชข้อมูลทั้งหมดใหม่ตั้งแต่หน้า 1 (ใช้หลังแก้ไข/ลบ หรือเปลี่ยนคำค้นหา)
+  void _handleAddData() {
+    setState(() {
+      dataTitle = [];
+      loadedRecordsTitle = 0;
+      pageTitle = 1;
+    });
+    _fetchDataSpeech();
+  }
+
   Future<void> _fetchDataSpeech() async {
-    if (!loadingTitle) {
-      setState(() {
-        loadingTitle = true;
-      });
+    setState(() {
+      loadingTitle = true;
+    });
 
-      Users? users = await getUsersList();
-      String tmpUser = 'guest';
-      if (users != null) {
-        tmpUser = users.username;
-      }
+    Users? users = await getUsersList();
+    String tmpUser = 'guest';
+    if (users != null) {
+      tmpUser = users.username;
+    }
 
-      final response = await http.post(
-        Uri.parse(tURLshowlogSpeechWithUser),
-        body: {
-          'token': tSecretAPIKey,
-          'username': tmpUser,
-          'page': pageTitle.toString(),
-          'searchText': _searchText,
-        },
-      );
+    final response = await http.post(
+      Uri.parse(tURLshowlogSpeechWithUser),
+      body: {
+        'token': tSecretAPIKey,
+        'username': tmpUser,
+        'page': pageTitle.toString(),
+        'searchText': _searchText,
+      },
+    );
 
-      if (response.statusCode == 200) {
-        var json = response.body;
-        var jsonResponse = jsonDecode(json);
+    if (!mounted) return;
 
-        if (jsonResponse['success'] == true) {
-          List<dynamic> newData = jsonResponse['message'];
-          setState(() {
-            loadedRecordsTitle += newData.length;
-            dataTitle.addAll(newData);
-            loadingTitle = false;
-            pageTitle++;
-          });
-        } else {
-          // ignore: use_build_context_synchronously
-          _showSnackbar(context, '${jsonResponse['message']}');
-          setState(() {
-            loadingTitle = false;
-          });
-        }
+    if (response.statusCode == 200) {
+      var json = response.body;
+      var jsonResponse = jsonDecode(json);
+
+      if (jsonResponse['success'] == true) {
+        List<dynamic> newData = jsonResponse['message'];
+        setState(() {
+          dataTitle.addAll(newData);
+          loadedRecordsTitle = dataTitle.length;
+          pageTitle++;
+          loadingTitle = false;
+        });
       } else {
-        // ignore: avoid_print
-        print('HTTP Error: ${response.statusCode}');
+        // ignore: use_build_context_synchronously
+        _showSnackbar(context, '${jsonResponse['message']}');
+        setState(() {
+          loadingTitle = false;
+        });
       }
+    } else {
+      // ignore: avoid_print
+      print('HTTP Error: ${response.statusCode}');
+      setState(() {
+        loadingTitle = false;
+      });
     }
   }
 
@@ -127,7 +134,8 @@ class _LogSpeechScreenState extends State<LogSpeechScreen> {
         return AlertDialog(
           title: const Text('ไม่สามารถแก้ไขได้'),
           content: const Text(
-              'คำนี้มีการยืนยันการอ่านออกเสียงจากสมาชิกแล้ว ไม่สามารถแก้ไขได้'),
+            'คำนี้มีการยืนยันการอ่านออกเสียงจากสมาชิกแล้ว ไม่สามารถแก้ไขได้',
+          ),
           actions: <Widget>[
             TextButton(
               onPressed: () {
@@ -151,15 +159,17 @@ class _LogSpeechScreenState extends State<LogSpeechScreen> {
           actions: <Widget>[
             TextButton(
               onPressed: () {
-                Navigator.of(context)
-                    .pop(false); // ปิดหน้าต่างและส่งค่า false กลับ
+                Navigator.of(
+                  context,
+                ).pop(false); // ปิดหน้าต่างและส่งค่า false กลับ
               },
               child: const Text('ยกเลิก'),
             ),
             ElevatedButton(
               onPressed: () {
-                Navigator.of(context)
-                    .pop(true); // ปิดหน้าต่างและส่งค่า true กลับ
+                Navigator.of(
+                  context,
+                ).pop(true); // ปิดหน้าต่างและส่งค่า true กลับ
               },
               child: const Text(' ยืนยัน '),
             ),
@@ -177,11 +187,7 @@ class _LogSpeechScreenState extends State<LogSpeechScreen> {
     }
     final response = await http.post(
       Uri.parse(tURLdelSpeakConfirm),
-      body: {
-        'token': tSecretAPIKey,
-        'username': tmpUser,
-        'words': words,
-      },
+      body: {'token': tSecretAPIKey, 'username': tmpUser, 'words': words},
     );
 
     if (response.statusCode == 200) {
@@ -194,8 +200,6 @@ class _LogSpeechScreenState extends State<LogSpeechScreen> {
       } else {
         // ignore: use_build_context_synchronously
         _showSnackbar(context, '${jsonResponse['message']}');
-        // print('HTTP Error: ${response.statusCode}');
-        // print('${jsonResponse['message']}');
       }
     } else {
       // ignore: avoid_print
@@ -203,178 +207,297 @@ class _LogSpeechScreenState extends State<LogSpeechScreen> {
     }
   }
 
+  Future<void> _playRecordAudio(dynamic record) async {
+    LoadingDialog.show(context);
+    String txtTitle = record['words_speak'];
+    String namesave = record['words'].trim().replaceAll(RegExp(r'\s+'), '');
+
+    String filename = 'tmp-$namesave';
+    await audioPlayerManager.playAudio('4', filename, txtTitle);
+    // ignore: use_build_context_synchronously
+    LoadingDialog.hide(context);
+  }
+
+  void _editRecord(dynamic record) {
+    if (record['words_comfirm'] > 0) {
+      _showConfirmationDialog(context);
+    } else {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return EditDialog(
+            incorrectWord: record['words'],
+            correctPronunciation: record['words_speak'],
+          );
+        },
+      ).then((result) {
+        _handleAddData();
+      });
+    }
+  }
+
+  Future<void> _deleteRecord(dynamic record) async {
+    bool? confirm = await _showConfirmDialog(context);
+    if (confirm == true) {
+      await _fetchDeleteSpeakConfirm(record['words']);
+      _handleAddData();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(5.0),
-          child: Row(
-            children: [
-              const SizedBox(width: 10),
-              // TextField สำหรับกรอกข้อมูลค้นหา
-              Expanded(
-                child: TextField(
-                  controller: _controlSearchText,
-                  decoration: const InputDecoration(
-                    labelText: 'กรอกข้อมูลการค้นหา',
-                    border: OutlineInputBorder(),
-                  ),
-                  onChanged: (value) {
-                    setState(() {
+    return Container(
+      color: adaptivePageColor(context),
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _controlSearchText,
+                    decoration: InputDecoration(
+                      isDense: true,
+                      hintText: 'ค้นหาคำที่แจ้ง...',
+                      prefixIcon: const Icon(Icons.search, size: 20),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(
+                        vertical: 10,
+                        horizontal: 12,
+                      ),
+                    ),
+                    onChanged: (value) {
                       _searchText = value;
                       _handleAddData();
-                    });
+                    },
+                  ),
+                ),
+                const SizedBox(width: 8),
+                IconButton(
+                  icon: Icon(
+                    _isListView ? Icons.view_agenda_outlined : Icons.view_list,
+                  ),
+                  tooltip: _isListView ? 'แสดงแบบการ์ด' : 'แสดงแบบลิสต์',
+                  onPressed: () {
+                    setState(() => _isListView = !_isListView);
                   },
                 ),
-              ),
-            ],
-          ),
-        ),
-        Expanded(
-          child: NotificationListener(
-            onNotification: (ScrollNotification scrollInfo) {
-              if (scrollInfo is ScrollEndNotification &&
-                  scrollInfo.metrics.pixels ==
-                      scrollInfo.metrics.maxScrollExtent) {
-                _fetchDataSpeech();
-              }
-              return false;
-            },
-            child: ListView.builder(
-              controller: _scrollControllerTitle,
-              itemCount: loadedRecordsTitle + 1,
-              itemBuilder: (context, index) {
-                if (index == loadedRecordsTitle) {
-                  // แสดง loading indicator ขณะที่กำลังโหลดข้อมูลเพิ่มเติม
-                  return loadingTitle
-                      ? const Center(child: CircularProgressIndicator())
-                      : const SizedBox.shrink();
-                } else {
-                  // ดึงข้อมูลแต่ละ record มาแสดง
-                  final record = dataTitle[index];
-                  return ListTile(
-                    leading: CircleAvatar(
-                      backgroundColor: Colors.blue[900],
-                      foregroundColor: Colors.white,
-                      child: ATextDiskplayMedium(text: '${index + 1}'),
-                    ),
-                    title: ATextTitleMedium(
-                        text: 'คำที่ระบบน่าจะอ่านผิด : ${record['words']}'),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        RichText(
-                          text: TextSpan(
-                            children: [
-                              const TextSpan(
-                                text: 'คำอ่าน : ',
-                                style: TextStyle(
-                                    fontFamily: 'THSarabunNew',
-                                    fontSize: 24,
-                                    color: Colors.grey),
-                              ),
-                              TextSpan(
-                                text: '${record['words_speak']}',
-                                style: const TextStyle(
-                                    fontFamily: 'THSarabunNew',
-                                    fontSize: 24,
-                                    color: Colors.red),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Row(
-                          children: [
-                            const SizedBox(width: 5),
-                            InkWell(
-                              onTap: () async {
-                                LoadingDialog.show(context);
-                                String txtTitle = record['words_speak'];
-                                String namesave = record['words']
-                                    .trim()
-                                    .replaceAll(RegExp(r'\s+'), '');
-
-                                String filename = 'tmp-$namesave';
-                                await audioPlayerManager.playAudio(
-                                    '4', filename, txtTitle);
-                                // ignore: use_build_context_synchronously
-                                LoadingDialog.hide(context);
-                                // การเล่นเสียง ใช้ AudioPlayerManager
-                              },
-                              child: Icon(
-                                Icons.volume_up,
-                                size: 20,
-                                color:
-                                    Colors.blue[300], // Change color as needed
-                              ),
-                            ),
-                            const SizedBox(width: 15),
-                            InkWell(
-                              onTap: () async {
-                                if (record['words_comfirm'] > 0) {
-                                  _showConfirmationDialog(context);
-                                } else {
-                                  showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return EditDialog(
-                                        incorrectWord:
-                                            record['words'], // ค่าตัวอย่าง
-                                        correctPronunciation: record[
-                                            'words_speak'], // ค่าตัวอย่าง
-                                      );
-                                    },
-                                  ).then((result) {
-                                    _handleAddData();
-                                  });
-                                }
-                              },
-                              child: Icon(
-                                Icons.edit,
-                                size: 20,
-                                color:
-                                    Colors.blue[300], // Change color as needed
-                              ),
-                            ),
-                            const SizedBox(width: 15),
-                            InkWell(
-                              onTap: () async {
-                                bool? confirm =
-                                    await _showConfirmDialog(context);
-                                if (confirm!) {
-                                  await _fetchDeleteSpeakConfirm(
-                                      record['words']);
-                                  _handleAddData();
-                                }
-                              },
-                              child: Icon(
-                                Icons.delete,
-                                size: 20,
-                                color:
-                                    Colors.blue[300], // Change color as needed
-                              ),
-                            ),
-                          ],
-                        ),
-                        // Text("Username: ${record['username'] ?? 'ไม่ระบุ'}"),
-                        // Text("Length: ${record['words_length']}"),
-                        // Text("Date Added/Edited: ${record['words_dataaddedit']}"),
-                        // Text("Comments: ${record['comments'] ?? 'ไม่มี'}"),
-                        // Text(
-                        //     "Success: ${record['speak_suscess'] == 1 ? 'Yes' : 'No'}"),
-                        const Divider(),
-                      ],
-                    ),
-                  );
-                }
-              },
+              ],
             ),
           ),
-        ),
-      ],
+          Expanded(
+            child: dataTitle.isEmpty
+                ? Center(
+                    child: Text(
+                      loadingTitle ? 'กำลังโหลด...' : 'ไม่พบข้อมูล',
+                      style: TextStyle(
+                        color: adaptiveTextColor(
+                          context,
+                        ).withValues(alpha: 0.5),
+                      ),
+                    ),
+                  )
+                : ListView.builder(
+                    controller: _scrollControllerTitle,
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    itemCount: loadedRecordsTitle + (loadingTitle ? 1 : 0),
+                    itemBuilder: (context, index) {
+                      if (index >= loadedRecordsTitle) {
+                        return const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 16),
+                          child: Center(
+                            child: SizedBox(
+                              width: 24,
+                              height: 24,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2.5,
+                              ),
+                            ),
+                          ),
+                        );
+                      }
+                      final record = dataTitle[index];
+                      return _isListView
+                          ? _buildListRow(context, record, index)
+                          : _buildCard(context, record, index);
+                    },
+                  ),
+          ),
+        ],
+      ),
     );
   }
+
+  Widget _buildCard(BuildContext context, dynamic record, int index) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: adaptiveSurfaceColor(context),
+        borderRadius: BorderRadius.circular(14),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          IndexBadge(index: index + 1, radius: 15),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'คำที่ระบบน่าจะอ่านผิด: ${record['words']}',
+                  style: TextStyle(
+                    fontFamily: 'THSarabunNew',
+                    fontSize: 20,
+                    fontWeight: FontWeight.w700,
+                    color: adaptiveTextColor(context),
+                  ),
+                ),
+                const SizedBox(height: 4),
+                RichText(
+                  text: TextSpan(
+                    children: [
+                      TextSpan(
+                        text: 'คำอ่าน: ',
+                        style: TextStyle(
+                          fontFamily: 'THSarabunNew',
+                          fontSize: 20,
+                          color: adaptiveTextColor(
+                            context,
+                          ).withValues(alpha: 0.6),
+                        ),
+                      ),
+                      TextSpan(
+                        text: '${record['words_speak']}',
+                        style: const TextStyle(
+                          fontFamily: 'THSarabunNew',
+                          fontSize: 20,
+                          color: TColors.error,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Row(
+                  children: [
+                    CircularIconButton(
+                      icon: Icons.volume_up,
+                      color: Colors.blue[300]!,
+                      onTap: () => _playRecordAudio(record),
+                    ),
+                    CircularIconButton(
+                      icon: Icons.edit,
+                      color: Colors.blue[300]!,
+                      onTap: () => _editRecord(record),
+                    ),
+                    CircularIconButton(
+                      icon: Icons.delete,
+                      color: Colors.blue[300]!,
+                      onTap: () => _deleteRecord(record),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // แถวแบบย่อ (โหมดลิสต์): บรรทัดเดียวต่อรายการ เพื่อให้เห็นข้อมูลได้เยอะขึ้น
+  // ส่วนปุ่มจัดการรวมไว้ในเมนู ⋮ แทนการกางไอคอนแยก
+  Widget _buildListRow(BuildContext context, dynamic record, int index) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: adaptiveSurfaceColor(context),
+        borderRadius: BorderRadius.circular(10),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 6,
+            offset: const Offset(0, 1),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          IndexBadge(index: index + 1, radius: 13),
+          const SizedBox(width: 10),
+          Expanded(
+            child: RichText(
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              text: TextSpan(
+                children: [
+                  TextSpan(
+                    text: '${record['words']}',
+                    style: TextStyle(
+                      fontFamily: 'THSarabunNew',
+                      fontSize: 22,
+                      fontWeight: FontWeight.w700,
+                      color: adaptiveTextColor(context),
+                    ),
+                  ),
+                  TextSpan(
+                    text: '  →  ',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: adaptiveTextColor(context).withValues(alpha: 0.4),
+                    ),
+                  ),
+                  TextSpan(
+                    text: '${record['words_speak']}',
+                    style: const TextStyle(
+                      fontFamily: 'THSarabunNew',
+                      fontSize: 22,
+                      color: TColors.error,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(width: 6),
+          CircularIconButton(
+            icon: Icons.volume_up,
+            size: 18,
+            color: Colors.blue[300]!,
+            onTap: () => _playRecordAudio(record),
+          ),
+          CircularIconButton(
+            icon: Icons.edit,
+            size: 18,
+            color: Colors.blue[300]!,
+            onTap: () => _editRecord(record),
+          ),
+          CircularIconButton(
+            icon: Icons.delete,
+            size: 18,
+            color: Colors.blue[300]!,
+            onTap: () => _deleteRecord(record),
+          ),
+        ],
+      ),
+    );
+  }
+
 }
 
 class EditDialog extends StatefulWidget {
@@ -402,10 +525,12 @@ class _EditDialogState extends State<EditDialog> {
   void initState() {
     super.initState();
     // กำหนดค่าเริ่มต้นให้กับ TextEditingController จากค่าที่รับมาจาก constructor
-    _incorrectWordController =
-        TextEditingController(text: widget.incorrectWord);
-    _correctPronunciationController =
-        TextEditingController(text: widget.correctPronunciation);
+    _incorrectWordController = TextEditingController(
+      text: widget.incorrectWord,
+    );
+    _correctPronunciationController = TextEditingController(
+      text: widget.correctPronunciation,
+    );
   }
 
   Future<void> _fetchEditSpeakConfirm(String words, String wordSpeak) async {
@@ -481,10 +606,7 @@ class _EditDialogState extends State<EditDialog> {
         children: [
           TextFormField(
             readOnly: true,
-            style: const TextStyle(
-              fontFamily: 'THSarabunNew',
-              fontSize: 24,
-            ),
+            style: const TextStyle(fontFamily: 'THSarabunNew', fontSize: 24),
             controller: _incorrectWordController,
             validator: (value) {
               if (value!.isEmpty) {
@@ -494,9 +616,7 @@ class _EditDialogState extends State<EditDialog> {
             },
             decoration: const InputDecoration(
               hintText: 'คำต้นฉบับ',
-              hintStyle: TextStyle(
-                color: Colors.grey,
-              ),
+              hintStyle: TextStyle(color: Colors.grey),
             ),
             onChanged: (value) async {},
           ),
@@ -515,9 +635,7 @@ class _EditDialogState extends State<EditDialog> {
             },
             decoration: const InputDecoration(
               hintText: 'คำอ่าน',
-              hintStyle: TextStyle(
-                color: Colors.grey,
-              ),
+              hintStyle: TextStyle(color: Colors.grey),
             ),
           ),
         ],
@@ -527,9 +645,10 @@ class _EditDialogState extends State<EditDialog> {
           onTap: () async {
             LoadingDialog.show(context);
             String txtTitle = _correctPronunciationController.text;
-            String namesave = _incorrectWordController.text
-                .trim()
-                .replaceAll(RegExp(r'\s+'), '');
+            String namesave = _incorrectWordController.text.trim().replaceAll(
+              RegExp(r'\s+'),
+              '',
+            );
 
             String filename = 'tmp-$namesave';
             await audioPlayerManager.playAudio('4', filename, txtTitle);
@@ -546,21 +665,17 @@ class _EditDialogState extends State<EditDialog> {
         // ปุ่ม "ยกเลิก"
         TextButton(
           onPressed: _cancel,
-          child: const Text('ยกเลิก',
-              style: TextStyle(
-                fontFamily: 'THSarabunNew',
-                fontSize: 22,
-              )),
+          child: const Text(
+            'ยกเลิก',
+            style: TextStyle(fontFamily: 'THSarabunNew', fontSize: 22),
+          ),
         ),
         // ปุ่ม "บันทึก"
         TextButton(
           onPressed: _saveEditData,
           child: const Text(
             'บันทึก',
-            style: TextStyle(
-              fontFamily: 'THSarabunNew',
-              fontSize: 22,
-            ),
+            style: TextStyle(fontFamily: 'THSarabunNew', fontSize: 22),
           ),
         ),
       ],

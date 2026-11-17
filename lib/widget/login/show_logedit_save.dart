@@ -3,14 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:substring_highlight/substring_highlight.dart';
 import 'package:tripitaka91/utils/constants/api_constants.dart';
+import 'package:tripitaka91/utils/constants/colors.dart';
 import 'package:tripitaka91/utils/models/users.dart';
 import 'package:tripitaka91/utils/shared_preferences/shared_user.dart';
-import 'package:tripitaka91/utils/text_title_replace/text_title_replace.dart';
 import 'package:tripitaka91/utils/theme/theme_helpers.dart';
 import 'package:tripitaka91/widget/auto_text/auto_text.dart';
 import 'package:tripitaka91/widget/auto_text/text_span.dart';
 import 'package:tripitaka91/widget/login/loading_dialog.dart';
-import 'package:tripitaka91/widget/right_clipper/center_clipper.dart';
 
 class ShowCorrectSave extends StatefulWidget {
   const ShowCorrectSave({super.key});
@@ -21,36 +20,56 @@ class ShowCorrectSave extends StatefulWidget {
 
 class _ShowCorrectSaveState extends State<ShowCorrectSave> {
   List<dynamic> dataTitle = [];
-  int loadedRecordsTitle = 0;
   bool loadingTitle = false;
   int pageTitle = 1;
-  late TextTitleReplace textTitleReplace;
-  final ScrollController _scrollControllerTitle = ScrollController();
+  int loadedRecordsTitle = 0;
+  bool _isListView = false;
   late String opt = '0';
-  // AudioPlayerManager audioPlayerManager = AudioPlayerManager();
   List<dynamic> dataUser = [];
   List<dynamic> dataUserCurrect = [];
+  final ScrollController _scrollControllerTitle = ScrollController();
 
   @override
   void initState() {
     super.initState();
-    textTitleReplace = TextTitleReplace();
-    _scrollControllerTitle.addListener(_scrollListener);
     _fetchDataCorrect();
+    _scrollControllerTitle.addListener(_scrollListener);
   }
 
   @override
   void dispose() {
-    // audioPlayerManager.dispose();
+    _scrollControllerTitle.removeListener(_scrollListener);
+    _scrollControllerTitle.dispose();
     super.dispose();
   }
 
   void _scrollListener() {
     if (_scrollControllerTitle.offset >=
             _scrollControllerTitle.position.maxScrollExtent &&
-        !_scrollControllerTitle.position.outOfRange) {
+        !loadingTitle) {
       _fetchDataCorrect();
     }
+  }
+
+  // เปลี่ยนตัวกรอง (ยังไม่ยืนยัน/ยืนยันแล้ว/แก้ไขแล้ว) แล้วโหลดชุดข้อมูลใหม่ตั้งแต่หน้า 1
+  void _changeFilter(String newOpt) {
+    setState(() {
+      opt = newOpt;
+      dataTitle = [];
+      loadedRecordsTitle = 0;
+      pageTitle = 1;
+    });
+    _fetchDataCorrect();
+  }
+
+  // รีเฟรชชุดข้อมูลปัจจุบันใหม่ตั้งแต่หน้า 1 (ใช้หลังเพิ่ม/ยืนยัน/แก้ไขข้อมูล)
+  void _handleAddData() {
+    setState(() {
+      dataTitle = [];
+      loadedRecordsTitle = 0;
+      pageTitle = 1;
+    });
+    _fetchDataCorrect();
   }
 
   Future<void> _fetchDataCorrect() async {
@@ -74,6 +93,8 @@ class _ShowCorrectSaveState extends State<ShowCorrectSave> {
         },
       );
 
+      if (!mounted) return;
+
       if (response.statusCode == 200) {
         var json = response.body;
         var jsonResponse = jsonDecode(json);
@@ -81,10 +102,10 @@ class _ShowCorrectSaveState extends State<ShowCorrectSave> {
         if (jsonResponse['success'] == true) {
           List<dynamic> newData = jsonResponse['message'];
           setState(() {
-            loadedRecordsTitle += newData.length;
             dataTitle.addAll(newData);
-            loadingTitle = false;
+            loadedRecordsTitle = dataTitle.length;
             pageTitle++;
+            loadingTitle = false;
           });
         } else {
           // ignore: use_build_context_synchronously
@@ -96,6 +117,9 @@ class _ShowCorrectSaveState extends State<ShowCorrectSave> {
       } else {
         // ignore: avoid_print
         print('HTTP Error: ${response.statusCode}');
+        setState(() {
+          loadingTitle = false;
+        });
       }
     }
   }
@@ -109,19 +133,12 @@ class _ShowCorrectSaveState extends State<ShowCorrectSave> {
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
-  void _handleAddData() {
-    // ทำการ setState() เพื่ออัปเดตข้อมูลใหม่
-    setState(() {
-      dataTitle = [];
-      loadedRecordsTitle = 0;
-      loadingTitle = false;
-      pageTitle = 1;
-      _fetchDataCorrect();
-    });
-  }
-
-  Future<void> _fetchUpdateInsertDataCorrect(String initialText, String bookid,
-      String bookpage, String bookline) async {
+  Future<void> _fetchUpdateInsertDataCorrect(
+    String initialText,
+    String bookid,
+    String bookpage,
+    String bookline,
+  ) async {
     Users? users = await getUsersList();
     String tmpUser = 'guest';
     if (users != null) {
@@ -159,7 +176,10 @@ class _ShowCorrectSaveState extends State<ShowCorrectSave> {
   }
 
   Future<void> _fetchUpdateInsertDataCorrectConfirm(
-      String bookid, String bookpage, String bookline) async {
+    String bookid,
+    String bookpage,
+    String bookline,
+  ) async {
     Users? users = await getUsersList();
     String tmpUser = 'guest';
     if (users != null) {
@@ -196,7 +216,10 @@ class _ShowCorrectSaveState extends State<ShowCorrectSave> {
   }
 
   Future<void> _fetchDataUser(
-      String bookid, String bookpage, String bookline) async {
+    String bookid,
+    String bookpage,
+    String bookline,
+  ) async {
     final response = await http.post(
       Uri.parse(tURLtitleUserInPage),
       body: {
@@ -225,8 +248,69 @@ class _ShowCorrectSaveState extends State<ShowCorrectSave> {
     }
   }
 
+  void _showDialogUser(
+    BuildContext context,
+    String title,
+    String bookid,
+    String bookpage,
+    String bookline,
+  ) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return FutureBuilder(
+          future: _fetchDataUser(bookid, bookpage, bookline),
+          builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              return AlertDialog(
+                title: Text(title),
+                content: SizedBox(
+                  width: double.maxFinite,
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: dataUser.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return ListTile(
+                        leading: CircleAvatar(
+                          backgroundColor: TColors.buttonPrimary,
+                          foregroundColor: Colors.white,
+                          child: Text('${index + 1}'),
+                        ),
+                        title: ATextTitleMedium(
+                          text:
+                              '${dataUser[index]['first_nameid']}${dataUser[index]['firstName']}  ${dataUser[index]['lastName']}',
+                        ),
+                        subtitle: ATextLabelMedium(
+                          text:
+                              'วันที่ยืนยัน ${dataUser[index]['tripitaka91_dateconfirm_local']}',
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text('Close'),
+                  ),
+                ],
+              );
+            } else {
+              return const Center(child: CircularProgressIndicator());
+            }
+          },
+        );
+      },
+    );
+  }
+
   Future<void> _fetchDataUserCorrect(
-      String bookid, String bookpage, String bookline) async {
+    String bookid,
+    String bookpage,
+    String bookline,
+  ) async {
     final response = await http.post(
       Uri.parse(tURLtitleUserInPageCorrect),
       body: {
@@ -255,8 +339,69 @@ class _ShowCorrectSaveState extends State<ShowCorrectSave> {
     }
   }
 
+  void _showDialogUserCorrect(
+    BuildContext context,
+    String title,
+    String bookid,
+    String bookpage,
+    String bookline,
+  ) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return FutureBuilder(
+          future: _fetchDataUserCorrect(bookid, bookpage, bookline),
+          builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              return AlertDialog(
+                title: Text(title),
+                content: SizedBox(
+                  width: double.maxFinite,
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: dataUserCurrect.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return ListTile(
+                        leading: CircleAvatar(
+                          backgroundColor: TColors.buttonPrimary,
+                          foregroundColor: Colors.white,
+                          child: Text('${index + 1}'),
+                        ),
+                        title: ATextTitleMedium(
+                          text:
+                              '${dataUserCurrect[index]['first_nameid']}${dataUserCurrect[index]['firstName']}  ${dataUserCurrect[index]['lastName']}',
+                        ),
+                        subtitle: ATextLabelMedium(
+                          text:
+                              'วันที่เพิ่มข้อมูล ${dataUserCurrect[index]['tripitaka91_dateadd_local']}',
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text('Close'),
+                  ),
+                ],
+              );
+            } else {
+              return const Center(child: CircularProgressIndicator());
+            }
+          },
+        );
+      },
+    );
+  }
+
   Future<void> _fetchConfirmSuscess(
-      String bookid, String bookpage, String bookline) async {
+    String bookid,
+    String bookpage,
+    String bookline,
+  ) async {
     final response = await http.post(
       Uri.parse(tURLsuscessCorrectConfirm),
       body: {
@@ -279,8 +424,6 @@ class _ShowCorrectSaveState extends State<ShowCorrectSave> {
       } else {
         // ignore: use_build_context_synchronously
         _showSnackbar(context, '${jsonResponse['message']}');
-        // print('HTTP Error: ${response.statusCode}');
-        // print('${jsonResponse['message']}');
       }
     } else {
       // ignore: avoid_print
@@ -288,128 +431,17 @@ class _ShowCorrectSaveState extends State<ShowCorrectSave> {
     }
   }
 
-  void _showDialogUser(BuildContext context, String title, String bookid,
-      String bookpage, String bookline) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return FutureBuilder(
-          future: _fetchDataUser(bookid, bookpage, bookline),
-          builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
-            if (snapshot.connectionState == ConnectionState.done) {
-              // Data has been fetched, show the dialog
-              return AlertDialog(
-                title: Text(title),
-                content: SizedBox(
-                  width: double.maxFinite,
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: dataUser.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return Column(
-                        children: [
-                          ListTile(
-                            leading: CircleAvatar(
-                              backgroundColor: Colors.blue[900],
-                              foregroundColor:
-                                  const Color.fromARGB(255, 173, 137, 137),
-                              child: ATextDiskplaySmall(text: '${index + 1}'),
-                            ),
-                            title: ATextTitleMedium(
-                              text:
-                                  '${dataUser[index]['first_nameid']}${dataUser[index]['firstName']}  ${dataUser[index]['lastName']}',
-                            ),
-                            subtitle: ATextLabelMedium(
-                                text:
-                                    'วันที่ยืนยัน ${dataUser[index]['tripitaka91_dateconfirm_local']}'),
-                          ),
-                        ],
-                      );
-                    },
-                  ),
-                ),
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text('Close'),
-                  ),
-                ],
-              );
-            } else {
-              // Data is still being fetched, show loading indicator or whatever you want
-              return const Center(child: CircularProgressIndicator());
-            }
-          },
-        );
-      },
+  void _showInputDialog(
+    BuildContext context,
+    String correctWord,
+    String initialText,
+    String bookid,
+    String bookpage,
+    String bookline,
+  ) {
+    final TextEditingController textController = TextEditingController(
+      text: initialText,
     );
-  }
-
-  void _showDialogUserCorrect(BuildContext context, String title, String bookid,
-      String bookpage, String bookline) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return FutureBuilder(
-          future: _fetchDataUserCorrect(bookid, bookpage, bookline),
-          builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
-            if (snapshot.connectionState == ConnectionState.done) {
-              // Data has been fetched, show the dialog
-              return AlertDialog(
-                title: Text(title),
-                content: SizedBox(
-                  width: double.maxFinite,
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: dataUserCurrect.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return Column(
-                        children: [
-                          ListTile(
-                            leading: CircleAvatar(
-                              backgroundColor: Colors.blue[900],
-                              foregroundColor:
-                                  const Color.fromARGB(255, 173, 137, 137),
-                              child: ATextDiskplaySmall(text: '${index + 1}'),
-                            ),
-                            title: ATextTitleMedium(
-                              text:
-                                  '${dataUserCurrect[index]['first_nameid']}${dataUserCurrect[index]['firstName']}  ${dataUserCurrect[index]['lastName']}',
-                            ),
-                            subtitle: ATextLabelMedium(
-                                text:
-                                    'วันที่เพิ่มข้อมูล ${dataUserCurrect[index]['tripitaka91_dateadd_local']}'),
-                          ),
-                        ],
-                      );
-                    },
-                  ),
-                ),
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text('Close'),
-                  ),
-                ],
-              );
-            } else {
-              // Data is still being fetched, show loading indicator or whatever you want
-              return const Center(child: CircularProgressIndicator());
-            }
-          },
-        );
-      },
-    );
-  }
-
-  void _showInputDialog(BuildContext context, String correctWord,
-      String initialText, String bookid, String bookpage, String bookline) {
-    final TextEditingController textController =
-        TextEditingController(text: initialText);
 
     showDialog(
       context: context,
@@ -419,20 +451,20 @@ class _ShowCorrectSaveState extends State<ShowCorrectSave> {
           title: SubstringHighlight(
             text: 'ระบุข้อความที่น่าจะถูก [ $correctWord ]',
             term: correctWord,
-            textStyle:
-                const TextStyle(fontFamily: 'THSarabunNew', fontSize: 24),
+            textStyle: const TextStyle(
+              fontFamily: 'THSarabunNew',
+              fontSize: 24,
+            ),
           ),
           content: TextFormField(
             style: const TextStyle(fontFamily: 'THSarabunNew', fontSize: 26),
             controller: textController,
-            decoration: const InputDecoration(
-              hintText: 'กรอกข้อมูลที่นี่',
-            ),
+            decoration: const InputDecoration(hintText: 'กรอกข้อมูลที่นี่'),
           ),
           actions: <Widget>[
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // ปิดหน้าต่าง
+                Navigator.of(context).pop();
               },
               child: const Text(
                 'ยกเลิก',
@@ -441,20 +473,20 @@ class _ShowCorrectSaveState extends State<ShowCorrectSave> {
             ),
             ElevatedButton(
               onPressed: () async {
-                // ทำสิ่งที่ต้องการเมื่อกดปุ่มบันทึกข้อมูล
                 String inputData = textController.text;
                 if (inputData == initialText) {
                   _showSnackbar(context, 'กรุณาระบุข้อความที่น่าจะถูก');
                 } else {
-                  // อาจทำการใช้ข้อมูลที่ป้อนเข้ามาต่อไป
-                  // print(
-                  //     'ข้อมูลที่ป้อน: $inputData เล่ม $bookid หน้า $bookpage บรรทัด $bookline');
                   bool? confirm = await _showConfirmationDialog(context);
                   if (confirm!) {
                     await _fetchUpdateInsertDataCorrect(
-                        inputData, bookid, bookpage, bookline);
+                      inputData,
+                      bookid,
+                      bookpage,
+                      bookline,
+                    );
                     // ignore: use_build_context_synchronously
-                    Navigator.of(context).pop(); // ปิดหน้าต่าง
+                    Navigator.of(context).pop();
                   }
                 }
               },
@@ -479,15 +511,17 @@ class _ShowCorrectSaveState extends State<ShowCorrectSave> {
           actions: <Widget>[
             TextButton(
               onPressed: () {
-                Navigator.of(context)
-                    .pop(false); // ปิดหน้าต่างและส่งค่า false กลับ
+                Navigator.of(
+                  context,
+                ).pop(false); // ปิดหน้าต่างและส่งค่า false กลับ
               },
               child: const Text('ยกเลิก'),
             ),
             ElevatedButton(
               onPressed: () {
-                Navigator.of(context)
-                    .pop(true); // ปิดหน้าต่างและส่งค่า true กลับ
+                Navigator.of(
+                  context,
+                ).pop(true); // ปิดหน้าต่างและส่งค่า true กลับ
               },
               child: const Text(' ยืนยัน '),
             ),
@@ -517,605 +551,587 @@ class _ShowCorrectSaveState extends State<ShowCorrectSave> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: NotificationListener(
-        onNotification: (ScrollNotification scrollInfo) {
-          if (scrollInfo is ScrollEndNotification &&
-              scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
-            _fetchDataCorrect();
-          }
-          return false;
-        },
-        child: ListView.builder(
-          controller: _scrollControllerTitle,
-          itemCount: loadedRecordsTitle + 1,
-          itemBuilder: (context, index) {
-            if (index == loadedRecordsTitle) {
-              // print('opt $opt');
-              // print('index  $index');
-              // print('loadedRecordsTitle $loadedRecordsTitle');
-              return loadingTitle
-                  ? const Center(child: CircularProgressIndicator())
-                  : loadedRecordsTitle == 0
-                      ? Column(
-                          children: [
-                            const SizedBox(height: 10),
-                            SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                  ElevatedButton(
-                                    onPressed: () {
-                                      opt = '0';
-                                      _handleAddData();
-                                    },
-                                    style: ButtonStyle(
-                                      backgroundColor: WidgetStateProperty.all<
-                                          Color>(opt ==
-                                              '0'
-                                          ? Colors.orange
-                                          : adaptiveSurfaceColor(context)),
-                                      shape: WidgetStateProperty.all<
-                                          RoundedRectangleBorder>(
-                                        RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                              18.0), // กำหนดขนาดของเส้นขอบ
-                                          side: BorderSide(
-                                              color:
-                                                  adaptiveBorderColor(context)),
-                                        ),
-                                      ),
-                                    ),
-                                    child: ATextLabelMediumColor(
-                                        color: opt == '0'
-                                            ? Colors.white
-                                            : Colors.grey,
-                                        text: ' แสดงข้อมูลที่ยังไม่ยืนยัน '),
-                                  ),
-                                  const SizedBox(width: 20),
-                                  ElevatedButton(
-                                    onPressed: () {
-                                      opt = '1';
-                                      _handleAddData();
-                                    },
-                                    style: ButtonStyle(
-                                      backgroundColor: WidgetStateProperty.all<
-                                          Color>(opt ==
-                                              '1'
-                                          ? Colors.orange
-                                          : adaptiveSurfaceColor(context)),
-                                      shape: WidgetStateProperty.all<
-                                          RoundedRectangleBorder>(
-                                        RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                              18.0), // กำหนดขนาดของเส้นขอบ
-                                          side: BorderSide(
-                                              color:
-                                                  adaptiveBorderColor(context)),
-                                        ),
-                                      ),
-                                    ),
-                                    child: ATextLabelMediumColor(
-                                        color: opt == '1'
-                                            ? Colors.white
-                                            : Colors.grey,
-                                        text: ' แสดงข้อมูลที่ยืนยันแล้ว '),
-                                  ),
-                                  const SizedBox(width: 20),
-                                  ElevatedButton(
-                                    onPressed: () {
-                                      opt = '2';
-                                      _handleAddData();
-                                    },
-                                    style: ButtonStyle(
-                                      backgroundColor: WidgetStateProperty.all<
-                                          Color>(opt ==
-                                              '2'
-                                          ? Colors.orange
-                                          : adaptiveSurfaceColor(context)),
-                                      shape: WidgetStateProperty.all<
-                                          RoundedRectangleBorder>(
-                                        RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                              18.0), // กำหนดขนาดของเส้นขอบ
-                                          side: BorderSide(
-                                              color:
-                                                  adaptiveBorderColor(context)),
-                                        ),
-                                      ),
-                                    ),
-                                    child: ATextLabelMediumColor(
-                                        color: opt == '2'
-                                            ? Colors.white
-                                            : Colors.grey,
-                                        text: ' แสดงข้อมูลที่แก้ไขแล้ว '),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        )
-                      : const SizedBox.shrink();
-            }
-            String userTmp = dataTitle[index]['users'];
-            userTmp = userTmp.replaceAll(',', ', ');
-            return Column(
+  Future<void> _confirmInsertTap(
+    BuildContext context,
+    String bookid,
+    String bookpage,
+    String bookline,
+  ) async {
+    Users? users = await getUsersList();
+    if (!context.mounted) return;
+    if (users?.permissionLogEdit == '0') {
+      showPermissionDialog(context);
+      return;
+    }
+    bool? confirm = await _showConfirmationDialog(context);
+    if (confirm == true) {
+      await _fetchUpdateInsertDataCorrectConfirm(bookid, bookpage, bookline);
+    }
+  }
+
+  Future<void> _confirmEditSuccessTap(
+    BuildContext context,
+    String bookid,
+    String bookpage,
+    String bookline,
+  ) async {
+    Users? users = await getUsersList();
+    if (!context.mounted) return;
+    String tmpLevel = users?.levelAccess ?? '2';
+    if (tmpLevel != '1') {
+      _showSnackbar(context, 'คุณยังไม่ได้รับสิทธิ์ยืนยันการแก้ไขข้อมูล');
+      return;
+    }
+    bool? confirm = await _showConfirmationDialog(context);
+    if (!context.mounted) return;
+    if (confirm == true) {
+      LoadingDialog.show(context);
+      await _fetchConfirmSuscess(bookid, bookpage, bookline);
+      if (!context.mounted) return;
+      LoadingDialog.hide(context);
+    }
+  }
+
+  // ชิปสถานะ/การกระทำแบบย่อ ใช้แทน ClipPath สามเหลี่ยมคู่แบบเดิม
+  Widget _buildTag(String text, Color color, {VoidCallback? onTap}) {
+    final chip = Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Text(
+        text,
+        style: TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.w600,
+          color: color,
+        ),
+      ),
+    );
+    if (onTap == null) return chip;
+    return InkWell(
+      borderRadius: BorderRadius.circular(999),
+      onTap: onTap,
+      child: chip,
+    );
+  }
+
+  Widget _buildIndexBadge(dynamic record, {double radius = 15}) {
+    final color = record['bookconfirm'] == 0
+        ? Colors.grey
+        : record['booksuscess'] == 0
+        ? TColors.buttonPrimary
+        : TColors.success;
+    return CircleAvatar(
+      radius: radius,
+      backgroundColor: color,
+      foregroundColor: Colors.white,
+      child: const Icon(Icons.edit_note, size: 16),
+    );
+  }
+
+  // รายการชิปสถานะ/การกระทำ ขึ้นกับตัวกรองปัจจุบัน (opt) และสถานะของรายการ
+  // ชิปแรกในลิสต์คือชิปหลักของสถานะนี้เสมอ
+  List<Widget> _buildStatusTags(BuildContext context, dynamic record) {
+    final bookid = '${record['tripitaka91_book']}';
+    final bookpage = '${record['tripitaka91_page']}';
+    final bookline = '${record['tripitaka91_line']}';
+
+    if (record['detail_new'] == null) {
+      return [
+        _buildTag(
+          'เพิ่มข้อความที่น่าจะถูก...',
+          TColors.buttonPrimary,
+          onTap: () => _showInputDialog(
+            context,
+            '${record['wordcorrect']}',
+            '${record['detail_old']}',
+            bookid,
+            bookpage,
+            bookline,
+          ),
+        ),
+      ];
+    }
+
+    if (opt == '0') {
+      return [
+        _buildTag(
+          'ยืนยันข้อมูล',
+          TColors.buttonPrimary,
+          onTap: () => _confirmInsertTap(context, bookid, bookpage, bookline),
+        ),
+        _buildTag(
+          'สมาชิกยืนยันแล้ว ${record['bookconfirm']} ท่าน',
+          TColors.success,
+          onTap: () => _showDialogUser(
+            context,
+            'รายชื่อสมาชิกที่ยืนยันแล้ว',
+            bookid,
+            bookpage,
+            bookline,
+          ),
+        ),
+      ];
+    } else if (opt == '1') {
+      return [
+        _buildTag(
+          'สมาชิกที่ยืนยันแล้ว ${record['bookconfirm']} ท่าน',
+          TColors.success,
+          onTap: () => _showDialogUser(
+            context,
+            'รายชื่อสมาชิกที่ยืนยันแล้ว',
+            bookid,
+            bookpage,
+            bookline,
+          ),
+        ),
+      ];
+    }
+    // opt == '2'
+    final Widget primaryTag;
+    if (record['booksuscess'] == 1) {
+      primaryTag = _buildTag('ข้อมูลถูกแก้ไขเรียบร้อยแล้ว', TColors.success);
+    } else if (record['bookconfirm'] >= tCorrectNum) {
+      primaryTag = _buildTag(
+        'ยืนยันการแก้ไขข้อมูล',
+        TColors.buttonPrimary,
+        onTap: () =>
+            _confirmEditSuccessTap(context, bookid, bookpage, bookline),
+      );
+    } else {
+      primaryTag = _buildTag(
+        'รอสมาชิกยืนยันครบ $tCorrectNum ท่าน',
+        TColors.warning,
+      );
+    }
+    return [
+      primaryTag,
+      _buildTag(
+        'สมาชิกที่ยืนยัน ${record['bookconfirm']} ท่าน',
+        TColors.success,
+        onTap: () => _showDialogUser(
+          context,
+          'รายชื่อสมาชิกที่ยืนยันแล้ว',
+          bookid,
+          bookpage,
+          bookline,
+        ),
+      ),
+    ];
+  }
+
+  Widget _buildCard(BuildContext context, dynamic record, int index) {
+    String userTmp = '${record['users']}'.replaceAll(',', ', ');
+    final comment = '${record['wordcorrectcomment'] ?? ''}';
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: adaptiveSurfaceColor(context),
+        borderRadius: BorderRadius.circular(14),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildIndexBadge(record),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (index == 0) const SizedBox(height: 10),
-                if (index == 0)
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        ElevatedButton(
-                          onPressed: () {
-                            opt = '0';
-                            _handleAddData();
-                          },
-                          style: ButtonStyle(
-                            backgroundColor: WidgetStateProperty.all<Color>(
-                                opt == '0'
-                                    ? Colors.orange
-                                    : adaptiveSurfaceColor(context)),
-                            shape:
-                                WidgetStateProperty.all<RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(
-                                    18.0), // กำหนดขนาดของเส้นขอบ
-                                side: BorderSide(
-                                    color: adaptiveBorderColor(context)),
-                              ),
-                            ),
-                          ),
-                          child: ATextLabelMediumColor(
-                              color: opt == '0' ? Colors.white : Colors.grey,
-                              text: ' แสดงข้อมูลที่ยังไม่ยืนยัน '),
-                        ),
-                        const SizedBox(width: 20),
-                        ElevatedButton(
-                          onPressed: () {
-                            opt = '1';
-                            _handleAddData();
-                          },
-                          style: ButtonStyle(
-                            backgroundColor: WidgetStateProperty.all<Color>(
-                                opt == '1'
-                                    ? Colors.orange
-                                    : adaptiveSurfaceColor(context)),
-                            shape:
-                                WidgetStateProperty.all<RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(
-                                    18.0), // กำหนดขนาดของเส้นขอบ
-                                side: BorderSide(
-                                    color: adaptiveBorderColor(context)),
-                              ),
-                            ),
-                          ),
-                          child: ATextLabelMediumColor(
-                              color: opt == '1' ? Colors.white : Colors.grey,
-                              text: ' แสดงข้อมูลที่ยืนยันแล้ว '),
-                        ),
-                        const SizedBox(width: 20),
-                        ElevatedButton(
-                          onPressed: () {
-                            opt = '2';
-                            _handleAddData();
-                          },
-                          style: ButtonStyle(
-                            backgroundColor: WidgetStateProperty.all<Color>(
-                                opt == '2'
-                                    ? Colors.orange
-                                    : adaptiveSurfaceColor(context)),
-                            shape:
-                                WidgetStateProperty.all<RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(
-                                    18.0), // กำหนดขนาดของเส้นขอบ
-                                side: BorderSide(
-                                    color: adaptiveBorderColor(context)),
-                              ),
-                            ),
-                          ),
-                          child: ATextLabelMediumColor(
-                              color: opt == '2' ? Colors.white : Colors.grey,
-                              text: ' แสดงข้อมูลที่แก้ไขแล้ว '),
-                        ),
-                      ],
-                    ),
+                Text(
+                  'เล่ม ${record['tripitaka91_book']} หน้า ${record['tripitaka91_page']} บรรทัด ${record['tripitaka91_line']}',
+                  style: TextStyle(
+                    fontFamily: 'THSarabunNew',
+                    fontSize: 18,
+                    color: adaptiveTextColor(context).withValues(alpha: 0.6),
                   ),
-                if (index == 0) const SizedBox(height: 10),
-                ListTile(
-                  leading: CircleAvatar(
-                    backgroundColor: dataTitle[index]['bookconfirm'] == 0
-                        ? Colors.grey
-                        : dataTitle[index]['booksuscess'] == 0
-                            ? Colors.blue[900]
-                            : Colors.green,
-                    foregroundColor: Colors.white,
-                    child: ATextDiskplayMedium(text: '${index + 1}'),
-                  ),
-                  title: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                ),
+                const SizedBox(height: 4),
+                RichText(
+                  text: TextSpan(
                     children: [
-                      RichText(
-                        text: TextSpan(
-                          children: [
-                            const TextSpan(
-                              text: 'ข้อความที่น่าจะผิด : ',
-                              style: TextStyle(
-                                  fontFamily: 'THSarabunNew',
-                                  fontSize: 24,
-                                  color: Colors.grey),
-                            ),
-                            txtSpanHighlight(
-                                (dataTitle[index]['wordincorrect']).split(','),
-                                '${dataTitle[index]['detail_old']}'),
-                            const TextSpan(
-                              text: '\t\t\t\tคำที่น่าจะผิด : ',
-                              style: TextStyle(
-                                  fontFamily: 'THSarabunNew',
-                                  fontSize: 24,
-                                  color: Colors.grey),
-                            ),
-                            TextSpan(
-                              text: '${dataTitle[index]['wordincorrect']}\n',
-                              style: const TextStyle(
-                                  fontFamily: 'THSarabunNew',
-                                  fontSize: 24,
-                                  color: Colors.red),
-                            ),
-                            const TextSpan(
-                              text: 'ข้อความที่น่าจะถูก : ',
-                              style: TextStyle(
-                                  fontFamily: 'THSarabunNew',
-                                  fontSize: 24,
-                                  color: Colors.grey),
-                            ),
-                            txtSpanHighlight(
-                                (dataTitle[index]['wordcorrect']).split(','),
-                                '${dataTitle[index]['detail_new']}'),
-                            const TextSpan(
-                              text: '\t\t\t\tคำที่น่าจะถูก : ',
-                              style: TextStyle(
-                                  fontFamily: 'THSarabunNew',
-                                  fontSize: 24,
-                                  color: Colors.grey),
-                            ),
-                            TextSpan(
-                              text: '${dataTitle[index]['wordcorrect']}',
-                              style: const TextStyle(
-                                  fontFamily: 'THSarabunNew',
-                                  fontSize: 24,
-                                  color: Colors.red),
-                            ),
-                          ],
+                      TextSpan(
+                        text: 'คำที่น่าจะผิด: ',
+                        style: TextStyle(
+                          fontFamily: 'THSarabunNew',
+                          fontSize: 20,
+                          color: adaptiveTextColor(
+                            context,
+                          ).withValues(alpha: 0.6),
                         ),
                       ),
-                      dataTitle[index]['detail_new'] == null
-                          ? InkWell(
-                              onTap: () {
-                                _showInputDialog(
-                                    context,
-                                    '${dataTitle[index]['wordcorrect']}',
-                                    '${dataTitle[index]['detail_old']}',
-                                    '${dataTitle[index]['tripitaka91_book']}',
-                                    '${dataTitle[index]['tripitaka91_page']}',
-                                    '${dataTitle[index]['tripitaka91_line']}');
-                              },
-                              child: const SizedBox(
-                                width: 150,
-                                child: Row(
-                                  children: [
-                                    Icon(Icons.add),
-                                    ATextLabelLarge(
-                                      text: 'เพิ่มข้อความที่น่าจะถูก...',
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            )
-                          : opt == '0'
-                              ? SingleChildScrollView(
-                                  scrollDirection: Axis.horizontal,
-                                  child: Row(
-                                    children: [
-                                      InkWell(
-                                        onTap: () async {
-                                          Users? users = await getUsersList();
-                                          if (!context.mounted) return;
-                                          if (users?.permissionLogEdit == '0') {
-                                            showPermissionDialog(context);
-                                          } else {
-                                            bool? confirm =
-                                                await _showConfirmationDialog(
-                                                    context);
-                                            if (confirm!) {
-                                              // print('ยืนยันข้อมูล');
-                                              await _fetchUpdateInsertDataCorrectConfirm(
-                                                  '${dataTitle[index]['tripitaka91_book']}',
-                                                  '${dataTitle[index]['tripitaka91_page']}',
-                                                  '${dataTitle[index]['tripitaka91_line']}');
-                                            }
-                                          }
-                                        },
-                                        child: Align(
-                                          alignment: Alignment.centerLeft,
-                                          child: ClipPath(
-                                            clipper:
-                                                DoubleTriangleRectangleClipper(),
-                                            child: Container(
-                                              padding:
-                                                  const EdgeInsets.all(3.0),
-                                              color: Colors.red,
-                                              child: const ATextDiskplaySmall(
-                                                  text: 'ยืนยันข้อมูล'),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        width: 5,
-                                      ),
-                                      InkWell(
-                                        onTap: () {
-                                          _showDialogUser(
-                                              context,
-                                              'รายชื่อสมาชิกที่ยืนยันแล้ว',
-                                              '${dataTitle[index]['tripitaka91_book']}',
-                                              '${dataTitle[index]['tripitaka91_page']}',
-                                              '${dataTitle[index]['tripitaka91_line']}');
-                                        },
-                                        child: Align(
-                                          alignment: Alignment.centerLeft,
-                                          child: ClipPath(
-                                            clipper:
-                                                DoubleTriangleRectangleClipper(),
-                                            child: Container(
-                                              padding:
-                                                  const EdgeInsets.all(3.0),
-                                              color: Colors.green,
-                                              child: ATextDiskplaySmall(
-                                                  text:
-                                                      'สมาชิกได้ยืนยันแล้ว ${dataTitle[index]['bookconfirm']} ท่าน'),
-                                            ),
-                                          ),
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                )
-                              : opt == '1'
-                                  ? InkWell(
-                                      onTap: () {
-                                        _showDialogUser(
-                                            context,
-                                            'รายชื่อสมาชิกที่ยืนยันแล้ว',
-                                            '${dataTitle[index]['tripitaka91_book']}',
-                                            '${dataTitle[index]['tripitaka91_page']}',
-                                            '${dataTitle[index]['tripitaka91_line']}');
-                                      },
-                                      child: Align(
-                                        alignment: Alignment.centerLeft,
-                                        child: ClipPath(
-                                          clipper:
-                                              DoubleTriangleRectangleClipper(),
-                                          child: Container(
-                                            padding: const EdgeInsets.all(3.0),
-                                            color: Colors.green,
-                                            child: ATextDiskplaySmall(
-                                                text:
-                                                    'สมาชิกได้ยืนยันแล้ว ${dataTitle[index]['bookconfirm']} ท่าน'),
-                                          ),
-                                        ),
-                                      ),
-                                    )
-                                  : SingleChildScrollView(
-                                      scrollDirection: Axis.horizontal,
-                                      child: Row(
-                                        children: [
-                                          const SizedBox(width: 10),
-                                          dataTitle[index]['booksuscess'] == 1
-                                              ? Align(
-                                                  alignment:
-                                                      Alignment.centerLeft,
-                                                  child: ClipPath(
-                                                    clipper:
-                                                        DoubleTriangleRectangleClipper(),
-                                                    child: Container(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              3.0),
-                                                      color: Colors.green,
-                                                      child: const ATextLabelMediumColor(
-                                                          color: Colors.white,
-                                                          text:
-                                                              ' ข้อมูลถูกแก้ไขเรียบร้อยแล้ว '),
-                                                    ),
-                                                  ),
-                                                )
-                                              : dataTitle[index]
-                                                          ['bookconfirm'] >=
-                                                      tCorrectNum
-                                                  ? InkWell(
-                                                      onTap: () async {
-                                                        Users? users =
-                                                            await getUsersList();
-                                                        if (!context
-                                                            .mounted) {
-                                                          return;
-                                                        }
-                                                        String tmpLevel = '2';
-                                                        if (users != null) {
-                                                          tmpLevel =
-                                                              users.levelAccess;
-                                                        }
-                                                        if (tmpLevel == '1') {
-                                                          bool? confirm =
-                                                              await _showConfirmationDialog(
-                                                                  context);
-                                                          if (!context
-                                                              .mounted) {
-                                                            return;
-                                                          }
-                                                          if (confirm!) {
-                                                            LoadingDialog.show(
-                                                                context);
-                                                            await _fetchConfirmSuscess(
-                                                                '${dataTitle[index]['tripitaka91_book']}',
-                                                                '${dataTitle[index]['tripitaka91_page']}',
-                                                                '${dataTitle[index]['tripitaka91_line']}');
-                                                            if (!context
-                                                                .mounted) {
-                                                              return;
-                                                            }
-                                                            LoadingDialog.hide(
-                                                                context);
-                                                            // print(
-                                                            //     'ยืนยันการยืนแก้ไขข้อมูล');
-                                                            // print('${dataTitle[index]['words']}');
-                                                          }
-                                                        } else {
-                                                          _showSnackbar(context,
-                                                              'คุณยังไม่ได้รับสิทธิ์ยืนยันการแก้ไขข้อมูล');
-                                                        }
-                                                      },
-                                                      child: Align(
-                                                        alignment: Alignment
-                                                            .centerLeft,
-                                                        child: ClipPath(
-                                                          clipper:
-                                                              DoubleTriangleRectangleClipper(),
-                                                          child: Container(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                    .all(3.0),
-                                                            color: Colors.red,
-                                                            child: const ATextDiskplaySmall(
-                                                                text:
-                                                                    'ยืนยันการยืนแก้ไขข้อมูล'),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    )
-                                                  : Align(
-                                                      alignment:
-                                                          Alignment.centerLeft,
-                                                      child: ClipPath(
-                                                        clipper:
-                                                            DoubleTriangleRectangleClipper(),
-                                                        child: Container(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .all(3.0),
-                                                          color: Colors.yellow,
-                                                          child: const ATextLabelMediumColor(
-                                                              color:
-                                                                  Colors.black,
-                                                              text:
-                                                                  ' รอสมาชิกยืนยันครบ $tCorrectNum ท่าน '),
-                                                        ),
-                                                      ),
-                                                    ),
-                                          const SizedBox(width: 10),
-                                          InkWell(
-                                            onTap: () {
-                                              _showDialogUser(
-                                                  context,
-                                                  'รายชื่อสมาชิกที่ยืนยันแล้ว',
-                                                  '${dataTitle[index]['tripitaka91_book']}',
-                                                  '${dataTitle[index]['tripitaka91_page']}',
-                                                  '${dataTitle[index]['tripitaka91_line']}');
-                                            },
-                                            child: Align(
-                                              alignment: Alignment.centerLeft,
-                                              child: ClipPath(
-                                                clipper:
-                                                    DoubleTriangleRectangleClipper(),
-                                                child: Container(
-                                                  padding:
-                                                      const EdgeInsets.all(3.0),
-                                                  color: Colors.green,
-                                                  child: ATextDiskplaySmall(
-                                                      text:
-                                                          'สมาชิกที่ยืนยัน ${dataTitle[index]['bookconfirm']} ท่าน'),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                      const Divider(),
-                      ATextTitleSmallTHColor(
-                          color: Colors.grey,
-                          text:
-                              'เล่ม ${dataTitle[index]['tripitaka91_book']} หน้า ${dataTitle[index]['tripitaka91_page']} บรรทัด ${dataTitle[index]['tripitaka91_line']}\nหมายเหตุ : ${dataTitle[index]['wordcorrectcomment'] ?? '-'}'),
+                      TextSpan(
+                        text: '${record['wordincorrect']}',
+                        style: const TextStyle(
+                          fontFamily: 'THSarabunNew',
+                          fontSize: 20,
+                          color: TColors.error,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
                     ],
                   ),
-                  subtitle: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
+                ),
+                RichText(
+                  text: TextSpan(
+                    children: [
+                      TextSpan(
+                        text: 'คำที่น่าจะถูก: ',
+                        style: TextStyle(
+                          fontFamily: 'THSarabunNew',
+                          fontSize: 20,
+                          color: adaptiveTextColor(
+                            context,
+                          ).withValues(alpha: 0.6),
+                        ),
+                      ),
+                      TextSpan(
+                        text: '${record['wordcorrect']}',
+                        style: const TextStyle(
+                          fontFamily: 'THSarabunNew',
+                          fontSize: 20,
+                          color: TColors.error,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 6),
+                RichText(
+                  text: TextSpan(
+                    children: [
+                      TextSpan(
+                        text: 'ข้อความเดิม: ',
+                        style: TextStyle(
+                          fontFamily: 'THSarabunNew',
+                          fontSize: 18,
+                          color: adaptiveTextColor(
+                            context,
+                          ).withValues(alpha: 0.6),
+                        ),
+                      ),
+                      txtSpanHighlight(
+                        ('${record['wordincorrect']}').split(','),
+                        '${record['detail_old']}',
+                      ),
+                    ],
+                  ),
+                ),
+                if (record['detail_new'] != null) ...[
+                  const SizedBox(height: 4),
+                  RichText(
+                    text: TextSpan(
                       children: [
-                        InkWell(
-                          onTap: () {
-                            _showDialogUserCorrect(
-                                context,
-                                'รายชื่อสมาชิกที่แจ้งคำที่น่าจะผิด/คำที่น่าจะถูก',
-                                '${dataTitle[index]['tripitaka91_book']}',
-                                '${dataTitle[index]['tripitaka91_page']}',
-                                '${dataTitle[index]['tripitaka91_line']}');
-                          },
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: ClipPath(
-                              clipper: DoubleTriangleRectangleClipper(),
-                              child: Container(
-                                padding: const EdgeInsets.all(3.0),
-                                color: Colors.orange,
-                                child: ATextDiskplaySmall(
-                                    text: 'แจ้งโดย : $userTmp'),
-                              ),
-                            ),
+                        TextSpan(
+                          text: 'ข้อความที่แก้ไข: ',
+                          style: TextStyle(
+                            fontFamily: 'THSarabunNew',
+                            fontSize: 18,
+                            color: adaptiveTextColor(
+                              context,
+                            ).withValues(alpha: 0.6),
                           ),
+                        ),
+                        txtSpanHighlight(
+                          ('${record['wordcorrect']}').split(','),
+                          '${record['detail_new']}',
+                          color: Colors.green[200]!,
                         ),
                       ],
                     ),
                   ),
-                  onTap: () {
-                    // audioPlayerManager.stop();
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(
-                    //     builder: (context) => Tri91PageView(
-                    //       triBookid:
-                    //           textTitleReplace.getBookId(dataTitle[index]),
-                    //       triPageid: int.parse(
-                    //           textTitleReplace.getPageId(dataTitle[index])),
-                    //       triBookline:
-                    //           textTitleReplace.getLineId(dataTitle[index]),
-                    //       chkSearch: widget.wordSearch,
-                    //     ),
-                    //   ),
-                    // );
+                ],
+                const SizedBox(height: 8),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 6,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: _buildStatusTags(context, record),
+                ),
+                if (comment.isNotEmpty) ...[
+                  const SizedBox(height: 8),
+                  const Divider(height: 1),
+                  const SizedBox(height: 6),
+                  Text(
+                    'หมายเหตุ $comment',
+                    style: TextStyle(
+                      fontFamily: 'THSarabunNew',
+                      fontSize: 18,
+                      color: adaptiveTextColor(context).withValues(alpha: 0.6),
+                    ),
+                  ),
+                ],
+                const SizedBox(height: 8),
+                _buildTag(
+                  'แจ้งโดย: $userTmp',
+                  TColors.primary1,
+                  onTap: () => _showDialogUserCorrect(
+                    context,
+                    'รายชื่อสมาชิกที่แจ้งคำที่น่าจะผิด/คำที่น่าจะถูก',
+                    '${record['tripitaka91_book']}',
+                    '${record['tripitaka91_page']}',
+                    '${record['tripitaka91_line']}',
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // แถวแบบย่อ (โหมดลิสต์): บรรทัดเดียวต่อรายการ + ชิปสรุปสถานะ + เมนู ⋮
+  Widget _buildListRow(BuildContext context, dynamic record, int index) {
+    // ชิปแรกของ _buildStatusTags คือชิปหลักของสถานะนี้เสมอ ใช้ตัวเดียวกับการ์ด
+    // เพื่อให้ปุ่มยืนยันข้อมูล/เพิ่มข้อความที่น่าจะถูก โผล่มาในแถวเลย ไม่ต้องซ่อนในเมนู ⋮
+    final primaryTag = _buildStatusTags(context, record).first;
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: adaptiveSurfaceColor(context),
+        borderRadius: BorderRadius.circular(10),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 6,
+            offset: const Offset(0, 1),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          _buildIndexBadge(record, radius: 13),
+          const SizedBox(width: 10),
+          Expanded(
+            child: RichText(
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              text: TextSpan(
+                children: [
+                  TextSpan(
+                    text: '${record['wordincorrect']}',
+                    style: const TextStyle(
+                      fontFamily: 'THSarabunNew',
+                      fontSize: 20,
+                      fontWeight: FontWeight.w700,
+                      color: TColors.error,
+                    ),
+                  ),
+                  TextSpan(
+                    text: '  →  ',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: adaptiveTextColor(context).withValues(alpha: 0.4),
+                    ),
+                  ),
+                  TextSpan(
+                    text: '${record['wordcorrect']}',
+                    style: const TextStyle(
+                      fontFamily: 'THSarabunNew',
+                      fontSize: 20,
+                      fontWeight: FontWeight.w700,
+                      color: TColors.error,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(width: 6),
+          primaryTag,
+          PopupMenuButton<String>(
+            icon: Icon(
+              Icons.more_vert,
+              color: adaptiveTextColor(context).withValues(alpha: 0.6),
+            ),
+            itemBuilder: (context) => [
+              const PopupMenuItem(
+                value: 'confirmedUsers',
+                child: ListTile(
+                  leading: Icon(Icons.group_outlined),
+                  title: Text('ดูรายชื่อผู้ยืนยัน'),
+                ),
+              ),
+              const PopupMenuItem(
+                value: 'reporter',
+                child: ListTile(
+                  leading: Icon(Icons.person_outline),
+                  title: Text('ดูรายชื่อผู้แจ้ง'),
+                ),
+              ),
+              const PopupMenuItem(
+                value: 'detail',
+                child: ListTile(
+                  leading: Icon(Icons.info_outline),
+                  title: Text('ดูข้อความเต็ม'),
+                ),
+              ),
+            ],
+            onSelected: (value) {
+              final bookid = '${record['tripitaka91_book']}';
+              final bookpage = '${record['tripitaka91_page']}';
+              final bookline = '${record['tripitaka91_line']}';
+              switch (value) {
+                case 'confirmedUsers':
+                  _showDialogUser(
+                    context,
+                    'รายชื่อสมาชิกที่ยืนยันแล้ว',
+                    bookid,
+                    bookpage,
+                    bookline,
+                  );
+                  break;
+                case 'reporter':
+                  _showDialogUserCorrect(
+                    context,
+                    'รายชื่อสมาชิกที่แจ้งคำที่น่าจะผิด/คำที่น่าจะถูก',
+                    bookid,
+                    bookpage,
+                    bookline,
+                  );
+                  break;
+                case 'detail':
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: const Text('รายละเอียด'),
+                      content: SingleChildScrollView(
+                        child: _buildCard(context, record, index),
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          child: const Text('ปิด'),
+                        ),
+                      ],
+                    ),
+                  );
+                  break;
+              }
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: adaptivePageColor(context),
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
+            child: Row(
+              children: [
+                Expanded(child: _buildFilterToggle(context)),
+                const SizedBox(width: 8),
+                IconButton(
+                  icon: Icon(
+                    _isListView ? Icons.view_agenda_outlined : Icons.view_list,
+                  ),
+                  tooltip: _isListView ? 'แสดงแบบการ์ด' : 'แสดงแบบลิสต์',
+                  onPressed: () {
+                    setState(() => _isListView = !_isListView);
                   },
                 ),
-                const Divider(),
               ],
-            );
-          },
+            ),
+          ),
+          Expanded(
+            child: dataTitle.isEmpty
+                ? Center(
+                    child: Text(
+                      loadingTitle ? 'กำลังโหลด...' : 'ไม่พบข้อมูล',
+                      style: TextStyle(
+                        color: adaptiveTextColor(
+                          context,
+                        ).withValues(alpha: 0.5),
+                      ),
+                    ),
+                  )
+                : ListView.builder(
+                    controller: _scrollControllerTitle,
+                    padding: const EdgeInsets.all(12),
+                    itemCount: loadedRecordsTitle + (loadingTitle ? 1 : 0),
+                    itemBuilder: (context, index) {
+                      if (index >= loadedRecordsTitle) {
+                        return const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 16),
+                          child: Center(
+                            child: SizedBox(
+                              width: 24,
+                              height: 24,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2.5,
+                              ),
+                            ),
+                          ),
+                        );
+                      }
+                      final record = dataTitle[index];
+                      return _isListView
+                          ? _buildListRow(context, record, index)
+                          : _buildCard(context, record, index);
+                    },
+                  ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // แถบปุ่มเลือกตัวกรอง (ยังไม่ยืนยัน/ยืนยันแล้ว/แก้ไขแล้ว)
+  Widget _buildFilterToggle(BuildContext context) {
+    Widget buildButton(String value, String label) {
+      final selected = opt == value;
+      return Padding(
+        padding: const EdgeInsets.only(right: 8),
+        child: ElevatedButton(
+          onPressed: () => _changeFilter(value),
+          style: ButtonStyle(
+            backgroundColor: WidgetStateProperty.all<Color>(
+              selected ? TColors.buttonPrimary : adaptiveSurfaceColor(context),
+            ),
+            foregroundColor: WidgetStateProperty.all<Color>(
+              selected ? Colors.white : adaptiveTextColor(context),
+            ),
+            shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(18.0),
+                side: BorderSide(color: adaptiveBorderColor(context)),
+              ),
+            ),
+          ),
+          child: Text(label, style: const TextStyle(fontSize: 13)),
         ),
+      );
+    }
+
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: [
+          buildButton('0', 'ยังไม่ยืนยัน'),
+          buildButton('1', 'ยืนยันแล้ว'),
+          buildButton('2', 'แก้ไขแล้ว'),
+        ],
       ),
     );
   }

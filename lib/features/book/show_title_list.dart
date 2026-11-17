@@ -13,6 +13,7 @@ import 'package:tripitaka91/utils/shared_preferences/shared_user.dart';
 import 'package:tripitaka91/utils/text_title_replace/text_title_replace.dart';
 import 'package:tripitaka91/widget/audio/edit_speak.dart';
 import 'package:tripitaka91/widget/auto_text/auto_text.dart';
+import 'package:tripitaka91/widget/common/circular_icon_button.dart';
 import 'package:tripitaka91/widget/dialogs/online_speech_consent_dialog.dart';
 import 'package:tripitaka91/widget/login/loading_dialog.dart';
 import 'package:tripitaka91/features/book/pageviews_html.dart';
@@ -175,23 +176,20 @@ class _SearchShowPagesTitleListState extends State<SearchShowPagesTitleList> {
           fontFamily: widget.isMobile
               ? 'Roboto'
               : kIsWeb
-                  ? 'THSarabunNew'
-                  : 'Roboto',
+              ? 'THSarabunNew'
+              : 'Roboto',
           fontSize: widget.isMobile
               ? 18.0
               : kIsWeb
-                  ? 24.0
-                  : 16.0,
+              ? 24.0
+              : 16.0,
         ),
       );
     } else {
       return widget.isMobile
           ? Text(
               title,
-              style: const TextStyle(
-                fontFamily: 'Roboto',
-                fontSize: 18.0,
-              ),
+              style: const TextStyle(fontFamily: 'Roboto', fontSize: 18.0),
             )
           : Text(
               // '[เล่ม $bookid หน้า $pageid บรรทัด $lineid] \n$title',
@@ -200,22 +198,27 @@ class _SearchShowPagesTitleListState extends State<SearchShowPagesTitleList> {
                 fontFamily: widget.isMobile
                     ? 'Roboto'
                     : kIsWeb
-                        ? 'THSarabunNew'
-                        : 'Roboto',
+                    ? 'THSarabunNew'
+                    : 'Roboto',
                 fontSize: widget.isMobile
                     ? 18.0
                     : kIsWeb
-                        ? 24.0
-                        : 16.0,
+                    ? 24.0
+                    : 16.0,
               ),
             );
     }
   }
 
-  void _showInputDialog(BuildContext context, String initialText,
-      String tripitaka91No, String tripitaka91Code) {
-    final TextEditingController textController =
-        TextEditingController(text: initialText);
+  void _showInputDialog(
+    BuildContext context,
+    String initialText,
+    String tripitaka91No,
+    String tripitaka91Code,
+  ) {
+    final TextEditingController textController = TextEditingController(
+      text: initialText,
+    );
 
     showDialog(
       context: context,
@@ -229,9 +232,7 @@ class _SearchShowPagesTitleListState extends State<SearchShowPagesTitleList> {
           content: TextFormField(
             style: const TextStyle(fontFamily: 'THSarabunNew', fontSize: 26),
             controller: textController,
-            decoration: const InputDecoration(
-              hintText: 'กรอกข้อมูลที่นี่',
-            ),
+            decoration: const InputDecoration(hintText: 'กรอกข้อมูลที่นี่'),
           ),
           actions: <Widget>[
             TextButton(
@@ -257,7 +258,10 @@ class _SearchShowPagesTitleListState extends State<SearchShowPagesTitleList> {
                     bool? confirm = await _showConfirmationDialog(context);
                     if (confirm!) {
                       await _fetchUpdateTitle(
-                          inputData, tripitaka91No, tripitaka91Code);
+                        inputData,
+                        tripitaka91No,
+                        tripitaka91Code,
+                      );
                       // ignore: use_build_context_synchronously
                       Navigator.of(context).pop(); // ปิดหน้าต่าง
                     }
@@ -279,7 +283,10 @@ class _SearchShowPagesTitleListState extends State<SearchShowPagesTitleList> {
   }
 
   Future<void> _fetchUpdateTitle(
-      String initialText, String tripitaka91No, String tripitaka91Code) async {
+    String initialText,
+    String tripitaka91No,
+    String tripitaka91Code,
+  ) async {
     final response = await http.post(
       Uri.parse(tURLtitleEdit),
       body: {
@@ -323,15 +330,17 @@ class _SearchShowPagesTitleListState extends State<SearchShowPagesTitleList> {
           actions: <Widget>[
             TextButton(
               onPressed: () {
-                Navigator.of(context)
-                    .pop(false); // ปิดหน้าต่างและส่งค่า false กลับ
+                Navigator.of(
+                  context,
+                ).pop(false); // ปิดหน้าต่างและส่งค่า false กลับ
               },
               child: const Text('ยกเลิก'),
             ),
             ElevatedButton(
               onPressed: () {
-                Navigator.of(context)
-                    .pop(true); // ปิดหน้าต่างและส่งค่า true กลับ
+                Navigator.of(
+                  context,
+                ).pop(true); // ปิดหน้าต่างและส่งค่า true กลับ
               },
               child: const Text(' ยืนยัน '),
             ),
@@ -360,31 +369,35 @@ class _SearchShowPagesTitleListState extends State<SearchShowPagesTitleList> {
               return loadingTitle
                   ? const Center(child: CircularProgressIndicator())
                   : (loadedRecordsTitle == 0)
-                      ? SizedBox(
-                          child: Column(
-                            children: [
-                              Center(
-                                child: ATextTitleLarge(
-                                    text:
-                                        'เล่ม ${widget.bookid} ไม่พบหัวข้อธรรมสำหรับแสดงผล'),
-                              ),
-                              const SizedBox(
-                                height: 15,
-                              ),
-                              const Center(
-                                child: ATextTitleLarge(
-                                    text:
-                                        'กรุณาคลิกที่ปุ่มเปิดหน้าที่อ่านล่าสุด'),
-                              ),
-                            ],
+                  ? SizedBox(
+                      child: Column(
+                        children: [
+                          Center(
+                            child: ATextTitleLarge(
+                              text:
+                                  'เล่ม ${widget.bookid} ไม่พบหัวข้อธรรมสำหรับแสดงผล',
+                            ),
                           ),
-                        )
-                      : const SizedBox.shrink();
+                          const SizedBox(height: 15),
+                          const Center(
+                            child: ATextTitleLarge(
+                              text: 'กรุณาคลิกที่ปุ่มเปิดหน้าที่อ่านล่าสุด',
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  : const SizedBox.shrink();
             }
             return Column(
               children: [
                 ListTile(
+                  dense: true,
+                  visualDensity: VisualDensity.compact,
+                  minVerticalPadding: 0,
+                  contentPadding: const EdgeInsets.fromLTRB(12, 4, 12, 0),
                   leading: CircleAvatar(
+                    radius: 14,
                     backgroundColor: Colors.blue[900],
                     foregroundColor: Colors.white,
                     child: ATextDiskplayMedium(text: '${index + 1}'),
@@ -398,231 +411,178 @@ class _SearchShowPagesTitleListState extends State<SearchShowPagesTitleList> {
                   //       '${textTitleReplace.extractText(dataTitle[index]).replaceAll(textTitleReplace.getBookBlue(dataTitle[index]), '')} ',
                   // ),
                   subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
                         children: [
-                          widget.online || volumeHelper.showVolume
-                              ? InkWell(
-                                  onTap: () async {
-                                    if (!await ensureOnlineSpeechConsent(
-                                      context,
-                                    )) {
-                                      return;
-                                    }
-                                    // ignore: use_build_context_synchronously
-                                    LoadingDialog.show(context);
-                                    String bookIds = textTitleReplace
-                                        .getBookId(dataTitle[index]);
-                                    String pageId = textTitleReplace
-                                        .getPageId(dataTitle[index]);
-                                    String bookLine = textTitleReplace
-                                        .getLineId(dataTitle[index]);
-                                    String noTitleCate = textTitleReplace
-                                        .getCate(dataTitle[index]);
-                                    String noTitle = textTitleReplace
-                                        .getNo(dataTitle[index]);
+                          if (widget.online || volumeHelper.showVolume)
+                            CircularIconButton(
+                              icon: Icons.volume_up,
+                              size: widget.isMobile ? 25 : 20,
+                              color: Colors.blue[300]!,
+                              onTap: () async {
+                                if (!await ensureOnlineSpeechConsent(context)) {
+                                  return;
+                                }
+                                // ignore: use_build_context_synchronously
+                                LoadingDialog.show(context);
+                                String bookIds = textTitleReplace.getBookId(
+                                  dataTitle[index],
+                                );
+                                String pageId = textTitleReplace.getPageId(
+                                  dataTitle[index],
+                                );
+                                String bookLine = textTitleReplace.getLineId(
+                                  dataTitle[index],
+                                );
+                                String noTitleCate = textTitleReplace.getCate(
+                                  dataTitle[index],
+                                );
+                                String noTitle = textTitleReplace.getNo(
+                                  dataTitle[index],
+                                );
 
-                                    String txtTitle =
-                                        textTitleReplace.replaceText(
-                                            textTitleReplace
-                                                .extractText(dataTitle[index]),
-                                            textTitleReplace
-                                                .getBookBlue(dataTitle[index]));
-
-                                    String filename =
-                                        noTitleCate.replaceAll('.', '');
-                                    filename =
-                                        '$filename-$noTitle-$bookIds-$pageId-$bookLine';
-                                    await audioPlayerManager.playAudio(
-                                        '1', filename, txtTitle);
-
-                                    // ignore: use_build_context_synchronously
-                                    LoadingDialog.hide(context);
-                                  },
-                                  child: Icon(
-                                    Icons.volume_up,
-                                    size: widget.isMobile ? 25 : 20,
-                                    color: Colors.blue[300],
+                                String txtTitle = textTitleReplace.replaceText(
+                                  textTitleReplace.extractText(
+                                    dataTitle[index],
                                   ),
-                                )
-                              : const Text(''),
-                          widget.online || volumeHelper.showVolume
-                              ? const SizedBox(width: 10)
-                              : const SizedBox.shrink(),
-                          InkWell(
+                                  textTitleReplace.getBookBlue(
+                                    dataTitle[index],
+                                  ),
+                                );
+
+                                String filename = noTitleCate.replaceAll(
+                                  '.',
+                                  '',
+                                );
+                                filename =
+                                    '$filename-$noTitle-$bookIds-$pageId-$bookLine';
+                                await audioPlayerManager.playAudio(
+                                  '1',
+                                  filename,
+                                  txtTitle,
+                                );
+
+                                // ignore: use_build_context_synchronously
+                                LoadingDialog.hide(context);
+                              },
+                            ),
+                          CircularIconButton(
+                            icon: Icons.share,
+                            size: widget.isMobile ? 21 : 16,
+                            color: Colors.blue[300]!,
                             onTap: () async {
-                              String bookIds =
-                                  textTitleReplace.getBookId(dataTitle[index]);
-                              String pageId =
-                                  textTitleReplace.getPageId(dataTitle[index]);
-                              String bookLine =
-                                  textTitleReplace.getLineId(dataTitle[index]);
+                              String bookIds = textTitleReplace.getBookId(
+                                dataTitle[index],
+                              );
+                              String pageId = textTitleReplace.getPageId(
+                                dataTitle[index],
+                              );
+                              String bookLine = textTitleReplace.getLineId(
+                                dataTitle[index],
+                              );
                               String txtTitle =
                                   '${textTitleReplace.extractText(dataTitle[index]).replaceAll(textTitleReplace.getBookBlue(dataTitle[index]), '')} ';
-                              // txtTitle +=
-                              //     'สรุปเนื้อความจากพระไตรปิฎก ฉบับ มมร. เล่ม $bookIds หน้า $pageId บรรทัด $bookLine';
-                              // await Share.share(
-                              //     '$txtTitle อ่านรายละเอียด -> $tURLmain$bookIds-$pageId-$bookLine.htm',
-                              //     subject: 'สรุปหัวข้อธรรมจากพระไตรปิฎก');
                               sharedImageGenerator.generateAndShare(
                                 context: context,
-                                bookTitle: txtTitle.replaceAll('', ''),
+                                bookTitle: txtTitle.replaceAll('', ''),
                                 bookid: bookIds,
                                 pageid: pageId.toString(),
                                 lineid: bookLine,
-                                bookBlue: textTitleReplace
-                                    .getBookBlue(dataTitle[index]),
-                                bookRed: textTitleReplace
-                                    .getBookRed(dataTitle[index]),
+                                bookBlue: textTitleReplace.getBookBlue(
+                                  dataTitle[index],
+                                ),
+                                bookRed: textTitleReplace.getBookRed(
+                                  dataTitle[index],
+                                ),
                               );
                             },
-                            child: Icon(
-                              Icons.share,
-                              size: 16,
-                              color: Colors.blue[300],
-                            ),
                           ),
-                          const SizedBox(width: 10),
-                          InkWell(
+                          CircularIconButton(
+                            icon: Icons.copy,
+                            size: widget.isMobile ? 21 : 16,
+                            color: Colors.blue[300]!,
                             onTap: () async {
-                              String bookIds =
-                                  textTitleReplace.getBookId(dataTitle[index]);
-                              String pageId =
-                                  textTitleReplace.getPageId(dataTitle[index]);
-                              String bookLine =
-                                  textTitleReplace.getLineId(dataTitle[index]);
+                              String bookIds = textTitleReplace.getBookId(
+                                dataTitle[index],
+                              );
+                              String pageId = textTitleReplace.getPageId(
+                                dataTitle[index],
+                              );
+                              String bookLine = textTitleReplace.getLineId(
+                                dataTitle[index],
+                              );
                               String txtTitle =
                                   '${textTitleReplace.extractText(dataTitle[index]).replaceAll(textTitleReplace.getBookBlue(dataTitle[index]), '')} ';
                               txtTitle +=
                                   'สรุปเนื้อความจากพระไตรปิฎก ฉบับ มมร. เล่ม $bookIds หน้า $pageId บรรทัด $bookLine';
                               Clipboard.setData(
                                 ClipboardData(
-                                    text:
-                                        '$txtTitle อ่านรายละเอียด -> $tURLmain$bookIds-$pageId-$bookLine.htm'),
+                                  text:
+                                      '$txtTitle อ่านรายละเอียด -> $tURLmain$bookIds-$pageId-$bookLine.htm',
+                                ),
                               );
                               _showSnackbar(
-                                  context, 'คัดลอกข้อมูลเรียบร้อยแล้ว');
+                                context,
+                                'คัดลอกข้อมูลเรียบร้อยแล้ว',
+                              );
                             },
-                            child: Icon(
-                              Icons.copy,
+                          ),
+                          if (usersChk != null &&
+                              usersChk?.levelAccess == '1')
+                            CircularIconButton(
+                              icon: Icons.edit,
                               size: widget.isMobile ? 21 : 16,
-                              color: Colors.blue[300],
-                            ),
-                          ),
-                          (usersChk != null) && (usersChk?.levelAccess == '1')
-                              ? const SizedBox(width: 10)
-                              : const SizedBox.shrink(),
-                          (usersChk != null) && (usersChk?.levelAccess == '1')
-                              ? InkWell(
-                                  onTap: () async {
-                                    _showInputDialog(
-                                      context,
-                                      textTitleReplace
-                                          .extractText(dataTitle[index]),
-                                      textTitleReplace.getNo(dataTitle[index]),
-                                      textTitleReplace
-                                          .getCate(dataTitle[index]),
-                                    );
-                                  },
-                                  child: Icon(
-                                    Icons.edit,
-                                    size: widget.isMobile ? 21 : 16,
-                                    color: Colors.blue[300],
+                              color: Colors.blue[300]!,
+                              onTap: () {
+                                _showInputDialog(
+                                  context,
+                                  textTitleReplace.extractText(
+                                    dataTitle[index],
                                   ),
-                                )
-                              : const SizedBox.shrink(),
-                          (usersChk != null)
-                              ? const SizedBox(width: 10)
-                              : const SizedBox.shrink(),
-                          (usersChk != null)
-                              ? InkWell(
-                                  onTap: () async {
-                                    showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return AlertDialog(
-                                          contentPadding:
-                                              const EdgeInsets.all(5),
-                                          title:
-                                              const Text('แจ้งการอ่านออกเสียง'),
-                                          content: const SizedBox(
-                                            width: double.maxFinite,
-                                            child: EditSpeakScreen(
-                                              comments: '-',
-                                            ),
-                                          ),
-                                          actions: <Widget>[
-                                            TextButton(
-                                              onPressed: () {
-                                                Navigator.of(context).pop();
-                                              },
-                                              child: const Text('ปิดหน้าจอ'),
-                                            ),
-                                          ],
-                                        );
-                                      },
-                                    );
-                                  },
-                                  child: Icon(
-                                    Icons.edit_document,
-                                    size: widget.isMobile ? 21 : 16,
-                                    color: Colors.blue[300],
-                                  ),
-                                )
-                              : const SizedBox.shrink(),
-                          const Expanded(
-                            child: SizedBox(
-                              child: Text(''),
+                                  textTitleReplace.getNo(dataTitle[index]),
+                                  textTitleReplace.getCate(dataTitle[index]),
+                                );
+                              },
                             ),
-                          ),
-                          widget.isMobile
-                              ? const SizedBox.shrink()
-                              : Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: ClipPath(
-                                    clipper: DoubleTriangleRectangleClipper(),
-                                    child: Container(
-                                      padding: const EdgeInsets.all(3.0),
-                                      color: Colors.blue[900],
-                                      child: ATextLabelSmall(
-                                        text:
-                                            '${textTitleReplace.extractRemainingText(dataTitle[index])} ',
+                          if (usersChk != null)
+                            CircularIconButton(
+                              icon: Icons.edit_document,
+                              size: widget.isMobile ? 21 : 16,
+                              color: Colors.blue[300]!,
+                              onTap: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      contentPadding: const EdgeInsets.all(5),
+                                      title: const Text('แจ้งการอ่านออกเสียง'),
+                                      content: const SizedBox(
+                                        width: double.maxFinite,
+                                        child: EditSpeakScreen(comments: '-'),
                                       ),
-                                    ),
-                                  ),
-                                ),
-                          widget.isMobile
-                              ? const SizedBox.shrink()
-                              : const SizedBox(width: 10),
-                          widget.isMobile
-                              ? const SizedBox.shrink()
-                              : Align(
-                                  alignment: Alignment.centerRight,
-                                  child: ClipPath(
-                                    clipper: DoubleTriangleRectangleClipper(),
-                                    child: Container(
-                                      padding: const EdgeInsets.all(3.0),
-                                      color:
-                                          Colors.red, // Change color as needed
-                                      child: Center(
-                                        child: ATextLabelSmall(
-                                          text:
-                                              'เล่มสีแดง ${textTitleReplace.getBookRed(dataTitle[index])}', // Access widget property
+                                      actions: <Widget>[
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                          child: const Text('ปิดหน้าจอ'),
                                         ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                        ],
-                      ),
-                      SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Row(
-                          children: [
-                            widget.isMobile
-                                ? Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: ClipPath(
+                                      ],
+                                    );
+                                  },
+                                );
+                              },
+                            ),
+                          Expanded(
+                            child: Align(
+                              alignment: Alignment.centerRight,
+                              child: SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                reverse: true,
+                                child: Row(
+                                  children: [
+                                    ClipPath(
                                       clipper: DoubleTriangleRectangleClipper(),
                                       child: Container(
                                         padding: const EdgeInsets.all(3.0),
@@ -633,15 +593,8 @@ class _SearchShowPagesTitleListState extends State<SearchShowPagesTitleList> {
                                         ),
                                       ),
                                     ),
-                                  )
-                                : const SizedBox.shrink(),
-                            widget.isMobile
-                                ? const SizedBox(width: 10)
-                                : const SizedBox.shrink(),
-                            widget.isMobile
-                                ? Align(
-                                    alignment: Alignment.centerRight,
-                                    child: ClipPath(
+                                    const SizedBox(width: 10),
+                                    ClipPath(
                                       clipper: DoubleTriangleRectangleClipper(),
                                       child: Container(
                                         padding: const EdgeInsets.all(3.0),
@@ -655,10 +608,12 @@ class _SearchShowPagesTitleListState extends State<SearchShowPagesTitleList> {
                                         ),
                                       ),
                                     ),
-                                  )
-                                : const SizedBox.shrink(),
-                          ],
-                        ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -668,12 +623,15 @@ class _SearchShowPagesTitleListState extends State<SearchShowPagesTitleList> {
                       context,
                       MaterialPageRoute(
                         builder: (context) => Tri91PageViewHtml(
-                          triBookid:
-                              textTitleReplace.getBookId(dataTitle[index]),
+                          triBookid: textTitleReplace.getBookId(
+                            dataTitle[index],
+                          ),
                           triPageid: int.parse(
-                              textTitleReplace.getPageId(dataTitle[index])),
-                          triBookline:
-                              textTitleReplace.getLineId(dataTitle[index]),
+                            textTitleReplace.getPageId(dataTitle[index]),
+                          ),
+                          triBookline: textTitleReplace.getLineId(
+                            dataTitle[index],
+                          ),
                           chkSearch: '',
                           isMobile: widget.isMobile,
                           online: widget.online,
@@ -682,7 +640,12 @@ class _SearchShowPagesTitleListState extends State<SearchShowPagesTitleList> {
                     );
                   },
                 ),
-                const Divider(),
+                const Divider(
+                  height: 1,
+                  thickness: 0.6,
+                  indent: 12,
+                  endIndent: 12,
+                ),
               ],
             );
           },

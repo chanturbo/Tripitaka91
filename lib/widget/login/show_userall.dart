@@ -3,10 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:tripitaka91/utils/constants/api_constants.dart';
+import 'package:tripitaka91/utils/constants/colors.dart';
 import 'package:tripitaka91/utils/play_audio/audio_manager.dart';
 import 'package:tripitaka91/utils/shared_preferences/shared_user.dart';
 import 'package:tripitaka91/utils/text_title_replace/text_title_replace.dart';
-import 'package:tripitaka91/widget/auto_text/auto_text.dart';
+import 'package:tripitaka91/utils/theme/theme_helpers.dart';
+import 'package:tripitaka91/widget/common/circular_icon_button.dart';
+import 'package:tripitaka91/widget/common/index_badge.dart';
 import 'package:tripitaka91/widget/login/profile_user.dart';
 
 class MyUserPage extends StatefulWidget {
@@ -36,6 +39,7 @@ class _MyUserPageState extends State<MyUserPage> {
   String _searchText = ''; // ข้อความที่ใช้กรอกค้นหา
   final TextEditingController _controlSearchText = TextEditingController();
   String tmpUser = '';
+  bool _isListView = false; // false = การ์ด (ค่าเริ่มต้น), true = ลิสต์แบบย่อ
 
   @override
   void initState() {
@@ -134,15 +138,17 @@ class _MyUserPageState extends State<MyUserPage> {
           actions: <Widget>[
             TextButton(
               onPressed: () {
-                Navigator.of(context)
-                    .pop(false); // ปิดหน้าต่างและส่งค่า false กลับ
+                Navigator.of(
+                  context,
+                ).pop(false); // ปิดหน้าต่างและส่งค่า false กลับ
               },
               child: const Text('ยกเลิก'),
             ),
             ElevatedButton(
               onPressed: () {
-                Navigator.of(context)
-                    .pop(true); // ปิดหน้าต่างและส่งค่า true กลับ
+                Navigator.of(
+                  context,
+                ).pop(true); // ปิดหน้าต่างและส่งค่า true กลับ
               },
               child: const Text(' ยืนยัน '),
             ),
@@ -227,10 +233,7 @@ class _MyUserPageState extends State<MyUserPage> {
   Future<void> _fetchConfirmRegis(String user) async {
     final response = await http.post(
       Uri.parse(tURLconfirmUser),
-      body: {
-        'token': tSecretAPIKey,
-        'email': user,
-      },
+      body: {'token': tSecretAPIKey, 'email': user},
     );
 
     if (response.statusCode == 200) {
@@ -254,11 +257,7 @@ class _MyUserPageState extends State<MyUserPage> {
   Future<void> _fetchResetPass(String user) async {
     final response = await http.post(
       Uri.parse(tURLresetUserPass),
-      body: {
-        'token': tSecretAPIKey,
-        'email': user,
-        'password': 'password',
-      },
+      body: {'token': tSecretAPIKey, 'email': user, 'password': 'password'},
     );
 
     if (response.statusCode == 200) {
@@ -282,30 +281,44 @@ class _MyUserPageState extends State<MyUserPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: adaptivePageColor(context),
       appBar: AppBar(
-        title: ATextDiskplayMedium(
-            text: 'ผู้ใช้งานทั้งหมด [${widget.totalMember} ราย]'),
+        title: Text('ผู้ใช้งานทั้งหมด [${widget.totalMember} ราย]'),
+        actions: [
+          IconButton(
+            icon: Icon(
+              _isListView ? Icons.view_agenda_outlined : Icons.view_list,
+            ),
+            color: Colors.white,
+            tooltip: _isListView ? 'แสดงแบบการ์ด' : 'แสดงแบบลิสต์',
+            onPressed: () {
+              setState(() => _isListView = !_isListView);
+            },
+          ),
+        ],
       ),
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(12.0),
             child: Row(
               children: [
                 // Dropdown สำหรับเลือกการกรอง
                 DropdownButton<String>(
                   value: _filterType,
-                  items: <String>[
-                    'ชื่อทั้งหมด',
-                    'Admin',
-                    'รอการยืนยัน',
-                    'ผู้มีสิทธิ์ยืนยันเสียงอ่าน'
-                  ].map((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text('แสดง $value'),
-                    );
-                  }).toList(),
+                  underline: const SizedBox(),
+                  items:
+                      <String>[
+                        'ชื่อทั้งหมด',
+                        'Admin',
+                        'รอการยืนยัน',
+                        'ผู้มีสิทธิ์ยืนยันเสียงอ่าน',
+                      ].map((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text('แสดง $value'),
+                        );
+                      }).toList(),
                   onChanged: (newValue) {
                     setState(() {
                       _filterType = newValue!;
@@ -320,9 +333,17 @@ class _MyUserPageState extends State<MyUserPage> {
                 Expanded(
                   child: TextField(
                     controller: _controlSearchText,
-                    decoration: const InputDecoration(
-                      labelText: 'กรอกข้อมูลการค้นหา',
-                      border: OutlineInputBorder(),
+                    decoration: InputDecoration(
+                      isDense: true,
+                      hintText: 'ค้นหาสมาชิก...',
+                      prefixIcon: const Icon(Icons.search, size: 20),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(
+                        vertical: 10,
+                        horizontal: 12,
+                      ),
                     ),
                     onChanged: (value) {
                       setState(() {
@@ -345,267 +366,480 @@ class _MyUserPageState extends State<MyUserPage> {
                 }
                 return false;
               },
-              child: Padding(
-                padding:
-                    const EdgeInsets.only(top: 16.0), // เพิ่ม padding ด้านบน
-                child: ListView.builder(
-                  controller: _scrollControllerTitle,
-                  itemCount: loadedRecordsTitle + 1,
-                  itemBuilder: (context, index) {
-                    if (index == loadedRecordsTitle) {
-                      return loadingTitle
-                          ? const Center(child: CircularProgressIndicator())
-                          : const SizedBox.shrink();
-                    }
-                    return Column(
+              child: ListView.builder(
+                controller: _scrollControllerTitle,
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                itemCount: loadedRecordsTitle + 1,
+                itemBuilder: (context, index) {
+                  if (index == loadedRecordsTitle) {
+                    return loadingTitle
+                        ? const Center(child: CircularProgressIndicator())
+                        : const SizedBox.shrink();
+                  }
+                  final user = dataTitle[index];
+                  if (_isListView) {
+                    return _buildListRow(context, user, index);
+                  }
+                  return Container(
+                    margin: const EdgeInsets.only(bottom: 10),
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: adaptiveSurfaceColor(context),
+                      borderRadius: BorderRadius.circular(14),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.05),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        ListTile(
-                          leading: CircleAvatar(
-                            backgroundColor: Colors.blue[900],
-                            foregroundColor: Colors.white,
-                            child: ATextDiskplayMedium(text: '${index + 1}'),
-                          ),
-                          title: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
+                        IndexBadge(index: index + 1, radius: 15),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               TUserMenu(
-                                  title: 'ชื่อผู้ใช้งาน',
-                                  value: '${dataTitle[index]['username']}'),
-                              TUserMenu(
-                                  title: 'ชื่อ-นามสกุล',
-                                  value:
-                                      '${dataTitle[index]['first_nameid']}${dataTitle[index]['firstName']} ${dataTitle[index]['lastName']}'),
-                              TUserMenu(
-                                  title: 'อีเมล',
-                                  value: '${dataTitle[index]['email']}'),
-                              InkWell(
-                                onTap: () async {
-                                  String txtTitle =
-                                      '${dataTitle[index]['email']}';
-                                  Clipboard.setData(
-                                    ClipboardData(text: txtTitle),
-                                  );
-                                  _showSnackbar(
-                                      context, 'คัดลอกข้อมูลเรียบร้อยแล้ว');
-                                },
-                                child: Icon(
-                                  Icons.copy,
-                                  size: 18,
-                                  color: Colors
-                                      .blue[300], // Change color as needed
-                                ),
+                                icon: Icons.person_outline,
+                                title: 'ชื่อผู้ใช้งาน',
+                                value: '${user['username']}',
                               ),
                               TUserMenu(
-                                  title: 'วันเดือนปีเกิด',
-                                  value: '${dataTitle[index]['birthDate']}'),
-                            ],
-                          ),
-                          subtitle: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
+                                icon: Icons.badge_outlined,
+                                title: 'ชื่อ-นามสกุล',
+                                value:
+                                    '${user['first_nameid']}${user['firstName']} ${user['lastName']}',
+                              ),
                               Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  InkWell(
-                                    onTap: () async {
-                                      bool? confirm =
-                                          await _showConfirmationDialog(
-                                              context);
-                                      if (confirm!) {
-                                        await _fetchResetPass(
-                                            '${dataTitle[index]['username']}');
-                                      }
-                                    },
-                                    child: const SizedBox(
-                                      child: Row(
-                                        children: [
-                                          Icon(Icons.edit),
-                                          ATextTitleSmall(
-                                            text: ' รีเซตรหัสผ่าน...',
-                                          ),
-                                        ],
-                                      ),
+                                  Expanded(
+                                    child: TUserMenu(
+                                      icon: Icons.email_outlined,
+                                      title: 'อีเมล',
+                                      value: '${user['email']}',
                                     ),
                                   ),
-                                  dataTitle[index]['active'] == 0
-                                      ? InkWell(
-                                          onTap: () async {
-                                            bool? confirm =
-                                                await _showConfirmationDialog(
-                                                    context);
-                                            if (confirm!) {
-                                              await _fetchConfirmRegis(
-                                                  '${dataTitle[index]['username']}');
-                                            }
-                                          },
-                                          child: const SizedBox(
-                                            child: Row(
-                                              children: [
-                                                Icon(Icons.edit),
-                                                ATextTitleSmall(
-                                                  text: ' ยืนยันการสมัคร ',
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        )
-                                      : const Text(''),
+                                  CircularIconButton(
+                                    icon: Icons.copy,
+                                    size: 16,
+                                    color: Colors.blue[300]!,
+                                    onTap: () async {
+                                      Clipboard.setData(
+                                        ClipboardData(text: '${user['email']}'),
+                                      );
+                                      _showSnackbar(
+                                        context,
+                                        'คัดลอกข้อมูลเรียบร้อยแล้ว',
+                                      );
+                                    },
+                                  ),
                                 ],
                               ),
-                              Row(
+                              TUserMenu(
+                                icon: Icons.cake_outlined,
+                                title: 'วันเดือนปีเกิด',
+                                value: '${user['birthDate']}',
+                              ),
+                              const SizedBox(height: 8),
+                              const Divider(height: 1),
+                              const SizedBox(height: 8),
+                              Wrap(
+                                spacing: 8,
+                                runSpacing: 8,
                                 children: [
-                                  dataTitle[index]['permission_voice'] == 0
-                                      ? InkWell(
-                                          onTap: () async {
-                                            bool? confirm =
-                                                await _showConfirmationDialog(
-                                                    context);
-                                            if (confirm!) {
-                                              await _fetchConfirmVoice(
-                                                '${dataTitle[index]['username']}',
-                                                '1',
+                                  _ActionChip(
+                                    icon: Icons.lock_reset,
+                                    label: 'รีเซตรหัสผ่าน',
+                                    onPressed: () async {
+                                      bool? confirm =
+                                          await _showConfirmationDialog(
+                                            context,
+                                          );
+                                      if (confirm!) {
+                                        await _fetchResetPass(
+                                          '${user['username']}',
+                                        );
+                                      }
+                                    },
+                                  ),
+                                  if (user['active'] == 0)
+                                    _ActionChip(
+                                      icon: Icons.how_to_reg_outlined,
+                                      label: 'ยืนยันการสมัคร',
+                                      onPressed: () async {
+                                        bool? confirm =
+                                            await _showConfirmationDialog(
+                                              context,
+                                            );
+                                        if (confirm!) {
+                                          await _fetchConfirmRegis(
+                                            '${user['username']}',
+                                          );
+                                        }
+                                      },
+                                    ),
+                                  if (user['permission_voice'] == 0)
+                                    _ActionChip(
+                                      icon: Icons.record_voice_over_outlined,
+                                      label: 'กำหนดสิทธิ์ยืนยันเสียงอ่าน',
+                                      onPressed: () async {
+                                        bool? confirm =
+                                            await _showConfirmationDialog(
+                                              context,
+                                            );
+                                        if (confirm!) {
+                                          await _fetchConfirmVoice(
+                                            '${user['username']}',
+                                            '1',
+                                          );
+                                        }
+                                      },
+                                    )
+                                  else if (user['permission_voice'] == 1) ...[
+                                    const _StatusPill(
+                                      text: 'ยืนยันเสียงอ่านแล้ว',
+                                    ),
+                                    if (user['username'] != tmpUser)
+                                      _ActionChip(
+                                        icon: Icons.close,
+                                        label: 'ยกเลิกสิทธิ์ยืนยันเสียงอ่าน',
+                                        danger: true,
+                                        onPressed: () async {
+                                          bool? confirm =
+                                              await _showConfirmationDialog(
+                                                context,
                                               );
-                                            }
-                                          },
-                                          child: const SizedBox(
-                                            child: Row(
-                                              children: [
-                                                Icon(Icons.edit),
-                                                ATextTitleSmall(
-                                                  text:
-                                                      ' กำหนดสิทธิ์ยืนยืนเสียงอ่าน ',
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        )
-                                      : dataTitle[index]['permission_voice'] ==
-                                              1
-                                          ? Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  '[ บัญชีนี้ได้รับอนุมัติให้ยืนยันการอ่านออกเสียงแล้ว ]',
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodySmall!
-                                                      .copyWith(
-                                                          color: Colors.red),
-                                                  textAlign: TextAlign.left,
-                                                ),
-                                                dataTitle[index]['username'] !=
-                                                        tmpUser
-                                                    ? InkWell(
-                                                        onTap: () async {
-                                                          bool? confirm =
-                                                              await _showConfirmationDialog(
-                                                                  context);
-                                                          if (confirm!) {
-                                                            await _fetchConfirmVoice(
-                                                              '${dataTitle[index]['username']}',
-                                                              '0',
-                                                            );
-                                                          }
-                                                        },
-                                                        child: const SizedBox(
-                                                          child: Row(
-                                                            children: [
-                                                              Icon(Icons.edit),
-                                                              ATextTitleSmall(
-                                                                text:
-                                                                    'ยกเลิกสิทธิ์ยืนยันการอ่านออกเสียง',
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      )
-                                                    : const SizedBox.shrink()
-                                              ],
-                                            )
-                                          : const Text(''),
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  dataTitle[index]['level_access'] == 2
-                                      ? InkWell(
-                                          onTap: () async {
-                                            bool? confirm =
-                                                await _showConfirmationDialog(
-                                                    context);
-                                            if (confirm!) {
-                                              await _fetchConfirmAdmin(
-                                                  '${dataTitle[index]['username']}',
-                                                  '1');
-                                            }
-                                          },
-                                          child: const SizedBox(
-                                            child: Row(
-                                              children: [
-                                                Icon(Icons.edit),
-                                                ATextTitleSmall(
-                                                  text: 'กำหนดสิทธิ์เป็น Admin',
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        )
-                                      : dataTitle[index]['level_access'] == 1
-                                          ? Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  '[ บัญชีนี้มีสถานะเป็น Admin ]',
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodySmall!
-                                                      .copyWith(
-                                                          color: Colors.red),
-                                                  textAlign: TextAlign.left,
-                                                ),
-                                                dataTitle[index]['username'] !=
-                                                        tmpUser
-                                                    ? InkWell(
-                                                        onTap: () async {
-                                                          bool? confirm =
-                                                              await _showConfirmationDialog(
-                                                                  context);
-                                                          if (confirm!) {
-                                                            await _fetchConfirmAdmin(
-                                                                '${dataTitle[index]['username']}',
-                                                                '2');
-                                                          }
-                                                        },
-                                                        child: const SizedBox(
-                                                          child: Row(
-                                                            children: [
-                                                              Icon(Icons.edit),
-                                                              ATextTitleSmall(
-                                                                text:
-                                                                    'ยกเลิกสิทธิ์เป็น Admin',
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      )
-                                                    : const SizedBox.shrink()
-                                              ],
-                                            )
-                                          : const Text(''),
+                                          if (confirm!) {
+                                            await _fetchConfirmVoice(
+                                              '${user['username']}',
+                                              '0',
+                                            );
+                                          }
+                                        },
+                                      ),
+                                  ],
+                                  if (user['level_access'] == 2)
+                                    _ActionChip(
+                                      icon: Icons.admin_panel_settings_outlined,
+                                      label: 'กำหนดสิทธิ์เป็น Admin',
+                                      onPressed: () async {
+                                        bool? confirm =
+                                            await _showConfirmationDialog(
+                                              context,
+                                            );
+                                        if (confirm!) {
+                                          await _fetchConfirmAdmin(
+                                            '${user['username']}',
+                                            '1',
+                                          );
+                                        }
+                                      },
+                                    )
+                                  else if (user['level_access'] == 1) ...[
+                                    const _StatusPill(text: 'เป็น Admin'),
+                                    if (user['username'] != tmpUser)
+                                      _ActionChip(
+                                        icon: Icons.close,
+                                        label: 'ยกเลิกสิทธิ์ Admin',
+                                        danger: true,
+                                        onPressed: () async {
+                                          bool? confirm =
+                                              await _showConfirmationDialog(
+                                                context,
+                                              );
+                                          if (confirm!) {
+                                            await _fetchConfirmAdmin(
+                                              '${user['username']}',
+                                              '2',
+                                            );
+                                          }
+                                        },
+                                      ),
+                                  ],
                                 ],
                               ),
                             ],
                           ),
-                          onTap: () {},
                         ),
-                        const Divider(),
                       ],
-                    );
-                  },
+                    ),
+                  );
+                },
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // แถวแบบย่อ (โหมดลิสต์): บรรทัดเดียวต่อสมาชิก 1 คน รวมการจัดการสิทธิ์ทั้งหมด
+  // ไว้ในเมนู ⋮ แทนการกางปุ่มเป็น chip หลายตัวแบบโหมดการ์ด เพื่อให้ไล่ดูสมาชิก
+  // จำนวนมากได้เร็วกว่า
+  Widget _buildListRow(BuildContext context, dynamic user, int index) {
+    final isPendingRegis = user['active'] == 0;
+    final isAdmin = user['level_access'] == 1;
+    final canGrantAdmin = user['level_access'] == 2;
+    final isVoiceConfirmed = user['permission_voice'] == 1;
+    final canGrantVoice = user['permission_voice'] == 0;
+    final isSelf = user['username'] == tmpUser;
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: adaptiveSurfaceColor(context),
+        borderRadius: BorderRadius.circular(10),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 6,
+            offset: const Offset(0, 1),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          IndexBadge(index: index + 1, radius: 13),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Flexible(
+                      child: Text(
+                        '${user['username']}',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          color: adaptiveTextColor(context),
+                        ),
+                      ),
+                    ),
+                    if (isAdmin) ...[
+                      const SizedBox(width: 6),
+                      const _MiniTag(text: 'Admin', color: TColors.success),
+                    ],
+                    if (isPendingRegis) ...[
+                      const SizedBox(width: 6),
+                      const _MiniTag(text: 'รอยืนยัน', color: TColors.warning),
+                    ],
+                  ],
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  '${user['email']}',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: adaptiveTextColor(context).withValues(alpha: 0.6),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          PopupMenuButton<String>(
+            icon: Icon(
+              Icons.more_vert,
+              color: adaptiveTextColor(context).withValues(alpha: 0.6),
+            ),
+            itemBuilder: (context) => [
+              const PopupMenuItem(
+                value: 'reset',
+                child: ListTile(
+                  leading: Icon(Icons.lock_reset),
+                  title: Text('รีเซตรหัสผ่าน'),
                 ),
               ),
+              if (isPendingRegis)
+                const PopupMenuItem(
+                  value: 'confirmRegis',
+                  child: ListTile(
+                    leading: Icon(Icons.how_to_reg_outlined),
+                    title: Text('ยืนยันการสมัคร'),
+                  ),
+                ),
+              if (canGrantVoice)
+                const PopupMenuItem(
+                  value: 'grantVoice',
+                  child: ListTile(
+                    leading: Icon(Icons.record_voice_over_outlined),
+                    title: Text('กำหนดสิทธิ์ยืนยันเสียงอ่าน'),
+                  ),
+                )
+              else if (isVoiceConfirmed && !isSelf)
+                const PopupMenuItem(
+                  value: 'revokeVoice',
+                  child: ListTile(
+                    leading: Icon(Icons.voice_over_off_outlined),
+                    title: Text('ยกเลิกสิทธิ์ยืนยันเสียงอ่าน'),
+                  ),
+                ),
+              if (canGrantAdmin)
+                const PopupMenuItem(
+                  value: 'grantAdmin',
+                  child: ListTile(
+                    leading: Icon(Icons.admin_panel_settings_outlined),
+                    title: Text('กำหนดสิทธิ์เป็น Admin'),
+                  ),
+                )
+              else if (isAdmin && !isSelf)
+                const PopupMenuItem(
+                  value: 'revokeAdmin',
+                  child: ListTile(
+                    leading: Icon(Icons.remove_moderator_outlined),
+                    title: Text('ยกเลิกสิทธิ์ Admin'),
+                  ),
+                ),
+            ],
+            onSelected: (value) async {
+              switch (value) {
+                case 'reset':
+                  {
+                    bool? confirm = await _showConfirmationDialog(context);
+                    if (confirm == true) {
+                      await _fetchResetPass('${user['username']}');
+                    }
+                    break;
+                  }
+                case 'confirmRegis':
+                  {
+                    bool? confirm = await _showConfirmationDialog(context);
+                    if (confirm == true) {
+                      await _fetchConfirmRegis('${user['username']}');
+                    }
+                    break;
+                  }
+                case 'grantVoice':
+                  {
+                    bool? confirm = await _showConfirmationDialog(context);
+                    if (confirm == true) {
+                      await _fetchConfirmVoice('${user['username']}', '1');
+                    }
+                    break;
+                  }
+                case 'revokeVoice':
+                  {
+                    bool? confirm = await _showConfirmationDialog(context);
+                    if (confirm == true) {
+                      await _fetchConfirmVoice('${user['username']}', '0');
+                    }
+                    break;
+                  }
+                case 'grantAdmin':
+                  {
+                    bool? confirm = await _showConfirmationDialog(context);
+                    if (confirm == true) {
+                      await _fetchConfirmAdmin('${user['username']}', '1');
+                    }
+                    break;
+                  }
+                case 'revokeAdmin':
+                  {
+                    bool? confirm = await _showConfirmationDialog(context);
+                    if (confirm == true) {
+                      await _fetchConfirmAdmin('${user['username']}', '2');
+                    }
+                    break;
+                  }
+              }
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ป้ายข้อความเล็กมากแบบ inline ใช้ต่อท้ายชื่อผู้ใช้ในโหมดลิสต์
+class _MiniTag extends StatelessWidget {
+  const _MiniTag({required this.text, required this.color});
+
+  final String text;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.15),
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Text(
+        text,
+        style: TextStyle(
+          fontSize: 10,
+          fontWeight: FontWeight.w700,
+          color: color,
+        ),
+      ),
+    );
+  }
+}
+
+// ปุ่มการทำงานขนาดเล็กแบบ chip ใช้แทนแถว InkWell+Icon+Text เดิมที่ไม่มีขอบเขต
+// การแตะชัดเจน ให้ไหลต่อกันได้ด้วย Wrap แทนการจัดเรียงเป็น Row ตายตัว
+class _ActionChip extends StatelessWidget {
+  const _ActionChip({
+    required this.icon,
+    required this.label,
+    required this.onPressed,
+    this.danger = false,
+  });
+
+  final IconData icon;
+  final String label;
+  final VoidCallback onPressed;
+  final bool danger;
+
+  @override
+  Widget build(BuildContext context) {
+    final color = danger ? TColors.error : TColors.buttonPrimary;
+    return ActionChip(
+      avatar: Icon(icon, size: 16, color: color),
+      label: Text(label, style: TextStyle(color: color, fontSize: 12)),
+      backgroundColor: color.withValues(alpha: 0.1),
+      side: BorderSide.none,
+      onPressed: onPressed,
+    );
+  }
+}
+
+// ป้ายสถานะแบบอ่านอย่างเดียว (ไม่ใช่ปุ่ม) บอกว่าบัญชีมีสิทธิ์นี้อยู่แล้ว
+class _StatusPill extends StatelessWidget {
+  const _StatusPill({required this.text});
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: TColors.success.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(Icons.check_circle, size: 14, color: TColors.success),
+          const SizedBox(width: 4),
+          Text(
+            text,
+            style: const TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+              color: TColors.success,
             ),
           ),
         ],

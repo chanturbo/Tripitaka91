@@ -93,27 +93,17 @@ class _MyPageMemberTabDetailState extends State<MyPageMemberTabDetail>
   Widget build(BuildContext context) {
     super.build(context);
 
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Container(
-        decoration: BoxDecoration(
-          border: Border.all(
-            color: Colors.blue,
-            width: 1.0,
-          ),
-          borderRadius: BorderRadius.circular(10.0),
-        ),
-        padding: const EdgeInsets.all(2.5),
-        child: widget.indexLocal == 0
-            ? const MemberDisplay()
-            : widget.indexLocal == 1
+    return widget.indexLocal == 0
+        ? const MemberDisplay()
+        : Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: widget.indexLocal == 1
                 ? const ShowSpeech()
                 : widget.indexLocal == 2
                     ? const ShowSpeechSave()
                     : widget.indexLocal == 3
                         ? const ShowCorrect()
                         : const ShowCorrectSave(),
-      ),
-    );
+          );
   }
 }
