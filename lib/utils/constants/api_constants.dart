@@ -73,3 +73,10 @@ const String tURLsuscessSpeakConfirm = "${tURL}confirm_speak.php";
 const String tURLsuscessCorrectConfirm = "${tURL}confirm_correct.php";
 const String tURLwords = "${tURL}show_words.php";
 const String tURLdeleteUser = "${tURL}delete_user.php";
+const String tURLgoogleLogin = "${tURL}google_login.php";
+
+// Web application OAuth client ID จาก Google Cloud Console (โปรเจกต์ Tripitaka91)
+// ใช้เป็น serverClientId ตอนเรียก GoogleSignIn.instance.initialize() เพื่อให้
+// ID token มี aud ตรงกับค่านี้ ซึ่งฝั่ง backend (google_login.php) ต้องเช็คให้ตรงกันด้วย
+const String tGoogleWebClientId =
+    "678536711643-1p9avbk9b8t9tu3r8i4f8crkn8ap566k.apps.googleusercontent.com";

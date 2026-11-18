@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tripitaka91/utils/api_connect/google_auth_helper.dart';
 import 'package:tripitaka91/utils/constants/api_constants.dart';
 import 'package:tripitaka91/utils/constants/colors.dart';
 import 'package:tripitaka91/utils/constants/text_strings.dart';
@@ -119,7 +120,18 @@ class _LoginPageState extends State<LoginPage> {
             TTexts.signIn,
             style: TextStyle(fontSize: 20),
           ),
-        )
+        ),
+        const SizedBox(height: 16),
+        OutlinedButton.icon(
+          onPressed: () {
+            _loginWithGoogle(context);
+          },
+          icon: const Icon(Icons.login),
+          label: const Text(
+            ' เข้าสู่ระบบด้วย Google ',
+            style: TextStyle(fontSize: 18),
+          ),
+        ),
       ],
     );
   }
@@ -153,6 +165,58 @@ class _LoginPageState extends State<LoginPage> {
         await showCustomDialog(context);
       }
     }
+  }
+
+  Future<void> _loginWithGoogle(BuildContext context) async {
+    final idToken = await GoogleAuthHelper.signInAndGetIdToken();
+    if (idToken == null) {
+      // ผู้ใช้กดยกเลิก หรือ sign-in ไม่สำเร็จ — ไม่ต้องแจ้งเตือนซ้ำ
+      return;
+    }
+
+    bool chkLogin = await loginWithGoogle(idToken, tSecretAPIKey);
+    if (!context.mounted) return;
+    if (chkLogin) {
+      context.read<UserProvider>().setUser(createUserModel());
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const MemberTabShow(indexShow: 0),
+        ),
+      );
+    } else {
+      // ignore: use_build_context_synchronously
+      await showCustomDialog(context);
+    }
+  }
+
+  Future<bool> loginWithGoogle(String idToken, String token) async {
+    try {
+      var client = http.Client();
+      var uri = Uri.parse(tURLgoogleLogin);
+      var data = {
+        'id_token': idToken,
+        'token': token,
+      };
+
+      var response = await client.post(
+        uri,
+        body: data,
+      );
+
+      if (response.statusCode == 200) {
+        var json = response.body;
+        var decodedJson = jsonDecode(json);
+        usersLogin = UsersLogin.fromJson(decodedJson);
+        saveValueCorrect(int.parse(usersLogin.user.counterWordcorrec));
+        return usersLogin.success;
+      }
+    } catch (e) {
+      // ignore: avoid_print
+      print('Error in loginWithGoogle: $e');
+    }
+    msgLogin = 'เข้าสู่ระบบด้วย Google ไม่สำเร็จ';
+    return false;
   }
 
   Future<void> showCustomDialog(BuildContext context) async {
