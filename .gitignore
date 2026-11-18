@@ -49,3 +49,12 @@ app.*.map.json
 key.properties
 *.jks
 *.keystore
+
+# Generated/cached TTS audio files (not source)
+workspace/sounds/
+
+# Backend config files with live secrets (DB password, API keys, auth token) —
+# keep these only on disk/on the server, never in the (public) repo
+workspace/db_connect.php
+workspace/db_correction.php
+workspace/websiteconfig.php
