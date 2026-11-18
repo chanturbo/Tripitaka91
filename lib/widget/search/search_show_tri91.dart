@@ -233,7 +233,7 @@ class _SearchShowPagesState extends State<SearchShowPages> {
                         fontFamily: widget.isM
                             ? 'Roboto'
                             : kIsWeb
-                                ? 'THSarabunNew'
+                                ? 'Sarabun'
                                 : 'Roboto',
                         fontSize: widget.isM
                             ? 18.0

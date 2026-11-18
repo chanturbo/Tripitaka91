@@ -2174,17 +2174,12 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
               overrideStyle: <String, TextStyle>{
                 'span': isMobile
                     ? const TextStyle(fontSize: 28)
-                    : const TextStyle(fontSize: 26), //isMobile
-                // ? const TextStyle(fontSize: 22)
-                // : isTable
-                //     ? const TextStyle(fontSize: 23)
-                //     : const TextStyle(fontSize: 24),
+                    : const TextStyle(fontSize: 26),
                 'p': isMobile
                     ? const TextStyle(fontSize: 28)
                     : const TextStyle(fontSize: 26),
-                // : isTable
-                //     ? const TextStyle(fontSize: 25)
-                //     : const TextStyle(fontSize: 26),
+                'b': TextStyle(fontWeight: FontWeight.w500),
+                'strong': TextStyle(fontWeight: FontWeight.w500),
                 'a': const TextStyle(
                   fontSize: 26,
                   color: Color(0XFFd58512),
@@ -2197,17 +2192,13 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
             );
 
             return SizedBox(
-              width: MediaQuery.of(context).size.width,
+              width: double.infinity,
               child: SingleChildScrollView(
                 controller: _scrollController,
                 child: SelectableText.rich(
                   textSpan,
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    height: MediaQuery.of(context).size.width <= 600
-                        ? 0.3
-                        : 0.1,
-                  ),
+                  style: const TextStyle(height: 0.1),
                 ),
               ),
             );
@@ -2518,20 +2509,9 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
                 color: Colors.red,
               ),
               'span': TextStyle(fontSize: _fontSize),
-              // isMobile
-              //     ? const TextStyle(fontSize: 28)
-              //     : const TextStyle(fontSize: 26), //isMobile
-              // ? const TextStyle(fontSize: 22)
-              // : isTable
-              //     ? const TextStyle(fontSize: 23)
-              //     : const TextStyle(fontSize: 24),
               'p': TextStyle(fontSize: _fontSize),
-              //  isMobile
-              //     ? const TextStyle(fontSize: 28)
-              //     : const TextStyle(fontSize: 26),
-              // : isTable
-              //     ? const TextStyle(fontSize: 25)
-              //     : const TextStyle(fontSize: 26),
+              'b': TextStyle(fontWeight: FontWeight.w500),
+              'strong': TextStyle(fontWeight: FontWeight.w500),
               'a': const TextStyle(
                 fontSize: 26,
                 color: Color(0XFFd58512),
@@ -2550,15 +2530,13 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
             chkTimer2 = false;
           }
           return SizedBox(
-            width: MediaQuery.of(context).size.width,
+            width: double.infinity,
             child: SingleChildScrollView(
               controller: _scrollController,
               child: SelectableText.rich(
                 textSpan,
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  height: MediaQuery.of(context).size.width <= 600 ? 0.3 : 0.1,
-                ),
+                style: const TextStyle(height: 0.1),
               ),
             ),
           );

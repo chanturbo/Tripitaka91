@@ -45,7 +45,7 @@ class SharedImageBook {
                   text: TextSpan(
                     text: bookTitle.replaceAll(strReplaceBookBlue, ''),
                     style: TextStyle(
-                      fontFamily: 'THSarabunNew',
+                      fontFamily: 'Sarabun',
                       fontSize: 30,
                       color: Colors.blue[900],
                     ),
@@ -77,7 +77,7 @@ class SharedImageBook {
                 child: Text(
                   'ข้อความจากพระไตรปิฎกและอรรถกถาแปล ชุด 91 เล่ม',
                   style: TextStyle(
-                      fontFamily: 'THSarabunNew',
+                      fontFamily: 'Sarabun',
                       fontSize: 20,
                       color: Colors.grey[800]),
                 ),
@@ -87,7 +87,7 @@ class SharedImageBook {
                 child: Text(
                   'ฉบับมหามกุฏราชวิทยาลัย | อ่านเนื้อความเต็ม -> ',
                   style: TextStyle(
-                      fontFamily: 'THSarabunNew',
+                      fontFamily: 'Sarabun',
                       fontSize: 20,
                       color: Colors.grey[800]),
                 ),

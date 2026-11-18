@@ -181,7 +181,7 @@ class _PageViewEditState extends State<PageViewEdit> {
                               ? SelectableText(
                                   book.bookDetail,
                                   style: const TextStyle(
-                                    fontFamily: 'THSarabunNew',
+                                    fontFamily: 'Sarabun',
                                     fontSize: 24.0,
                                   ),
                                 )
@@ -192,7 +192,7 @@ class _PageViewEditState extends State<PageViewEdit> {
                               ? Text(
                                   book.bookLines.toString(),
                                   style: const TextStyle(
-                                    fontFamily: 'THSarabunNew',
+                                    fontFamily: 'Sarabun',
                                     fontSize: 24.0,
                                   ),
                                 )
@@ -204,7 +204,7 @@ class _PageViewEditState extends State<PageViewEdit> {
                                     ? TextFormField(
                                         controller: controllersList[index][1],
                                         style: const TextStyle(
-                                          fontFamily: 'THSarabunNew',
+                                          fontFamily: 'Sarabun',
                                           fontSize: 24.0,
                                         ),
                                       )
@@ -227,7 +227,7 @@ class _PageViewEditState extends State<PageViewEdit> {
                                 ? TextFormField(
                                     controller: controllersList[index][2],
                                     style: const TextStyle(
-                                      fontFamily: 'THSarabunNew',
+                                      fontFamily: 'Sarabun',
                                       fontSize: 24.0,
                                     ),
                                   )
@@ -239,7 +239,7 @@ class _PageViewEditState extends State<PageViewEdit> {
                                     ? TextFormField(
                                         controller: controllersList[index][3],
                                         style: const TextStyle(
-                                          fontFamily: 'THSarabunNew',
+                                          fontFamily: 'Sarabun',
                                           fontSize: 24.0,
                                         ),
                                       )

@@ -50,7 +50,7 @@ class DictEntryTile extends StatelessWidget {
                 Text(
                   word,
                   style: const TextStyle(
-                    fontFamily: 'THSarabunNew',
+                    fontFamily: 'Sarabun',
                     fontSize: 24,
                     fontWeight: FontWeight.w700,
                   ),
@@ -59,7 +59,7 @@ class DictEntryTile extends StatelessWidget {
                 Text(
                   detail,
                   style: TextStyle(
-                    fontFamily: 'THSarabunNew',
+                    fontFamily: 'Sarabun',
                     fontSize: 24,
                     color: mutedColor,
                   ),

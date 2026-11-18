@@ -146,7 +146,7 @@ class _LogEditScreenBackupState extends State<LogEditScreenBackup> {
                           child: Text(
                             '${messages[0]['book_detail']}',
                             style: const TextStyle(
-                                fontFamily: 'THSarabunNew',
+                                fontFamily: 'Sarabun',
                                 fontSize: 26,
                                 color: Colors.red),
                           ),

@@ -176,7 +176,7 @@ class _LogEditScreenState extends State<LogEditScreen> {
         Text(
           'เล่ม ${record['tripitaka91_book']} หน้า ${record['tripitaka91_page']} บรรทัด ${record['tripitaka91_line']}',
           style: TextStyle(
-            fontFamily: 'THSarabunNew',
+            fontFamily: 'Sarabun',
             fontSize: 18,
             color: adaptiveTextColor(context).withValues(alpha: 0.6),
           ),
@@ -188,7 +188,7 @@ class _LogEditScreenState extends State<LogEditScreen> {
               TextSpan(
                 text: 'คำที่น่าจะผิด: ',
                 style: TextStyle(
-                  fontFamily: 'THSarabunNew',
+                  fontFamily: 'Sarabun',
                   fontSize: 20,
                   color: adaptiveTextColor(context).withValues(alpha: 0.6),
                 ),
@@ -196,7 +196,7 @@ class _LogEditScreenState extends State<LogEditScreen> {
               TextSpan(
                 text: '${record['tripitaka91_wordincorrect']}',
                 style: const TextStyle(
-                  fontFamily: 'THSarabunNew',
+                  fontFamily: 'Sarabun',
                   fontSize: 20,
                   color: TColors.error,
                   fontWeight: FontWeight.w600,
@@ -211,7 +211,7 @@ class _LogEditScreenState extends State<LogEditScreen> {
               TextSpan(
                 text: 'คำที่น่าจะถูก: ',
                 style: TextStyle(
-                  fontFamily: 'THSarabunNew',
+                  fontFamily: 'Sarabun',
                   fontSize: 20,
                   color: adaptiveTextColor(context).withValues(alpha: 0.6),
                 ),
@@ -219,7 +219,7 @@ class _LogEditScreenState extends State<LogEditScreen> {
               TextSpan(
                 text: '${record['tripitaka91_wordcorrect']}',
                 style: const TextStyle(
-                  fontFamily: 'THSarabunNew',
+                  fontFamily: 'Sarabun',
                   fontSize: 20,
                   color: TColors.error,
                   fontWeight: FontWeight.w600,
@@ -235,7 +235,7 @@ class _LogEditScreenState extends State<LogEditScreen> {
               TextSpan(
                 text: 'ข้อความเต็ม: ',
                 style: TextStyle(
-                  fontFamily: 'THSarabunNew',
+                  fontFamily: 'Sarabun',
                   fontSize: 18,
                   color: adaptiveTextColor(context).withValues(alpha: 0.6),
                 ),
@@ -337,7 +337,7 @@ class _LogEditScreenState extends State<LogEditScreen> {
                     TextSpan(
                       text: '${record['tripitaka91_wordincorrect']}',
                       style: const TextStyle(
-                        fontFamily: 'THSarabunNew',
+                        fontFamily: 'Sarabun',
                         fontSize: 20,
                         fontWeight: FontWeight.w700,
                         color: TColors.error,
@@ -355,7 +355,7 @@ class _LogEditScreenState extends State<LogEditScreen> {
                     TextSpan(
                       text: '${record['tripitaka91_wordcorrect']}',
                       style: const TextStyle(
-                        fontFamily: 'THSarabunNew',
+                        fontFamily: 'Sarabun',
                         fontSize: 20,
                         fontWeight: FontWeight.w700,
                         color: TColors.error,

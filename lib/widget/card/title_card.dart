@@ -88,10 +88,10 @@ class _TitleCardState extends State<TitleCard> {
           contentPadding: const EdgeInsets.all(5),
           title: const Text(
             'แก้ไขข้อมูลหัวข้อธรรม (สำหรับ Admin เท่านั้น)',
-            style: TextStyle(fontFamily: 'THSarabunNew', fontSize: 24),
+            style: TextStyle(fontFamily: 'Sarabun', fontSize: 24),
           ),
           content: TextFormField(
-            style: const TextStyle(fontFamily: 'THSarabunNew', fontSize: 26),
+            style: const TextStyle(fontFamily: 'Sarabun', fontSize: 26),
             controller: textController,
             decoration: const InputDecoration(
               hintText: 'กรอกข้อมูลที่นี่',
@@ -104,7 +104,7 @@ class _TitleCardState extends State<TitleCard> {
               },
               child: const Text(
                 'ยกเลิก',
-                style: TextStyle(fontFamily: 'THSarabunNew', fontSize: 24),
+                style: TextStyle(fontFamily: 'Sarabun', fontSize: 24),
               ),
             ),
             ElevatedButton(
@@ -133,7 +133,7 @@ class _TitleCardState extends State<TitleCard> {
               },
               child: const Text(
                 ' บันทึกข้อมูล ',
-                style: TextStyle(fontFamily: 'THSarabunNew', fontSize: 24),
+                style: TextStyle(fontFamily: 'Sarabun', fontSize: 24),
               ),
             ),
           ],

@@ -88,8 +88,21 @@ flutter:
       - asset: assets/fonts/THSarabunNewBold.ttf
   - family: THSarabunNewBoldItalic
     fonts:
-      - asset: assets/fonts/THSarabunNewBoldItalic.ttf  
-  
+      - asset: assets/fonts/THSarabunNewBoldItalic.ttf
+
+  - family: Sarabun
+    fonts:
+      - asset: assets/fonts/Sarabun-Regular.ttf
+        weight: 400
+      - asset: assets/fonts/Sarabun-Italic.ttf
+        weight: 400
+        style: italic
+      - asset: assets/fonts/Sarabun-Bold.ttf
+        weight: 700
+      - asset: assets/fonts/Sarabun-BoldItalic.ttf
+        weight: 700
+        style: italic
+
   - family: NotoSans
     fonts:
       - asset: assets/fonts/NotoSansThai-Regular.ttf  

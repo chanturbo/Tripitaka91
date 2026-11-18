@@ -427,7 +427,7 @@ class _ShowCorrectSaveWithPageState extends State<ShowCorrectSaveWithPage> {
                     const TextSpan(
                       text: 'ข้อความที่น่าจะผิด : ',
                       style: TextStyle(
-                          fontFamily: 'THSarabunNew',
+                          fontFamily: 'Sarabun',
                           fontSize: 24,
                           color: Colors.grey),
                     ),
@@ -435,14 +435,14 @@ class _ShowCorrectSaveWithPageState extends State<ShowCorrectSaveWithPage> {
                     const TextSpan(
                       text: '\t\t\t\tคำที่น่าจะผิด : ',
                       style: TextStyle(
-                          fontFamily: 'THSarabunNew',
+                          fontFamily: 'Sarabun',
                           fontSize: 24,
                           color: Colors.grey),
                     ),
                     TextSpan(
                       text: '$wordincorrect\n',
                       style: const TextStyle(
-                          fontFamily: 'THSarabunNew',
+                          fontFamily: 'Sarabun',
                           fontSize: 24,
                           color: Colors.red),
                     ),
@@ -453,12 +453,12 @@ class _ShowCorrectSaveWithPageState extends State<ShowCorrectSaveWithPage> {
                 text: 'ระบุข้อความที่น่าจะถูก [ $correctWord ]',
                 term: correctWord,
                 textStyle:
-                    const TextStyle(fontFamily: 'THSarabunNew', fontSize: 24),
+                    const TextStyle(fontFamily: 'Sarabun', fontSize: 24),
               ),
             ],
           ),
           content: TextFormField(
-            style: const TextStyle(fontFamily: 'THSarabunNew', fontSize: 26),
+            style: const TextStyle(fontFamily: 'Sarabun', fontSize: 26),
             controller: textController,
             decoration: const InputDecoration(
               hintText: 'กรอกข้อมูลที่นี่',
@@ -471,7 +471,7 @@ class _ShowCorrectSaveWithPageState extends State<ShowCorrectSaveWithPage> {
               },
               child: const Text(
                 'ยกเลิก',
-                style: TextStyle(fontFamily: 'THSarabunNew', fontSize: 24),
+                style: TextStyle(fontFamily: 'Sarabun', fontSize: 24),
               ),
             ),
             ElevatedButton(
@@ -495,7 +495,7 @@ class _ShowCorrectSaveWithPageState extends State<ShowCorrectSaveWithPage> {
               },
               child: const Text(
                 ' บันทึกข้อมูล ',
-                style: TextStyle(fontFamily: 'THSarabunNew', fontSize: 24),
+                style: TextStyle(fontFamily: 'Sarabun', fontSize: 24),
               ),
             ),
           ],
@@ -775,7 +775,7 @@ class _ShowCorrectSaveWithPageState extends State<ShowCorrectSaveWithPage> {
                                 const TextSpan(
                                   text: 'ข้อความที่น่าจะผิด : ',
                                   style: TextStyle(
-                                      fontFamily: 'THSarabunNew',
+                                      fontFamily: 'Sarabun',
                                       fontSize: 24,
                                       color: Colors.grey),
                                 ),
@@ -786,7 +786,7 @@ class _ShowCorrectSaveWithPageState extends State<ShowCorrectSaveWithPage> {
                                 const TextSpan(
                                   text: '\t\t\t\tคำที่น่าจะผิด : ',
                                   style: TextStyle(
-                                      fontFamily: 'THSarabunNew',
+                                      fontFamily: 'Sarabun',
                                       fontSize: 24,
                                       color: Colors.grey),
                                 ),
@@ -794,14 +794,14 @@ class _ShowCorrectSaveWithPageState extends State<ShowCorrectSaveWithPage> {
                                   text:
                                       '${dataTitle[index]['wordincorrect']}\n',
                                   style: const TextStyle(
-                                      fontFamily: 'THSarabunNew',
+                                      fontFamily: 'Sarabun',
                                       fontSize: 24,
                                       color: Colors.red),
                                 ),
                                 const TextSpan(
                                   text: 'ข้อความที่น่าจะถูก : ',
                                   style: TextStyle(
-                                      fontFamily: 'THSarabunNew',
+                                      fontFamily: 'Sarabun',
                                       fontSize: 24,
                                       color: Colors.grey),
                                 ),
@@ -812,14 +812,14 @@ class _ShowCorrectSaveWithPageState extends State<ShowCorrectSaveWithPage> {
                                 const TextSpan(
                                   text: '\t\t\t\tคำที่น่าจะถูก : ',
                                   style: TextStyle(
-                                      fontFamily: 'THSarabunNew',
+                                      fontFamily: 'Sarabun',
                                       fontSize: 24,
                                       color: Colors.grey),
                                 ),
                                 TextSpan(
                                   text: '${dataTitle[index]['wordcorrect']}',
                                   style: const TextStyle(
-                                      fontFamily: 'THSarabunNew',
+                                      fontFamily: 'Sarabun',
                                       fontSize: 24,
                                       color: Colors.red),
                                 ),

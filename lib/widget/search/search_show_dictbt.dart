@@ -161,7 +161,7 @@ class _SearchShowPagesDictbtState extends State<SearchShowPagesDictbt> {
                         fontFamily: widget.isM
                             ? 'Roboto'
                             : kIsWeb
-                                ? 'THSarabunNew'
+                                ? 'Sarabun'
                                 : 'Roboto',
                         fontSize: widget.isM
                             ? 18.0

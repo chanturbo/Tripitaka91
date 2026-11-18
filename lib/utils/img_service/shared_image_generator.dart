@@ -47,7 +47,7 @@ class SharedImageGenerator {
                   text: TextSpan(
                     text: bookTitle.replaceAll(strReplaceBookBlue, ''),
                     style: TextStyle(
-                      fontFamily: 'THSarabunNew',
+                      fontFamily: 'Sarabun',
                       fontSize: 30,
                       color: Colors.blue[900],
                     ),
@@ -93,7 +93,7 @@ class SharedImageGenerator {
                 child: Text(
                   'สรุปเนื้อความจากพระไตรปิฎกและอรรถกถาแปล ชุด 91 เล่ม',
                   style: TextStyle(
-                      fontFamily: 'THSarabunNew',
+                      fontFamily: 'Sarabun',
                       fontSize: 20,
                       color: Colors.grey[800]),
                 ),
@@ -103,7 +103,7 @@ class SharedImageGenerator {
                 child: Text(
                   'ฉบับมหามกุฏราชวิทยาลัย | อ่านเนื้อความเต็ม -> ',
                   style: TextStyle(
-                      fontFamily: 'THSarabunNew',
+                      fontFamily: 'Sarabun',
                       fontSize: 20,
                       color: Colors.grey[800]),
                 ),
@@ -190,7 +190,7 @@ class SharedImageLocal {
                   text: TextSpan(
                     text: bookTitle.replaceAll(strReplaceBookBlue, ''),
                     style: TextStyle(
-                      fontFamily: 'THSarabunNew',
+                      fontFamily: 'Sarabun',
                       fontSize: 30,
                       color: Colors.blue[900],
                     ),
@@ -236,7 +236,7 @@ class SharedImageLocal {
                 child: Text(
                   'สรุปเนื้อความจากพระไตรปิฎกและอรรถกถาแปล ชุด 91 เล่ม',
                   style: TextStyle(
-                      fontFamily: 'THSarabunNew',
+                      fontFamily: 'Sarabun',
                       fontSize: 20,
                       color: Colors.grey[800]),
                 ),
@@ -246,7 +246,7 @@ class SharedImageLocal {
                 child: Text(
                   'ฉบับมหามกุฏราชวิทยาลัย | อ่านเนื้อความเต็ม -> ',
                   style: TextStyle(
-                      fontFamily: 'THSarabunNew',
+                      fontFamily: 'Sarabun',
                       fontSize: 20,
                       color: Colors.grey[800]),
                 ),

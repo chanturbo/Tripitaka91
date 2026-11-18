@@ -100,7 +100,7 @@ class _EditSpeakScreenState extends State<EditSpeakScreen> {
               children: [
                 TextFormField(
                   style: const TextStyle(
-                    fontFamily: 'THSarabunNew',
+                    fontFamily: 'Sarabun',
                     fontSize: 24,
                   ),
                   controller: text1Controller,
@@ -138,7 +138,7 @@ class _EditSpeakScreenState extends State<EditSpeakScreen> {
                 ),
                 TextFormField(
                   style: const TextStyle(
-                    fontFamily: 'THSarabunNew',
+                    fontFamily: 'Sarabun',
                     fontSize: 24,
                   ),
                   controller: text2Controller,

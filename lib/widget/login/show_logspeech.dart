@@ -358,7 +358,7 @@ class _LogSpeechScreenState extends State<LogSpeechScreen> {
                 Text(
                   'คำที่ระบบน่าจะอ่านผิด: ${record['words']}',
                   style: TextStyle(
-                    fontFamily: 'THSarabunNew',
+                    fontFamily: 'Sarabun',
                     fontSize: 20,
                     fontWeight: FontWeight.w700,
                     color: adaptiveTextColor(context),
@@ -371,7 +371,7 @@ class _LogSpeechScreenState extends State<LogSpeechScreen> {
                       TextSpan(
                         text: 'คำอ่าน: ',
                         style: TextStyle(
-                          fontFamily: 'THSarabunNew',
+                          fontFamily: 'Sarabun',
                           fontSize: 20,
                           color: adaptiveTextColor(
                             context,
@@ -381,7 +381,7 @@ class _LogSpeechScreenState extends State<LogSpeechScreen> {
                       TextSpan(
                         text: '${record['words_speak']}',
                         style: const TextStyle(
-                          fontFamily: 'THSarabunNew',
+                          fontFamily: 'Sarabun',
                           fontSize: 20,
                           color: TColors.error,
                           fontWeight: FontWeight.w600,
@@ -448,7 +448,7 @@ class _LogSpeechScreenState extends State<LogSpeechScreen> {
                   TextSpan(
                     text: '${record['words']}',
                     style: TextStyle(
-                      fontFamily: 'THSarabunNew',
+                      fontFamily: 'Sarabun',
                       fontSize: 22,
                       fontWeight: FontWeight.w700,
                       color: adaptiveTextColor(context),
@@ -464,7 +464,7 @@ class _LogSpeechScreenState extends State<LogSpeechScreen> {
                   TextSpan(
                     text: '${record['words_speak']}',
                     style: const TextStyle(
-                      fontFamily: 'THSarabunNew',
+                      fontFamily: 'Sarabun',
                       fontSize: 22,
                       color: TColors.error,
                       fontWeight: FontWeight.w600,
@@ -606,7 +606,7 @@ class _EditDialogState extends State<EditDialog> {
         children: [
           TextFormField(
             readOnly: true,
-            style: const TextStyle(fontFamily: 'THSarabunNew', fontSize: 24),
+            style: const TextStyle(fontFamily: 'Sarabun', fontSize: 24),
             controller: _incorrectWordController,
             validator: (value) {
               if (value!.isEmpty) {
@@ -622,7 +622,7 @@ class _EditDialogState extends State<EditDialog> {
           ),
           TextFormField(
             style: const TextStyle(
-              fontFamily: 'THSarabunNew',
+              fontFamily: 'Sarabun',
               fontSize: 24,
               color: Colors.red,
             ),
@@ -667,7 +667,7 @@ class _EditDialogState extends State<EditDialog> {
           onPressed: _cancel,
           child: const Text(
             'ยกเลิก',
-            style: TextStyle(fontFamily: 'THSarabunNew', fontSize: 22),
+            style: TextStyle(fontFamily: 'Sarabun', fontSize: 22),
           ),
         ),
         // ปุ่ม "บันทึก"
@@ -675,7 +675,7 @@ class _EditDialogState extends State<EditDialog> {
           onPressed: _saveEditData,
           child: const Text(
             'บันทึก',
-            style: TextStyle(fontFamily: 'THSarabunNew', fontSize: 22),
+            style: TextStyle(fontFamily: 'Sarabun', fontSize: 22),
           ),
         ),
       ],

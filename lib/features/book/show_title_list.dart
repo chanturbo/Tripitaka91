@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
@@ -165,48 +164,18 @@ class _SearchShowPagesTitleListState extends State<SearchShowPagesTitleList> {
   }
 
   Widget _showText(String title, String mark) {
+    final double titleFontSize = widget.isMobile ? 18.0 : 16.0;
     if (mark == 'TRUE') {
       return SubstringHighlight(
-        text: widget.isMobile
-            ? title
-            // : '[เล่ม $bookid หน้า $pageid บรรทัด $lineid] \n$title',
-            : title,
+        text: title,
         term: title,
-        textStyle: TextStyle(
-          fontFamily: widget.isMobile
-              ? 'Roboto'
-              : kIsWeb
-              ? 'THSarabunNew'
-              : 'Roboto',
-          fontSize: widget.isMobile
-              ? 18.0
-              : kIsWeb
-              ? 24.0
-              : 16.0,
-        ),
+        textStyle: TextStyle(fontFamily: 'Sarabun', fontSize: titleFontSize),
       );
     } else {
-      return widget.isMobile
-          ? Text(
-              title,
-              style: const TextStyle(fontFamily: 'Roboto', fontSize: 18.0),
-            )
-          : Text(
-              // '[เล่ม $bookid หน้า $pageid บรรทัด $lineid] \n$title',
-              title,
-              style: TextStyle(
-                fontFamily: widget.isMobile
-                    ? 'Roboto'
-                    : kIsWeb
-                    ? 'THSarabunNew'
-                    : 'Roboto',
-                fontSize: widget.isMobile
-                    ? 18.0
-                    : kIsWeb
-                    ? 24.0
-                    : 16.0,
-              ),
-            );
+      return Text(
+        title,
+        style: TextStyle(fontFamily: 'Sarabun', fontSize: titleFontSize),
+      );
     }
   }
 
@@ -227,10 +196,10 @@ class _SearchShowPagesTitleListState extends State<SearchShowPagesTitleList> {
           contentPadding: const EdgeInsets.all(5),
           title: const Text(
             'แก้ไขข้อมูลหัวข้อธรรม (สำหรับ Admin เท่านั้น)',
-            style: TextStyle(fontFamily: 'THSarabunNew', fontSize: 24),
+            style: TextStyle(fontFamily: 'Sarabun', fontSize: 24),
           ),
           content: TextFormField(
-            style: const TextStyle(fontFamily: 'THSarabunNew', fontSize: 26),
+            style: const TextStyle(fontFamily: 'Sarabun', fontSize: 26),
             controller: textController,
             decoration: const InputDecoration(hintText: 'กรอกข้อมูลที่นี่'),
           ),
@@ -241,7 +210,7 @@ class _SearchShowPagesTitleListState extends State<SearchShowPagesTitleList> {
               },
               child: const Text(
                 'ยกเลิก',
-                style: TextStyle(fontFamily: 'THSarabunNew', fontSize: 24),
+                style: TextStyle(fontFamily: 'Sarabun', fontSize: 24),
               ),
             ),
             ElevatedButton(
@@ -273,7 +242,7 @@ class _SearchShowPagesTitleListState extends State<SearchShowPagesTitleList> {
               },
               child: const Text(
                 ' บันทึกข้อมูล ',
-                style: TextStyle(fontFamily: 'THSarabunNew', fontSize: 24),
+                style: TextStyle(fontFamily: 'Sarabun', fontSize: 24),
               ),
             ),
           ],
