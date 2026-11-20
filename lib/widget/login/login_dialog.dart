@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tripitaka91/utils/api_connect/google_auth_helper.dart';
+import 'package:tripitaka91/utils/api_connect/google_sign_in_button.dart';
 import 'package:tripitaka91/utils/constants/api_constants.dart';
 import 'package:tripitaka91/utils/constants/text_strings.dart';
 import 'package:tripitaka91/utils/models/users.dart';
@@ -23,6 +25,22 @@ class _LoginPageDialogState extends State<LoginPageDialog> {
   final TextEditingController passwordController = TextEditingController();
 
   late UsersLogin usersLogin;
+  late final _googleWebAuth = GoogleWebAuthListener((idToken) {
+    // ignore: use_build_context_synchronously
+    _handleGoogleIdToken(context, idToken);
+  });
+
+  @override
+  void initState() {
+    super.initState();
+    _googleWebAuth.start();
+  }
+
+  @override
+  void dispose() {
+    _googleWebAuth.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -137,15 +155,17 @@ class _LoginPageDialogState extends State<LoginPageDialog> {
         //   ),
         // )
         const SizedBox(height: 16),
-        OutlinedButton.icon(
-          onPressed: () {
-            _loginWithGoogle(context);
-          },
-          icon: const Icon(Icons.login),
-          label: const ATextDiskplayMedium(
-            text: ' เข้าสู่ระบบด้วย Google ',
-          ),
-        ),
+        kIsWeb
+            ? const SizedBox(height: 44, child: GoogleSignInWebButton())
+            : OutlinedButton.icon(
+                onPressed: () {
+                  _loginWithGoogle(context);
+                },
+                icon: const Icon(Icons.login),
+                label: const ATextDiskplayMedium(
+                  text: ' เข้าสู่ระบบด้วย Google ',
+                ),
+              ),
       ],
     );
   }
@@ -185,7 +205,11 @@ class _LoginPageDialogState extends State<LoginPageDialog> {
       // ผู้ใช้กดยกเลิก หรือ sign-in ไม่สำเร็จ — ไม่ต้องแจ้งเตือนซ้ำ
       return;
     }
+    // ignore: use_build_context_synchronously
+    await _handleGoogleIdToken(context, idToken);
+  }
 
+  Future<void> _handleGoogleIdToken(BuildContext context, String idToken) async {
     bool chkLogin = await loginWithGoogle(idToken, tSecretAPIKey);
     if (!context.mounted) return;
     if (chkLogin) {
