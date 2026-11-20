@@ -10,6 +10,7 @@ import 'package:tripitaka91/utils/providers/online_speech_provider.dart';
 import 'package:tripitaka91/utils/providers/user_provider.dart';
 import 'package:tripitaka91/utils/theme/theme_helpers.dart';
 import 'package:tripitaka91/widget/auto_text/auto_text.dart';
+import 'package:tripitaka91/widget/common/dharma_wheel_icon.dart';
 import 'package:tripitaka91/widget/search/data_search_widget.dart';
 
 class AppBarCustom extends StatefulWidget {
@@ -222,6 +223,8 @@ class _AppBarCustomState extends State<AppBarCustom> {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
+        const DharmaWheelIcon(size: 32, color: Color(0xFFF6B832)),
+        const SizedBox(width: 8),
         logo,
         const SizedBox(width: 8),
         onlinePill,
