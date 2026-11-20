@@ -398,7 +398,7 @@ class _SearchShowPagesTitleListState extends State<SearchShowPagesTitleList> {
                             ),
                           if (usersChk != null)
                             CircularIconButton(
-                              icon: Icons.edit_document,
+                              icon: Icons.record_voice_over,
                               size: widget.isMobile ? 21 : 16,
                               color: Colors.blue[300]!,
                               onTap: () {
