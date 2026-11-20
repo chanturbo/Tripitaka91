@@ -176,7 +176,7 @@ class _SearchShowPagesState extends State<SearchShowPages> {
       '6': '๖',
       '7': '๗',
       '8': '๘',
-      '9': '๙'
+      '9': '๙',
     };
     return input.split('').map((char) => arabicToThai[char] ?? char).join();
   }
@@ -187,7 +187,7 @@ class _SearchShowPagesState extends State<SearchShowPages> {
     RegExp regex = RegExp(r'\s+');
     List<String> finalList = wordHilight.split(regex);
 
-// เพิ่มเลขไทยเข้าไป ถ้าพบเลขอารบิกในคำ
+    // เพิ่มเลขไทยเข้าไป ถ้าพบเลขอารบิกในคำ
     List<String> outputList = finalList.expand((word) {
       String thaiNumber = arabicToThaiNumbers(word);
       return (thaiNumber != word) ? [word, thaiNumber] : [word];
@@ -196,7 +196,8 @@ class _SearchShowPagesState extends State<SearchShowPages> {
     return Scaffold(
       appBar: AppBar(
         title: ATextDiskplayMedium(
-            text: 'ค้นหาคำว่า \'${widget.wordSearch}\' จาก ${widget.title}'),
+          text: 'ค้นหาคำว่า \'${widget.wordSearch}\' จาก ${widget.title}',
+        ),
       ),
       body: NotificationListener<ScrollEndNotification>(
         onNotification: (ScrollEndNotification scrollInfo) {
@@ -230,41 +231,47 @@ class _SearchShowPagesState extends State<SearchShowPages> {
                         : '[${widget.catalog} เล่ม ${textTitleReplace.getBookId(data[index])} หน้า ${textTitleReplace.getPageId(data[index])} บรรทัด ${textTitleReplace.getLineId(data[index])}]\n${textTitleReplace.extractText(data[index])}',
                     terms: outputList,
                     textStyle: TextStyle(
-                        fontFamily: widget.isM
-                            ? 'Roboto'
-                            : kIsWeb
-                                ? 'Sarabun'
-                                : 'Roboto',
-                        fontSize: widget.isM
-                            ? 18.0
-                            : kIsWeb
-                                ? 24.0
-                                : 16.0,
-                        color: adaptiveTextColor(context)),
+                      fontFamily: widget.isM
+                          ? 'Roboto'
+                          : kIsWeb
+                          ? 'THSarabunNew'
+                          : 'Roboto',
+                      fontSize: widget.isM
+                          ? 18.0
+                          : kIsWeb
+                          ? 24.0
+                          : 16.0,
+                      color: adaptiveTextColor(context),
+                    ),
                   ),
                   subtitle: Row(
                     children: [
                       widget.online || volumeHelper.showVolume
                           ? InkWell(
                               onTap: () async {
-                                if (!await ensureOnlineSpeechConsent(
-                                  context,
-                                )) {
+                                if (!await ensureOnlineSpeechConsent(context)) {
                                   return;
                                 }
                                 // ignore: use_build_context_synchronously
                                 LoadingDialog.show(context);
-                                String bookIds =
-                                    textTitleReplace.getBookId(data[index]);
-                                String pageId =
-                                    textTitleReplace.getPageId(data[index]);
-                                String bookLine =
-                                    textTitleReplace.getLineId(data[index]);
-                                String txtTitle =
-                                    textTitleReplace.extractText(data[index]);
+                                String bookIds = textTitleReplace.getBookId(
+                                  data[index],
+                                );
+                                String pageId = textTitleReplace.getPageId(
+                                  data[index],
+                                );
+                                String bookLine = textTitleReplace.getLineId(
+                                  data[index],
+                                );
+                                String txtTitle = textTitleReplace.extractText(
+                                  data[index],
+                                );
                                 String filename = '$bookIds-$pageId-$bookLine';
                                 await audioPlayerManager.playAudio(
-                                    '2', filename, txtTitle);
+                                  '2',
+                                  filename,
+                                  txtTitle,
+                                );
                                 // ignore: use_build_context_synchronously
                                 LoadingDialog.hide(context);
                               },
@@ -280,14 +287,18 @@ class _SearchShowPagesState extends State<SearchShowPages> {
                           : const SizedBox.shrink(),
                       InkWell(
                         onTap: () async {
-                          String bookIds =
-                              textTitleReplace.getBookId(data[index]);
-                          String pageId =
-                              textTitleReplace.getPageId(data[index]);
-                          String bookLine =
-                              textTitleReplace.getLineId(data[index]);
-                          String txtTitle =
-                              textTitleReplace.extractText(data[index]);
+                          String bookIds = textTitleReplace.getBookId(
+                            data[index],
+                          );
+                          String pageId = textTitleReplace.getPageId(
+                            data[index],
+                          );
+                          String bookLine = textTitleReplace.getLineId(
+                            data[index],
+                          );
+                          String txtTitle = textTitleReplace.extractText(
+                            data[index],
+                          );
                           sharedImageGenerator.generateAndShare(
                             context: context,
                             bookTitle: txtTitle.replaceAll('', ''),
@@ -305,18 +316,22 @@ class _SearchShowPagesState extends State<SearchShowPages> {
                       const SizedBox(width: 10),
                       InkWell(
                         onTap: () async {
-                          String bookIds =
-                              textTitleReplace.getBookId(data[index]);
-                          String pageId =
-                              textTitleReplace.getPageId(data[index]);
-                          String bookLine =
-                              textTitleReplace.getLineId(data[index]);
+                          String bookIds = textTitleReplace.getBookId(
+                            data[index],
+                          );
+                          String pageId = textTitleReplace.getPageId(
+                            data[index],
+                          );
+                          String bookLine = textTitleReplace.getLineId(
+                            data[index],
+                          );
                           String txtTitle =
                               '${textTitleReplace.extractText(data[index])} เล่ม $bookIds หน้า $pageId บรรทัด $bookLine';
                           Clipboard.setData(
                             ClipboardData(
-                                text:
-                                    '$txtTitle อ่านรายละเอียด -> $tURLmain$bookIds-$pageId-$bookLine.htm'),
+                              text:
+                                  '$txtTitle อ่านรายละเอียด -> $tURLmain$bookIds-$pageId-$bookLine.htm',
+                            ),
                           );
                           _showSnackbar(context, 'คัดลอกข้อมูลเรียบร้อยแล้ว');
                         },
@@ -326,11 +341,7 @@ class _SearchShowPagesState extends State<SearchShowPages> {
                           color: Colors.blue[300],
                         ),
                       ),
-                      const Expanded(
-                        child: SizedBox(
-                          child: Text(''),
-                        ),
-                      ),
+                      const Expanded(child: SizedBox(child: Text(''))),
                       Align(
                         alignment: Alignment.centerLeft,
                         child: ClipPath(
@@ -339,8 +350,9 @@ class _SearchShowPagesState extends State<SearchShowPages> {
                             padding: const EdgeInsets.all(3.0),
                             color: Colors.blue[900],
                             child: ATextLabelSmall(
-                              text: textTitleReplace
-                                  .extractRemainingText(data[index]),
+                              text: textTitleReplace.extractRemainingText(
+                                data[index],
+                              ),
                             ),
                           ),
                         ),
@@ -355,7 +367,8 @@ class _SearchShowPagesState extends State<SearchShowPages> {
                         builder: (context) => Tri91PageViewHtml(
                           triBookid: textTitleReplace.getBookId(data[index]),
                           triPageid: int.parse(
-                              textTitleReplace.getPageId(data[index])),
+                            textTitleReplace.getPageId(data[index]),
+                          ),
                           triBookline: textTitleReplace.getLineId(data[index]),
                           chkSearch: widget.wordSearch,
                           isMobile: widget.isM,

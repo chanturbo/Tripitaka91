@@ -82,7 +82,7 @@ class ATextTitleLargeTH extends StatelessWidget {
   Widget build(BuildContext context) {
     return AutoSizeText(
       text,
-      style: const TextStyle(fontFamily: 'Sarabun', fontSize: 30),
+      style: const TextStyle(fontFamily: 'THSarabunNew', fontSize: 30),
       maxFontSize: 40,
       minFontSize: 26,
     );
@@ -168,7 +168,7 @@ class ATextTitleMediumTH extends StatelessWidget {
   Widget build(BuildContext context) {
     return AutoSizeText(
       text,
-      style: const TextStyle(fontFamily: 'Sarabun', fontSize: 26),
+      style: const TextStyle(fontFamily: 'THSarabunNew', fontSize: 26),
       maxFontSize: 30,
       minFontSize: 16,
     );
@@ -186,7 +186,7 @@ class ATextTitleMediumTHColors extends StatelessWidget {
   Widget build(BuildContext context) {
     return AutoSizeText(
       text,
-      style: TextStyle(fontFamily: 'Sarabun', fontSize: 26, color: color),
+      style: TextStyle(fontFamily: 'THSarabunNew', fontSize: 26, color: color),
       maxFontSize: 30,
       minFontSize: 16,
     );
@@ -218,7 +218,7 @@ class ATextTitleSmallTHColor extends StatelessWidget {
   Widget build(BuildContext context) {
     return AutoSizeText(
       text,
-      style: TextStyle(fontFamily: 'Sarabun', fontSize: 22, color: color),
+      style: TextStyle(fontFamily: 'THSarabunNew', fontSize: 22, color: color),
       minFontSize: 8,
     );
   }
@@ -347,7 +347,7 @@ class ATextDiskplayLargeTH extends StatelessWidget {
     return AutoSizeText(
       text,
       style: const TextStyle(
-        fontFamily: 'Sarabun',
+        fontFamily: 'THSarabunNew',
         fontSize: 30,
       ),
       maxFontSize: 50,
@@ -366,7 +366,7 @@ class ATextDiskplayMediumTH extends StatelessWidget {
     return AutoSizeText(
       text,
       style: const TextStyle(
-          fontFamily: 'Sarabun', fontSize: 20, color: Colors.white),
+          fontFamily: 'THSarabunNew', fontSize: 20, color: Colors.white),
       maxFontSize: 30,
       minFontSize: 14,
     );

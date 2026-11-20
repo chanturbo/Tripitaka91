@@ -452,12 +452,12 @@ class _ShowCorrectSaveState extends State<ShowCorrectSave> {
             text: 'ระบุข้อความที่น่าจะถูก [ $correctWord ]',
             term: correctWord,
             textStyle: const TextStyle(
-              fontFamily: 'Sarabun',
+              fontFamily: 'THSarabunNew',
               fontSize: 24,
             ),
           ),
           content: TextFormField(
-            style: const TextStyle(fontFamily: 'Sarabun', fontSize: 26),
+            style: const TextStyle(fontFamily: 'THSarabunNew', fontSize: 26),
             controller: textController,
             decoration: const InputDecoration(hintText: 'กรอกข้อมูลที่นี่'),
           ),
@@ -468,7 +468,7 @@ class _ShowCorrectSaveState extends State<ShowCorrectSave> {
               },
               child: const Text(
                 'ยกเลิก',
-                style: TextStyle(fontFamily: 'Sarabun', fontSize: 24),
+                style: TextStyle(fontFamily: 'THSarabunNew', fontSize: 24),
               ),
             ),
             ElevatedButton(
@@ -492,7 +492,7 @@ class _ShowCorrectSaveState extends State<ShowCorrectSave> {
               },
               child: const Text(
                 ' บันทึกข้อมูล ',
-                style: TextStyle(fontFamily: 'Sarabun', fontSize: 24),
+                style: TextStyle(fontFamily: 'THSarabunNew', fontSize: 24),
               ),
             ),
           ],
@@ -752,7 +752,7 @@ class _ShowCorrectSaveState extends State<ShowCorrectSave> {
                 Text(
                   'เล่ม ${record['tripitaka91_book']} หน้า ${record['tripitaka91_page']} บรรทัด ${record['tripitaka91_line']}',
                   style: TextStyle(
-                    fontFamily: 'Sarabun',
+                    fontFamily: 'THSarabunNew',
                     fontSize: 18,
                     color: adaptiveTextColor(context).withValues(alpha: 0.6),
                   ),
@@ -764,7 +764,7 @@ class _ShowCorrectSaveState extends State<ShowCorrectSave> {
                       TextSpan(
                         text: 'คำที่น่าจะผิด: ',
                         style: TextStyle(
-                          fontFamily: 'Sarabun',
+                          fontFamily: 'THSarabunNew',
                           fontSize: 20,
                           color: adaptiveTextColor(
                             context,
@@ -774,7 +774,7 @@ class _ShowCorrectSaveState extends State<ShowCorrectSave> {
                       TextSpan(
                         text: '${record['wordincorrect']}',
                         style: const TextStyle(
-                          fontFamily: 'Sarabun',
+                          fontFamily: 'THSarabunNew',
                           fontSize: 20,
                           color: TColors.error,
                           fontWeight: FontWeight.w600,
@@ -789,7 +789,7 @@ class _ShowCorrectSaveState extends State<ShowCorrectSave> {
                       TextSpan(
                         text: 'คำที่น่าจะถูก: ',
                         style: TextStyle(
-                          fontFamily: 'Sarabun',
+                          fontFamily: 'THSarabunNew',
                           fontSize: 20,
                           color: adaptiveTextColor(
                             context,
@@ -799,7 +799,7 @@ class _ShowCorrectSaveState extends State<ShowCorrectSave> {
                       TextSpan(
                         text: '${record['wordcorrect']}',
                         style: const TextStyle(
-                          fontFamily: 'Sarabun',
+                          fontFamily: 'THSarabunNew',
                           fontSize: 20,
                           color: TColors.error,
                           fontWeight: FontWeight.w600,
@@ -815,7 +815,7 @@ class _ShowCorrectSaveState extends State<ShowCorrectSave> {
                       TextSpan(
                         text: 'ข้อความเดิม: ',
                         style: TextStyle(
-                          fontFamily: 'Sarabun',
+                          fontFamily: 'THSarabunNew',
                           fontSize: 18,
                           color: adaptiveTextColor(
                             context,
@@ -837,7 +837,7 @@ class _ShowCorrectSaveState extends State<ShowCorrectSave> {
                         TextSpan(
                           text: 'ข้อความที่แก้ไข: ',
                           style: TextStyle(
-                            fontFamily: 'Sarabun',
+                            fontFamily: 'THSarabunNew',
                             fontSize: 18,
                             color: adaptiveTextColor(
                               context,
@@ -867,7 +867,7 @@ class _ShowCorrectSaveState extends State<ShowCorrectSave> {
                   Text(
                     'หมายเหตุ $comment',
                     style: TextStyle(
-                      fontFamily: 'Sarabun',
+                      fontFamily: 'THSarabunNew',
                       fontSize: 18,
                       color: adaptiveTextColor(context).withValues(alpha: 0.6),
                     ),
@@ -926,7 +926,7 @@ class _ShowCorrectSaveState extends State<ShowCorrectSave> {
                   TextSpan(
                     text: '${record['wordincorrect']}',
                     style: const TextStyle(
-                      fontFamily: 'Sarabun',
+                      fontFamily: 'THSarabunNew',
                       fontSize: 20,
                       fontWeight: FontWeight.w700,
                       color: TColors.error,
@@ -942,7 +942,7 @@ class _ShowCorrectSaveState extends State<ShowCorrectSave> {
                   TextSpan(
                     text: '${record['wordcorrect']}',
                     style: const TextStyle(
-                      fontFamily: 'Sarabun',
+                      fontFamily: 'THSarabunNew',
                       fontSize: 20,
                       fontWeight: FontWeight.w700,
                       color: TColors.error,

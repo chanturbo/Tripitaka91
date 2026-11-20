@@ -11,12 +11,12 @@ import 'package:tripitaka91/widget/right_clipper/center_clipper.dart';
 class SharedImageBook {
   final ScreenshotController screenshotController;
   final ImageCaptureService
-      imageCaptureService; // เพิ่มตัวแปรสำหรับ ImageCaptureService
+  imageCaptureService; // เพิ่มตัวแปรสำหรับ ImageCaptureService
 
   SharedImageBook()
-      : screenshotController = ScreenshotController(),
-        imageCaptureService =
-            ImageCaptureService(); // สร้างอินสแตนซ์ของ ImageCaptureService
+    : screenshotController = ScreenshotController(),
+      imageCaptureService =
+          ImageCaptureService(); // สร้างอินสแตนซ์ของ ImageCaptureService
 
   Future<void> generateAndShare({
     required BuildContext context,
@@ -45,7 +45,7 @@ class SharedImageBook {
                   text: TextSpan(
                     text: bookTitle.replaceAll(strReplaceBookBlue, ''),
                     style: TextStyle(
-                      fontFamily: 'Sarabun',
+                      fontFamily: 'THSarabunNew',
                       fontSize: 30,
                       color: Colors.blue[900],
                     ),
@@ -77,9 +77,10 @@ class SharedImageBook {
                 child: Text(
                   'ข้อความจากพระไตรปิฎกและอรรถกถาแปล ชุด 91 เล่ม',
                   style: TextStyle(
-                      fontFamily: 'Sarabun',
-                      fontSize: 20,
-                      color: Colors.grey[800]),
+                    fontFamily: 'THSarabunNew',
+                    fontSize: 20,
+                    color: Colors.grey[800],
+                  ),
                 ),
               ),
               Align(
@@ -87,9 +88,10 @@ class SharedImageBook {
                 child: Text(
                   'ฉบับมหามกุฏราชวิทยาลัย | อ่านเนื้อความเต็ม -> ',
                   style: TextStyle(
-                      fontFamily: 'Sarabun',
-                      fontSize: 20,
-                      color: Colors.grey[800]),
+                    fontFamily: 'THSarabunNew',
+                    fontSize: 20,
+                    color: Colors.grey[800],
+                  ),
                 ),
               ),
               Align(
@@ -97,7 +99,10 @@ class SharedImageBook {
                 child: Text(
                   '$tURLmain$bookid-$pageid-$lineid.htm',
                   style: const TextStyle(
-                      fontFamily: 'Roboto', fontSize: 16, color: Colors.red),
+                    fontFamily: 'Roboto',
+                    fontSize: 16,
+                    color: Colors.red,
+                  ),
                 ),
               ),
             ],
@@ -109,16 +114,18 @@ class SharedImageBook {
     try {
       // ดักจับภาพจากวิดเจ็ต
       final capturedImage = await screenshotController.captureFromWidget(
-        InheritedTheme.captureAll(
-          context,
-          Material(child: container),
-        ),
+        InheritedTheme.captureAll(context, Material(child: container)),
         pixelRatio: 2.0,
       );
 
       // เรียกใช้ฟังก์ชันแชร์จาก ImageCaptureService
       await imageCaptureService.captureAndSharePng(
-          capturedImage, bookTitle, bookid, pageid, lineid);
+        capturedImage,
+        bookTitle,
+        bookid,
+        pageid,
+        lineid,
+      );
     } catch (e) {
       // คุณสามารถจัดการข้อผิดพลาดได้ตามต้องการ
       // ignore: avoid_print

@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:tripitaka91/utils/constants/api_constants.dart';
@@ -11,11 +9,11 @@ import 'package:tripitaka91/utils/shared_preferences/shared_user.dart';
 import 'package:tripitaka91/utils/text_title_replace/text_title_replace.dart';
 import 'package:tripitaka91/widget/audio/edit_speak.dart';
 import 'package:tripitaka91/widget/auto_text/auto_text.dart';
+import 'package:tripitaka91/widget/dialogs/edit_dhamma_topic_dialog.dart';
 import 'package:tripitaka91/widget/dialogs/online_speech_consent_dialog.dart';
 import 'package:tripitaka91/widget/login/loading_dialog.dart';
 import 'package:tripitaka91/features/book/pageviews_html.dart';
 import 'package:tripitaka91/widget/right_clipper/center_clipper.dart';
-import 'package:http/http.dart' as http;
 import 'package:tripitaka91/utils/theme/theme_helpers.dart';
 import 'package:tripitaka91/widget/volume_helper/volume_helper.dart';
 
@@ -78,125 +76,11 @@ class _TitleCardState extends State<TitleCard> {
 
   void _showInputDialog(BuildContext context, String initialText,
       String tripitaka91No, String tripitaka91Code) {
-    final TextEditingController textController =
-        TextEditingController(text: initialText);
-
-    showDialog(
+    showEditDhammaTopicDialog(
       context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          contentPadding: const EdgeInsets.all(5),
-          title: const Text(
-            'แก้ไขข้อมูลหัวข้อธรรม (สำหรับ Admin เท่านั้น)',
-            style: TextStyle(fontFamily: 'Sarabun', fontSize: 24),
-          ),
-          content: TextFormField(
-            style: const TextStyle(fontFamily: 'Sarabun', fontSize: 26),
-            controller: textController,
-            decoration: const InputDecoration(
-              hintText: 'กรอกข้อมูลที่นี่',
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // ปิดหน้าต่าง
-              },
-              child: const Text(
-                'ยกเลิก',
-                style: TextStyle(fontFamily: 'Sarabun', fontSize: 24),
-              ),
-            ),
-            ElevatedButton(
-              onPressed: () async {
-                if (usersChk != null) {
-                  // ทำสิ่งที่ต้องการเมื่อกดปุ่มบันทึกข้อมูล
-                  String inputData = textController.text;
-                  if (inputData == '') {
-                    _showSnackbar(context, 'กรุณาป้อนข้อมูลให้ครบถ้วน');
-                  } else {
-                    // อาจทำการใช้ข้อมูลที่ป้อนเข้ามาต่อไป
-                    // print(
-                    //     'ข้อมูลที่ป้อน: $inputData เล่ม $bookid หน้า $bookpage บรรทัด $bookline');
-                    bool? confirm = await _showConfirmationDialog(context);
-                    if (confirm!) {
-                      await _fetchUpdateTitle(
-                          inputData, tripitaka91No, tripitaka91Code);
-                      // ignore: use_build_context_synchronously
-                      Navigator.of(context).pop(); // ปิดหน้าต่าง
-                    }
-                  }
-                } else {
-                  _showSnackbar(context, 'กรุณาเข้าสู่ระบบก่อน');
-                  Navigator.of(context).pop(); // ปิดหน้าต่าง
-                }
-              },
-              child: const Text(
-                ' บันทึกข้อมูล ',
-                style: TextStyle(fontFamily: 'Sarabun', fontSize: 24),
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  Future<void> _fetchUpdateTitle(
-      String initialText, String tripitaka91No, String tripitaka91Code) async {
-    final response = await http.post(
-      Uri.parse(tURLtitleEdit),
-      body: {
-        'token': tSecretAPIKey,
-        'tripitaka91no': tripitaka91No,
-        'tripitaka91code': tripitaka91Code,
-        'titledetail': initialText,
-        'username': usersChk!.username,
-      },
-    );
-
-    if (response.statusCode == 200) {
-      var json = response.body;
-      var jsonResponse = jsonDecode(json);
-
-      if (jsonResponse['success'] == true) {
-        // ignore: use_build_context_synchronously
-        _showSnackbar(context, 'บันทึกข้อมูลเรียบร้อยแล้ว');
-      } else {
-        // ignore: use_build_context_synchronously
-        _showSnackbar(context, '${jsonResponse['message']}');
-      }
-    } else {
-      // ignore: avoid_print
-      print('HTTP Error: ${response.statusCode}');
-    }
-  }
-
-  Future<bool?> _showConfirmationDialog(BuildContext context) {
-    return showDialog<bool>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('ยืนยันการดำเนินการ'),
-          content: const Text('คุณต้องการดำเนินการต่อ?'),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context)
-                    .pop(false); // ปิดหน้าต่างและส่งค่า false กลับ
-              },
-              child: const Text('ยกเลิก'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context)
-                    .pop(true); // ปิดหน้าต่างและส่งค่า true กลับ
-              },
-              child: const Text(' ยืนยัน '),
-            ),
-          ],
-        );
-      },
+      initialText: initialText,
+      tripitaka91No: tripitaka91No,
+      tripitaka91Code: tripitaka91Code,
     );
   }
 

@@ -192,26 +192,25 @@ class _SearchShowPagesDictState extends State<SearchShowPagesDict> {
                         '${textTitleReplace.getWordDict(dataDict[index])}\n- ${textTitleReplace.getWordDictDetail(dataDict[index])}',
                     terms: outputList,
                     textStyle: TextStyle(
-                        fontFamily: widget.isM
-                            ? 'Roboto'
-                            : kIsWeb
-                                ? 'Sarabun'
-                                : 'Roboto',
-                        fontSize: widget.isM
-                            ? 18.0
-                            : kIsWeb
-                                ? 24.0
-                                : 16.0,
-                        color: adaptiveTextColor(context)),
+                      fontFamily: widget.isM
+                          ? 'Roboto'
+                          : kIsWeb
+                          ? 'THSarabunNew'
+                          : 'Roboto',
+                      fontSize: widget.isM
+                          ? 18.0
+                          : kIsWeb
+                          ? 24.0
+                          : 16.0,
+                      color: adaptiveTextColor(context),
+                    ),
                   ),
                   subtitle: Row(
                     children: [
                       widget.online || volumeHelper.showVolume
                           ? InkWell(
                               onTap: () async {
-                                if (!await ensureOnlineSpeechConsent(
-                                  context,
-                                )) {
+                                if (!await ensureOnlineSpeechConsent(context)) {
                                   return;
                                 }
                                 // ignore: use_build_context_synchronously
@@ -225,7 +224,10 @@ class _SearchShowPagesDictState extends State<SearchShowPagesDict> {
 
                                 String filename = 'dict-$namesave';
                                 await audioPlayerManager.playAudio(
-                                    '3', filename, txtTitle);
+                                  '3',
+                                  filename,
+                                  txtTitle,
+                                );
                                 // ignore: use_build_context_synchronously
                                 LoadingDialog.hide(context);
                               },
@@ -244,9 +246,12 @@ class _SearchShowPagesDictState extends State<SearchShowPagesDict> {
                           String txtTitle =
                               '${textTitleReplace.getWordDict(dataDict[index])}\n- ${textTitleReplace.getWordDictDetail(dataDict[index])}';
                           txtTitle += ' ข้อความจากพจนานุกรม ฉบับประมวลศัพท์';
-                          await SharePlus.instance.share(ShareParams(
+                          await SharePlus.instance.share(
+                            ShareParams(
                               text: txtTitle,
-                              subject: 'พจนานุกรม ฉบับประมวลศัพท์'));
+                              subject: 'พจนานุกรม ฉบับประมวลศัพท์',
+                            ),
+                          );
                         },
                         child: Icon(
                           Icons.share,
@@ -261,9 +266,7 @@ class _SearchShowPagesDictState extends State<SearchShowPagesDict> {
                               '${textTitleReplace.getWordDict(dataDict[index])}\n${textTitleReplace.getWordDictDetail(dataDict[index])}';
                           txtTitle +=
                               ' ข้อความจากพจนานุกรม ฉบับประมวลศัพท์ รวบรวมโดย พระพรหมคุณาภรณ์ (ป.อ. ปยุตฺโต)';
-                          Clipboard.setData(
-                            ClipboardData(text: txtTitle),
-                          );
+                          Clipboard.setData(ClipboardData(text: txtTitle));
                           _showSnackbar(context, 'คัดลอกข้อมูลเรียบร้อยแล้ว');
                         },
                         child: Icon(
@@ -272,11 +275,7 @@ class _SearchShowPagesDictState extends State<SearchShowPagesDict> {
                           color: Colors.blue[300],
                         ),
                       ),
-                      const Expanded(
-                        child: SizedBox(
-                          child: Text(''),
-                        ),
-                      ),
+                      const Expanded(child: SizedBox(child: Text(''))),
                     ],
                   ),
                   onTap: () {},

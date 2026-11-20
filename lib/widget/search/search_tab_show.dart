@@ -879,17 +879,16 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                                           SubstringHighlight(
                                                             text: strTotal,
                                                             terms: outputList,
-                                                            textStyle:
-                                                                TextStyle(
-                                                                  fontSize:
-                                                                      16.0,
-                                                                  color:
-                                                                      adaptiveTextColor(
-                                                                          context),
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w500,
-                                                                ),
+                                                            textStyle: TextStyle(
+                                                              fontSize: 16.0,
+                                                              color:
+                                                                  adaptiveTextColor(
+                                                                    context,
+                                                                  ),
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500,
+                                                            ),
                                                           ),
                                                         ],
                                                       ),
@@ -988,7 +987,7 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
 
                                               return Column(
                                                 children: [
-                                                  Container(
+                                                  Material(
                                                     color:
                                                         selectBookSearchIndex1 ==
                                                             index
@@ -1011,7 +1010,8 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                                               : 16.0,
                                                           color:
                                                               adaptiveTextColor(
-                                                                  context),
+                                                                context,
+                                                              ),
                                                         ),
                                                       ),
 
@@ -1212,17 +1212,16 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                                           SubstringHighlight(
                                                             text: strTotal,
                                                             terms: outputList,
-                                                            textStyle:
-                                                                TextStyle(
-                                                                  fontSize:
-                                                                      16.0,
-                                                                  color:
-                                                                      adaptiveTextColor(
-                                                                          context),
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w500,
-                                                                ),
+                                                            textStyle: TextStyle(
+                                                              fontSize: 16.0,
+                                                              color:
+                                                                  adaptiveTextColor(
+                                                                    context,
+                                                                  ),
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500,
+                                                            ),
                                                           ),
                                                         ],
                                                       ),
@@ -1320,7 +1319,7 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
 
                                               return Column(
                                                 children: [
-                                                  Container(
+                                                  Material(
                                                     color:
                                                         selectBookSearchIndex2 ==
                                                             index
@@ -1343,7 +1342,8 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                                               : 16.0,
                                                           color:
                                                               adaptiveTextColor(
-                                                                  context),
+                                                                context,
+                                                              ),
                                                         ),
                                                       ),
 
@@ -1544,17 +1544,16 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                                           SubstringHighlight(
                                                             text: strTotal,
                                                             terms: outputList,
-                                                            textStyle:
-                                                                TextStyle(
-                                                                  fontSize:
-                                                                      16.0,
-                                                                  color:
-                                                                      adaptiveTextColor(
-                                                                          context),
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w500,
-                                                                ),
+                                                            textStyle: TextStyle(
+                                                              fontSize: 16.0,
+                                                              color:
+                                                                  adaptiveTextColor(
+                                                                    context,
+                                                                  ),
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500,
+                                                            ),
                                                           ),
                                                         ],
                                                       ),
@@ -1652,7 +1651,7 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
 
                                               return Column(
                                                 children: [
-                                                  Container(
+                                                  Material(
                                                     color:
                                                         selectBookSearchIndex3 ==
                                                             index
@@ -1675,7 +1674,8 @@ class _MyPageTabDetailState extends State<MyPageTabDetail>
                                                               : 16.0,
                                                           color:
                                                               adaptiveTextColor(
-                                                                  context),
+                                                                context,
+                                                              ),
                                                         ),
                                                       ),
 

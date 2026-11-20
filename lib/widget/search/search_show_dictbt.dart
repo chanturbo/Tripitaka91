@@ -158,26 +158,25 @@ class _SearchShowPagesDictbtState extends State<SearchShowPagesDictbt> {
                         '${textTitleReplace.getWordDict(dataDictbt[index])}\n- ${textTitleReplace.getWordDictDetail(dataDictbt[index])}',
                     terms: outputList,
                     textStyle: TextStyle(
-                        fontFamily: widget.isM
-                            ? 'Roboto'
-                            : kIsWeb
-                                ? 'Sarabun'
-                                : 'Roboto',
-                        fontSize: widget.isM
-                            ? 18.0
-                            : kIsWeb
-                                ? 24.0
-                                : 16.0,
-                        color: adaptiveTextColor(context)),
+                      fontFamily: widget.isM
+                          ? 'Roboto'
+                          : kIsWeb
+                          ? 'THSarabunNew'
+                          : 'Roboto',
+                      fontSize: widget.isM
+                          ? 18.0
+                          : kIsWeb
+                          ? 24.0
+                          : 16.0,
+                      color: adaptiveTextColor(context),
+                    ),
                   ),
                   subtitle: Row(
                     children: [
                       widget.online || volumeHelper.showVolume
                           ? InkWell(
                               onTap: () async {
-                                if (!await ensureOnlineSpeechConsent(
-                                  context,
-                                )) {
+                                if (!await ensureOnlineSpeechConsent(context)) {
                                   return;
                                 }
                                 // ignore: use_build_context_synchronously
@@ -190,7 +189,10 @@ class _SearchShowPagesDictbtState extends State<SearchShowPagesDictbt> {
                                     .replaceAll(RegExp(r'\s+'), '');
                                 String filename = 'dict-$namesave';
                                 await audioPlayerManager.playAudio(
-                                    '3', filename, txtTitle);
+                                  '3',
+                                  filename,
+                                  txtTitle,
+                                );
                                 // ignore: use_build_context_synchronously
                                 LoadingDialog.hide(context);
                               },
@@ -209,9 +211,12 @@ class _SearchShowPagesDictbtState extends State<SearchShowPagesDictbt> {
                           String txtTitle =
                               '${textTitleReplace.getWordDict(dataDictbt[index])}\n- ${textTitleReplace.getWordDictDetail(dataDictbt[index])}';
                           txtTitle += ' ข้อความจากพจนานุกรม ไทย-บาลี';
-                          await SharePlus.instance.share(ShareParams(
+                          await SharePlus.instance.share(
+                            ShareParams(
                               text: txtTitle,
-                              subject: 'พจนานุกรม ไทย-บาลี'));
+                              subject: 'พจนานุกรม ไทย-บาลี',
+                            ),
+                          );
                         },
                         child: Icon(
                           Icons.share,
@@ -225,9 +230,7 @@ class _SearchShowPagesDictbtState extends State<SearchShowPagesDictbt> {
                           String txtTitle =
                               '${textTitleReplace.getWordDict(dataDictbt[index])}\n${textTitleReplace.getWordDictDetail(dataDictbt[index])}';
                           txtTitle += ' ข้อความจากพจนานุกรม ไทย-บาลี';
-                          Clipboard.setData(
-                            ClipboardData(text: txtTitle),
-                          );
+                          Clipboard.setData(ClipboardData(text: txtTitle));
                           _showSnackbar(context, 'คัดลอกข้อมูลเรียบร้อยแล้ว');
                         },
                         child: Icon(
@@ -236,11 +239,7 @@ class _SearchShowPagesDictbtState extends State<SearchShowPagesDictbt> {
                           color: Colors.blue[300],
                         ),
                       ),
-                      const Expanded(
-                        child: SizedBox(
-                          child: Text(''),
-                        ),
-                      ),
+                      const Expanded(child: SizedBox(child: Text(''))),
                     ],
                   ),
                   onTap: () {},

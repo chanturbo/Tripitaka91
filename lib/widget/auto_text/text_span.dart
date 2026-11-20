@@ -6,7 +6,7 @@ TextSpan txtSpanHighlight(List<String> wordsToHighlight, String fullText,
     return const TextSpan(
       text: 'ยังไม่ได้ระบุ',
       style: TextStyle(
-        fontFamily: 'Sarabun',
+        fontFamily: 'THSarabunNew',
         fontSize: 22,
         color: Colors.red,
       ),
@@ -51,7 +51,7 @@ TextSpan txtSpanHighlight(List<String> wordsToHighlight, String fullText,
   return TextSpan(
     children: highlightedSpans,
     style: const TextStyle(
-      fontFamily: 'Sarabun',
+      fontFamily: 'THSarabunNew',
       fontSize: 24,
       color: Colors.blue,
     ),

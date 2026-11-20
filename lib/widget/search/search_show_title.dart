@@ -192,27 +192,29 @@ class _SearchShowPagesTitleState extends State<SearchShowPagesTitle> {
                   title: SubstringHighlight(
                     text: widget.isM
                         ? textTitleReplace
-                            .extractText(dataTitle[index])
-                            .replaceAll(
+                              .extractText(dataTitle[index])
+                              .replaceAll(
                                 textTitleReplace.getBookBlue(dataTitle[index]),
-                                '')
+                                '',
+                              )
                         : textTitleReplace.getCategory(dataTitle[index]) ==
-                                'รวมหัวข้อธรรมสำคัญ 91เล่ม'
-                            ? '[${textTitleReplace.getCategory(dataTitle[index])} - ${textTitleReplace.getDetail(dataTitle[index])}]\n${textTitleReplace.extractText(dataTitle[index]).replaceAll(textTitleReplace.getBookBlue(dataTitle[index]), '')}'
-                            : '[${textTitleReplace.getCategory(dataTitle[index])} เล่ม ${textTitleReplace.getBookId(dataTitle[index])} หน้า ${textTitleReplace.getPageId(dataTitle[index])} บรรทัด ${textTitleReplace.getLineId(dataTitle[index])}]\n${textTitleReplace.extractText(dataTitle[index]).replaceAll(textTitleReplace.getBookBlue(dataTitle[index]), '')}',
+                              'รวมหัวข้อธรรมสำคัญ 91เล่ม'
+                        ? '[${textTitleReplace.getCategory(dataTitle[index])} - ${textTitleReplace.getDetail(dataTitle[index])}]\n${textTitleReplace.extractText(dataTitle[index]).replaceAll(textTitleReplace.getBookBlue(dataTitle[index]), '')}'
+                        : '[${textTitleReplace.getCategory(dataTitle[index])} เล่ม ${textTitleReplace.getBookId(dataTitle[index])} หน้า ${textTitleReplace.getPageId(dataTitle[index])} บรรทัด ${textTitleReplace.getLineId(dataTitle[index])}]\n${textTitleReplace.extractText(dataTitle[index]).replaceAll(textTitleReplace.getBookBlue(dataTitle[index]), '')}',
                     terms: outputList,
                     textStyle: TextStyle(
-                        fontFamily: widget.isM
-                            ? 'Roboto'
-                            : kIsWeb
-                                ? 'Sarabun'
-                                : 'Roboto',
-                        fontSize: widget.isM
-                            ? 18.0
-                            : kIsWeb
-                                ? 24.0
-                                : 16.0,
-                        color: adaptiveTextColor(context)),
+                      fontFamily: widget.isM
+                          ? 'Roboto'
+                          : kIsWeb
+                          ? 'THSarabunNew'
+                          : 'Roboto',
+                      fontSize: widget.isM
+                          ? 18.0
+                          : kIsWeb
+                          ? 24.0
+                          : 16.0,
+                      color: adaptiveTextColor(context),
+                    ),
                   ),
                   subtitle: Column(
                     children: [
@@ -228,30 +230,41 @@ class _SearchShowPagesTitleState extends State<SearchShowPagesTitle> {
                                     }
                                     // ignore: use_build_context_synchronously
                                     LoadingDialog.show(context);
-                                    String bookIds = textTitleReplace
-                                        .getBookId(dataTitle[index]);
-                                    String pageId = textTitleReplace
-                                        .getPageId(dataTitle[index]);
+                                    String bookIds = textTitleReplace.getBookId(
+                                      dataTitle[index],
+                                    );
+                                    String pageId = textTitleReplace.getPageId(
+                                      dataTitle[index],
+                                    );
                                     String bookLine = textTitleReplace
                                         .getLineId(dataTitle[index]);
                                     String noTitleCate = textTitleReplace
                                         .getCate(dataTitle[index]);
-                                    String noTitle = textTitleReplace
-                                        .getNo(dataTitle[index]);
+                                    String noTitle = textTitleReplace.getNo(
+                                      dataTitle[index],
+                                    );
 
-                                    String txtTitle =
-                                        textTitleReplace.replaceText(
-                                            textTitleReplace
-                                                .extractText(dataTitle[index]),
-                                            textTitleReplace
-                                                .getBookBlue(dataTitle[index]));
+                                    String txtTitle = textTitleReplace
+                                        .replaceText(
+                                          textTitleReplace.extractText(
+                                            dataTitle[index],
+                                          ),
+                                          textTitleReplace.getBookBlue(
+                                            dataTitle[index],
+                                          ),
+                                        );
 
-                                    String filename =
-                                        noTitleCate.replaceAll('.', '');
+                                    String filename = noTitleCate.replaceAll(
+                                      '.',
+                                      '',
+                                    );
                                     filename =
                                         '$filename-$noTitle-$bookIds-$pageId-$bookLine';
                                     await audioPlayerManager.playAudio(
-                                        '1', filename, txtTitle);
+                                      '1',
+                                      filename,
+                                      txtTitle,
+                                    );
                                     // ignore: use_build_context_synchronously
                                     LoadingDialog.hide(context);
                                   },
@@ -267,12 +280,15 @@ class _SearchShowPagesTitleState extends State<SearchShowPagesTitle> {
                               : const SizedBox.shrink(),
                           InkWell(
                             onTap: () async {
-                              String bookIds =
-                                  textTitleReplace.getBookId(dataTitle[index]);
-                              String pageId =
-                                  textTitleReplace.getPageId(dataTitle[index]);
-                              String bookLine =
-                                  textTitleReplace.getLineId(dataTitle[index]);
+                              String bookIds = textTitleReplace.getBookId(
+                                dataTitle[index],
+                              );
+                              String pageId = textTitleReplace.getPageId(
+                                dataTitle[index],
+                              );
+                              String bookLine = textTitleReplace.getLineId(
+                                dataTitle[index],
+                              );
                               String txtTitle =
                                   '${textTitleReplace.extractText(dataTitle[index]).replaceAll(textTitleReplace.getBookBlue(dataTitle[index]), '')} ';
                               // txtTitle +=
@@ -287,10 +303,12 @@ class _SearchShowPagesTitleState extends State<SearchShowPagesTitle> {
                                 bookid: bookIds,
                                 pageid: pageId.toString(),
                                 lineid: bookLine,
-                                bookBlue: textTitleReplace
-                                    .getBookBlue(dataTitle[index]),
-                                bookRed: textTitleReplace
-                                    .getBookRed(dataTitle[index]),
+                                bookBlue: textTitleReplace.getBookBlue(
+                                  dataTitle[index],
+                                ),
+                                bookRed: textTitleReplace.getBookRed(
+                                  dataTitle[index],
+                                ),
                               );
                             },
                             child: Icon(
@@ -302,23 +320,29 @@ class _SearchShowPagesTitleState extends State<SearchShowPagesTitle> {
                           const SizedBox(width: 10),
                           InkWell(
                             onTap: () async {
-                              String bookIds =
-                                  textTitleReplace.getBookId(dataTitle[index]);
-                              String pageId =
-                                  textTitleReplace.getPageId(dataTitle[index]);
-                              String bookLine =
-                                  textTitleReplace.getLineId(dataTitle[index]);
+                              String bookIds = textTitleReplace.getBookId(
+                                dataTitle[index],
+                              );
+                              String pageId = textTitleReplace.getPageId(
+                                dataTitle[index],
+                              );
+                              String bookLine = textTitleReplace.getLineId(
+                                dataTitle[index],
+                              );
                               String txtTitle =
                                   '${textTitleReplace.extractText(dataTitle[index]).replaceAll(textTitleReplace.getBookBlue(dataTitle[index]), '')} ';
                               txtTitle +=
                                   'สรุปเนื้อความจากพระไตรปิฎก ฉบับ มมร. เล่ม $bookIds หน้า $pageId บรรทัด $bookLine';
                               Clipboard.setData(
                                 ClipboardData(
-                                    text:
-                                        '$txtTitle อ่านรายละเอียด -> $tURLmain$bookIds-$pageId-$bookLine.htm'),
+                                  text:
+                                      '$txtTitle อ่านรายละเอียด -> $tURLmain$bookIds-$pageId-$bookLine.htm',
+                                ),
                               );
                               _showSnackbar(
-                                  context, 'คัดลอกข้อมูลเรียบร้อยแล้ว');
+                                context,
+                                'คัดลอกข้อมูลเรียบร้อยแล้ว',
+                              );
                             },
                             child: Icon(
                               Icons.copy,
@@ -326,11 +350,7 @@ class _SearchShowPagesTitleState extends State<SearchShowPagesTitle> {
                               color: Colors.blue[300],
                             ),
                           ),
-                          const Expanded(
-                            child: SizedBox(
-                              child: Text(''),
-                            ),
-                          ),
+                          const Expanded(child: SizedBox(child: Text(''))),
                           widget.isM
                               ? const SizedBox.shrink()
                               : Align(
@@ -424,8 +444,9 @@ class _SearchShowPagesTitleState extends State<SearchShowPagesTitle> {
                           builder: (context) => Tri91PageViewHtml(
                             triBookid: '1',
                             triPageid: 0,
-                            triBookline:
-                                textTitleReplace.getLineId(dataTitle[index]),
+                            triBookline: textTitleReplace.getLineId(
+                              dataTitle[index],
+                            ),
                             chkSearch: widget.wordSearch,
                             isMobile: widget.isM,
                             online: widget.online,
@@ -437,12 +458,15 @@ class _SearchShowPagesTitleState extends State<SearchShowPagesTitle> {
                         context,
                         MaterialPageRoute(
                           builder: (context) => Tri91PageViewHtml(
-                            triBookid:
-                                textTitleReplace.getBookId(dataTitle[index]),
+                            triBookid: textTitleReplace.getBookId(
+                              dataTitle[index],
+                            ),
                             triPageid: int.parse(
-                                textTitleReplace.getPageId(dataTitle[index])),
-                            triBookline:
-                                textTitleReplace.getLineId(dataTitle[index]),
+                              textTitleReplace.getPageId(dataTitle[index]),
+                            ),
+                            triBookline: textTitleReplace.getLineId(
+                              dataTitle[index],
+                            ),
                             chkSearch: widget.wordSearch,
                             isMobile: widget.isM,
                             online: widget.online,

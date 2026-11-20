@@ -150,17 +150,18 @@ class _SearchShowPagesTitleRandomState
                       : '[เล่ม ${dataTitleRandom[index].tripitakaBook} หน้า ${dataTitleRandom[index].tripitakaPage} บรรทัด ${dataTitleRandom[index].tripitakaLine}]\n${dataTitleRandom[index].content}',
                   terms: outputList,
                   textStyle: TextStyle(
-                      fontFamily: widget.isM
-                          ? 'Roboto'
-                          : kIsWeb
-                              ? 'Sarabun'
-                              : 'Roboto',
-                      fontSize: widget.isM
-                          ? 18.0
-                          : kIsWeb
-                              ? 24.0
-                              : 16.0,
-                      color: adaptiveTextColor(context)),
+                    fontFamily: widget.isM
+                        ? 'Roboto'
+                        : kIsWeb
+                        ? 'THSarabunNew'
+                        : 'Roboto',
+                    fontSize: widget.isM
+                        ? 18.0
+                        : kIsWeb
+                        ? 24.0
+                        : 16.0,
+                    color: adaptiveTextColor(context),
+                  ),
                 ),
                 subtitle: Column(
                   children: [
@@ -193,12 +194,17 @@ class _SearchShowPagesTitleRandomState
                                       .toString();
                                   String txtTitle =
                                       dataTitleRandom[index].content;
-                                  String filename =
-                                      noTitleCate.replaceAll('.', '');
+                                  String filename = noTitleCate.replaceAll(
+                                    '.',
+                                    '',
+                                  );
                                   filename =
                                       '$filename-$noTitle-$bookIds-$pageId-$bookLine-s';
                                   await audioPlayerManager.playAudio(
-                                      '1', filename, txtTitle);
+                                    '1',
+                                    filename,
+                                    txtTitle,
+                                  );
                                   // ignore: use_build_context_synchronously
                                   LoadingDialog.hide(context);
                                 },
@@ -214,19 +220,22 @@ class _SearchShowPagesTitleRandomState
                             : const SizedBox.shrink(),
                         InkWell(
                           onTap: () async {
-                            String bookIds =
-                                dataTitleRandom[index].tripitakaBook.toString();
-                            String pageId =
-                                dataTitleRandom[index].tripitakaPage.toString();
-                            String bookLine =
-                                dataTitleRandom[index].tripitakaLine.toString();
+                            String bookIds = dataTitleRandom[index]
+                                .tripitakaBook
+                                .toString();
+                            String pageId = dataTitleRandom[index].tripitakaPage
+                                .toString();
+                            String bookLine = dataTitleRandom[index]
+                                .tripitakaLine
+                                .toString();
                             String txtTitle = dataTitleRandom[index].content;
                             txtTitle +=
                                 'สรุปเนื้อความจากพระไตรปิฎก ฉบับ มมร. เล่ม $bookIds หน้า $pageId บรรทัด $bookLine';
                             Clipboard.setData(
                               ClipboardData(
-                                  text:
-                                      '$txtTitle อ่านรายละเอียด -> $tURLmain$bookIds-$pageId-$bookLine.htm'),
+                                text:
+                                    '$txtTitle อ่านรายละเอียด -> $tURLmain$bookIds-$pageId-$bookLine.htm',
+                              ),
                             );
                             _showSnackbar(context, 'คัดลอกข้อมูลเรียบร้อยแล้ว');
                           },
@@ -236,11 +245,7 @@ class _SearchShowPagesTitleRandomState
                             color: Colors.blue[300],
                           ),
                         ),
-                        const Expanded(
-                          child: SizedBox(
-                            child: Text(''),
-                          ),
-                        ),
+                        const Expanded(child: SizedBox(child: Text(''))),
                         widget.isM
                             ? const SizedBox.shrink()
                             : Align(
@@ -293,8 +298,8 @@ class _SearchShowPagesTitleRandomState
                         builder: (context) => Tri91PageViewHtml(
                           triBookid: '1',
                           triPageid: 0,
-                          triBookline:
-                              dataTitleRandom[index].tripitakaLine.toString(),
+                          triBookline: dataTitleRandom[index].tripitakaLine
+                              .toString(),
                           chkSearch: widget.wordSearch,
                           isMobile: widget.isM,
                           online: true,
@@ -306,11 +311,11 @@ class _SearchShowPagesTitleRandomState
                       context,
                       MaterialPageRoute(
                         builder: (context) => Tri91PageViewHtml(
-                          triBookid:
-                              dataTitleRandom[index].tripitakaBook.toString(),
+                          triBookid: dataTitleRandom[index].tripitakaBook
+                              .toString(),
                           triPageid: dataTitleRandom[index].tripitakaPage,
-                          triBookline:
-                              dataTitleRandom[index].tripitakaLine.toString(),
+                          triBookline: dataTitleRandom[index].tripitakaLine
+                              .toString(),
                           chkSearch: widget.wordSearch,
                           isMobile: widget.isM,
                           online: true,

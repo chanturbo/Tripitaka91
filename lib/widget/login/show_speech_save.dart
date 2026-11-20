@@ -702,7 +702,7 @@ class _ShowSpeechSaveState extends State<ShowSpeechSave> {
                       TextSpan(
                         text: 'คำที่ระบบน่าจะอ่านผิด: ',
                         style: TextStyle(
-                          fontFamily: 'Sarabun',
+                          fontFamily: 'THSarabunNew',
                           fontSize: 20,
                           color: adaptiveTextColor(
                             context,
@@ -712,7 +712,7 @@ class _ShowSpeechSaveState extends State<ShowSpeechSave> {
                       TextSpan(
                         text: '${record['words']}\n',
                         style: const TextStyle(
-                          fontFamily: 'Sarabun',
+                          fontFamily: 'THSarabunNew',
                           fontSize: 20,
                           color: TColors.error,
                           fontWeight: FontWeight.w600,
@@ -721,7 +721,7 @@ class _ShowSpeechSaveState extends State<ShowSpeechSave> {
                       TextSpan(
                         text: 'คำอ่าน: ',
                         style: TextStyle(
-                          fontFamily: 'Sarabun',
+                          fontFamily: 'THSarabunNew',
                           fontSize: 20,
                           color: adaptiveTextColor(
                             context,
@@ -731,7 +731,7 @@ class _ShowSpeechSaveState extends State<ShowSpeechSave> {
                       TextSpan(
                         text: '${record['words_speak']}',
                         style: const TextStyle(
-                          fontFamily: 'Sarabun',
+                          fontFamily: 'THSarabunNew',
                           fontSize: 20,
                           color: TColors.error,
                           fontWeight: FontWeight.w600,
@@ -761,7 +761,7 @@ class _ShowSpeechSaveState extends State<ShowSpeechSave> {
                   Text(
                     'หมายเหตุ ${record['comments']}',
                     style: TextStyle(
-                      fontFamily: 'Sarabun',
+                      fontFamily: 'THSarabunNew',
                       fontSize: 18,
                       color: adaptiveTextColor(context).withValues(alpha: 0.6),
                     ),
@@ -825,7 +825,7 @@ class _ShowSpeechSaveState extends State<ShowSpeechSave> {
                   TextSpan(
                     text: '${record['words']}',
                     style: TextStyle(
-                      fontFamily: 'Sarabun',
+                      fontFamily: 'THSarabunNew',
                       fontSize: 20,
                       fontWeight: FontWeight.w700,
                       color: adaptiveTextColor(context),
@@ -841,7 +841,7 @@ class _ShowSpeechSaveState extends State<ShowSpeechSave> {
                   TextSpan(
                     text: '${record['words_speak']}',
                     style: const TextStyle(
-                      fontFamily: 'Sarabun',
+                      fontFamily: 'THSarabunNew',
                       fontSize: 20,
                       color: TColors.error,
                       fontWeight: FontWeight.w600,
