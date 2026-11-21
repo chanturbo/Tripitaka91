@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:substring_highlight/substring_highlight.dart';
 import 'package:tripitaka91/utils/constants/api_constants.dart';
@@ -9,6 +10,7 @@ import 'package:tripitaka91/utils/db_helper/db_helper.dart';
 import 'package:tripitaka91/utils/img_service/shared_image_generator.dart';
 import 'package:tripitaka91/utils/models/users.dart';
 import 'package:tripitaka91/utils/play_audio/audio_manager.dart';
+import 'package:tripitaka91/utils/providers/user_provider.dart';
 import 'package:tripitaka91/utils/shared_preferences/shared_user.dart';
 import 'package:tripitaka91/utils/text_title_replace/text_title_replace.dart';
 import 'package:tripitaka91/widget/audio/edit_speak.dart';
@@ -48,7 +50,6 @@ class _ShowTitlePagesState extends State<ShowTitlePages> {
   final ScrollController _scrollControllerTitle = ScrollController();
 
   AudioPlayerManager audioPlayerManager = AudioPlayerManager();
-  Users? usersChk;
   final SharedImageGenerator sharedImageGenerator = SharedImageGenerator();
   final SharedImageLocal sharedImageLocal = SharedImageLocal();
   final volumeHelper = VolumeHelper();
@@ -59,17 +60,12 @@ class _ShowTitlePagesState extends State<ShowTitlePages> {
     textTitleReplace = TextTitleReplace();
     _scrollControllerTitle.addListener(_scrollListener);
     widget.online ? _fetchDataTitle() : _fetchDataTitleDB();
-    getUser();
   }
 
   @override
   void dispose() {
     audioPlayerManager.dispose();
     super.dispose();
-  }
-
-  void getUser() async {
-    usersChk = await getUsersList();
   }
 
   void _scrollListener() {
@@ -168,8 +164,13 @@ class _ShowTitlePagesState extends State<ShowTitlePages> {
   }
 
   Widget _showText(
-      String title, String mark, String bookid, String pageid, String lineid) {
-    final double titleFontSize = widget.isM ? 18.0 : 16.0;
+    String title,
+    String mark,
+    String bookid,
+    String pageid,
+    String lineid,
+  ) {
+    final double titleFontSize = widget.isM ? 18.0 : 15.0;
     if (mark == 'TRUE') {
       return SubstringHighlight(
         text: title,
@@ -184,8 +185,12 @@ class _ShowTitlePagesState extends State<ShowTitlePages> {
     }
   }
 
-  void _showInputDialog(BuildContext context, String initialText,
-      String tripitaka91No, String tripitaka91Code) {
+  void _showInputDialog(
+    BuildContext context,
+    String initialText,
+    String tripitaka91No,
+    String tripitaka91Code,
+  ) {
     showEditDhammaTopicDialog(
       context: context,
       initialText: initialText,
@@ -203,19 +208,21 @@ class _ShowTitlePagesState extends State<ShowTitlePages> {
 
   @override
   Widget build(BuildContext context) {
+    // ใช้ UserProvider แทนการ getUsersList() ครั้งเดียวใน initState เดิม
+    // เพื่อให้ปุ่มแก้ไข/แจ้งอ่านอัปเดตทันทีหลัง login
+    final usersChk = context.watch<UserProvider>().user;
     return Scaffold(
       appBar: AppBar(
-        title: ATextDiskplayMedium(
-          text: widget.wordSearch,
-        ),
+        title: ATextDiskplayMedium(text: widget.wordSearch),
         actions: [
           IconButton(
             color: Colors.white,
             icon: const Icon(Icons.copy),
             onPressed: () {
               String searchText = widget.wordSearch;
-              int index = widget.menuList
-                  .indexWhere((element) => element[0] == searchText);
+              int index = widget.menuList.indexWhere(
+                (element) => element[0] == searchText,
+              );
               String bookcode = widget.menuList[index][0];
               String sub1 = '';
               if (widget.menuMain != '9.3') {
@@ -240,13 +247,15 @@ class _ShowTitlePagesState extends State<ShowTitlePages> {
               if (sub1.isNotEmpty) {
                 Clipboard.setData(
                   ClipboardData(
-                      text:
-                          '$tURLmain$linkPhp?book_code=$code&sub=$sub&sub1=$sub1'),
+                    text:
+                        '$tURLmain$linkPhp?book_code=$code&sub=$sub&sub1=$sub1',
+                  ),
                 );
               } else {
                 Clipboard.setData(
                   ClipboardData(
-                      text: '$tURLmain$linkPhp?book_code=$code&sub=$sub'),
+                    text: '$tURLmain$linkPhp?book_code=$code&sub=$sub',
+                  ),
                 );
               }
 
@@ -258,8 +267,9 @@ class _ShowTitlePagesState extends State<ShowTitlePages> {
             icon: const Icon(Icons.share),
             onPressed: () async {
               String searchText = widget.wordSearch;
-              int index = widget.menuList
-                  .indexWhere((element) => element[0] == searchText);
+              int index = widget.menuList.indexWhere(
+                (element) => element[0] == searchText,
+              );
               String bookcode = widget.menuList[index][0];
               String sub1 = '';
               if (widget.menuMain != '9.3') {
@@ -282,14 +292,20 @@ class _ShowTitlePagesState extends State<ShowTitlePages> {
               String sub = widget.menuList[index][1];
               String linkPhp = 'tripitaka91_1.php';
               if (sub1.isNotEmpty) {
-                await SharePlus.instance.share(ShareParams(
+                await SharePlus.instance.share(
+                  ShareParams(
                     text:
                         '$tURLmain$linkPhp?book_code=$code&sub=$sub&sub1=$sub1',
-                    subject: bookcode));
+                    subject: bookcode,
+                  ),
+                );
               } else {
-                await SharePlus.instance.share(ShareParams(
+                await SharePlus.instance.share(
+                  ShareParams(
                     text: '$tURLmain$linkPhp?book_code=$code&sub=$sub',
-                    subject: bookcode));
+                    subject: bookcode,
+                  ),
+                );
               }
             },
           ),
@@ -342,30 +358,41 @@ class _ShowTitlePagesState extends State<ShowTitlePages> {
                                     }
                                     // ignore: use_build_context_synchronously
                                     LoadingDialog.show(context);
-                                    String bookIds = textTitleReplace
-                                        .getBookId(dataTitle[index]);
-                                    String pageId = textTitleReplace
-                                        .getPageId(dataTitle[index]);
+                                    String bookIds = textTitleReplace.getBookId(
+                                      dataTitle[index],
+                                    );
+                                    String pageId = textTitleReplace.getPageId(
+                                      dataTitle[index],
+                                    );
                                     String bookLine = textTitleReplace
                                         .getLineId(dataTitle[index]);
                                     String noTitleCate = textTitleReplace
                                         .getCate(dataTitle[index]);
-                                    String noTitle = textTitleReplace
-                                        .getNo(dataTitle[index]);
+                                    String noTitle = textTitleReplace.getNo(
+                                      dataTitle[index],
+                                    );
 
-                                    String txtTitle =
-                                        textTitleReplace.replaceText(
-                                            textTitleReplace
-                                                .extractText(dataTitle[index]),
-                                            textTitleReplace
-                                                .getBookBlue(dataTitle[index]));
+                                    String txtTitle = textTitleReplace
+                                        .replaceText(
+                                          textTitleReplace.extractText(
+                                            dataTitle[index],
+                                          ),
+                                          textTitleReplace.getBookBlue(
+                                            dataTitle[index],
+                                          ),
+                                        );
 
-                                    String filename =
-                                        noTitleCate.replaceAll('.', '');
+                                    String filename = noTitleCate.replaceAll(
+                                      '.',
+                                      '',
+                                    );
                                     filename =
                                         '$filename-$noTitle-$bookIds-$pageId-$bookLine';
                                     await audioPlayerManager.playAudio(
-                                        '1', filename, txtTitle);
+                                      '1',
+                                      filename,
+                                      txtTitle,
+                                    );
                                     // ignore: use_build_context_synchronously
                                     LoadingDialog.hide(context);
                                   },
@@ -381,12 +408,15 @@ class _ShowTitlePagesState extends State<ShowTitlePages> {
                               : const SizedBox.shrink(),
                           InkWell(
                             onTap: () async {
-                              String bookIds =
-                                  textTitleReplace.getBookId(dataTitle[index]);
-                              String pageId =
-                                  textTitleReplace.getPageId(dataTitle[index]);
-                              String bookLine =
-                                  textTitleReplace.getLineId(dataTitle[index]);
+                              String bookIds = textTitleReplace.getBookId(
+                                dataTitle[index],
+                              );
+                              String pageId = textTitleReplace.getPageId(
+                                dataTitle[index],
+                              );
+                              String bookLine = textTitleReplace.getLineId(
+                                dataTitle[index],
+                              );
                               String txtTitle =
                                   '${textTitleReplace.extractText(dataTitle[index]).replaceAll(textTitleReplace.getBookBlue(dataTitle[index]), '')} ';
                               // txtTitle +=
@@ -400,10 +430,12 @@ class _ShowTitlePagesState extends State<ShowTitlePages> {
                                 bookid: bookIds,
                                 pageid: pageId.toString(),
                                 lineid: bookLine,
-                                bookBlue: textTitleReplace
-                                    .getBookBlue(dataTitle[index]),
-                                bookRed: textTitleReplace
-                                    .getBookRed(dataTitle[index]),
+                                bookBlue: textTitleReplace.getBookBlue(
+                                  dataTitle[index],
+                                ),
+                                bookRed: textTitleReplace.getBookRed(
+                                  dataTitle[index],
+                                ),
                               );
                             },
                             child: Icon(
@@ -415,23 +447,29 @@ class _ShowTitlePagesState extends State<ShowTitlePages> {
                           const SizedBox(width: 10),
                           InkWell(
                             onTap: () async {
-                              String bookIds =
-                                  textTitleReplace.getBookId(dataTitle[index]);
-                              String pageId =
-                                  textTitleReplace.getPageId(dataTitle[index]);
-                              String bookLine =
-                                  textTitleReplace.getLineId(dataTitle[index]);
+                              String bookIds = textTitleReplace.getBookId(
+                                dataTitle[index],
+                              );
+                              String pageId = textTitleReplace.getPageId(
+                                dataTitle[index],
+                              );
+                              String bookLine = textTitleReplace.getLineId(
+                                dataTitle[index],
+                              );
                               String txtTitle =
                                   '${textTitleReplace.extractText(dataTitle[index]).replaceAll(textTitleReplace.getBookBlue(dataTitle[index]), '')} ';
                               txtTitle +=
                                   'สรุปเนื้อความจากพระไตรปิฎก ฉบับ มมร. เล่ม $bookIds หน้า $pageId บรรทัด $bookLine';
                               Clipboard.setData(
                                 ClipboardData(
-                                    text:
-                                        '$txtTitle อ่านรายละเอียด -> $tURLmain$bookIds-$pageId-$bookLine.htm'),
+                                  text:
+                                      '$txtTitle อ่านรายละเอียด -> $tURLmain$bookIds-$pageId-$bookLine.htm',
+                                ),
                               );
                               _showSnackbar(
-                                  context, 'คัดลอกข้อมูลเรียบร้อยแล้ว');
+                                context,
+                                'คัดลอกข้อมูลเรียบร้อยแล้ว',
+                              );
                             },
                             child: Icon(
                               Icons.copy,
@@ -439,19 +477,21 @@ class _ShowTitlePagesState extends State<ShowTitlePages> {
                               color: Colors.blue[300],
                             ),
                           ),
-                          (usersChk != null) && (usersChk?.levelAccess == '1')
+                          (usersChk != null) && (usersChk.levelAccess == '1')
                               ? const SizedBox(width: 10)
                               : const SizedBox.shrink(),
-                          (usersChk != null) && (usersChk?.levelAccess == '1')
+                          (usersChk != null) && (usersChk.levelAccess == '1')
                               ? InkWell(
                                   onTap: () async {
                                     _showInputDialog(
                                       context,
-                                      textTitleReplace
-                                          .extractText(dataTitle[index]),
+                                      textTitleReplace.extractText(
+                                        dataTitle[index],
+                                      ),
                                       textTitleReplace.getNo(dataTitle[index]),
-                                      textTitleReplace
-                                          .getCate(dataTitle[index]),
+                                      textTitleReplace.getCate(
+                                        dataTitle[index],
+                                      ),
                                     );
                                   },
                                   child: Icon(
@@ -471,10 +511,12 @@ class _ShowTitlePagesState extends State<ShowTitlePages> {
                                       context: context,
                                       builder: (BuildContext context) {
                                         return AlertDialog(
-                                          contentPadding:
-                                              const EdgeInsets.all(5),
-                                          title:
-                                              const Text('แจ้งการอ่านออกเสียง'),
+                                          contentPadding: const EdgeInsets.all(
+                                            5,
+                                          ),
+                                          title: const Text(
+                                            'แจ้งการอ่านออกเสียง',
+                                          ),
                                           content: const SizedBox(
                                             width: double.maxFinite,
                                             child: EditSpeakScreen(
@@ -500,11 +542,7 @@ class _ShowTitlePagesState extends State<ShowTitlePages> {
                                   ),
                                 )
                               : const SizedBox.shrink(),
-                          const Expanded(
-                            child: SizedBox(
-                              child: Text(''),
-                            ),
-                          ),
+                          const Expanded(child: SizedBox(child: Text(''))),
                           widget.isM
                               ? const SizedBox.shrink()
                               : Align(
@@ -602,8 +640,9 @@ class _ShowTitlePagesState extends State<ShowTitlePages> {
                           builder: (context) => Tri91PageViewHtml(
                             triBookid: '1',
                             triPageid: 0,
-                            triBookline:
-                                textTitleReplace.getLineId(dataTitle[index]),
+                            triBookline: textTitleReplace.getLineId(
+                              dataTitle[index],
+                            ),
                             chkSearch: widget.wordSearch,
                             isMobile: widget.isM,
                             online: widget.online,
@@ -615,12 +654,15 @@ class _ShowTitlePagesState extends State<ShowTitlePages> {
                         context,
                         MaterialPageRoute(
                           builder: (context) => Tri91PageViewHtml(
-                            triBookid:
-                                textTitleReplace.getBookId(dataTitle[index]),
+                            triBookid: textTitleReplace.getBookId(
+                              dataTitle[index],
+                            ),
                             triPageid: int.parse(
-                                textTitleReplace.getPageId(dataTitle[index])),
-                            triBookline:
-                                textTitleReplace.getLineId(dataTitle[index]),
+                              textTitleReplace.getPageId(dataTitle[index]),
+                            ),
+                            triBookline: textTitleReplace.getLineId(
+                              dataTitle[index],
+                            ),
                             chkSearch: widget.wordSearch,
                             isMobile: widget.isM,
                             online: widget.online,

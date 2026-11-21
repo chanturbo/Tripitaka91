@@ -16,6 +16,18 @@ import 'package:tripitaka91/utils/theme/theme_provider.dart';
 import 'package:tripitaka91/widget/my_home_page.dart';
 
 void main() {
+  // ต้องเริ่มต้น binding ก่อนเรียก platform channel ใด ๆ (เช่น
+  // BrowserContextMenu ด้านล่าง) ไม่งั้นจะ throw "Binding has not yet been
+  // initialized" เพราะปกติ runApp() เป็นคนเริ่มต้นให้อัตโนมัติ แต่เราเรียก
+  // ก่อนหน้านั้น
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // เว็บ: ปิดเมนูคลิกขวาเดิมของเบราว์เซอร์ (ซึ่งเห็นเนื้อหาเป็น canvas เลยเสนอ
+  // ตัวเลือกของรูปภาพแทนที่จะเป็นคัดลอกข้อความ) ให้ Flutter แสดงเมนู
+  // เลือก/คัดลอกข้อความของตัวเองแทนเสมอ
+  if (kIsWeb) {
+    BrowserContextMenu.disableContextMenu();
+  }
   runApp(
     Phoenix(
       child: MultiProvider(

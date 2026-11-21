@@ -7,7 +7,7 @@ import 'package:tripitaka91/utils/models/book_tri91.dart';
 import 'package:tripitaka91/utils/models/ip_address.dart';
 import 'package:tripitaka91/utils/models/log_edit.dart';
 import 'package:tripitaka91/utils/models/log_edit_save.dart';
-import 'package:tripitaka91/widget/auto_text/auto_text.dart';
+import 'package:tripitaka91/utils/theme/theme_helpers.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -69,6 +69,30 @@ class _PageViewEditState extends State<PageViewEdit> {
     super.dispose();
   }
 
+  // ชิปสถานะทรงเดียวกับที่ใช้ในแท็บ "รายการแจ้งคำผิดคำถูก" หน้าสมาชิก
+  // (lib/widget/login/show_logedit_save.dart) เพื่อให้ดูเป็นระบบเดียวกัน
+  Widget _statusChip(bool isFixed) {
+    final Color color = isFixed ? TColors.success : TColors.buttonPrimary;
+    final String label = isFixed
+        ? 'แก้ไขข้อมูลเรียบร้อยแล้ว'
+        : 'อยู่ในกระบวนการแก้ไขข้อมูล';
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Text(
+        label,
+        style: TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.w600,
+          color: color,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -85,170 +109,219 @@ class _PageViewEditState extends State<PageViewEdit> {
               child: Text('Error: ${snapshot.error}'),
             );
           } else if (snapshot.connectionState == ConnectionState.done) {
-            return SingleChildScrollView(
-              scrollDirection: Axis.vertical, // กำหนดเลื่อนแนวตั้ง
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal, // กำหนดเลื่อนแนวนอน
-                child: DataTable(
-                  columns: [
-                    DataColumn(
-                      label: Text(
-                        '[เนื้อหา เล่ม ${widget.bookId} หน้า ${widget.pageId}]',
-                        style: const TextStyle(fontWeight: FontWeight.bold),
+            final List<BookTri91> data = snapshot.data!;
+            return Container(
+              color: adaptivePageColor(context),
+              child: Column(
+                children: [
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(12),
+                    color: adaptiveSurfaceColor(context),
+                    child: Text(
+                      'เนื้อหา เล่ม ${widget.bookId} หน้า ${widget.pageId}',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                        color: adaptiveTextColor(context),
                       ),
                     ),
-                    const DataColumn(
-                      label: Text(
-                        '[บรรทัด]',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    const DataColumn(
-                      label: Text(
-                        '[คำที่น่าจะผิด]',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    const DataColumn(
-                      label: Text(
-                        '[คำที่น่าจะถูก]',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    const DataColumn(
-                      label: Text(
-                        '[หมายเหตุ]',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ],
-                  rows: snapshot.data!.asMap().entries.map<DataRow>((entry) {
-                    int index = entry.key;
-                    BookTri91 book = entry.value;
+                  ),
+                  Expanded(
+                    child: ListView.builder(
+                      padding: const EdgeInsets.all(12),
+                      itemCount: data.length,
+                      itemBuilder: (context, index) {
+                      BookTri91 book = data[index];
 
-                    // ตรวจสอบว่า controllersList มีข้อมูลหรือไม่
-                    if (controllersList.length <= index) {
-                      // ถ้าไม่มี, สร้าง controllers สำหรับแถวนี้
-                      controllersList.add([
-                        TextEditingController(),
-                        TextEditingController(),
-                        TextEditingController(),
-                        TextEditingController(),
-                        TextEditingController(),
-                        TextEditingController(),
-                        TextEditingController(),
-                      ]);
-                    }
-                    int targetPage = int.parse(widget.pageId);
-                    List<Logedit> result = widget.logEdit
-                        .where((log) =>
-                            log.tripitaka91Page == targetPage &&
-                            log.tripitaka91User == widget.username)
-                        .toList();
-                    // print('result : ${result.length}');
+                      // ตรวจสอบว่า controllersList มีข้อมูลหรือไม่
+                      if (controllersList.length <= index) {
+                        // ถ้าไม่มี, สร้าง controllers สำหรับแถวนี้
+                        controllersList.add([
+                          TextEditingController(),
+                          TextEditingController(),
+                          TextEditingController(),
+                          TextEditingController(),
+                          TextEditingController(),
+                          TextEditingController(),
+                          TextEditingController(),
+                        ]);
+                      }
+                      int targetPage = int.parse(widget.pageId);
+                      List<Logedit> result = widget.logEdit
+                          .where(
+                            (log) =>
+                                log.tripitaka91Page == targetPage &&
+                                log.tripitaka91User == widget.username,
+                          )
+                          .toList();
 
-                    List<Logedit> resultAll = widget.logEdit
-                        .where((log) => log.tripitaka91Page == targetPage)
-                        .toList();
-                    for (Logedit logAll in resultAll) {
-                      if (logAll.tripitaka91Line == book.bookLines) {
-                        if (logAll.bookConfirm > 0) {
-                          controllersList[index][4].text = 'C';
-                        }
-                        if (logAll.bookSuscess == 1) {
-                          controllersList[index][5].text = 'C';
+                      List<Logedit> resultAll = widget.logEdit
+                          .where((log) => log.tripitaka91Page == targetPage)
+                          .toList();
+                      for (Logedit logAll in resultAll) {
+                        if (logAll.tripitaka91Line == book.bookLines) {
+                          if (logAll.bookConfirm > 0) {
+                            controllersList[index][4].text = 'C';
+                          }
+                          if (logAll.bookSuscess == 1) {
+                            controllersList[index][5].text = 'C';
+                          }
                         }
                       }
-                    }
-                    // print('resultAll : ${resultAll.length}');
 
-                    for (Logedit log in result) {
-                      if (log.tripitaka91Line == book.bookLines) {
-                        controllersList[index][1].text =
-                            log.tripitaka91Wordincorrect;
-                        controllersList[index][2].text =
-                            log.tripitaka91Wordcorrect;
-                        controllersList[index][3].text =
-                            log.tripitaka91Wordcorrectcomment;
+                      for (Logedit log in result) {
+                        if (log.tripitaka91Line == book.bookLines) {
+                          controllersList[index][1].text =
+                              log.tripitaka91Wordincorrect;
+                          controllersList[index][2].text =
+                              log.tripitaka91Wordcorrect;
+                          controllersList[index][3].text =
+                              log.tripitaka91Wordcorrectcomment;
+                        }
                       }
-                    }
-                    controllersList[index][0].text = book.bookLines.toString();
-                    controllersList[index][6].text = book.bookDetail;
-                    return DataRow(
-                      cells: [
-                        DataCell(
-                          book.bookDetail != 'LineNull'
-                              ? SelectableText(
+                      controllersList[index][0].text = book.bookLines
+                          .toString();
+                      controllersList[index][6].text = book.bookDetail;
+
+                      // บรรทัดว่างเปล่า (ไม่มีเนื้อหา ไม่มีเลขบรรทัด) ไม่มีอะไร
+                      // ให้แสดง/แก้ไข เลยไม่ต้องสร้างการ์ดให้ดูรก
+                      if (book.bookDetail == 'LineNull' &&
+                          book.bookLines == 0) {
+                        return const SizedBox.shrink();
+                      }
+
+                      final bool isConfirmed =
+                          controllersList[index][4].text == 'C';
+                      final bool isFixed =
+                          controllersList[index][5].text == 'C';
+                      final bool hasLineBadgeRow =
+                          book.bookLines != 0 || isConfirmed;
+
+                      // สีป้ายเลขบรรทัดแบบเดียวกับ _buildIndexBadge ในแท็บ
+                      // "รายการแจ้งคำผิดคำถูก" หน้าสมาชิก: เทา = ยังไม่มีคน
+                      // แจ้ง/แก้ไขได้อยู่, น้ำเงิน = กำลังดำเนินการ, เขียว =
+                      // แก้ไขเรียบร้อยแล้ว
+                      final Color badgeColor = !isConfirmed
+                          ? Colors.grey
+                          : isFixed
+                          ? TColors.success
+                          : TColors.buttonPrimary;
+
+                      return Container(
+                        margin: const EdgeInsets.only(bottom: 10),
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: adaptiveSurfaceColor(context),
+                          borderRadius: BorderRadius.circular(14),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.05),
+                              blurRadius: 8,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              if (hasLineBadgeRow)
+                                Row(
+                                  children: [
+                                    if (book.bookLines != 0)
+                                      CircleAvatar(
+                                        radius: 14,
+                                        backgroundColor: badgeColor,
+                                        foregroundColor: Colors.white,
+                                        child: Text(
+                                          '${book.bookLines}',
+                                          style: const TextStyle(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                        ),
+                                      ),
+                                    const Spacer(),
+                                    if (isConfirmed) _statusChip(isFixed),
+                                  ],
+                                ),
+                              if (book.bookDetail != 'LineNull') ...[
+                                if (hasLineBadgeRow)
+                                  const SizedBox(height: 8),
+                                SelectableText(
                                   book.bookDetail,
                                   style: const TextStyle(
                                     fontFamily: 'THSarabunNew',
-                                    fontSize: 24.0,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.normal,
                                   ),
-                                )
-                              : const Text(''),
-                        ),
-                        DataCell(
-                          book.bookLines != 0
-                              ? Text(
-                                  book.bookLines.toString(),
+                                ),
+                              ],
+                              if (book.bookLines != 0 && !isConfirmed) ...[
+                                const SizedBox(height: 10),
+                                const Divider(height: 1),
+                                const SizedBox(height: 10),
+                                Row(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.start,
+                                  children: [
+                                    Expanded(
+                                      child: TextFormField(
+                                        controller:
+                                            controllersList[index][1],
+                                        decoration: const InputDecoration(
+                                          labelText: 'คำที่น่าจะผิด',
+                                          isDense: true,
+                                          border: OutlineInputBorder(),
+                                        ),
+                                        style: const TextStyle(
+                                          fontFamily: 'THSarabunNew',
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.normal,
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 10),
+                                    Expanded(
+                                      child: TextFormField(
+                                        controller:
+                                            controllersList[index][2],
+                                        decoration: const InputDecoration(
+                                          labelText: 'คำที่น่าจะถูก',
+                                          isDense: true,
+                                          border: OutlineInputBorder(),
+                                        ),
+                                        style: const TextStyle(
+                                          fontFamily: 'THSarabunNew',
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.normal,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 8),
+                                TextFormField(
+                                  controller: controllersList[index][3],
+                                  decoration: const InputDecoration(
+                                    labelText: 'หมายเหตุ (ถ้ามี)',
+                                    isDense: true,
+                                    border: OutlineInputBorder(),
+                                  ),
                                   style: const TextStyle(
                                     fontFamily: 'THSarabunNew',
-                                    fontSize: 24.0,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.normal,
                                   ),
-                                )
-                              : const Text(''),
-                        ),
-                        controllersList[index][4].text != 'C'
-                            ? DataCell(
-                                book.bookLines != 0
-                                    ? TextFormField(
-                                        controller: controllersList[index][1],
-                                        style: const TextStyle(
-                                          fontFamily: 'THSarabunNew',
-                                          fontSize: 24.0,
-                                        ),
-                                      )
-                                    : const Text(''),
-                              )
-                            : controllersList[index][5].text != 'C'
-                                ? const DataCell(
-                                    Text(
-                                      'อยู่ในกระบวนการแก้ไขข้อมูลแล้ว',
-                                      style: TextStyle(color: Colors.orange),
-                                    ),
-                                  )
-                                : const DataCell(Text(
-                                    'มีการแก้ไขข้อมูลแล้ว',
-                                    style: TextStyle(color: Colors.green),
-                                  )),
-                        controllersList[index][4].text == 'C'
-                            ? const DataCell(Text(''))
-                            : DataCell(book.bookLines != 0
-                                ? TextFormField(
-                                    controller: controllersList[index][2],
-                                    style: const TextStyle(
-                                      fontFamily: 'THSarabunNew',
-                                      fontSize: 24.0,
-                                    ),
-                                  )
-                                : const Text('')),
-                        controllersList[index][4].text == 'C'
-                            ? const DataCell(Text(''))
-                            : DataCell(
-                                book.bookLines != 0
-                                    ? TextFormField(
-                                        controller: controllersList[index][3],
-                                        style: const TextStyle(
-                                          fontFamily: 'THSarabunNew',
-                                          fontSize: 24.0,
-                                        ),
-                                      )
-                                    : const Text(''),
-                              ),
-                      ],
-                    );
-                  }).toList(),
+                                ),
+                              ],
+                            ],
+                          ),
+                      );
+                    },
+                  ),
                 ),
+                ],
               ),
             );
           } else {
@@ -275,14 +348,19 @@ class _PageViewEditState extends State<PageViewEdit> {
 
   BottomAppBar buildBottomAppBar() {
     return BottomAppBar(
-      padding: const EdgeInsets.all(5),
-      height: 50,
-      child: ElevatedButton(
+      padding: const EdgeInsets.all(8),
+      height: 60,
+      child: ElevatedButton.icon(
         style: ElevatedButton.styleFrom(
-          padding: const EdgeInsets.all(0),
           backgroundColor: TColors.primary,
+          foregroundColor: Colors.white,
           side: const BorderSide(color: TColors.primary),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
         ),
+        icon: const Icon(Icons.save),
+        label: const Text('บันทึกข้อมูล'),
         onPressed: () async {
           // ignore: unused_local_variable
           String comments = '-';
@@ -366,7 +444,6 @@ class _PageViewEditState extends State<PageViewEdit> {
             );
           }
         },
-        child: const ATextDiskplayLarge(text: ' [บันทึกข้อมูล] '),
       ),
     );
   }

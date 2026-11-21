@@ -223,8 +223,15 @@ class _AppBarCustomState extends State<AppBarCustom> {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        const DharmaWheelIcon(size: 32, color: Color(0xFFF6B832)),
-        const SizedBox(width: 8),
+        // ไม่แสดงรูปกงจักรในหน้าจอแท็บเล็ต แสดงเฉพาะเดสก์ท็อป
+        if (!widget.isTablet) ...[
+          const DharmaWheelIcon(
+            size: 32,
+            color: Color(0xFFF6B832),
+            animate: true,
+          ),
+          const SizedBox(width: 8),
+        ],
         logo,
         const SizedBox(width: 8),
         onlinePill,

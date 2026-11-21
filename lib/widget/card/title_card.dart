@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:tripitaka91/utils/constants/api_constants.dart';
 import 'package:tripitaka91/utils/constants/sizes.dart';
 import 'package:tripitaka91/utils/img_service/shared_image_generator.dart';
-import 'package:tripitaka91/utils/models/users.dart';
 import 'package:tripitaka91/utils/play_audio/audio_manager.dart';
-import 'package:tripitaka91/utils/shared_preferences/shared_user.dart';
+import 'package:tripitaka91/utils/providers/user_provider.dart';
 import 'package:tripitaka91/utils/text_title_replace/text_title_replace.dart';
 import 'package:tripitaka91/widget/audio/edit_speak.dart';
 import 'package:tripitaka91/widget/auto_text/auto_text.dart';
@@ -52,21 +52,10 @@ class _TitleCardState extends State<TitleCard> {
   AudioPlayerManager audioPlayerManager = AudioPlayerManager();
   final TextTitleReplace textReplacer = TextTitleReplace();
   // final MyNotifier iconNotifier = MyNotifier(true);
-  Users? usersChk;
 
   final SharedImageGenerator sharedImageGenerator = SharedImageGenerator();
   final SharedImageLocal sharedImageLocal = SharedImageLocal();
   final volumeHelper = VolumeHelper();
-
-  @override
-  void initState() {
-    super.initState();
-    getUser();
-  }
-
-  void getUser() async {
-    usersChk = await getUsersList();
-  }
 
   @override
   void dispose() {
@@ -87,6 +76,9 @@ class _TitleCardState extends State<TitleCard> {
   @override
   Widget build(BuildContext context) {
     //final audioPlayerProvider = context.watch<AudioPlayerProvider>();
+    // ใช้ UserProvider แทนการ getUsersList() ครั้งเดียวใน initState เดิม
+    // เพื่อให้ปุ่มแก้ไข/แจ้งอ่านอัปเดตทันทีหลัง login โดยไม่ต้องรีสตาร์ทแอป
+    final usersChk = context.watch<UserProvider>().user;
     return ClipRRect(
       borderRadius: BorderRadius.circular(TSizes.cardRadiusLg),
       child: Card(
@@ -216,10 +208,10 @@ class _TitleCardState extends State<TitleCard> {
                     color: Colors.blue[300], // Change color as needed
                   ),
                 ),
-                (usersChk != null) && (usersChk?.levelAccess == '1')
+                (usersChk != null) && (usersChk.levelAccess == '1')
                     ? const SizedBox(width: 10)
                     : const SizedBox.shrink(),
-                (usersChk != null) && (usersChk?.levelAccess == '1')
+                (usersChk != null) && (usersChk.levelAccess == '1')
                     ? InkWell(
                         onTap: () async {
                           _showInputDialog(

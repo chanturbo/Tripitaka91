@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tripitaka91/utils/constants/online_label.dart';
 import 'package:tripitaka91/utils/providers/online_speech_provider.dart';
 import 'package:tripitaka91/utils/providers/user_provider.dart';
 
-/// Shows the ONLINE read-aloud disclaimer + voice-selection dialog and, if
+/// Shows the online read-aloud disclaimer + voice-selection dialog and, if
 /// the user confirms, persists valueSpeech=1 and the chosen voice.
 /// Returns true if the user confirmed, false if they cancelled the dialog.
 Future<bool> showOnlineSpeechConsentDialog(BuildContext context) async {
@@ -13,22 +12,22 @@ Future<bool> showOnlineSpeechConsentDialog(BuildContext context) async {
     context: context,
     builder: (context) {
       bool isMaleVoice = true; // ค่าเริ่มต้นสำหรับเสียง
-      TextEditingController textController = TextEditingController();
-      bool isInputValid = false;
+      bool acknowledged = false;
 
       return StatefulBuilder(
         builder: (context, setState) {
           return AlertDialog(
-            title: const Text('แจ้งเตือน'),
+            title: const Text('การอ่านออกเสียงแบบออนไลน์'),
             content: SingleChildScrollView(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    '     นี่คือเวอร์ชั่น $kOnlineModeLabel ในโหมดการอ่านออกเสียงหัวข้อธรรมและพระไตรปิฎก โดยใช้โปรแกรมอัตโนมัติในการอ่าน ซึ่งอาจทำให้การอ่านออกเสียงยังไม่ถูกต้อง ครบถ้วน สมบูรณ์ ดังนั้น ผู้ใช้งานควรใช้วิจารณญาณในการรับฟัง\n\nเลือกเสียงอ่าน',
-                    textAlign: TextAlign.left,
+                  const Text(
+                    'การอ่านออกเสียงหัวข้อธรรมและพระไตรปิฎกในโหมดนี้ใช้โปรแกรมอ่านออกเสียงอัตโนมัติ ซึ่งอาจอ่านออกเสียงไม่ถูกต้องครบถ้วนสมบูรณ์ในบางคำ กรุณาใช้วิจารณญาณในการรับฟัง',
                   ),
-                  const SizedBox(height: 5),
+                  const SizedBox(height: 12),
+                  const Text('เลือกเสียงอ่าน'),
                   RadioGroup<bool>(
                     groupValue: isMaleVoice,
                     onChanged: (value) {
@@ -49,19 +48,17 @@ Future<bool> showOnlineSpeechConsentDialog(BuildContext context) async {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 10),
-                  TextField(
-                    controller: textController,
-                    decoration: InputDecoration(
-                      labelText: 'พิมพ์ "$kOnlineModeLabel" เพื่อดำเนินการต่อ',
-                      border: const OutlineInputBorder(),
-                    ),
+                  const SizedBox(height: 6),
+                  CheckboxListTile(
+                    contentPadding: EdgeInsets.zero,
+                    controlAffinity: ListTileControlAffinity.leading,
+                    value: acknowledged,
                     onChanged: (value) {
                       setState(() {
-                        isInputValid =
-                            value.trim().toUpperCase() == kOnlineModeLabel;
+                        acknowledged = value ?? false;
                       });
                     },
+                    title: const Text('ฉันเข้าใจและยอมรับเงื่อนไขข้างต้น'),
                   ),
                 ],
               ),
@@ -74,7 +71,7 @@ Future<bool> showOnlineSpeechConsentDialog(BuildContext context) async {
                 child: const Text('ยกเลิก'),
               ),
               ElevatedButton(
-                onPressed: isInputValid
+                onPressed: acknowledged
                     ? () async {
                         // ignore: use_build_context_synchronously
                         await context.read<OnlineSpeechProvider>().acknowledge(
@@ -84,11 +81,7 @@ Future<bool> showOnlineSpeechConsentDialog(BuildContext context) async {
                         // ignore: use_build_context_synchronously
                         Navigator.pop(context);
                       }
-                    : null, // ปิดใช้งานปุ่มถ้ายังไม่ได้ป้อน "ONLINE"
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: isInputValid ? Colors.red : Colors.grey,
-                  foregroundColor: Colors.white,
-                ),
+                    : null, // ปิดใช้งานปุ่มถ้ายังไม่ได้ติ๊กยอมรับ
                 child: const Text('ยอมรับและดำเนินการต่อ'),
               ),
             ],

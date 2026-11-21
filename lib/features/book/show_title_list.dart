@@ -2,12 +2,14 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 import 'package:substring_highlight/substring_highlight.dart';
 import 'package:tripitaka91/utils/constants/api_constants.dart';
 import 'package:tripitaka91/utils/db_helper/db_helper.dart';
 import 'package:tripitaka91/utils/img_service/shared_image_generator.dart';
 import 'package:tripitaka91/utils/models/users.dart';
 import 'package:tripitaka91/utils/play_audio/audio_manager.dart';
+import 'package:tripitaka91/utils/providers/user_provider.dart';
 import 'package:tripitaka91/utils/shared_preferences/shared_user.dart';
 import 'package:tripitaka91/utils/text_title_replace/text_title_replace.dart';
 import 'package:tripitaka91/widget/audio/edit_speak.dart';
@@ -45,7 +47,6 @@ class _SearchShowPagesTitleListState extends State<SearchShowPagesTitleList> {
   final ScrollController _scrollControllerTitle = ScrollController();
 
   AudioPlayerManager audioPlayerManager = AudioPlayerManager();
-  Users? usersChk;
   final SharedImageGenerator sharedImageGenerator = SharedImageGenerator();
   final SharedImageLocal sharedImageLocal = SharedImageLocal();
   final volumeHelper = VolumeHelper();
@@ -56,7 +57,6 @@ class _SearchShowPagesTitleListState extends State<SearchShowPagesTitleList> {
     textTitleReplace = TextTitleReplace();
     _scrollControllerTitle.addListener(_scrollListener);
     widget.online ? _fetchDataTitle() : _fetchDataTitleInBook();
-    getUser();
   }
 
   @override
@@ -71,10 +71,6 @@ class _SearchShowPagesTitleListState extends State<SearchShowPagesTitleList> {
         !_scrollControllerTitle.position.outOfRange) {
       widget.online ? _fetchDataTitle() : _fetchDataTitleInBook();
     }
-  }
-
-  void getUser() async {
-    usersChk = await getUsersList();
   }
 
   Future<void> _fetchDataTitleInBook() async {
@@ -165,7 +161,7 @@ class _SearchShowPagesTitleListState extends State<SearchShowPagesTitleList> {
   }
 
   Widget _showText(String title, String mark) {
-    final double titleFontSize = widget.isMobile ? 18.0 : 16.0;
+    final double titleFontSize = widget.isMobile ? 18.0 : 15.0;
     if (mark == 'TRUE') {
       return SubstringHighlight(
         text: title,
@@ -203,6 +199,9 @@ class _SearchShowPagesTitleListState extends State<SearchShowPagesTitleList> {
 
   @override
   Widget build(BuildContext context) {
+    // ใช้ UserProvider แทนการ getUsersList() ครั้งเดียวใน initState เดิม
+    // เพื่อให้ปุ่มแก้ไข/แจ้งอ่านอัปเดตทันทีหลัง login
+    final usersChk = context.watch<UserProvider>().user;
     return Scaffold(
       body: NotificationListener(
         onNotification: (ScrollNotification scrollInfo) {
@@ -379,8 +378,7 @@ class _SearchShowPagesTitleListState extends State<SearchShowPagesTitleList> {
                               );
                             },
                           ),
-                          if (usersChk != null &&
-                              usersChk?.levelAccess == '1')
+                          if (usersChk != null && usersChk.levelAccess == '1')
                             CircularIconButton(
                               icon: Icons.edit,
                               size: widget.isMobile ? 21 : 16,

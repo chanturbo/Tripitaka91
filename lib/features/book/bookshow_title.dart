@@ -119,7 +119,7 @@ class _BookShowTitleState extends State<BookShowTitle> {
   final SharedImageLocal sharedImageLocal = SharedImageLocal();
   final volumeHelper = VolumeHelper();
   final TextEditingController _filterController = TextEditingController();
-  String _filterQuery = '';
+  final String _filterQuery = '';
   bool _headerLoaded = false;
 
   @override
@@ -754,45 +754,10 @@ class _BookShowTitleState extends State<BookShowTitle> {
                             ),
                           ],
                         ),
+                        // ไม่มีช่องค้นหาหัวข้อในหน้าจอมือถือ (ตัดออกตามคำขอ) —
+                        // desktop/tablet ยังมีช่องค้นหานี้อยู่ที่ส่วนของ
+                        // _visibleTitles()/_filterController ด้านล่าง
                         const SizedBox(height: 10),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: TextField(
-                            controller: _filterController,
-                            onChanged: (value) =>
-                                setState(() => _filterQuery = value),
-                            decoration: InputDecoration(
-                              isDense: true,
-                              hintText: 'ค้นหาหัวข้อในเล่มนี้...',
-                              prefixIcon: const Icon(Icons.search, size: 20),
-                              suffixIcon: _filterQuery.isEmpty
-                                  ? null
-                                  : IconButton(
-                                      icon: const Icon(Icons.clear, size: 18),
-                                      onPressed: () {
-                                        _filterController.clear();
-                                        setState(() => _filterQuery = '');
-                                      },
-                                    ),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              contentPadding: const EdgeInsets.symmetric(
-                                vertical: 8,
-                                horizontal: 12,
-                              ),
-                            ),
-                          ),
-                        ),
-                        if (_filterQuery.isNotEmpty && hasMoreData)
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(8, 4, 8, 0),
-                            child: ATextLabelSmall(
-                              text:
-                                  'ค้นเฉพาะหัวข้อที่โหลดมาแล้ว (${dataTitle.length} รายการ) อาจยังไม่ครบทั้งเล่ม',
-                            ),
-                          ),
-                        const SizedBox(height: 8),
                       ],
                     ),
                   ),

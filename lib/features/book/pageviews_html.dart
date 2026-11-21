@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simple_html_css/simple_html_css.dart';
@@ -20,6 +22,7 @@ import 'package:tripitaka91/utils/models/log_edit.dart';
 import 'package:tripitaka91/utils/models/tri91_bookall.dart';
 import 'package:tripitaka91/utils/models/users.dart';
 import 'package:tripitaka91/utils/play_audio/audio_manager.dart';
+import 'package:tripitaka91/utils/providers/user_provider.dart';
 import 'package:tripitaka91/utils/shared_preferences/shared_user.dart';
 import 'package:tripitaka91/utils/text_title_replace/text_title_replace.dart';
 import 'package:tripitaka91/widget/audio/edit_speak.dart';
@@ -35,6 +38,34 @@ import 'package:tripitaka91/features/book/pageviews_edit.dart';
 import 'package:tripitaka91/utils/theme/theme_helpers.dart';
 import 'package:tripitaka91/widget/screen/respond_screen.dart';
 import 'package:tripitaka91/widget/volume_helper/volume_helper.dart';
+
+enum _WordReportStatus { pending, inProgress, fixed }
+
+class _WordReportEntry {
+  final String wordIncorrect;
+  final String wordCorrect;
+  final String reporterName;
+
+  const _WordReportEntry({
+    required this.wordIncorrect,
+    required this.wordCorrect,
+    required this.reporterName,
+  });
+}
+
+class _WordReportInfo {
+  final _WordReportStatus status;
+  final List<_WordReportEntry> entries;
+  final String? oldText;
+  final String? newText;
+
+  const _WordReportInfo({
+    required this.status,
+    required this.entries,
+    this.oldText,
+    this.newText,
+  });
+}
 
 class Tri91PageViewHtml extends StatefulWidget {
   final String triBookid;
@@ -86,7 +117,6 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
   List<String> currentPlaylist = [];
   AudioPlayerManager audioPlayerManager = AudioPlayerManager();
   AudioPlayerManager audioPlayerManagerTitle = AudioPlayerManager();
-  Users? users;
 
   List<List<TextEditingController>> controllersList = [];
 
@@ -101,13 +131,14 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
   bool chkTimer = false;
   bool chkTimer2 = false;
   late InAppWebViewController webViewController;
+  final List<GestureRecognizer> _lineRecognizers = [];
 
   final SharedImageGenerator sharedImageGenerator = SharedImageGenerator();
   final SharedImageLocal sharedImageLocal = SharedImageLocal();
 
   final dbHelper = DatabaseHelper();
   final volumeHelper = VolumeHelper();
-  double _fontSize = 26;
+  double _fontSize = 24;
   bool _showLeftPanel = true;
   double scrollBookSearchIndexs1 = -1;
   String bgColor = '#ffffff';
@@ -117,7 +148,6 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
   void initState() {
     super.initState();
     _loadFontSize();
-    _getUser();
     // _currentSliderValue = widget.triPageid as double;
     getDataTitle();
     _getLogEdit();
@@ -176,10 +206,10 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
     final prefs = await SharedPreferences.getInstance();
     widget.isMobile
         ? setState(() {
-            _fontSize = prefs.getDouble('fontSize') ?? 28;
+            _fontSize = prefs.getDouble('fontSize') ?? 26;
           })
         : setState(() {
-            _fontSize = prefs.getDouble('fontSize') ?? 26;
+            _fontSize = prefs.getDouble('fontSize') ?? 24;
           });
   }
 
@@ -289,11 +319,10 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
     saveLastRead();
     audioPlayerManager.dispose();
     audioPlayerManagerTitle.dispose();
+    for (final r in _lineRecognizers) {
+      r.dispose();
+    }
     super.dispose();
-  }
-
-  Future<void> _getUser() async {
-    users = await getUsersList();
   }
 
   void saveLastRead() async {
@@ -836,6 +865,9 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
             ? PopupMenuButton(
                 icon: const Icon(color: TColors.white, Icons.edit),
                 onSelected: (value) {
+                  // อ่านสดจาก UserProvider แทน field users เดิม กันค่าเก่าค้าง
+                  // หลัง login/logout โดยไม่ได้สร้าง widget นี้ใหม่
+                  final users = context.read<UserProvider>().user;
                   if (value == 'item1') {
                     if (users != null) {
                       Navigator.push(
@@ -844,7 +876,7 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
                           builder: (context) => PageViewEdit(
                             bookId: widget.triBookid,
                             pageId: pageChanged.toString(),
-                            username: users!.username,
+                            username: users.username,
                             logEdit: logEdit,
                           ),
                         ),
@@ -1134,6 +1166,226 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
     return input.split('').map((char) => arabicToThai[char] ?? char).join();
   }
 
+  /// A line from `book_detail` should render bold (like the printed PDF's
+  /// title/heading lines) if it still carries a legacy `<B>`/`<H1>`..`<H4>`
+  /// tag, possibly garbled with stray characters from the old data import.
+  /// `<SUP>`/`<I>` tags don't count.
+  bool _isHeaderTaggedLine(String raw) {
+    for (final match in RegExp(r'<[^>]*>').allMatches(raw)) {
+      final core = match
+          .group(0)!
+          .replaceAll(RegExp(r'[^A-Za-z0-9]'), '')
+          .toUpperCase();
+      if (core == 'B' ||
+          core == 'H1' ||
+          core == 'H2' ||
+          core == 'H3' ||
+          core == 'H4') {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  Widget _reportInfoRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 2),
+      child: Text.rich(
+        TextSpan(
+          children: [
+            TextSpan(
+              text: '$label: ',
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 13,
+              ),
+            ),
+            TextSpan(text: value),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _reportInfoRowPair(
+    String label1,
+    String value1,
+    String label2,
+    String value2,
+  ) {
+    const TextStyle labelStyle = TextStyle(
+      fontWeight: FontWeight.bold,
+      fontSize: 13,
+    );
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 2),
+      child: Text.rich(
+        TextSpan(
+          children: [
+            TextSpan(text: '$label1: ', style: labelStyle),
+            TextSpan(text: '$value1    '),
+            TextSpan(text: '$label2: ', style: labelStyle),
+            TextSpan(text: value2),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showAnnotationDialog(BuildContext context, _WordReportInfo info) {
+    final Color statusColor;
+    final String statusLabel;
+    switch (info.status) {
+      case _WordReportStatus.fixed:
+        statusColor = Colors.green;
+        statusLabel = 'แก้ไขข้อมูลเรียบร้อยแล้ว';
+        break;
+      case _WordReportStatus.inProgress:
+        statusColor = Colors.orange;
+        statusLabel = 'อยู่ในกระบวนการแก้ไขข้อมูล';
+        break;
+      case _WordReportStatus.pending:
+        statusColor = Colors.red;
+        statusLabel = 'ยังไม่มีการแก้ไข';
+        break;
+    }
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: adaptiveSurfaceColor(context),
+          titlePadding: const EdgeInsets.fromLTRB(20, 16, 20, 4),
+          title: const Text(
+            'รายงานคำที่น่าจะผิด',
+            style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
+          ),
+          content: SizedBox(
+            width: double.maxFinite,
+            child: SingleChildScrollView(
+              child: DefaultTextStyle.merge(
+                style: const TextStyle(fontSize: 13.5),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 3,
+                      ),
+                      decoration: BoxDecoration(
+                        color: statusColor.withValues(alpha: 0.15),
+                        borderRadius: BorderRadius.circular(14),
+                        border: Border.all(color: statusColor),
+                      ),
+                      child: Text(
+                        statusLabel,
+                        style: TextStyle(
+                          color: statusColor,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12.5,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    for (int i = 0; i < info.entries.length; i++) ...[
+                      if (i > 0) const Divider(height: 14),
+                      _reportInfoRowPair(
+                        'คำที่น่าจะผิด',
+                        info.entries[i].wordIncorrect,
+                        'คำที่น่าจะถูก',
+                        info.entries[i].wordCorrect,
+                      ),
+                      _reportInfoRow('แจ้งโดย', info.entries[i].reporterName),
+                    ],
+                    if (info.oldText != null && info.newText != null) ...[
+                      const SizedBox(height: 10),
+                      const Text(
+                        'ข้อความเดิม',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 13,
+                        ),
+                      ),
+                      SelectableText(
+                        info.oldText!,
+                        style: const TextStyle(
+                          decoration: TextDecoration.lineThrough,
+                          color: Colors.red,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      const Text(
+                        'ข้อความที่แก้ไข',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 13,
+                        ),
+                      ),
+                      SelectableText(
+                        info.newText!,
+                        style: const TextStyle(
+                          color: Colors.green,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('ปิด'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  /// เพิ่ม [text] ลงใน [target] เป็น TextSpan ปกติ ยกเว้นโทเค็นเชิงอรรถ
+  /// `supNNNsup` ที่เหลือจากการล้างแท็กเก่า ซึ่งจะถูกแปลงเป็นตัวเลขอ้างอิง
+  /// ขนาดเล็กและยกขึ้นเหนือบรรทัดจริง (superscript) ด้วย WidgetSpan
+  void _appendTextWithFootnotes(
+    List<InlineSpan> target,
+    String text,
+    TextStyle style,
+  ) {
+    final supRegex = RegExp(r'sup([๐-๙0-9]+)sup');
+    int last = 0;
+    for (final m in supRegex.allMatches(text)) {
+      if (m.start > last) {
+        target.add(TextSpan(text: text.substring(last, m.start), style: style));
+      }
+      target.add(
+        WidgetSpan(
+          alignment: PlaceholderAlignment.top,
+          child: Transform.translate(
+            offset: const Offset(0, -4),
+            child: Text(
+              '[${m.group(1)}]',
+              style: TextStyle(
+                fontSize: _fontSize * 0.6,
+                color: Colors.red,
+                fontFamily: style.fontFamily,
+              ),
+            ),
+          ),
+        ),
+      );
+      last = m.end;
+    }
+    if (last < text.length) {
+      target.add(TextSpan(text: text.substring(last), style: style));
+    }
+  }
+
   Widget titleCardSub(
     String triTitle,
     String bookBlue,
@@ -1155,6 +1407,9 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
       String thaiNumber = arabicToThaiNumbers(word);
       return (thaiNumber != word) ? [word, thaiNumber] : [word];
     }).toList();
+
+    // ใช้ UserProvider แทน field users เดิม เพื่อให้ปุ่มแก้ไขอัปเดตทันทีหลัง login
+    final users = context.watch<UserProvider>().user;
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(10.0),
@@ -1296,10 +1551,10 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
                       color: Colors.blue[300], // Change color as needed
                     ),
                   ),
-                  (users != null) && (users?.levelAccess == '1')
+                  (users != null) && (users.levelAccess == '1')
                       ? const SizedBox(width: 10)
                       : const SizedBox.shrink(),
-                  (users != null) && (users?.levelAccess == '1')
+                  (users != null) && (users.levelAccess == '1')
                       ? InkWell(
                           onTap: () async {
                             _showInputDialog(
@@ -1349,12 +1604,9 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
           ),
         );
       },
-    ).then((value) {
-      if (value == true) {
-        // อัปเดตตัวแปร users หรือ refresh หน้าจอ
-        _getUser();
-      }
-    });
+    );
+    // ไม่ต้อง refresh users เองแล้ว เพราะ UserProvider ที่ login.dart อัปเดต
+    // จะไหลมาอัปเดต UI ที่ watch ไว้ (buildAppBar/titleCardSub) ให้เองทันที
   }
 
   Widget pageview(bool isMobile, bool isTable) {
@@ -2100,31 +2352,43 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
 
           String title = bookTitleTri91;
           String page = pageShow;
-          String htmlContent, snapText;
           int triPage = int.parse(pageShow);
-          if (triPage == 0) {
-            htmlContent = """
-<body>
-<span style='font-weight:800;'></span>
-""";
-          } else {
-            htmlContent =
-                """
-<body>
-<span style='font-weight:800;'> $title หน้าที่ $page</span><br>
-""";
+
+          final TextStyle baseStyle = TextStyle(
+            letterSpacing: 0.4,
+            color: HexColor(fontColor),
+            fontFamily: "THSarabunNew",
+            fontSize: _fontSize,
+          );
+
+          for (final r in _lineRecognizers) {
+            r.dispose();
+          }
+          _lineRecognizers.clear();
+
+          final List<InlineSpan> pageSpans = [];
+
+          // จอเล็ก (มือถือ) เท่านั้นที่ย่อช่องว่างซ้ำให้แคบลง จอใหญ่ (แท็บเล็ต/
+          // เดสก์ท็อป) แสดงช่องว่างตามต้นฉบับเหมือนเดิม เพราะไม่ต้องตัดขึ้น
+          // บรรทัดใหม่บ่อยอยู่แล้ว
+          final bool isSmallScreen = MediaQuery.of(context).size.width < 600;
+
+          if (triPage != 0) {
+            pageSpans.add(
+              TextSpan(
+                text: ' $title หน้าที่ $page\n',
+                style: baseStyle.copyWith(fontWeight: FontWeight.w800),
+              ),
+            );
           }
 
           for (int i = 0; i < snapshot.data!.length; i++) {
-            snapText = snapshot.data![i].bookDetail.toString().replaceAll(
-              'LineNull',
-              '&nbsp;',
-            );
-            snapText = snapText.replaceAll('     ', '&nbsp;');
-            snapText = snapText.replaceAll('    ', '&nbsp;');
-            snapText = snapText.replaceAll('   ', '&nbsp;');
-            snapText = snapText.replaceAll('  ', '&nbsp;');
-            snapText = snapText.replaceAll(' ', '&nbsp;');
+            final String rawLine = snapshot.data![i].bookDetail.toString();
+            final bool headerLine = _isHeaderTaggedLine(rawLine);
+
+            // ลบแท็กเก่า/ที่เพี้ยนออก แต่ไม่แตะช่องว่าง
+            // (Text ของ Flutter ไม่ยุบช่องว่างซ้ำแบบ HTML อยู่แล้ว จึงคงการเคาะวรรค/ย่อหน้าตามต้นฉบับได้)
+            String snapText = rawLine == 'LineNull' ? '' : rawLine;
             snapText = snapText.replaceAll('<  /B>', '');
             snapText = snapText.replaceAll('<  /SUP>', '');
             snapText = snapText.replaceAll('<  /SUP>', '');
@@ -2156,55 +2420,56 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
             snapText = snapText.replaceAll('<', '');
             snapText = snapText.replaceAll('>', '');
 
+            // ต้นฉบับเว้นวรรคคั่นคำ/ย่อหน้าด้วยช่องว่างหลายตัว (3-8 ตัว) ซึ่งกว้าง
+            // เกินไปเมื่อแสดงด้วยฟอนต์สัดส่วนบนจอแคบ ย่อให้เหลือ 2 ตัวเสมอ
+            // (ยังเว้นกว้างกว่าช่องว่างปกติ พอสังเกตเห็นย่อหน้า/จุดคั่นได้)
+            // จอใหญ่ไม่ต้องย่อ เพราะแสดงผลปกติดีอยู่แล้ว
+            if (isSmallScreen) {
+              snapText = snapText.replaceAll(RegExp(r' {2,}'), '  ');
+            }
+
+            // หมายเหตุ: โทเค็นเชิงอรรถ supNNNsup ยังคงอยู่ใน snapText เพื่อให้
+            // _appendTextWithFootnotes ด้านล่างแปลงเป็นตัวเลขยกขึ้นจริงทีหลัง
+
+            final bool isTriLineMatch =
+                snapshot.data?[i].bookLines == (triLine);
+            final bool isSavedPageView = int.parse(pageShow) == pageids;
+            final bool applyCurrentLineBg = isSavedPageView && isTriLineMatch;
+
             String wordHilight = widget.chkSearch;
             RegExp regex = RegExp(r'\s+');
             List<String> finalList = wordHilight.split(regex);
 
             // เพิ่มเลขไทยเข้าไป ถ้าพบเลขอารบิกในคำ
-            List<String> findWord = finalList.expand((word) {
-              String thaiNumber = arabicToThaiNumbers(word);
-              return (thaiNumber != word) ? [word, thaiNumber] : [word];
-            }).toList();
+            List<String> findWord = finalList
+                .expand((word) {
+                  String thaiNumber = arabicToThaiNumbers(word);
+                  return (thaiNumber != word) ? [word, thaiNumber] : [word];
+                })
+                .where((w) => w.isNotEmpty)
+                .toList();
 
-            if (findWord.isNotEmpty) {
-              for (var x = 0; x < findWord.length; x++) {
-                if (findWord[x] != '') {
-                  String b;
-                  if (triLine > 0) {
-                    if (snapshot.data?[i].bookLines == (triLine)) {
-                      // if ((this.bgColor == '#6b6b6e') ||
-                      //     (this.bgColor == '#121212')) {
-                      //   b = "<span style='color:yellow'>";
-                      //   b = "$b${findWord[x]}</span>";
-                      // } else {
-                      if (int.parse(pageShow) == pageids) {
-                        b = "<span style=color:black>";
-                        b = "$b${findWord[x]}</span>";
-                      } else {
-                        b = "<span style=color:red>";
-                        b = "$b${findWord[x]}</span>";
-                      }
-                      // }
-                    } else {
-                      // if ((this.bgColor == '#6b6b6e') ||
-                      //     (this.bgColor == '#121212')) {
-                      //   b = "<span style='color:orange'>";
-                      //   b = "$b${findWord[x]}</span>";
-                      // } else {
-                      b = "<span style=color:red>";
-                      b = "$b${findWord[x]}</span>";
-                      // }
-                    }
-                    // print('b = ${b}');
-                    // print('snapText = ${snapText}');
-                    // print('findWord[x] = ${findWord[x]}');
-                    snapText = snapText.replaceAll(findWord[x].toString(), b);
-                  }
-                }
+            Color? highlightColor;
+            if (findWord.isNotEmpty && triLine > 0) {
+              if (isTriLineMatch) {
+                highlightColor = isSavedPageView ? Colors.black : Colors.red;
+              } else {
+                highlightColor = Colors.red;
               }
             }
 
-            String logEdit = '';
+            TextStyle lineStyle = baseStyle;
+            if (headerLine) {
+              lineStyle = lineStyle.copyWith(fontWeight: FontWeight.w500);
+            }
+            if (applyCurrentLineBg) {
+              lineStyle = lineStyle.copyWith(
+                backgroundColor: const Color(0xFFd58512),
+                color: Colors.white,
+              );
+            }
+
+            final List<_WordReportEntry> reportEntries = [];
             int chkComfirm = 2;
             int chkSuscess = 2;
             bool chkLogShow = false;
@@ -2212,11 +2477,7 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
             String lineNew = '';
             for (Logedit log in result) {
               if (log.tripitaka91Line == snapshot.data?[i].bookLines) {
-                String wordIncorrect = log.tripitaka91Wordincorrect;
-                String wordCorrect = log.tripitaka91Wordcorrect;
                 String nameid = log.firstNameid;
-                String firestName = log.firstName;
-                String lastName = log.lastName;
                 lineOld = log.bookDetailOld;
                 lineNew = log.bookDetailNew;
 
@@ -2226,182 +2487,103 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
                 if (dateAdd.isAfter(targetDate) ||
                     dateAdd.isAtSameMomentAs(targetDate)) {
                   // print("วันที่มากกว่าหรือเท่ากับ 13 พฤศจิกายน 2013");
-                  // print('dateAdd $dateAdd');
-                  // print(targetDate);
                 } else {
                   if (log.tripitaka91User == 'Rotor206') {
                     nameid = 'นาย';
                   }
-                  // print(nameid);
-                  // print("วันที่น้อยกว่า 13 พฤศจิกายน 2013");
                 }
 
-                String tmpLog =
-                    'คำที่น่าจะผิด: $wordIncorrect คำที่น่าจะถูก: $wordCorrect แจ้งโดย: $nameid$firestName $lastName\n';
-                logEdit = '$logEdit$tmpLog';
+                reportEntries.add(
+                  _WordReportEntry(
+                    wordIncorrect: log.tripitaka91Wordincorrect,
+                    wordCorrect: log.tripitaka91Wordcorrect,
+                    reporterName: '$nameid${log.firstName} ${log.lastName}',
+                  ),
+                );
                 chkComfirm = log.bookConfirm;
                 chkSuscess = log.bookSuscess;
                 chkLogShow = true;
               }
             }
+
+            _WordReportInfo? reportInfo;
             if (chkLogShow) {
               if (chkSuscess == 1) {
-                logEdit =
-                    '{$logEdit \nหมายเหตุ: มีการแก้ไขข้อมูลเรียบร้อยแล้ว\nข้อความเดิม: $lineOld\nข้อความที่แก้ไข: $lineNew}';
-                if (logEdit != '') {
-                  logEdit = '<a href="$logEdit">[*]</a> ';
-                }
-              } else if (chkSuscess == 0) {
-                if (chkComfirm == 0) {
-                  logEdit = '[$logEdit \nหมายเหตุ: ยังไม่มีการแก้ไข]';
-                } else {
-                  lineOld = lineOld.replaceAll('"', '');
-                  lineNew = lineNew.replaceAll('"', '');
-                  logEdit =
-                      '[$logEdit \nหมายเหตุ: อยู่ในกระบวนการแก้ไขข้อมูล\nข้อความเดิม: $lineOld\nข้อความที่แก้ไข: $lineNew]';
-                }
-                if (logEdit != '') {
-                  logEdit = '<a href="$logEdit">[*]</a> ';
-                }
+                reportInfo = _WordReportInfo(
+                  status: _WordReportStatus.fixed,
+                  entries: reportEntries,
+                  oldText: lineOld,
+                  newText: lineNew,
+                );
+              } else if (chkComfirm == 0) {
+                reportInfo = _WordReportInfo(
+                  status: _WordReportStatus.pending,
+                  entries: reportEntries,
+                );
+              } else {
+                reportInfo = _WordReportInfo(
+                  status: _WordReportStatus.inProgress,
+                  entries: reportEntries,
+                  oldText: lineOld.replaceAll('"', ''),
+                  newText: lineNew.replaceAll('"', ''),
+                );
               }
             }
 
-            if (int.parse(pageShow) == pageids) {
-              if (snapshot.data?[i].bookLines == (triLine)) {
-                htmlContent =
-                    """$htmlContent<p style='background-color:#d58512;'>
-""";
-                snapText = """<span style=color:white>$snapText</span>""";
-              } else {
-                htmlContent = """$htmlContent<p>
-""";
+            if (reportInfo != null) {
+              final info = reportInfo;
+              final recognizer = TapGestureRecognizer()
+                ..onTap = () => _showAnnotationDialog(context, info);
+              _lineRecognizers.add(recognizer);
+              pageSpans.add(
+                TextSpan(
+                  text: '[*] ',
+                  // ใช้สีน้ำเงินแทนสีส้มเดิม เพราะสีส้มซ้ำกับพื้นหลังไฮไลต์
+                  // บรรทัดปัจจุบัน (ตัวหนังสือ [*] จะกลมกลืนจนมองไม่เห็น)
+                  style: lineStyle.copyWith(
+                    fontSize: 26,
+                    color: const Color(0xFF0D47A1),
+                    letterSpacing: 0,
+                  ),
+                  recognizer: recognizer,
+                ),
+              );
+            }
+
+            // ไฮไลต์คำค้นหาในเนื้อหา (เชิงอรรถในแต่ละช่วงจะถูกแปลงเป็นตัวเลขยกขึ้นจริง)
+            if (highlightColor != null && snapText.isNotEmpty) {
+              final pattern = findWord.map(RegExp.escape).join('|');
+              final wordRegex = RegExp(pattern);
+              int last = 0;
+              for (final m in wordRegex.allMatches(snapText)) {
+                if (m.start > last) {
+                  _appendTextWithFootnotes(
+                    pageSpans,
+                    snapText.substring(last, m.start),
+                    lineStyle,
+                  );
+                }
+                _appendTextWithFootnotes(
+                  pageSpans,
+                  snapText.substring(m.start, m.end),
+                  lineStyle.copyWith(color: highlightColor),
+                );
+                last = m.end;
+              }
+              if (last < snapText.length) {
+                _appendTextWithFootnotes(
+                  pageSpans,
+                  snapText.substring(last),
+                  lineStyle,
+                );
               }
             } else {
-              htmlContent = """$htmlContent<p>
-""";
+              _appendTextWithFootnotes(pageSpans, snapText, lineStyle);
             }
 
-            htmlContent = """$htmlContent$logEdit$snapText</p>
-""";
+            pageSpans.add(TextSpan(text: '\n', style: lineStyle));
           }
 
-          htmlContent = """$htmlContent</body>
-""";
-
-          htmlContent = htmlContent.replaceAllMapped(
-            RegExp(r'sup([๐-๙0-9]+)sup'),
-            (match) => '<sup>[${match.group(1)}]</sup>',
-          );
-          // or use HTML.toRichText()
-          final TextSpan textSpan = HTML.toTextSpan(
-            context,
-            htmlContent,
-            linksCallback: (dynamic link) {
-              List<TextSpan> getWordSpans(String text) {
-                List<TextSpan> spans = [];
-                RegExp expBrackets = RegExp(r'\[([^\]]+)\]');
-                RegExp expCurlyBraces = RegExp(r'\{([^}]+)\}');
-                Iterable<RegExpMatch> matchesBrackets = expBrackets.allMatches(
-                  text,
-                );
-                Iterable<RegExpMatch> matchesCurlyBraces = expCurlyBraces
-                    .allMatches(text);
-
-                int previousEnd = 0;
-                for (RegExpMatch matchBrackets in matchesBrackets) {
-                  // Add the text before the match
-                  spans.add(
-                    TextSpan(
-                      text: text.substring(previousEnd, matchBrackets.start),
-                    ),
-                  );
-                  // Add the matched text with custom style (สีแดงสำหรับ [])
-                  spans.add(
-                    TextSpan(
-                      text: matchBrackets.group(1),
-                      style: const TextStyle(color: Colors.red, fontSize: 16),
-                    ),
-                  );
-                  previousEnd = matchBrackets.end;
-                }
-
-                // เพิ่มการเช็คสำหรับข้อความที่อยู่ใน {}
-                for (RegExpMatch matchCurlyBraces in matchesCurlyBraces) {
-                  // Add the text before the match
-                  spans.add(
-                    TextSpan(
-                      text: text.substring(previousEnd, matchCurlyBraces.start),
-                    ),
-                  );
-                  // Add the matched text with custom style (สีเขียวสำหรับ {})
-                  spans.add(
-                    TextSpan(
-                      text: matchCurlyBraces.group(1),
-                      style: const TextStyle(color: Colors.green, fontSize: 16),
-                    ),
-                  );
-                  previousEnd = matchCurlyBraces.end;
-                }
-
-                // Add the remaining text after the last match (เพิ่มข้อความที่เหลือหลังจากการตรวจสอบครั้งสุดท้าย)
-                if (previousEnd < text.length) {
-                  spans.add(TextSpan(text: text.substring(previousEnd)));
-                }
-
-                return spans;
-              }
-
-              if (link is String) {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      backgroundColor: adaptiveSurfaceColor(context),
-                      title: const Text('รายงาน'),
-                      content: RichText(
-                        text: TextSpan(children: getWordSpans(link)),
-                      ),
-                      actions: [
-                        TextButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          child: const Text('ปิดหน้าจอ'),
-                        ),
-                      ],
-                    );
-                  },
-                );
-              }
-            },
-            // as name suggests, optionally set the default text style
-            defaultTextStyle: TextStyle(
-              letterSpacing: 0.4,
-              color: HexColor(fontColor), //Colors.grey[700],
-              decoration: TextDecoration.none,
-              fontFamily: "THSarabunNew",
-              fontSize: 28,
-            ),
-            overrideStyle: <String, TextStyle>{
-              'sup': TextStyle(
-                fontSize: _fontSize * 0.7,
-                height: 1.2,
-                color: Colors.red,
-              ),
-              'span': TextStyle(fontSize: _fontSize),
-              'p': TextStyle(fontSize: _fontSize),
-              'b': TextStyle(fontWeight: FontWeight.w500),
-              'strong': TextStyle(fontWeight: FontWeight.w500),
-              'a': const TextStyle(
-                fontSize: 26,
-                color: Color(0XFFd58512),
-                letterSpacing: 0,
-                decoration: TextDecoration.none,
-              ),
-              // specify any tag not just the supported ones,
-              // and apply TextStyles to them and/override them
-            },
-          );
           if (chkTimer) {
             _timer = Timer(const Duration(seconds: 1), _onTimerFinished);
             chkTimer = false;
@@ -2409,16 +2591,32 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
             _timer = Timer(const Duration(seconds: 1), _onTimerFinished2);
             chkTimer2 = false;
           }
-          return SizedBox(
-            width: double.infinity,
-            child: SingleChildScrollView(
-              controller: _scrollController,
-              child: SelectableText.rich(
-                textSpan,
-                textAlign: TextAlign.center,
-                style: const TextStyle(height: 0.1),
-              ),
-            ),
+          return LayoutBuilder(
+            builder: (context, constraints) {
+              // บังคับความกว้างให้เท่ากับพื้นที่จอจริงเสมอ กัน WidgetSpan
+              // (เชิงอรรถที่ยกขึ้น) ทำให้ Flutter คำนวณความกว้างเนื้อหาแบบ
+              // ไม่มีขอบเขตแล้วข้อความยาวล้นขอบจอแทนที่จะตัดขึ้นบรรทัดใหม่
+              final double contentWidth = constraints.maxWidth > 700
+                  ? 700
+                  : constraints.maxWidth;
+              return SingleChildScrollView(
+                controller: _scrollController,
+                child: Center(
+                  child: SizedBox(
+                    width: contentWidth,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      child: SelectableText.rich(
+                        TextSpan(children: pageSpans),
+                        textAlign: isSmallScreen
+                            ? TextAlign.center
+                            : TextAlign.left,
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            },
           );
         }
       },

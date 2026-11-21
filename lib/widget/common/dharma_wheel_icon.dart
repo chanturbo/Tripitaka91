@@ -5,22 +5,52 @@ import 'package:flutter/material.dart';
 /// วงกงล้อธรรมจักร 8 ก้าน วาดด้วย CustomPaint ให้หน้าตาตรงกับโลโก้ที่ใช้ใน
 /// โปรเจค DharmaTimeStamp (LOGO_SVG ใน web/src/layout.php) — เวกเตอร์จึงคมชัด
 /// ทุกขนาดจอโดยไม่ต้องพึ่งไฟล์รูปภาพ
-class DharmaWheelIcon extends StatelessWidget {
+class DharmaWheelIcon extends StatefulWidget {
   final double size;
   final Color color;
+  final bool animate;
 
   const DharmaWheelIcon({
     super.key,
     this.size = 28,
     this.color = const Color(0xFF9A5B1E),
+    this.animate = false,
   });
 
   @override
+  State<DharmaWheelIcon> createState() => _DharmaWheelIconState();
+}
+
+class _DharmaWheelIconState extends State<DharmaWheelIcon>
+    with SingleTickerProviderStateMixin {
+  AnimationController? _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.animate) {
+      _controller = AnimationController(
+        vsync: this,
+        duration: const Duration(seconds: 8),
+      )..repeat();
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller?.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      size: Size(size, size),
-      painter: _DharmaWheelPainter(color),
+    final wheel = CustomPaint(
+      size: Size(widget.size, widget.size),
+      painter: _DharmaWheelPainter(widget.color),
     );
+    if (_controller == null) return wheel;
+    // turns เพิ่มขึ้นเรื่อย ๆ = หมุนตามเข็มนาฬิกา (ไปทางขวา) ต่อเนื่องไม่รู้จบ
+    return RotationTransition(turns: _controller!, child: wheel);
   }
 }
 

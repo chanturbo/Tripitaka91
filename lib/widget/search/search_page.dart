@@ -285,14 +285,20 @@ class _SearchPagesState extends State<SearchPages> {
       child: Column(
         children: [
           ListTile(
+            enabled: total > 0,
             leading: CircleAvatar(
               backgroundColor: total > 0 ? Colors.blue[900] : Colors.grey,
               foregroundColor: Colors.white,
               child: Text(total.toString()),
             ),
-            title: widget.isM
-                ? ATextTitleMedium18(text: '$titleDict พบจำนวน $total รายการ')
-                : ATextTitleLarge(text: '$titleDict พบจำนวน $total รายการ'),
+            title: DefaultTextStyle.merge(
+              style: TextStyle(color: total > 0 ? null : Colors.grey),
+              child: widget.isM
+                  ? ATextTitleMedium18(
+                      text: '$titleDict พบจำนวน $total รายการ',
+                    )
+                  : ATextTitleLarge(text: '$titleDict พบจำนวน $total รายการ'),
+            ),
             onTap: total > 0
                 ? () {
                     Navigator.push(
@@ -672,20 +678,24 @@ class _SearchPagesState extends State<SearchPages> {
                                 );
                               } else {
                                 return ListTile(
+                                  enabled: false,
                                   leading: CircleAvatar(
                                     backgroundColor: Colors.grey,
                                     foregroundColor: Colors.white,
                                     child: Text(total.toString()),
                                   ),
-                                  title: widget.isM
-                                      ? ATextTitleMedium18(
-                                          text:
-                                              'พจนานุกรม ไทย-บาลี พบจำนวน $total รายการ',
-                                        )
-                                      : ATextTitleMedium(
-                                          text:
-                                              'พจนานุกรม ไทย-บาลี พบจำนวน $total รายการ',
-                                        ),
+                                  title: DefaultTextStyle.merge(
+                                    style: const TextStyle(color: Colors.grey),
+                                    child: widget.isM
+                                        ? ATextTitleMedium18(
+                                            text:
+                                                'พจนานุกรม ไทย-บาลี พบจำนวน $total รายการ',
+                                          )
+                                        : ATextTitleMedium(
+                                            text:
+                                                'พจนานุกรม ไทย-บาลี พบจำนวน $total รายการ',
+                                          ),
+                                  ),
                                 );
                               }
                             }
