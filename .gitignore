@@ -4,6 +4,16 @@
 *.pyc
 *.swp
 .DS_Store
+
+# Bulk log_edit review output (regenerable from tools/log_edit_bulk_review)
+tools/log_edit_bulk_review/output/
+
+# public_site/: only the website's own code/small assets are tracked here.
+# Large static content (served PDFs, legacy backups, the old Flutter-web
+# build output) stays out of git — see public_site/README.md.
+public_site/pdf/
+public_site/tri91_old/
+public_site/assets/
 .atom/
 .build/
 .buildlog/

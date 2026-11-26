@@ -1,0 +1,60 @@
+# ===============================
+# 🔐 Security Layer
+# ===============================
+
+# -------------------------------
+# 0️⃣ Block Suspicious IPs
+# -------------------------------
+
+<RequireAll>
+    Require all granted
+    Require not ip 101.36.110.215
+    Require not ip 47.76.35.112
+    Require not ip 43.133.34.98
+    Require not ip 139.9.46.23
+    Require not ip 124.222.15.66
+    Require not ip 45.155.205.206
+</RequireAll>
+
+RewriteEngine On
+
+# ปิดการแสดง directory listing
+Options -Indexes
+
+# -------------------------------
+# 1️⃣ ป้องกันไฟล์สำคัญ
+# -------------------------------
+<FilesMatch "\.(env|ini|log|conf|bak|sql|sh|yml|yaml)$">
+    Require all denied
+</FilesMatch>
+
+<FilesMatch "^(composer\.json|composer\.lock|Dockerfile|docker-compose\.yml)$">
+    Require all denied
+</FilesMatch>
+
+# -------------------------------
+# 2️⃣ บล็อกเส้นทางที่ Bot ชอบยิง
+# -------------------------------
+RewriteCond %{REQUEST_URI} ^/(wp-admin|wp-login\.php|xmlrpc\.php|phpmyadmin|pma|admin|vendor|cgi-bin) [NC]
+RewriteRule .* - [F,L]
+
+# -------------------------------
+# 3️⃣ บล็อก User-Agent ที่น่าสงสัย
+# -------------------------------
+RewriteCond %{HTTP_USER_AGENT} (curl|python|wget|masscan|sqlmap|nikto) [NC]
+RewriteRule .* - [F,L]
+
+# -------------------------------
+# 4️⃣ ป้องกัน Query อันตรายเบื้องต้น
+# -------------------------------
+RewriteCond %{QUERY_STRING} (\<|%3C).*script.*(\>|%3E) [NC,OR]
+RewriteCond %{QUERY_STRING} base64_encode.*\(.*\) [NC,OR]
+RewriteCond %{QUERY_STRING} (\.\./|\.\.\\) [NC]
+RewriteRule .* - [F,L]
+
+# ===============================
+# 📖 Tripitaka91 Rewrite
+# ===============================
+
+RewriteRule ^([^-]*)-([^-]*)-([^-]*)\.htm$ /tripitaka91.php?book=$1&page=$2&line=$3 [L,QSA]
+RewriteRule ^([^-]*)-([^-]*)-([^-]*)\.html$ /tripitaka91.php?book=$1&page=$2&line=$3 [L,QSA]

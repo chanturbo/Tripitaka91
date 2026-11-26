@@ -1,0 +1,246 @@
+@font-face {
+    font-family: THSarabunNew;
+    src: url('THSarabunNew.eot');
+    src: url('THSarabunNew.eot?#iefix') format('embedded-opentype'),
+         url('THSarabunNew.woff') format('woff'),
+         url('THSarabunNew.ttf') format('truetype'),
+		 url('THSarabunNew.svg#THSarabunNew') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+ 
+@font-face {
+    font-family: THSarabunNew;
+    src: url('THSarabunNewBold.eot');
+    src: url('THSarabunNewBold.eot?#iefix') format('embedded-opentype'),
+         url('THSarabunNewBold.woff') format('woff'),
+		 url('THSarabunNewBold.ttf') format('truetype'),
+		 url('THSarabunNewBold.svg#THSarabunNewBold') format('svg');
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: THSarabunNew;
+    src: url('THSarabunNewItalic.eot');
+    src: url('THSarabunNewItalic.eot?#iefix') format('embedded-opentype'),
+         url('THSarabunNewItalic.woff') format('woff'),
+         url('THSarabunNewItalic.ttf') format('truetype'),
+		 url('THSarabunNewItalic.svg#THSarabunNewItalic') format('svg');
+    font-weight: normal;
+    font-style: italic;
+}
+
+.tri-font p{
+	font-family: THSarabunNew;
+}
+
+.tri-font-title{
+	font-family: THSarabunNew;
+	font-size: 25px;
+	text-align: center;
+}
+.tri-font-detail{
+	font-family: THSarabunNew;
+	font-size: 26px;
+}
+
+.tri-font-22{
+	font-family: THSarabunNew;
+	font-size: 22px;
+}
+.tri-font-22-b{
+	font-family: THSarabunNew;
+	font-size: 22px;
+	font-weight: bold;
+}
+.tri-font-22-i{
+	font-family: THSarabunNew;
+	font-size: 22px;
+	font-style: italic;
+}
+.tri-font-22-bi{
+	font-family: THSarabunNew;
+	font-size: 22px;
+	font-weight: bold;
+	font-style: italic;
+}
+.tri-font-24{
+	font-family: THSarabunNew;
+	font-size: 24px;
+}
+.tri-font-24-b{
+	font-family: THSarabunNew;
+	font-size: 24px;
+	font-weight: bold;
+}
+.tri-font-24-i{
+	font-family: THSarabunNew;
+	font-size: 24px;
+	font-style: italic;
+}
+.tri-font-24-bi{
+	font-family: THSarabunNew;
+	font-size: 24px;
+	font-weight: bold;
+	font-style: italic;
+}
+.tri-font-26{
+	font-family: THSarabunNew;
+	font-size: 26px;
+}
+.tri-font-26-b{
+	font-family: THSarabunNew;
+	font-size: 26px;
+	font-weight: bold;
+}
+.tri-font-26-i{
+	font-family: THSarabunNew;
+	font-size: 26px;
+	font-style: italic;
+}
+.tri-font-26-bi{
+	font-family: THSarabunNew;
+	font-size: 26px;
+	font-weight: bold;
+	font-style: italic;
+}
+.badge-danger {
+	background-color:#d43f3a;
+	display:inline-block;
+	min-width:10px;
+	padding:3px 7px;
+	color:#ffffff;
+	line-height:1;
+	vertical-align:baseline;
+	white-space:nowrap;
+	text-align:center;
+	border-radius:10px
+}
+
+.badge-warning {
+  background-color: #d58512;
+	display:inline-block;
+	min-width:10px;
+	padding:3px 7px;
+	color:#ffffff;
+	line-height:1;
+	vertical-align:baseline;
+	white-space:nowrap;
+	text-align:center;
+	border-radius:10px
+}
+.badge-warning1 {
+  background-color: #d58512;
+	display:inline-block;
+	min-width:10px;
+	padding:3px 7px;
+	color:#ffffff;
+	line-height:1;
+	vertical-align:baseline;
+	white-space:normal;
+	text-align:center;
+	border-radius:10px;
+	font-weight: normal;
+}
+
+.badge-success {
+  background-color: #398439;
+	display:inline-block;
+	min-width:10px;
+	padding:3px 7px;
+	color:#ffffff;
+	line-height:1;
+	vertical-align:baseline;
+	white-space:nowrap;
+	text-align:center;
+	border-radius:10px
+}
+
+.badge-info {
+  background-color: #269abc;
+	display:inline-block;
+	min-width:10px;
+	padding:3px 7px;
+	color:#ffffff;
+	line-height:1;
+	vertical-align:baseline;
+	white-space:nowrap;
+	text-align:center;
+	border-radius:10px
+}
+
+div#indicator {
+		top: 50%;
+		left: 50%;
+		width:30em;
+		height:18em;
+		margin-top: -9em; /*set to a negative number 1/2 of your height*/
+		margin-left: -15em; /*set to a negative number 1/2 of your width*/
+		border: 1px solid #ccc;
+		background-color: #f3f3f3;
+		position:fixed;
+}
+div#config_shared {
+		top: 50%;
+		right: 0%;
+		width:2.1em;
+		height:3em;
+		margin-top: -9em; /*set to a negative number 1/2 of your height*/
+		margin-left: -15em; /*set to a negative number 1/2 of your width*/
+		border: 1px solid #ccc;
+		background-color: #f3f3f3;
+		position:fixed;
+}
+div#config_shared:hover{
+		top: 50%;
+		right: 0%;
+		width:15em;
+		height:3em;
+		margin-top: -9em; /*set to a negative number 1/2 of your height*/
+		margin-left: -15em; /*set to a negative number 1/2 of your width*/
+		border: 1px solid #ccc;
+		background-color: #f3f3f3;
+		position:fixed;
+}
+#footerMenu{
+   position: fixed;
+   bottom: 0;
+   height: 40px;
+   background:red;
+   color: white; 
+   
+}
+
+@media (max-width: 480px) {
+
+	.tri-font-detail{
+		
+		font-size: 24px;
+	}
+}
+
+@media (min-width: 481px) and (max-width: 767px) {
+	.tri-font-detail{
+		
+		font-size: 25px;
+	}
+}
+
+@media (min-width: 768px) and (max-width: 979px) {
+	.tri-font-detail{
+		
+	}
+}
+
+@media (min-width: 980px) and (max-width: 1199px) {
+	.tri-font-detail{
+		
+	}
+}
+
+@media (min-width: 1200px) {
+	.tri-font-detail{
+		
+	}
+}
