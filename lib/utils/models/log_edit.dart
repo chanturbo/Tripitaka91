@@ -58,23 +58,23 @@ class Logedit {
         tripitaka91Line: json["tripitaka91_line"],
         bookDetailOld: json["book_detail_old"] ?? '',
         bookDetailNew: json["book_detail_new"] ?? '',
-        tripitaka91Wordincorrect: json["tripitaka91_wordincorrect"],
-        tripitaka91Wordcorrect: json["tripitaka91_wordcorrect"],
+        tripitaka91Wordincorrect: json["tripitaka91_wordincorrect"] ?? '',
+        tripitaka91Wordcorrect: json["tripitaka91_wordcorrect"] ?? '',
         tripitaka91Wordcorrectcomment: json["tripitaka91_wordcorrectcomment"],
         tripitaka91Wordsum: json["tripitaka91_wordsum"],
-        tripitaka91User: json["tripitaka91_user"],
+        tripitaka91User: json["tripitaka91_user"] ?? '',
         tripitaka91Dateadd: DateTime.parse(json["tripitaka91_dateadd"]),
         tripitaka91Dateadd1: DateTime.parse(json["tripitaka91_dateadd1"]),
         tripitaka91Dateedit: DateTime.parse(json["tripitaka91_dateedit"]),
         tripitaka91Dateedit1: json["tripitaka91_dateedit1"] == null
             ? null
             : DateTime.parse(json["tripitaka91_dateedit1"]),
-        tripitaka91Ip: json["tripitaka91_ip"],
+        tripitaka91Ip: json["tripitaka91_ip"] ?? '',
         bookConfirm: json["book_confirm"],
         bookSuscess: json["book_suscess"],
-        firstNameid: json["first_nameid"],
-        firstName: json["firstName"],
-        lastName: json["lastName"],
+        firstNameid: json["first_nameid"] ?? '',
+        firstName: json["firstName"] ?? '',
+        lastName: json["lastName"] ?? '',
       );
 
   Map<String, dynamic> toJson() => {

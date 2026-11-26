@@ -77,6 +77,11 @@ class RemoteServiceLogEdit {
     if (response.statusCode == 200) {
       var json = response.body;
       var decodedJson = jsonDecode(json);
+      // show_logedit.php คืนค่าเป็น Map {"error": "ไม่พบข้อมูล"} เมื่อเล่มนี้
+      // ไม่มีรายการแจ้งคำผิด (กรณีปกติของเล่มส่วนใหญ่) ไม่ใช่ List ของ log_edit
+      if (decodedJson is! List) {
+        return [];
+      }
       var unicodeJson = jsonEncode(decodedJson);
       return logeditFromJson(unicodeJson);
     }

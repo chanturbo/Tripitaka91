@@ -18,6 +18,7 @@ import 'package:tripitaka91/widget/login/profile_menu_speech.dart';
 import 'package:tripitaka91/widget/login/section_heading.dart';
 import 'package:http/http.dart' as http;
 import 'package:tripitaka91/widget/login/set_voice.dart';
+import 'package:tripitaka91/widget/login/show_logedit_dispute.dart';
 import 'package:tripitaka91/widget/login/show_userall.dart';
 import 'package:tripitaka91/widget/login/user_activity_log.dart';
 
@@ -486,6 +487,19 @@ class _MemberDisplayState extends State<MemberDisplay> {
                             context,
                             MaterialPageRoute(
                               builder: (context) => const UserActivityLogPage(),
+                            ),
+                          );
+                        },
+                      ),
+                      const SizedBox(height: TSizes.sm),
+                      _ActionButton(
+                        icon: Icons.report_gmailerrorred_outlined,
+                        label: 'ตรวจสอบข้อโต้แย้งการแก้ไข',
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const LogEditDisputePage(),
                             ),
                           );
                         },

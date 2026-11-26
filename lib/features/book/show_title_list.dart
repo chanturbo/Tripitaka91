@@ -7,6 +7,7 @@ import 'package:substring_highlight/substring_highlight.dart';
 import 'package:tripitaka91/utils/constants/api_constants.dart';
 import 'package:tripitaka91/utils/db_helper/db_helper.dart';
 import 'package:tripitaka91/utils/img_service/shared_image_generator.dart';
+import 'package:tripitaka91/utils/launch_url/launch_url.dart';
 import 'package:tripitaka91/utils/models/users.dart';
 import 'package:tripitaka91/utils/play_audio/audio_manager.dart';
 import 'package:tripitaka91/utils/providers/user_provider.dart';
@@ -345,6 +346,25 @@ class _SearchShowPagesTitleListState extends State<SearchShowPagesTitleList> {
                                 bookRed: textTitleReplace.getBookRed(
                                   dataTitle[index],
                                 ),
+                              );
+                            },
+                          ),
+                          CircularIconButton(
+                            icon: Icons.language,
+                            size: widget.isMobile ? 21 : 16,
+                            color: Colors.blue[300]!,
+                            onTap: () async {
+                              String bookIds = textTitleReplace.getBookId(
+                                dataTitle[index],
+                              );
+                              String pageId = textTitleReplace.getPageId(
+                                dataTitle[index],
+                              );
+                              String bookLine = textTitleReplace.getLineId(
+                                dataTitle[index],
+                              );
+                              await openLinkInNewTab(
+                                '$tURLmain$bookIds-$pageId-$bookLine.htm',
                               );
                             },
                           ),

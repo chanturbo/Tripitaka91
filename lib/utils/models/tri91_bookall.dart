@@ -41,14 +41,14 @@ class Tri91BookAll {
 
   factory Tri91BookAll.fromMap(Map<String, dynamic> json) => Tri91BookAll(
         bookIds: json["book_ids"].toDouble(),
-        bookTitleTri: json["book_title_tri"],
-        bookDetail: json["book_detail"],
-        bookPagesTotal: json["book_pages_total"],
-        bookReadall: json["book_readall"],
-        bookLastAccess: json["book_last_access"],
-        bookLastPages: json["book_last_pages"],
-        bookLastLine: json["book_last_line"],
-        tmp1: json["tmp_1"],
+        bookTitleTri: json["book_title_tri"] ?? '',
+        bookDetail: json["book_detail"] ?? '',
+        bookPagesTotal: json["book_pages_total"] ?? 0,
+        bookReadall: json["book_readall"] ?? 0,
+        bookLastAccess: json["book_last_access"] ?? '',
+        bookLastPages: json["book_last_pages"] ?? 0,
+        bookLastLine: json["book_last_line"] ?? 0,
+        tmp1: json["tmp_1"] ?? '',
       );
 
   Map<String, dynamic> toMap() => {
@@ -65,14 +65,14 @@ class Tri91BookAll {
 
   factory Tri91BookAll.fromJson(Map<String, dynamic> json) => Tri91BookAll(
         bookIds: json["book_ids"].toDouble(),
-        bookTitleTri: json["book_title_tri"],
-        bookDetail: json["book_detail"],
-        bookPagesTotal: json["book_pages_total"],
-        bookReadall: json["book_readall"],
-        bookLastAccess: json["book_last_access"],
-        bookLastPages: json["book_last_pages"],
-        bookLastLine: json["book_last_line"],
-        tmp1: json["tmp_1"],
+        bookTitleTri: json["book_title_tri"] ?? '',
+        bookDetail: json["book_detail"] ?? '',
+        bookPagesTotal: json["book_pages_total"] ?? 0,
+        bookReadall: json["book_readall"] ?? 0,
+        bookLastAccess: json["book_last_access"] ?? '',
+        bookLastPages: json["book_last_pages"] ?? 0,
+        bookLastLine: json["book_last_line"] ?? 0,
+        tmp1: json["tmp_1"] ?? '',
       );
 
   Map<String, dynamic> toJson() => {

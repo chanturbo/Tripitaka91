@@ -1,10 +1,12 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 import 'package:substring_highlight/substring_highlight.dart';
 import 'package:tripitaka91/utils/constants/api_constants.dart';
 import 'package:tripitaka91/utils/constants/colors.dart';
 import 'package:tripitaka91/utils/models/users.dart';
+import 'package:tripitaka91/utils/providers/user_provider.dart';
 import 'package:tripitaka91/utils/shared_preferences/shared_user.dart';
 import 'package:tripitaka91/utils/theme/theme_helpers.dart';
 import 'package:tripitaka91/widget/auto_text/auto_text.dart';
@@ -262,12 +264,13 @@ class _ShowCorrectSaveState extends State<ShowCorrectSave> {
           future: _fetchDataUser(bookid, bookpage, bookline),
           builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
+              final screenSize = MediaQuery.of(context).size;
               return AlertDialog(
                 title: Text(title),
                 content: SizedBox(
-                  width: double.maxFinite,
+                  width: (screenSize.width * 0.8).clamp(0, 400),
+                  height: (screenSize.height * 0.5).clamp(200, 500),
                   child: ListView.builder(
-                    shrinkWrap: true,
                     itemCount: dataUser.length,
                     itemBuilder: (BuildContext context, int index) {
                       return ListTile(
@@ -353,12 +356,13 @@ class _ShowCorrectSaveState extends State<ShowCorrectSave> {
           future: _fetchDataUserCorrect(bookid, bookpage, bookline),
           builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
+              final screenSize = MediaQuery.of(context).size;
               return AlertDialog(
                 title: Text(title),
                 content: SizedBox(
-                  width: double.maxFinite,
+                  width: (screenSize.width * 0.8).clamp(0, 400),
+                  height: (screenSize.height * 0.5).clamp(200, 500),
                   child: ListView.builder(
-                    shrinkWrap: true,
                     itemCount: dataUserCurrect.length,
                     itemBuilder: (BuildContext context, int index) {
                       return ListTile(
@@ -371,9 +375,41 @@ class _ShowCorrectSaveState extends State<ShowCorrectSave> {
                           text:
                               '${dataUserCurrect[index]['first_nameid']}${dataUserCurrect[index]['firstName']}  ${dataUserCurrect[index]['lastName']}',
                         ),
-                        subtitle: ATextLabelMedium(
-                          text:
-                              'วันที่เพิ่มข้อมูล ${dataUserCurrect[index]['tripitaka91_dateadd_local']}',
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ATextLabelMedium(
+                              text:
+                                  'วันที่เพิ่มข้อมูล ${dataUserCurrect[index]['tripitaka91_dateadd_local']}',
+                            ),
+                            if ('${dataUserCurrect[index]['tripitaka91_wordincorrect'] ?? ''}'
+                                    .trim()
+                                    .isNotEmpty ||
+                                '${dataUserCurrect[index]['tripitaka91_wordcorrect'] ?? ''}'
+                                    .trim()
+                                    .isNotEmpty)
+                              Padding(
+                                padding: const EdgeInsets.only(top: 2),
+                                child: Text(
+                                  'คำที่น่าจะผิด: ${dataUserCurrect[index]['tripitaka91_wordincorrect'] ?? ''}    '
+                                  'คำที่น่าจะถูก: ${dataUserCurrect[index]['tripitaka91_wordcorrect'] ?? ''}',
+                                  style: const TextStyle(fontSize: 12),
+                                ),
+                              ),
+                            if ('${dataUserCurrect[index]['tripitaka91_wordcorrectcomment'] ?? ''}'
+                                .trim()
+                                .isNotEmpty)
+                              Padding(
+                                padding: const EdgeInsets.only(top: 2),
+                                child: Text(
+                                  'หมายเหตุ: ${dataUserCurrect[index]['tripitaka91_wordcorrectcomment']}',
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    fontStyle: FontStyle.italic,
+                                  ),
+                                ),
+                              ),
+                          ],
                         ),
                       );
                     },
@@ -402,10 +438,12 @@ class _ShowCorrectSaveState extends State<ShowCorrectSave> {
     String bookpage,
     String bookline,
   ) async {
+    final username = context.read<UserProvider>().user?.username ?? 'guest';
     final response = await http.post(
       Uri.parse(tURLsuscessCorrectConfirm),
       body: {
         'token': tSecretAPIKey,
+        'username': username,
         'bookid': bookid,
         'bookpage': bookpage,
         'bookline': bookline,
@@ -429,6 +467,102 @@ class _ShowCorrectSaveState extends State<ShowCorrectSave> {
       // ignore: avoid_print
       print('HTTP Error: ${response.statusCode}');
     }
+  }
+
+  // แจ้งว่าการแก้ไขที่ถูกนำไปใช้แล้ว (booksuscess==1) ไม่ถูกต้อง
+  // ใช้ context.read<UserProvider>() แทน getUsersList() เดิม ตาม pattern ใหม่
+  // ที่ใช้ใน lib/features/book/pageviews_html.dart
+  Future<void> _fetchSubmitDispute(
+    String bookid,
+    String bookpage,
+    String bookline,
+    String comment,
+  ) async {
+    final username = context.read<UserProvider>().user?.username ?? 'guest';
+    final response = await http.post(
+      Uri.parse(tURLsaveLogEditDispute),
+      body: {
+        'token': tSecretAPIKey,
+        'username': username,
+        'bookid': bookid,
+        'bookpage': bookpage,
+        'bookline': bookline,
+        'comment': comment,
+      },
+    );
+
+    if (!mounted) return;
+
+    if (response.statusCode == 200) {
+      var json = response.body;
+      var jsonResponse = jsonDecode(json);
+
+      if (jsonResponse['success'] == true) {
+        _showSnackbar(context, '${jsonResponse['message']}');
+      } else {
+        _showSnackbar(context, '${jsonResponse['message']}');
+      }
+    } else {
+      // ignore: avoid_print
+      print('HTTP Error: ${response.statusCode}');
+    }
+  }
+
+  void _showDisputeDialog(
+    BuildContext context,
+    String bookid,
+    String bookpage,
+    String bookline,
+  ) {
+    final TextEditingController commentController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          contentPadding: const EdgeInsets.all(5),
+          title: const Text(
+            'แจ้งว่าการแก้ไขนี้ไม่ถูกต้อง',
+            style: TextStyle(fontFamily: 'THSarabunNew', fontSize: 24),
+          ),
+          content: TextFormField(
+            style: const TextStyle(fontFamily: 'THSarabunNew', fontSize: 26),
+            controller: commentController,
+            maxLines: 3,
+            decoration: const InputDecoration(
+              hintText: 'ระบุเหตุผลที่คิดว่าการแก้ไขนี้ไม่ถูกต้อง',
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text(
+                'ยกเลิก',
+                style: TextStyle(fontFamily: 'THSarabunNew', fontSize: 24),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                final comment = commentController.text.trim();
+                if (comment.isEmpty) {
+                  _showSnackbar(context, 'กรุณาระบุเหตุผล');
+                  return;
+                }
+                await _fetchSubmitDispute(bookid, bookpage, bookline, comment);
+                if (!context.mounted) return;
+                Navigator.of(context).pop();
+              },
+              child: const Text(
+                ' ส่งข้อโต้แย้ง ',
+                style: TextStyle(fontFamily: 'THSarabunNew', fontSize: 24),
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void _showInputDialog(
@@ -719,6 +853,12 @@ class _ShowCorrectSaveState extends State<ShowCorrectSave> {
           bookline,
         ),
       ),
+      if (record['booksuscess'] == 1)
+        _buildTag(
+          'แจ้งว่าการแก้ไขนี้ไม่ถูกต้อง',
+          TColors.error,
+          onTap: () => _showDisputeDialog(context, bookid, bookpage, bookline),
+        ),
     ];
   }
 
@@ -981,6 +1121,14 @@ class _ShowCorrectSaveState extends State<ShowCorrectSave> {
                   title: Text('ดูข้อความเต็ม'),
                 ),
               ),
+              if (record['booksuscess'] == 1)
+                const PopupMenuItem(
+                  value: 'dispute',
+                  child: ListTile(
+                    leading: Icon(Icons.report_gmailerrorred_outlined),
+                    title: Text('แจ้งว่าการแก้ไขนี้ไม่ถูกต้อง'),
+                  ),
+                ),
             ],
             onSelected: (value) {
               final bookid = '${record['tripitaka91_book']}';
@@ -1021,6 +1169,9 @@ class _ShowCorrectSaveState extends State<ShowCorrectSave> {
                       ],
                     ),
                   );
+                  break;
+                case 'dispute':
+                  _showDisputeDialog(context, bookid, bookpage, bookline);
                   break;
               }
             },

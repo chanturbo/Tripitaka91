@@ -45,11 +45,13 @@ class _WordReportEntry {
   final String wordIncorrect;
   final String wordCorrect;
   final String reporterName;
+  final String comment;
 
   const _WordReportEntry({
     required this.wordIncorrect,
     required this.wordCorrect,
     required this.reporterName,
+    this.comment = '',
   });
 }
 
@@ -1195,10 +1197,7 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
           children: [
             TextSpan(
               text: '$label: ',
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 13,
-              ),
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
             ),
             TextSpan(text: value),
           ],
@@ -1223,9 +1222,21 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
         TextSpan(
           children: [
             TextSpan(text: '$label1: ', style: labelStyle),
-            TextSpan(text: '$value1    '),
+            TextSpan(
+              text: '$value1    ',
+              style: const TextStyle(
+                color: Colors.red,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
             TextSpan(text: '$label2: ', style: labelStyle),
-            TextSpan(text: value2),
+            TextSpan(
+              text: value2,
+              style: const TextStyle(
+                color: Colors.green,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
           ],
         ),
       ),
@@ -1253,6 +1264,7 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
+        final screenSize = MediaQuery.of(context).size;
         return AlertDialog(
           backgroundColor: adaptiveSurfaceColor(context),
           titlePadding: const EdgeInsets.fromLTRB(20, 16, 20, 4),
@@ -1261,78 +1273,90 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
             style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
           ),
           content: SizedBox(
-            width: double.maxFinite,
-            child: SingleChildScrollView(
-              child: DefaultTextStyle.merge(
-                style: const TextStyle(fontSize: 13.5),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 3,
-                      ),
-                      decoration: BoxDecoration(
-                        color: statusColor.withValues(alpha: 0.15),
-                        borderRadius: BorderRadius.circular(14),
-                        border: Border.all(color: statusColor),
-                      ),
-                      child: Text(
-                        statusLabel,
-                        style: TextStyle(
-                          color: statusColor,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 12.5,
-                        ),
+            width: (screenSize.width * 0.85).clamp(0, 450),
+            child: DefaultTextStyle.merge(
+              style: const TextStyle(fontSize: 13.5),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 3,
+                    ),
+                    decoration: BoxDecoration(
+                      color: statusColor.withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(color: statusColor),
+                    ),
+                    child: Text(
+                      statusLabel,
+                      style: TextStyle(
+                        color: statusColor,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12.5,
                       ),
                     ),
-                    const SizedBox(height: 10),
-                    for (int i = 0; i < info.entries.length; i++) ...[
-                      if (i > 0) const Divider(height: 14),
-                      _reportInfoRowPair(
-                        'คำที่น่าจะผิด',
-                        info.entries[i].wordIncorrect,
-                        'คำที่น่าจะถูก',
-                        info.entries[i].wordCorrect,
-                      ),
-                      _reportInfoRow('แจ้งโดย', info.entries[i].reporterName),
-                    ],
-                    if (info.oldText != null && info.newText != null) ...[
-                      const SizedBox(height: 10),
-                      const Text(
-                        'ข้อความเดิม',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 13,
+                  ),
+                  const SizedBox(height: 10),
+                  for (int i = 0; i < info.entries.length; i++) ...[
+                    if (i > 0) const Divider(height: 14),
+                    _reportInfoRowPair(
+                      'คำที่น่าจะผิด',
+                      info.entries[i].wordIncorrect,
+                      'คำที่น่าจะถูก',
+                      info.entries[i].wordCorrect,
+                    ),
+                    _reportInfoRow('แจ้งโดย', info.entries[i].reporterName),
+                    // บางรายงาน (โดยเฉพาะที่คำที่น่าจะผิด/ถูกเว้นว่างหรือใส่แค่
+                    // เครื่องหมาย) ผู้แจ้งเขียนคำอธิบายจริงไว้ในหมายเหตุแทน
+                    // ถ้าไม่โชว์ส่วนนี้ด้วย กล่องจะดูเหมือนไม่มีข้อมูลเลย
+                    if (info.entries[i].comment.trim().isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 2, bottom: 2),
+                        child: Text(
+                          'หมายเหตุ: ${info.entries[i].comment.trim()}',
+                          style: const TextStyle(
+                            fontSize: 12.5,
+                            fontStyle: FontStyle.italic,
+                          ),
                         ),
                       ),
-                      SelectableText(
-                        info.oldText!,
-                        style: const TextStyle(
-                          decoration: TextDecoration.lineThrough,
-                          color: Colors.red,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      const Text(
-                        'ข้อความที่แก้ไข',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 13,
-                        ),
-                      ),
-                      SelectableText(
-                        info.newText!,
-                        style: const TextStyle(
-                          color: Colors.green,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ],
                   ],
-                ),
+                  if (info.oldText != null && info.newText != null) ...[
+                    const SizedBox(height: 10),
+                    const Text(
+                      'ข้อความเดิม',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 13,
+                      ),
+                    ),
+                    SelectableText(
+                      info.oldText!,
+                      style: const TextStyle(
+                        decoration: TextDecoration.lineThrough,
+                        color: Colors.red,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    const Text(
+                      'ข้อความที่แก้ไข',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 13,
+                      ),
+                    ),
+                    SelectableText(
+                      info.newText!,
+                      style: const TextStyle(
+                        color: Colors.green,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ],
               ),
             ),
           ),
@@ -1349,30 +1373,35 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
     );
   }
 
-  /// เพิ่ม [text] ลงใน [target] เป็น TextSpan ปกติ ยกเว้นโทเค็นเชิงอรรถ
-  /// `supNNNsup` ที่เหลือจากการล้างแท็กเก่า ซึ่งจะถูกแปลงเป็นตัวเลขอ้างอิง
-  /// ขนาดเล็กและยกขึ้นเหนือบรรทัดจริง (superscript) ด้วย WidgetSpan
+  /// เพิ่ม [text] ลงใน [target] เป็น TextSpan ปกติ ยกเว้นโทเค็นเชิงอรรถ ซึ่งจะถูก
+  /// แปลงเป็นตัวเลขอ้างอิงขนาดเล็กและยกขึ้นเหนือบรรทัดจริง (superscript) ด้วย
+  /// WidgetSpan โทเค็นที่รองรับมี 2 แบบ: `<sup>NNN</sup>` (แท็ก HTML ดิบที่ยังไม่ถูก
+  /// ล้างออกจากข้อมูลบางเล่ม) และ `supNNNsup` (เศษที่เหลือจากการล้างแท็กในเล่มอื่น)
   void _appendTextWithFootnotes(
     List<InlineSpan> target,
     String text,
     TextStyle style,
   ) {
-    final supRegex = RegExp(r'sup([๐-๙0-9]+)sup');
+    final supRegex = RegExp(
+      r'<sup>([๐-๙0-9]+)</sup>|sup([๐-๙0-9]+)sup',
+      caseSensitive: false,
+    );
     int last = 0;
     for (final m in supRegex.allMatches(text)) {
       if (m.start > last) {
         target.add(TextSpan(text: text.substring(last, m.start), style: style));
       }
+      final number = m.group(1) ?? m.group(2);
       target.add(
         WidgetSpan(
           alignment: PlaceholderAlignment.top,
           child: Transform.translate(
             offset: const Offset(0, -4),
             child: Text(
-              '[${m.group(1)}]',
+              '[$number]',
               style: TextStyle(
                 fontSize: _fontSize * 0.6,
-                color: Colors.red,
+                color: style.color,
                 fontFamily: style.fontFamily,
               ),
             ),
@@ -2374,6 +2403,31 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
           final bool isSmallScreen = MediaQuery.of(context).size.width < 600;
 
           if (triPage != 0) {
+            // ขยับหัวข้อไปทางขวาเพิ่มตามหมวด ตามที่ผู้ใช้ขอ เพราะหัวข้อบางหมวด
+            // สั้นกว่าหมวดอื่นจนดูเยื้องซ้าย: พระวินัยปิฎก (เล่ม 1-10) และ
+            // พระอภิธรรมปิฎก (เล่ม 75-91) ขยับ 10 เคาะ, พระสุตตันตปิฎก
+            // (เล่ม 11-74) ขยับ 8 เคาะ
+            final bool isVinayaPitaka = bookid >= 1 && bookid <= 10;
+            final bool isSuttantaPitaka = bookid >= 11 && bookid <= 74;
+            final bool isAbhidhammaPitaka = bookid >= 75 && bookid <= 91;
+            // ใช้เฉพาะจอ Tablet/Desktop เท่านั้น ตัดออกบนมือถือ
+            final int headerIndent = isSmallScreen
+                ? 0
+                : (isVinayaPitaka || isAbhidhammaPitaka)
+                ? 10
+                : isSuttantaPitaka
+                ? 8
+                : 0;
+            // ใช้ WidgetSpan ความกว้างคงที่แทนการเคาะช่องว่างซ้ำ เพราะฟอนต์ตัวนี้
+            // เป็น proportional font ความกว้างของอักขระเว้นวรรคไม่คงที่ตาม
+            // fontSize/text scale ของอุปกรณ์ ทำให้การเยื้องคลาดเคลื่อนได้
+            if (headerIndent > 0) {
+              pageSpans.add(
+                WidgetSpan(
+                  child: SizedBox(width: headerIndent * _fontSize * 0.25),
+                ),
+              );
+            }
             pageSpans.add(
               TextSpan(
                 text: ' $title หน้าที่ $page\n',
@@ -2482,13 +2536,17 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
                 lineNew = log.bookDetailNew;
 
                 DateTime dateAdd = log.tripitaka91Dateadd;
-                DateTime targetDate = DateTime(2023, 11, 13);
-                // ตรวจสอบว่าค่า dateAdd มากกว่าหรือเท่ากับ targetDate หรือไม่
-                if (dateAdd.isAfter(targetDate) ||
-                    dateAdd.isAtSameMomentAs(targetDate)) {
-                  // print("วันที่มากกว่าหรือเท่ากับ 13 พฤศจิกายน 2013");
-                } else {
-                  if (log.tripitaka91User == 'Rotor206') {
+                DateTime targetDate1 = DateTime(2023, 11, 13); // วันที่เริ่มบวช
+                // บวชถึงวันที่ 29 ส.ค. 2026 (รวมวันนั้นด้วย) จึงใช้ 30 ส.ค. เป็น
+                // ขอบเขตบน (isBefore แบบ exclusive) — ตรงกับ tri91_process.php
+                // บนเว็บไซต์หลังแก้ไขให้ตรงกัน
+                DateTime targetDate2 = DateTime(2026, 8, 30);
+                if (log.tripitaka91User == 'Rotor206') {
+                  if (dateAdd.isBefore(targetDate1)) {
+                    nameid = 'นาย';
+                  } else if (dateAdd.isBefore(targetDate2)) {
+                    nameid = 'พระ';
+                  } else {
                     nameid = 'นาย';
                   }
                 }
@@ -2498,6 +2556,7 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
                     wordIncorrect: log.tripitaka91Wordincorrect,
                     wordCorrect: log.tripitaka91Wordcorrect,
                     reporterName: '$nameid${log.firstName} ${log.lastName}',
+                    comment: log.tripitaka91Wordcorrectcomment,
                   ),
                 );
                 chkComfirm = log.bookConfirm;

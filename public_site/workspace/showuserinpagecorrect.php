@@ -26,8 +26,9 @@ try {
     $local_timezone = 'Asia/Bangkok';
     
     if (!empty($bookid) && !empty($bookpage) && !empty($bookline)) {
-        $sql = "SELECT users.*, CONVERT_TZ(log_edit.tripitaka91_dateadd,'+00:00', :timezone) AS tripitaka91_dateadd_local 
-        FROM log_edit 
+        $sql = "SELECT users.*, CONVERT_TZ(log_edit.tripitaka91_dateadd,'+00:00', :timezone) AS tripitaka91_dateadd_local,
+        log_edit.tripitaka91_wordincorrect, log_edit.tripitaka91_wordcorrect, log_edit.tripitaka91_wordcorrectcomment
+        FROM log_edit
         INNER JOIN users ON log_edit.tripitaka91_user = users.username 
         WHERE log_edit.tripitaka91_book = :bookid 
         AND log_edit.tripitaka91_page = :bookpage 

@@ -11,6 +11,7 @@ import 'package:tripitaka91/utils/constants/api_constants.dart';
 import 'package:tripitaka91/utils/constants/colors.dart';
 import 'package:tripitaka91/utils/db_helper/db_helper.dart';
 import 'package:tripitaka91/utils/img_service/shared_image_generator.dart';
+import 'package:tripitaka91/utils/launch_url/launch_url.dart';
 import 'package:tripitaka91/utils/models/last_book_access.dart';
 import 'package:tripitaka91/utils/models/rand_title.dart';
 import 'package:tripitaka91/utils/models/tri91_bookall.dart';
@@ -752,6 +753,7 @@ class _BookShowTitleState extends State<BookShowTitle> {
                                 );
                               },
                             ),
+                            _buildOpenWebModeButton(context),
                           ],
                         ),
                         // ไม่มีช่องค้นหาหัวข้อในหน้าจอมือถือ (ตัดออกตามคำขอ) —
@@ -1356,6 +1358,8 @@ class _BookShowTitleState extends State<BookShowTitle> {
                           );
                         },
                       ),
+                      const SizedBox(width: 5),
+                      _buildOpenWebModeButton(context),
                     ],
                   ),
                   const SizedBox(height: 10),
@@ -1381,4 +1385,22 @@ class _BookShowTitleState extends State<BookShowTitle> {
 
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
+
+  // ปุ่ม "เปิดในโหมดเว็บ" ใช้ร่วมกันระหว่าง layout มือถือกับ tablet/desktop
+  // กันไม่ให้แก้ URL/ไอคอน/tooltip แล้วลืมแก้อีกจุดจนพฤติกรรมเพี้ยนไปคนละทาง
+  Widget _buildOpenWebModeButton(BuildContext context) {
+    return Tooltip(
+      message: 'เปิดในโหมดเว็บ',
+      child: IconButton(
+        color: adaptiveTextColor(context),
+        icon: const Icon(Icons.language),
+        onPressed: () async {
+          String code = widget.triBookid;
+          String linkPhp = 'tripitaka91_1.php';
+          await openLinkInNewTab('$tURLmain$linkPhp?book_code=$code');
+        },
+      ),
+    );
+  }
+
 }
