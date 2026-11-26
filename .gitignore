@@ -21,6 +21,20 @@ public_site/assets/
 # jBox, Font Awesome) that don't need git history.
 public_site/tri91_old/*
 !public_site/tri91_old/include_file
+
+# Secret-bearing PHP config (DB password, API keys, shared app token) —
+# the project's own established convention is to keep these OUT of git
+# entirely (workspace/db_connect.php etc. were never committed before this
+# move either). Safety net so a future `git add -A` can't sweep them in.
+public_site/workspace/db_connect.php
+public_site/workspace/db_correction.php
+public_site/workspace/websiteconfig.php
+public_site/tri91_old/include_file/dbconnect.php
+public_site/tri91_old/include_file/dbconnect1.php
+public_site/tri91_old/include_file/dbconnect_odbc.php
+
+# Runtime-generated TTS audio cache, not source.
+public_site/workspace/sounds/
 .atom/
 .build/
 .buildlog/
