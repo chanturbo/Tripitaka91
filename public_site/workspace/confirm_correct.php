@@ -15,6 +15,8 @@ try {
     // print($book_speak);
     // print($wordsearch);
 
+    $username = isset($_POST["username"]) ? $_POST["username"] : 'system';
+
     $tokenkey = $webconfig->getToken();
     if ($token != $tokenkey) {
         echo json_encode([
@@ -35,7 +37,13 @@ try {
         $conn = $db->getConnection();
         $conn->beginTransaction(); // เริ่ม Transaction
         
-        $sql = "SELECT book_detail_old,book_detail_new FROM log_edit WHERE tripitaka91_book = :bookid AND tripitaka91_page = :bookpage AND tripitaka91_line = :bookline";
+        // ถ้าตำแหน่งนี้มีหลายคนเสนอคำแก้ไว้ (หลายแถวที่ book/page/line เดียวกัน)
+        // เลือกแถวที่มี book_detail_new (ข้อความที่น่าจะถูกแบบเต็มบรรทัด) และถูกแก้ไขล่าสุด
+        // เป็นตัวแทนที่แน่นอน (deterministic) แทนลำดับแถวแบบสุ่มของ MySQL
+        $sql = "SELECT book_detail_old,book_detail_new FROM log_edit
+                WHERE tripitaka91_book = :bookid AND tripitaka91_page = :bookpage AND tripitaka91_line = :bookline
+                ORDER BY (book_detail_new IS NOT NULL AND book_detail_new <> '') DESC, tripitaka91_dateedit DESC
+                LIMIT 1";
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(':bookid', $bookid, PDO::PARAM_INT);
         $stmt->bindParam(':bookpage', $bookpage, PDO::PARAM_INT);
@@ -43,13 +51,52 @@ try {
         $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if ($result) {
+        if ($result && !empty($result['book_detail_new'])) {
             $book_detail_new = $result['book_detail_new'];
-            $book_detail_old = $result['book_detail_old'];            
+            $book_detail_old = $result['book_detail_old'];
             // ตรงนี้คุณสามารถใช้ตัวแปร $book_detail_new ได้ต่อไปในโค้ดของคุณ
-            
-            $sql_update = "UPDATE tripitaka91_91book_line 
-               SET book_detail = :book_detail_new, 
+
+            // ดึงข้อความปัจจุบัน (ก่อนเขียนทับ) จาก tripitaka91_91book_line เอง
+            // เพื่อบันทึกเป็นประวัติย้อนกลับ (ไม่ใช้ book_detail_old ของ log_edit
+            // เพราะเป็นค่า ณ ตอนแจ้ง อาจไม่ตรงกับเนื้อหาจริงปัจจุบันแล้ว)
+            $sql_current = "SELECT book_detail, book_detail_old FROM tripitaka91_91book_line
+                WHERE book_id = :bookid AND book_pages = :bookpage AND book_lines = :bookline";
+            $stmt_current = $conn->prepare($sql_current);
+            $stmt_current->bindParam(':bookid', $bookid, PDO::PARAM_INT);
+            $stmt_current->bindParam(':bookpage', $bookpage, PDO::PARAM_INT);
+            $stmt_current->bindParam(':bookline', $bookline, PDO::PARAM_INT);
+            $stmt_current->execute();
+            $currentResult = $stmt_current->fetch(PDO::FETCH_ASSOC);
+
+            if (!$currentResult) {
+                $conn->rollBack();
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'ไม่พบบรรทัดนี้ใน tripitaka91_91book_line'
+                ], JSON_UNESCAPED_UNICODE);
+                die();
+            }
+
+            $sql_history = "INSERT INTO log_edit_history
+                (tripitaka91_book, tripitaka91_page, tripitaka91_line,
+                 book_detail_before, book_detail_old_before, book_detail_after,
+                 applied_by, source)
+                VALUES
+                (:bookid, :bookpage, :bookline,
+                 :detail_before, :detail_old_before, :detail_after,
+                 :username, 'admin_confirm')";
+            $stmt_history = $conn->prepare($sql_history);
+            $stmt_history->bindParam(':bookid', $bookid, PDO::PARAM_INT);
+            $stmt_history->bindParam(':bookpage', $bookpage, PDO::PARAM_INT);
+            $stmt_history->bindParam(':bookline', $bookline, PDO::PARAM_INT);
+            $stmt_history->bindParam(':detail_before', $currentResult['book_detail'], PDO::PARAM_STR);
+            $stmt_history->bindParam(':detail_old_before', $currentResult['book_detail_old'], PDO::PARAM_STR);
+            $stmt_history->bindParam(':detail_after', $book_detail_new, PDO::PARAM_STR);
+            $stmt_history->bindParam(':username', $username, PDO::PARAM_STR);
+            $stmt_history->execute();
+
+            $sql_update = "UPDATE tripitaka91_91book_line
+               SET book_detail = :book_detail_new,
                    book_detail_old = :book_detail_old
                WHERE book_id = :bookid AND book_pages = :bookpage AND book_lines = :bookline";
             $stmt_update = $conn->prepare($sql_update);
@@ -69,7 +116,9 @@ try {
             $stmt_update_log_edit->bindParam(':bookline', $bookline, PDO::PARAM_INT);
             $stmt_update_log_edit->execute();
 
-            // ดำเนินการลบโฟลเดอร์ Books                
+            $folderCreator = new FolderCreator();
+
+            // ดำเนินการลบโฟลเดอร์ Books
             $rootFolder = 'sounds/books_' . $bookid . '/pages_' . $bookpage;
             if (file_exists($rootFolder) && is_dir($rootFolder)) {
                 $folderCreator->deleteMp3Files($rootFolder);
@@ -94,9 +143,12 @@ try {
                 'message' => 'บันทึกการแก้ไขข้อมูลเรียบร้อยแล้ว',                
             ], JSON_UNESCAPED_UNICODE);
         } else {
+            $conn->rollBack();
             echo json_encode([
                 'success' => false,
-                'message' => 'ไม่พบข้อมูลใน log_edit ที่ตรงกับเงื่อนไขที่กำหนด'
+                'message' => $result
+                    ? 'รายการนี้ยังไม่มีข้อความที่น่าจะถูก (book_detail_new) กรุณาให้สมาชิกกรอกข้อความที่น่าจะถูกก่อน จึงจะยืนยันการแก้ไขได้'
+                    : 'ไม่พบข้อมูลใน log_edit ที่ตรงกับเงื่อนไขที่กำหนด'
             ], JSON_UNESCAPED_UNICODE);
         }
         
