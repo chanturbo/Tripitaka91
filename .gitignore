@@ -9,11 +9,18 @@
 tools/log_edit_bulk_review/output/
 
 # public_site/: only the website's own code/small assets are tracked here.
-# Large static content (served PDFs, legacy backups, the old Flutter-web
-# build output) stays out of git — see public_site/README.md.
+# Large static content (served PDFs, the old Flutter-web build output) stays
+# out of git — see public_site/README.md.
 public_site/pdf/
-public_site/tri91_old/
 public_site/assets/
+
+# tri91_old/ is still load-bearing (included by tripitaka91.php /
+# tripitaka91_1.php for webconfig.php and vendored CSS/JS) so it's kept on
+# disk in full, but only include_file/ (actual PHP code) is tracked — the
+# rest is vendored third-party libraries (Bootstrap, jQuery, DataTables,
+# jBox, Font Awesome) that don't need git history.
+public_site/tri91_old/*
+!public_site/tri91_old/include_file
 .atom/
 .build/
 .buildlog/
