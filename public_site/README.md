@@ -2,8 +2,16 @@
 
 The front-page PHP website (`https://www.tripitaka91.com/`), moved here from
 `D:\WebTripitaka91\tripitaka91-site\ไฟล์ PHP index\` on 2026-11-26 so the
-code is version-controlled, same as `workspace/` (the API backend) already
-is for this project.
+code is version-controlled.
+
+`workspace/` (the API backend — also called over HTTP by the Flutter app
+itself, not just this website) lives nested inside here as
+`public_site/workspace/`, matching the real deployed layout: on the live
+server, `workspace/` already sits as a direct subfolder of wherever
+`tripitaka91.php` lives, since every page's `include('workspace/db_connect.php')`
+only resolves that way. Nesting it here in the repo mirrors that exactly —
+it does **not** change the live URL (`https://www.tripitaka91.com/workspace/...`
+stays the same either way).
 
 ## What's tracked here
 
@@ -11,10 +19,16 @@ All the actual code/small assets: `*.php`, `.htaccess`, `contact_us.html`,
 `favicon.png`, `privacy/`, `img/`, `icons/`,
 `สำรองเปลี่ยนรูปแบบการแสดง/` (an earlier manual backup of
 `tri91_process.php` the user had already made, carried over as-is), and
-**`tri91_old/include_file/`** — 11 small PHP files (`webconfig.php`,
-`dbconnect*.php`, etc.) that `tripitaka91.php`/`tripitaka91_1.php` actually
-`include()`. Don't assume `tri91_old/` is dead legacy code — only the parts
-outside `include_file/` are purely static vendor assets (see below).
+**`tri91_old/include_file/`** (minus the 3 files below) — small PHP files
+(`webconfig.php`, `function.php`, etc.) that `tripitaka91.php`/`tripitaka91_1.php`
+actually `include()`. Don't assume `tri91_old/` is dead legacy code — only
+the parts outside `include_file/` are purely static vendor assets (see
+below).
+
+**Deliberately excluded from `include_file/`, never commit these**:
+`dbconnect.php`, `dbconnect1.php`, `dbconnect_odbc.php` — confirmed unused
+dead code (only referenced by other unused legacy files inside `tri91_old/`
+itself), and they embed a MySQL password. Kept on disk, gitignored.
 
 ## What's on disk but NOT tracked (see `.gitignore`)
 
@@ -39,7 +53,13 @@ site exists in one place) but are **gitignored**, not committed:
 If the live server needs `pdf/`/`assets/`, they have to be deployed/kept in
 sync separately from git (direct upload/rsync), not through this repo.
 
+Also gitignored: `workspace/db_connect.php`, `workspace/db_correction.php`,
+`workspace/websiteconfig.php` (real secrets — DB password, speech API keys,
+the shared app token) and `workspace/sounds/` (runtime-generated TTS audio
+cache). These were already untracked by this project's own established
+convention even before this move — this just makes it explicit.
+
 ## Deployment
 
-Like `workspace/`, this is a local staging copy — editing files here does
-**not** change the live site. Upload changes to the server yourself.
+This is a local staging copy — editing files here does **not** change the
+live site. Upload changes to the server yourself.
