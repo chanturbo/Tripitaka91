@@ -2388,6 +2388,10 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
             color: HexColor(fontColor),
             fontFamily: "THSarabunNew",
             fontSize: _fontSize,
+            // ให้ระยะห่างบรรทัดชิดเท่ากับฝั่งเว็บ (tri91_process_test.php ใช้
+            // line-height:1.35) เพราะค่า default (ไม่กำหนด height) ของฟอนต์นี้ใน
+            // Flutter ห่างกว่าที่เบราว์เซอร์แสดงผลด้วยฟอนต์เดียวกันค่อนข้างมาก
+            height: 1.35,
           );
 
           for (final r in _lineRecognizers) {
