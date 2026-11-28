@@ -19,6 +19,39 @@
     <link href="tri91_old/css/freelancer.css" rel="stylesheet">
     <link href="tri91_old/css/tri-font.css" rel="stylesheet">
 
+    <!-- เริ่มต้นโหลดหน้าให้ซ่อนเลขบรรทัดไว้ก่อน (ผู้ใช้กดปุ่ม "ซ่อน/แสดง หมายเลขบรรทัด" เพื่อแสดงเอง) -->
+    <style>
+        .hide-line{
+            display: none;
+        }
+    </style>
+
+    <!-- จอเล็ก (มือถือ) เท่านั้น: ปุ่ม "แสดงรายละเอียดในโหมดเว็บแอพ" กับ "แสดงเพิ่มเติม"
+         เดิมใช้ pull-left/pull-right ซึ่งพอข้อความยาวจนตัดบรรทัด ทำให้เกิดช่องว่าง
+         ตรงกลางเยอะเกินไปและดูไม่เป็นระเบียบ จอกว้างไม่แตะ ยังเป็น pull-left/right เดิม -->
+    <style>
+        @media (max-width: 649px){
+            .tri-nav-buttons{
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+                margin-top: 10px;
+            }
+            .tri-nav-buttons .pull-left,
+            .tri-nav-buttons .pull-right{
+                float: none;
+                width: 100%;
+            }
+            .tri-nav-buttons a{
+                display: block;
+            }
+            .tri-nav-buttons .btn{
+                width: 100%;
+                margin: 0;
+            }
+        }
+    </style>
+
     <!-- Custom CSS -->
     <link href="tri91_old/css/sb-admin-2.css" rel="stylesheet">
 
@@ -149,16 +182,16 @@
 			</div>
 				<div id="response"></div>
 			
-                        <span class="pull-left">
-
-                            <a
-                                href='/?book=<?php echo "$book_id"; ?>&page=<?php echo "$book_pages"; ?>&line=<?php echo "$book_line"; ?>'>
-                                <button id="more-data-all" class="btn btn-success">แสดงรายละเอียดในโหมดเว็บแอพ
-                                    ...</button>
-                            </a>
-
-                        </span>
-                        <span class="pull-right"><button id="more-data-next" class="btn btn-success">แสดงเพิ่มเติม</button></span>
+                        <div class="tri-nav-buttons">
+                            <span class="pull-left">
+                                <a
+                                    href='/?book=<?php echo "$book_id"; ?>&page=<?php echo "$book_pages"; ?>&line=<?php echo "$book_line"; ?>'>
+                                    <button id="more-data-all" class="btn btn-success">แสดงรายละเอียดในโหมดเว็บแอพ
+                                        ...</button>
+                                </a>
+                            </span>
+                            <span class="pull-right"><button id="more-data-next" class="btn btn-success">แสดงเพิ่มเติม</button></span>
+                        </div>
                     </div>
                     <!-- /.panel-body -->
                 </div>
@@ -168,7 +201,7 @@
     </section>
 
     <script>
-        hide_line = false;
+        hide_line = true;
         if (window.innerWidth >= 650) {
             // สร้าง div element
             var divElement = document.createElement("div");
@@ -263,6 +296,7 @@
 	    // ฟังก์ชันหลักในการส่งข้อมูล
 	    function sendData(book_id, book_page, book_line, book_pageMax, row_count_first,keyword,append = false,prepend = false) {
 		var screen = window.innerWidth <= 650 ? 1 : 0;
+		var screen_width = window.innerWidth;
 		if (append){book_line =0;}
 		if (prepend){
 
@@ -369,6 +403,7 @@
 		    "&book_page=" + encodeURIComponent(book_page) +
 		    "&book_line=" + encodeURIComponent(book_line) +
 		    "&screen=" + screen +
+		    "&screen_width=" + encodeURIComponent(screen_width) +
 		    "&book_pageMax=" + encodeURIComponent(book_pageMax) +
 		    "&row_count=" + encodeURIComponent(row_count_first) +
 		    "&keyword=" + encodeURIComponent(keyword);
@@ -451,7 +486,17 @@
 
     $(document).on('mouseenter', '.showCorrect', function () {
         var $el = $(this);
-        var titleContent = $el.children('[title]').attr('title') || $el.attr('title') || '';
+        var $titleHolder = $el.children('[title]').length ? $el.children('[title]') : $el;
+
+        // เอา title ของเบราว์เซอร์ออกไปเก็บใน data-tip แทน (ทำครั้งเดียว) กันไม่ให้
+        // tooltip ดั้งเดิมของเบราว์เซอร์ (แสดง HTML แบบดิบ ไม่ใช่ข้อความที่จัดรูปแบบแล้ว)
+        // ขึ้นซ้อนทับกับกล่อง jBox ที่เราสร้างเอง
+        if ($titleHolder.attr('title')) {
+            $titleHolder.attr('data-tip', $titleHolder.attr('title'));
+            $titleHolder.removeAttr('title');
+        }
+
+        var titleContent = $titleHolder.attr('data-tip') || '';
         if (!titleContent) return;
 
         // ยกเลิก timer ปิดถ้าเมาส์กลับเข้ามา

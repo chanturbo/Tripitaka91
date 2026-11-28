@@ -313,7 +313,7 @@ class _ShowCorrectSaveWithPageState extends State<ShowCorrectSaveWithPage> {
                             ),
                             title: ATextTitleMedium(
                               text:
-                                  '${dataUser[index]['first_nameid']}${dataUser[index]['firstName']}  ${dataUser[index]['lastName']}',
+                                  '${dataUser[index]['first_nameid'] ?? ''}${dataUser[index]['firstName']}  ${dataUser[index]['lastName']}',
                             ),
                             subtitle: ATextLabelMedium(
                                 text:
@@ -372,7 +372,7 @@ class _ShowCorrectSaveWithPageState extends State<ShowCorrectSaveWithPage> {
                             ),
                             title: ATextTitleMedium(
                               text:
-                                  '${dataUserCurrect[index]['first_nameid']}${dataUserCurrect[index]['firstName']}  ${dataUserCurrect[index]['lastName']}',
+                                  '${dataUserCurrect[index]['first_nameid'] ?? ''}${dataUserCurrect[index]['firstName']}  ${dataUserCurrect[index]['lastName']}',
                             ),
                             subtitle: ATextLabelMedium(
                                 text:

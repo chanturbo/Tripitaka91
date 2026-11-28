@@ -4,6 +4,7 @@ import 'package:tripitaka91/widget/auto_text/auto_text.dart';
 import 'package:tripitaka91/features/book/bookshow_title.dart';
 import 'package:tripitaka91/widget/menu/data_menu.dart';
 import 'package:tripitaka91/widget/right_clipper/right_clipper.dart';
+import 'package:tripitaka91/widget/scroll/horizontal_mouse_scroll.dart';
 import 'package:tripitaka91/widget/scroll/scroll_button.dart';
 import 'package:tripitaka91/features/book/show_title.dart';
 import 'package:url_launcher/link.dart';
@@ -120,51 +121,54 @@ class _ShowBookSlideState extends State<ShowBookSlide> {
         ),
         SizedBox(
           height: widget.isMobile ? 180 : 200.0,
-          child: ListView.builder(
+          child: HorizontalMouseScroll(
             controller: _scrollControllerListView,
-            scrollDirection: Axis.horizontal,
-            shrinkWrap: true,
-            itemCount: 10,
-            itemBuilder: (BuildContext context, int index) {
-              return Card(
-                margin: const EdgeInsets.all(10),
-                shape: RoundedRectangleBorder(
-                  borderRadius:
-                      BorderRadius.circular(10), // ปรับแต่งตามความต้องการ
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Expanded(
-                      child: InkWell(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => BookShowTitle(
-                                triBookid: (index + 1).toString(),
-                                chkSearch: "",
-                                isMobile: widget.isMobile,
-                                online: widget.online,
+            child: ListView.builder(
+              controller: _scrollControllerListView,
+              scrollDirection: Axis.horizontal,
+              shrinkWrap: true,
+              itemCount: 10,
+              itemBuilder: (BuildContext context, int index) {
+                return Card(
+                  margin: const EdgeInsets.all(10),
+                  shape: RoundedRectangleBorder(
+                    borderRadius:
+                        BorderRadius.circular(10), // ปรับแต่งตามความต้องการ
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Expanded(
+                        child: InkWell(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => BookShowTitle(
+                                  triBookid: (index + 1).toString(),
+                                  chkSearch: "",
+                                  isMobile: widget.isMobile,
+                                  online: widget.online,
+                                ),
                               ),
+                            );
+                          },
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(
+                                10), // ปรับแต่งตามความต้องการ
+                            child: Image(
+                              image: AssetImage(
+                                  'assets/images/bookcover/tripitaka91_book${index + 1}.png'),
+                              fit: BoxFit.cover, // ปรับตามความต้องการ
                             ),
-                          );
-                        },
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(
-                              10), // ปรับแต่งตามความต้องการ
-                          child: Image(
-                            image: AssetImage(
-                                'assets/images/bookcover/tripitaka91_book${index + 1}.png'),
-                            fit: BoxFit.cover, // ปรับตามความต้องการ
                           ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-              );
-            },
+                    ],
+                  ),
+                );
+              },
+            ),
           ),
         ),
         Container(
@@ -209,51 +213,54 @@ class _ShowBookSlideState extends State<ShowBookSlide> {
         ),
         SizedBox(
           height: widget.isMobile ? 180 : 200.0,
-          child: ListView.builder(
+          child: HorizontalMouseScroll(
             controller: _scrollControllerListView2,
-            scrollDirection: Axis.horizontal,
-            shrinkWrap: true,
-            itemCount: 64,
-            itemBuilder: (BuildContext context, int index) {
-              return Card(
-                margin: const EdgeInsets.all(10),
-                shape: RoundedRectangleBorder(
-                  borderRadius:
-                      BorderRadius.circular(10), // ปรับแต่งตามความต้องการ
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Expanded(
-                      child: InkWell(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => BookShowTitle(
-                                triBookid: (index + 11).toString(),
-                                chkSearch: "",
-                                isMobile: widget.isMobile,
-                                online: widget.online,
+            child: ListView.builder(
+              controller: _scrollControllerListView2,
+              scrollDirection: Axis.horizontal,
+              shrinkWrap: true,
+              itemCount: 64,
+              itemBuilder: (BuildContext context, int index) {
+                return Card(
+                  margin: const EdgeInsets.all(10),
+                  shape: RoundedRectangleBorder(
+                    borderRadius:
+                        BorderRadius.circular(10), // ปรับแต่งตามความต้องการ
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Expanded(
+                        child: InkWell(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => BookShowTitle(
+                                  triBookid: (index + 11).toString(),
+                                  chkSearch: "",
+                                  isMobile: widget.isMobile,
+                                  online: widget.online,
+                                ),
                               ),
+                            );
+                          },
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(
+                                10), // ปรับแต่งตามความต้องการ
+                            child: Image(
+                              image: AssetImage(
+                                  'assets/images/bookcover/tripitaka91_book${index + 11}.png'),
+                              fit: BoxFit.cover, // ปรับตามความต้องการ
                             ),
-                          );
-                        },
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(
-                              10), // ปรับแต่งตามความต้องการ
-                          child: Image(
-                            image: AssetImage(
-                                'assets/images/bookcover/tripitaka91_book${index + 11}.png'),
-                            fit: BoxFit.cover, // ปรับตามความต้องการ
                           ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-              );
-            },
+                    ],
+                  ),
+                );
+              },
+            ),
           ),
         ),
         Container(
@@ -298,51 +305,54 @@ class _ShowBookSlideState extends State<ShowBookSlide> {
         ),
         SizedBox(
           height: widget.isMobile ? 180 : 200.0,
-          child: ListView.builder(
+          child: HorizontalMouseScroll(
             controller: _scrollControllerListView3,
-            scrollDirection: Axis.horizontal,
-            shrinkWrap: true,
-            itemCount: 17,
-            itemBuilder: (BuildContext context, int index) {
-              return Card(
-                margin: const EdgeInsets.all(10),
-                shape: RoundedRectangleBorder(
-                  borderRadius:
-                      BorderRadius.circular(10), // ปรับแต่งตามความต้องการ
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Expanded(
-                      child: InkWell(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => BookShowTitle(
-                                triBookid: (index + 75).toString(),
-                                chkSearch: "",
-                                isMobile: widget.isMobile,
-                                online: widget.online,
+            child: ListView.builder(
+              controller: _scrollControllerListView3,
+              scrollDirection: Axis.horizontal,
+              shrinkWrap: true,
+              itemCount: 17,
+              itemBuilder: (BuildContext context, int index) {
+                return Card(
+                  margin: const EdgeInsets.all(10),
+                  shape: RoundedRectangleBorder(
+                    borderRadius:
+                        BorderRadius.circular(10), // ปรับแต่งตามความต้องการ
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Expanded(
+                        child: InkWell(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => BookShowTitle(
+                                  triBookid: (index + 75).toString(),
+                                  chkSearch: "",
+                                  isMobile: widget.isMobile,
+                                  online: widget.online,
+                                ),
                               ),
+                            );
+                          },
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(
+                                10), // ปรับแต่งตามความต้องการ
+                            child: Image(
+                              image: AssetImage(
+                                  'assets/images/bookcover/tripitaka91_book${index + 75}.png'),
+                              fit: BoxFit.cover, // ปรับตามความต้องการ
                             ),
-                          );
-                        },
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(
-                              10), // ปรับแต่งตามความต้องการ
-                          child: Image(
-                            image: AssetImage(
-                                'assets/images/bookcover/tripitaka91_book${index + 75}.png'),
-                            fit: BoxFit.cover, // ปรับตามความต้องการ
                           ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-              );
-            },
+                    ],
+                  ),
+                );
+              },
+            ),
           ),
         ),
         Container(
@@ -387,53 +397,56 @@ class _ShowBookSlideState extends State<ShowBookSlide> {
         ),
         SizedBox(
           height: widget.isMobile ? 180 : 200.0,
-          child: ListView.builder(
+          child: HorizontalMouseScroll(
             controller: _scrollControllerListView5,
-            scrollDirection: Axis.horizontal,
-            shrinkWrap: true,
-            itemCount: dataList.length,
-            itemBuilder: (BuildContext context, int index) {
-              final item = dataList[index];
-              return Card(
-                margin: const EdgeInsets.all(10),
-                shape: RoundedRectangleBorder(
-                  borderRadius:
-                      BorderRadius.circular(10), // ปรับแต่งตามความต้องการ
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Expanded(
-                      child: InkWell(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => SubShowTitle(
-                                titleText: item['titleText'],
-                                menuList: item['menuList'],
-                                menuMain: item['menuMain'],
-                                online: widget.online,
-                                isMobile: widget.isMobile,
+            child: ListView.builder(
+              controller: _scrollControllerListView5,
+              scrollDirection: Axis.horizontal,
+              shrinkWrap: true,
+              itemCount: dataList.length,
+              itemBuilder: (BuildContext context, int index) {
+                final item = dataList[index];
+                return Card(
+                  margin: const EdgeInsets.all(10),
+                  shape: RoundedRectangleBorder(
+                    borderRadius:
+                        BorderRadius.circular(10), // ปรับแต่งตามความต้องการ
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Expanded(
+                        child: InkWell(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => SubShowTitle(
+                                  titleText: item['titleText'],
+                                  menuList: item['menuList'],
+                                  menuMain: item['menuMain'],
+                                  online: widget.online,
+                                  isMobile: widget.isMobile,
+                                ),
                               ),
+                            );
+                          },
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(
+                                10), // ปรับแต่งตามความต้องการ
+                            child: Image(
+                              image: AssetImage(
+                                  'assets/images/title/title_0${index + 1}.png'),
+                              fit: BoxFit.cover, // ปรับตามความต้องการ
                             ),
-                          );
-                        },
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(
-                              10), // ปรับแต่งตามความต้องการ
-                          child: Image(
-                            image: AssetImage(
-                                'assets/images/title/title_0${index + 1}.png'),
-                            fit: BoxFit.cover, // ปรับตามความต้องการ
                           ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-              );
-            },
+                    ],
+                  ),
+                );
+              },
+            ),
           ),
         ),
         Container(
@@ -481,55 +494,58 @@ class _ShowBookSlideState extends State<ShowBookSlide> {
         widget.online
             ? SizedBox(
                 height: widget.isMobile ? 200 : 230.0,
-                child: ListView.builder(
+                child: HorizontalMouseScroll(
                   controller: _scrollControllerListView4,
-                  scrollDirection: Axis.horizontal,
-                  shrinkWrap: true,
-                  itemCount: 4,
-                  itemBuilder: (BuildContext context, int index) {
-                    return Card(
-                      margin: const EdgeInsets.all(10),
-                      shape: RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.circular(10), // ปรับแต่งตามความต้องการ
-                      ),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Expanded(
-                            child: Link(
-                              uri: index == 2
-                                  ? Uri.parse(
-                                      'https://www.tripitaka91.com/pdf/showpdf.php?filename=ebook-${index + 1}-1.pdf')
-                                  : Uri.parse(
-                                      'https://www.tripitaka91.com/pdf/showpdf.php?filename=ebook-${index + 1}.pdf'),
-                              target: LinkTarget.blank,
-                              builder:
-                                  (BuildContext ctx, FollowLink? openLink) {
-                                return IconButton(
-                                  onPressed: openLink,
-                                  icon: Image.asset(
-                                      'assets/images/ebook/ebook-${index + 1}.png'), // เปลี่ยนเป็นที่อยู่ของรูปภาพที่คุณต้องการแสดง
-                                );
-                              },
+                  child: ListView.builder(
+                    controller: _scrollControllerListView4,
+                    scrollDirection: Axis.horizontal,
+                    shrinkWrap: true,
+                    itemCount: 4,
+                    itemBuilder: (BuildContext context, int index) {
+                      return Card(
+                        margin: const EdgeInsets.all(10),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                              10), // ปรับแต่งตามความต้องการ
+                        ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Expanded(
+                              child: Link(
+                                uri: index == 2
+                                    ? Uri.parse(
+                                        'https://www.tripitaka91.com/pdf/showpdf.php?filename=ebook-${index + 1}-1.pdf')
+                                    : Uri.parse(
+                                        'https://www.tripitaka91.com/pdf/showpdf.php?filename=ebook-${index + 1}.pdf'),
+                                target: LinkTarget.blank,
+                                builder:
+                                    (BuildContext ctx, FollowLink? openLink) {
+                                  return IconButton(
+                                    onPressed: openLink,
+                                    icon: Image.asset(
+                                        'assets/images/ebook/ebook-${index + 1}.png'), // เปลี่ยนเป็นที่อยู่ของรูปภาพที่คุณต้องการแสดง
+                                  );
+                                },
+                              ),
+                              // child: InkWell(
+                              //   onTap: () {},
+                              //   child: ClipRRect(
+                              //     borderRadius: BorderRadius.circular(
+                              //         10), // ปรับแต่งตามความต้องการ
+                              //     child: Image(
+                              //       image: AssetImage(
+                              //           'assets/images/ebook/ebook-${index + 1}.png'),
+                              //       fit: BoxFit.cover, // ปรับตามความต้องการ
+                              //     ),
+                              //   ),
+                              // ),
                             ),
-                            // child: InkWell(
-                            //   onTap: () {},
-                            //   child: ClipRRect(
-                            //     borderRadius: BorderRadius.circular(
-                            //         10), // ปรับแต่งตามความต้องการ
-                            //     child: Image(
-                            //       image: AssetImage(
-                            //           'assets/images/ebook/ebook-${index + 1}.png'),
-                            //       fit: BoxFit.cover, // ปรับตามความต้องการ
-                            //     ),
-                            //   ),
-                            // ),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
+                          ],
+                        ),
+                      );
+                    },
+                  ),
                 ),
               )
             : const SizedBox.shrink(),

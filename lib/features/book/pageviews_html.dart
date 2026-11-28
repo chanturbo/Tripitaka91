@@ -119,6 +119,7 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
   List<String> currentPlaylist = [];
   AudioPlayerManager audioPlayerManager = AudioPlayerManager();
   AudioPlayerManager audioPlayerManagerTitle = AudioPlayerManager();
+  double _playbackSpeed = 1.0;
 
   List<List<TextEditingController>> controllersList = [];
 
@@ -716,6 +717,7 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
                             : randTitle[index].tripitaka91Code,
                         randTitle.isEmpty ? 0 : randTitle[index].tripitaka91No,
                         isM,
+                        index,
                       );
                     },
                   ),
@@ -937,11 +939,8 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
                           return AlertDialog(
                             contentPadding: const EdgeInsets.all(5),
                             title: const Text('แจ้งการอ่านออกเสียง'),
-                            content: SizedBox(
-                              width: double.maxFinite,
-                              child: EditSpeakScreen(
-                                comments: 'เล่ม $bookid หน้า $pageChanged',
-                              ),
+                            content: EditSpeakScreen(
+                              comments: 'เล่ม $bookid หน้า $pageChanged',
                             ),
                             actions: <Widget>[
                               TextButton(
@@ -1078,6 +1077,7 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
                             : randTitle[index].tripitaka91Code,
                         randTitle.isEmpty ? 0 : randTitle[index].tripitaka91No,
                         false,
+                        index,
                       );
                     },
                   ),
@@ -1133,6 +1133,7 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
                             : randTitle[index].tripitaka91Code,
                         randTitle.isEmpty ? 0 : randTitle[index].tripitaka91No,
                         false,
+                        index,
                       );
                     },
                   ),
@@ -1426,6 +1427,7 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
     double noTitleCate,
     int noTitle,
     bool isMobile,
+    int index,
   ) {
     String wordHilight = widget.chkSearch;
     RegExp regex = RegExp(r'\s+');
@@ -1440,11 +1442,26 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
     // ใช้ UserProvider แทน field users เดิม เพื่อให้ปุ่มแก้ไขอัปเดตทันทีหลัง login
     final users = context.watch<UserProvider>().user;
 
+    // สลับสีการ์ดระหว่างแถวคู่/คี่ เหมือนตารางบนหน้าเว็บ โดยผสมสีขาว/ดำบางๆ
+    // เข้ากับสีพื้นหลังที่ผู้ใช้เลือกไว้ (hexToColor(bgColor)) แทนที่จะใช้สีตายตัว
+    // เพื่อให้ยังเข้ากับธีมการอ่านทั้ง 4 แบบ (ขาว/ครีม/เทาเข้ม/ดำ)
+    final Color baseCardColor = hexToColor(bgColor);
+    final bool isDarkCardBg =
+        ThemeData.estimateBrightnessForColor(baseCardColor) == Brightness.dark;
+    final Color cardColor = index.isEven
+        ? baseCardColor
+        : Color.alphaBlend(
+            (isDarkCardBg ? Colors.white : Colors.black).withValues(
+              alpha: 0.06,
+            ),
+            baseCardColor,
+          );
+
     return ClipRRect(
       borderRadius: BorderRadius.circular(10.0),
       child: Card(
         margin: const EdgeInsets.all(5),
-        color: hexToColor(bgColor),
+        color: cardColor,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
@@ -1613,24 +1630,27 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return SizedBox.expand(
-          child: AlertDialog(
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(32.0)),
-            ),
-            contentPadding: const EdgeInsets.only(top: 10.0),
-            backgroundColor: adaptiveSurfaceColor(context),
-            title: const Text('เข้าสู่ระบบ'),
-            content: const LoginPageDialog(),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: const Text('ปิดหน้าจอ'),
-              ),
-            ],
+        final screenSize = MediaQuery.of(context).size;
+        return AlertDialog(
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(32.0)),
           ),
+          contentPadding: const EdgeInsets.only(top: 10.0),
+          backgroundColor: adaptiveSurfaceColor(context),
+          title: const Text('เข้าสู่ระบบ'),
+          content: SizedBox(
+            width: (screenSize.width * 0.85).clamp(280, 400),
+            height: (screenSize.height * 0.5).clamp(300, 380),
+            child: const LoginPageDialog(),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('ปิดหน้าจอ'),
+            ),
+          ],
         );
       },
     );
@@ -2002,6 +2022,40 @@ class _Tri91PageViewHtmlState extends State<Tri91PageViewHtml> {
                                 audioPlayerManager.pause();
                               },
                             )
+                    : const Text(''),
+                widget.online || volumeHelper.showVolume
+                    ? PopupMenuButton<double>(
+                        tooltip: 'ความเร็วเสียงอ่าน',
+                        initialValue: _playbackSpeed,
+                        onSelected: (value) {
+                          setState(() {
+                            _playbackSpeed = value;
+                          });
+                          audioPlayerManager.setSpeed(value);
+                        },
+                        itemBuilder: (context) => const [
+                          PopupMenuItem(value: 0.5, child: Text('0.5x')),
+                          PopupMenuItem(value: 0.6, child: Text('0.6x')),
+                          PopupMenuItem(value: 0.75, child: Text('0.75x')),
+                          PopupMenuItem(value: 0.85, child: Text('0.85x')),
+                          PopupMenuItem(value: 0.9, child: Text('0.9x')),
+                          PopupMenuItem(value: 1.0, child: Text('1.0x')),
+                          PopupMenuItem(value: 1.25, child: Text('1.25x')),
+                          PopupMenuItem(value: 1.5, child: Text('1.5x')),
+                          PopupMenuItem(value: 1.75, child: Text('1.75x')),
+                          PopupMenuItem(value: 2.0, child: Text('2.0x')),
+                        ],
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 6.0),
+                          child: Text(
+                            '${_playbackSpeed.toStringAsFixed(2).replaceFirst(RegExp(r'0$'), '')}x',
+                            style: const TextStyle(
+                              color: TColors.secondary,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      )
                     : const Text(''),
                 const Expanded(child: Text('')),
                 IconButton(

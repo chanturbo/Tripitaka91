@@ -296,6 +296,7 @@
 	    // ฟังก์ชันหลักในการส่งข้อมูล
 	    function sendData(book_id, book_page, book_line, book_pageMax, row_count_first,keyword,append = false,prepend = false) {
 		var screen = window.innerWidth <= 650 ? 1 : 0;
+		var screen_width = window.innerWidth;
 		if (append){book_line =0;}
 		if (prepend){
 
@@ -402,6 +403,7 @@
 		    "&book_page=" + encodeURIComponent(book_page) +
 		    "&book_line=" + encodeURIComponent(book_line) +
 		    "&screen=" + screen +
+		    "&screen_width=" + encodeURIComponent(screen_width) +
 		    "&book_pageMax=" + encodeURIComponent(book_pageMax) +
 		    "&row_count=" + encodeURIComponent(row_count_first) +
 		    "&keyword=" + encodeURIComponent(keyword);

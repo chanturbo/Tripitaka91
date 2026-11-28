@@ -51,15 +51,17 @@ class _EditSpeakScreenState extends State<EditSpeakScreen> {
           actions: <Widget>[
             TextButton(
               onPressed: () {
-                Navigator.of(context)
-                    .pop(false); // ปิดหน้าต่างและส่งค่า false กลับ
+                Navigator.of(
+                  context,
+                ).pop(false); // ปิดหน้าต่างและส่งค่า false กลับ
               },
               child: const Text('ยกเลิก'),
             ),
             ElevatedButton(
               onPressed: () {
-                Navigator.of(context)
-                    .pop(true); // ปิดหน้าต่างและส่งค่า true กลับ
+                Navigator.of(
+                  context,
+                ).pop(true); // ปิดหน้าต่างและส่งค่า true กลับ
               },
               child: const Text(' ยืนยัน '),
             ),
@@ -73,10 +75,7 @@ class _EditSpeakScreenState extends State<EditSpeakScreen> {
     final response = await http.post(
       Uri.parse(tURLwords),
       headers: {"Content-Type": "application/x-www-form-urlencoded"},
-      body: {
-        'searchWord': word,
-        'token': tSecretAPIKey,
-      },
+      body: {'searchWord': word, 'token': tSecretAPIKey},
     );
 
     if (response.statusCode == 200) {
@@ -89,191 +88,207 @@ class _EditSpeakScreenState extends State<EditSpeakScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                TextFormField(
-                  style: const TextStyle(
-                    fontFamily: 'THSarabunNew',
-                    fontSize: 24,
-                  ),
-                  controller: text1Controller,
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'โปรดป้อนคำต้นฉบับ';
-                    }
-                    return null;
-                  },
-                  decoration: const InputDecoration(
-                    hintText: 'คำต้นฉบับ',
-                    hintStyle: TextStyle(
-                      color: Colors.grey,
+    // จำกัดขนาดไว้เอง กันไดอะล็อกที่เรียกใช้วิดเจ็ตนี้ (5 จุดในแอป) ขยายเต็ม
+    // พื้นที่ที่ AlertDialog เผื่อไว้ (Scaffold ด้านล่างยืดเต็มพื้นที่ที่ได้รับ
+    // เสมอถ้าไม่ถูกจำกัดไว้ก่อน) จนดูกว้าง/สูงเกินจำเป็นบนจอเดสก์ท็อป
+    final screenSize = MediaQuery.of(context).size;
+    return SizedBox(
+      width: (screenSize.width * 0.85).clamp(300, 420),
+      height: (screenSize.height * 0.55).clamp(320, 440),
+      child: Scaffold(
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  TextFormField(
+                    style: const TextStyle(
+                      fontFamily: 'THSarabunNew',
+                      fontSize: 24,
                     ),
-                  ),
-                  onChanged: (value) async {
-                    // เรียกใช้ API เมื่อผู้ใช้กด Enter
-                    String searchWord = text1Controller.text.trim();
-
-                    // ตรวจสอบว่ามีการป้อนคำค้นหา
-                    if (searchWord.isNotEmpty) {
-                      // เรียกใช้ API ค้นหาคำในฐานข้อมูล
-                      bool exists = await checkWordInDatabase(searchWord);
-
-                      if (exists) {
-                        // ignore: use_build_context_synchronously
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('คำนี้มีการบันทึกไว้แล้วในระบบ'),
-                          ),
-                        );
+                    controller: text1Controller,
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'โปรดป้อนคำต้นฉบับ';
                       }
-                    }
-                  },
-                ),
-                TextFormField(
-                  style: const TextStyle(
-                    fontFamily: 'THSarabunNew',
-                    fontSize: 24,
-                  ),
-                  controller: text2Controller,
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'โปรดป้อนคำอ่าน';
-                    }
-                    return null;
-                  },
-                  decoration: const InputDecoration(
-                    hintText: 'คำอ่าน',
-                    hintStyle: TextStyle(
-                      color: Colors.grey,
+                      return null;
+                    },
+                    decoration: const InputDecoration(
+                      hintText: 'คำต้นฉบับ',
+                      hintStyle: TextStyle(color: Colors.grey),
                     ),
-                  ),
-                ),
-                TextFormField(
-                  controller: text3Controller,
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      text3Controller.text = '-';
-                    }
-                    return null;
-                  },
-                  decoration: const InputDecoration(
-                    hintText: 'หมายเหตุ',
-                    hintStyle: TextStyle(
-                      color: Colors.grey,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    // const Expanded(child: Text('')),
-                    ElevatedButton(
-                      style: ButtonStyle(
-                        backgroundColor:
-                            WidgetStateProperty.all<Color>(Colors.grey),
-                        side: WidgetStateProperty.all<BorderSide>(
-                            BorderSide.none),
-                      ),
-                      onPressed: () async {
-                        if (_formKey.currentState!.validate()) {
-                          LoadingDialog.show(context);
-                          String txtTitle = text2Controller.text;
-                          String namesave = text1Controller.text
-                              .trim()
-                              .replaceAll(RegExp(r'\s+'), '');
+                    onChanged: (value) async {
+                      // เรียกใช้ API เมื่อผู้ใช้กด Enter
+                      String searchWord = text1Controller.text.trim();
 
-                          String filename = 'tmp-$namesave';
-                          await audioPlayerManager.playAudio(
-                              '4', filename, txtTitle);
+                      // ตรวจสอบว่ามีการป้อนคำค้นหา
+                      if (searchWord.isNotEmpty) {
+                        // เรียกใช้ API ค้นหาคำในฐานข้อมูล
+                        bool exists = await checkWordInDatabase(searchWord);
+
+                        if (exists) {
                           // ignore: use_build_context_synchronously
-                          LoadingDialog.hide(context);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('คำนี้มีการบันทึกไว้แล้วในระบบ'),
+                            ),
+                          );
                         }
-                      },
-                      child:
-                          const ATextDiskplayMedium(text: ' ทดสอบเสียงอ่าน '),
+                      }
+                    },
+                  ),
+                  TextFormField(
+                    style: const TextStyle(
+                      fontFamily: 'THSarabunNew',
+                      fontSize: 24,
                     ),
-                    const SizedBox(width: 10),
-                    ElevatedButton(
-                      style: ButtonStyle(
-                        backgroundColor:
-                            WidgetStateProperty.all<Color>(Colors.red),
-                        side: WidgetStateProperty.all<BorderSide>(
-                            BorderSide.none),
-                      ),
-                      onPressed: () async {
-                        String searchWord = text1Controller.text.trim();
+                    controller: text2Controller,
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'โปรดป้อนคำอ่าน';
+                      }
+                      return null;
+                    },
+                    decoration: const InputDecoration(
+                      hintText: 'คำอ่าน',
+                      hintStyle: TextStyle(color: Colors.grey),
+                    ),
+                  ),
+                  TextFormField(
+                    controller: text3Controller,
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        text3Controller.text = '-';
+                      }
+                      return null;
+                    },
+                    decoration: const InputDecoration(
+                      hintText: 'หมายเหตุ',
+                      hintStyle: TextStyle(color: Colors.grey),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      // const Expanded(child: Text('')),
+                      ElevatedButton(
+                        style: ButtonStyle(
+                          backgroundColor: WidgetStateProperty.all<Color>(
+                            Colors.grey,
+                          ),
+                          side: WidgetStateProperty.all<BorderSide>(
+                            BorderSide.none,
+                          ),
+                        ),
+                        onPressed: () async {
+                          if (_formKey.currentState!.validate()) {
+                            LoadingDialog.show(context);
+                            String txtTitle = text2Controller.text;
+                            String namesave = text1Controller.text
+                                .trim()
+                                .replaceAll(RegExp(r'\s+'), '');
 
-                        // ตรวจสอบว่ามีการป้อนคำค้นหา
-                        if (searchWord.isNotEmpty) {
-                          // เรียกใช้ API ค้นหาคำในฐานข้อมูล
-                          bool exists = await checkWordInDatabase(searchWord);
-
-                          if (exists) {
-                            // ignore: use_build_context_synchronously
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('คำนี้มีการบันทึกไว้แล้วในระบบ'),
-                              ),
+                            String filename = 'tmp-$namesave';
+                            await audioPlayerManager.playAudio(
+                              '4',
+                              filename,
+                              txtTitle,
                             );
-                          } else {
-                            if (_formKey.currentState!.validate()) {
-                              bool? confirm =
-                                  // ignore: use_build_context_synchronously
-                                  await _showConfirmationDialog(context);
-                              if (confirm!) {
-                                bool saveLogSpeechSuscess =
-                                    await saveLogSpeech();
-                                if (saveLogSpeechSuscess) {
-                                  // ignore: use_build_context_synchronously
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content:
-                                          Text('บันทึกข้อมูลเรียบร้อยแล้ว'),
-                                    ),
-                                  );
-                                  // ignore: use_build_context_synchronously
-                                  Navigator.pop(context);
-                                } else {
-                                  // ignore: use_build_context_synchronously
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(
-                                          'เกิดข้อผิดพลาด $messageFromApi'),
-                                    ),
-                                  );
+                            // ignore: use_build_context_synchronously
+                            LoadingDialog.hide(context);
+                          }
+                        },
+                        child: const ATextDiskplayMedium(
+                          text: ' ทดสอบเสียงอ่าน ',
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      ElevatedButton(
+                        style: ButtonStyle(
+                          backgroundColor: WidgetStateProperty.all<Color>(
+                            Colors.red,
+                          ),
+                          side: WidgetStateProperty.all<BorderSide>(
+                            BorderSide.none,
+                          ),
+                        ),
+                        onPressed: () async {
+                          String searchWord = text1Controller.text.trim();
+
+                          // ตรวจสอบว่ามีการป้อนคำค้นหา
+                          if (searchWord.isNotEmpty) {
+                            // เรียกใช้ API ค้นหาคำในฐานข้อมูล
+                            bool exists = await checkWordInDatabase(searchWord);
+
+                            if (exists) {
+                              // ignore: use_build_context_synchronously
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text(
+                                    'คำนี้มีการบันทึกไว้แล้วในระบบ',
+                                  ),
+                                ),
+                              );
+                            } else {
+                              if (_formKey.currentState!.validate()) {
+                                bool? confirm =
+                                    // ignore: use_build_context_synchronously
+                                    await _showConfirmationDialog(context);
+                                if (confirm!) {
+                                  bool saveLogSpeechSuscess =
+                                      await saveLogSpeech();
+                                  if (saveLogSpeechSuscess) {
+                                    // ignore: use_build_context_synchronously
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text(
+                                          'บันทึกข้อมูลเรียบร้อยแล้ว',
+                                        ),
+                                      ),
+                                    );
+                                    // ignore: use_build_context_synchronously
+                                    Navigator.pop(context);
+                                  } else {
+                                    // ignore: use_build_context_synchronously
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                          'เกิดข้อผิดพลาด $messageFromApi',
+                                        ),
+                                      ),
+                                    );
+                                  }
                                 }
                               }
                             }
                           }
-                        }
-                      },
-                      child: const ATextDiskplayMedium(text: ' บันทึก '),
-                    ),
-                    const SizedBox(width: 10),
-                    ElevatedButton(
-                      style: ButtonStyle(
-                        backgroundColor:
-                            WidgetStateProperty.all<Color>(Colors.red),
-                        side: WidgetStateProperty.all<BorderSide>(
-                            BorderSide.none),
+                        },
+                        child: const ATextDiskplayMedium(text: ' บันทึก '),
                       ),
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: const ATextDiskplayMedium(text: ' ยกเลิก '),
-                    ),
-                    const Expanded(child: Text('')),
-                  ],
-                ),
-              ],
+                      const SizedBox(width: 10),
+                      ElevatedButton(
+                        style: ButtonStyle(
+                          backgroundColor: WidgetStateProperty.all<Color>(
+                            Colors.red,
+                          ),
+                          side: WidgetStateProperty.all<BorderSide>(
+                            BorderSide.none,
+                          ),
+                        ),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: const ATextDiskplayMedium(text: ' ยกเลิก '),
+                      ),
+                      const Expanded(child: Text('')),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -298,10 +313,7 @@ class _EditSpeakScreenState extends State<EditSpeakScreen> {
         'comments': text3Controller.text,
       };
 
-      var response = await client.post(
-        uri,
-        body: data,
-      );
+      var response = await client.post(uri, body: data);
 
       if (response.statusCode == 200) {
         var json = response.body;

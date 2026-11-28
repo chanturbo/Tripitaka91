@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project overview
 
-Tripitaka91 (`tripitaka91`) is a Flutter app for reading the Thai-translated Tipitaka and commentaries (พระไตรปิฎกและอรรถกถาแปล ชุด 91 เล่ม ฉบับ มมร.) — 91 volumes of scripture text plus a Pali-Thai dictionary. The UI is entirely in Thai. Supported runtime platforms are Android, iOS, and Windows; web and macOS/Linux are explicitly unsupported at runtime (see `PlatformCheckerScreen` in `lib/main.dart`).
+Tripitaka91 (`tripitaka91`) is a Flutter app for reading the Thai-translated Tipitaka and commentaries (พระไตรปิฎกและอรรถกถาแปล ชุด 91 เล่ม ฉบับ มมร.) — 91 volumes of scripture text plus a Pali-Thai dictionary. The UI is entirely in Thai. Supported runtime platforms are Android, iOS, macOS, Windows, and web; only Linux is explicitly unsupported at runtime (see `PlatformCheckerScreen` in `lib/main.dart`). The web build has no bundled SQLite database, so it always runs in online mode, hitting the remote API instead of the local DB that every other platform uses offline-first.
 
 ## Commands
 
@@ -12,12 +12,14 @@ Tripitaka91 (`tripitaka91`) is a Flutter app for reading the Thai-translated Tip
 flutter pub get                     # install dependencies
 flutter run                         # run on a connected device/emulator
 flutter run -d windows              # run the Windows desktop target
+flutter run -d chrome               # run the web target (always online mode, no bundled DB)
 flutter test                        # run all tests
 flutter test test/widget_test.dart  # run a single test file
 flutter analyze                     # static analysis (flutter_lints, see analysis_options.yaml)
 flutter build apk / appbundle       # Android release build
 flutter build ios                   # iOS release build
 flutter build windows               # Windows release build
+flutter build web                   # web release build
 ```
 
 Note: `test/widget_test.dart` is still the default Flutter counter-app smoke test and does not exercise this app's actual screens — treat it as a placeholder, not a source of behavioral guarantees.
@@ -28,12 +30,20 @@ Note: `test/widget_test.dart` is still the default Flutter counter-app smoke tes
 
 The app ships its entire content database as a **zipped SQLite file bundled as an asset** (`assets/db/tripitaka91.zip`), not fetched at runtime. On first launch:
 
-1. `main()` (`lib/main.dart`) wraps the app in `Phoenix` (enables full app restart, used elsewhere for state resets) and a `ChangeNotifierProvider<ThemeProvider>`.
-2. `PlatformCheckerScreen` branches by platform: Android/iOS/Windows → `UnzipScreen`; web → `WebNotSupportedScreen`; others → `UnsupportedPlatformScreen`.
+1. `main()` (`lib/main.dart`) wraps the app in `Phoenix` (enables full app restart, used elsewhere for state resets) and a `MultiProvider` (`ThemeProvider`, `UserProvider`, `OnlineSpeechProvider`).
+2. `PlatformCheckerScreen` branches by platform: Android/iOS/macOS/Windows → `UnzipScreen` (unzips the bundled DB, below); web → straight to `MyHomePage(online: true)`, skipping the unzip step entirely since there's no bundled SQLite on web (every reading/search widget already branches on `online` to call the remote API instead of `DatabaseHelper`); others (Linux) → `UnsupportedPlatformScreen`.
 3. `UnzipScreen` (`loadFromFuture()` in `main.dart`) copies the zip from `rootBundle` into the app's documents/support directory (path differs per platform — Android uses `.../databases`, Windows uses `getApplicationSupportDirectory()`), unzips it with `package:archive`, and stores the resulting `.db` path in `SharedPreferences` under the key `dbPath`. This only happens once; subsequent launches detect the existing `.db` file and skip re-extraction.
-4. It also does an online check (`getUsersList()`) to determine an `online` flag, which is threaded down into `MyHomePage`.
+4. It also does an online check (`checkInternetConnection()` in `lib/utils/connectivity/check_internet_connection.dart`, which probes the backend directly rather than inferring from a cached login) to determine an `online` flag, which is threaded down into `MyHomePage`.
 
 `DatabaseHelper` (`lib/utils/db_helper/db_helper.dart`, singleton) opens the SQLite DB at the `dbPath` stored in `SharedPreferences` and exposes query methods per feature (dictionary search, book/title search, last-read tracking, etc.) using raw `sqflite` queries — there is no ORM layer. Most search queries build dynamic `WHERE`/`LIKE` clauses to replicate legacy PHP search behavior (including special-casing certain Thai leading vowel characters).
+
+### Web support
+
+The web build skips the bundled-database path above entirely and always runs online (see `PlatformCheckerScreen`). A few platform-detection gotchas to know when touching shared code:
+
+- `dart:io`'s `Platform` throws on web instead of returning `false` — any check that needs to special-case web (e.g. `lib/utils/constants/online_label.dart`'s `kOnlineModeLabel`) must test `kIsWeb` *first* and short-circuit before touching `Platform.*`.
+- Browser-only APIs (file download, etc.) go through a conditional-import split rather than a direct `dart:html`/`dart:js_interop` import: a shared file (e.g. `lib/utils/img_service/web_download.dart`) exports a stub implementation that throws `UnsupportedError`, conditionally replaced by the real `package:web`-based implementation (`web_download_web.dart`) via `if (dart.library.js_interop)`. Follow this pattern for any new web-only capability instead of importing `dart:html` directly (it no longer compiles) or calling a plugin with no web implementation (e.g. `path_provider`, `permission_handler`) unconditionally.
+- `permission_handler`'s storage permission request is skipped on web outright (`kIsWeb` check in `lib/widget/my_home_page.dart`) rather than requested-and-caught, since there's no such permission concept there.
 
 ### Local vs. remote data
 
@@ -56,7 +66,7 @@ The 91 volumes are organized into three menu ranges reflected throughout the cod
 
 ### Theming
 
-`ThemeProvider` (`lib/utils/theme/theme_provider.dart`) is a `ChangeNotifier` currently used only to persist/toggle a grayscale accessibility filter (`isGrayscale` in `SharedPreferences`), applied in `MyApp.build()` via a `ColorFiltered` wrapper around the whole `MaterialApp`. Light/dark `ThemeData` objects and per-widget theme overrides live under `lib/utils/theme/` (`theme.dart`, `widget_themes/*.dart`), though `themeMode` is currently hardcoded to `ThemeMode.light` in `main.dart`.
+`ThemeProvider` (`lib/utils/theme/theme_provider.dart`) is a `ChangeNotifier` that persists/toggles both a grayscale accessibility filter (`isGrayscale`) and a dark-mode flag (`isDarkMode`), both in `SharedPreferences`. `MyApp.build()` applies the grayscale filter via a `ColorFiltered` wrapper around the whole `MaterialApp`, and sets `MaterialApp.themeMode` from `isDarkMode` (`ThemeMode.dark`/`ThemeMode.light`). Light/dark `ThemeData` objects and per-widget theme overrides live under `lib/utils/theme/` (`theme.dart`, `widget_themes/*.dart`).
 
 ### Audio
 

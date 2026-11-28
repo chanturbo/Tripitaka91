@@ -70,8 +70,19 @@ function tri91PreserveIndentSpacing($text, $screen) {
 			$book_line = trim($book_line);
 			$screen = $_POST['screen'];
                         $row_count = $_POST['row_count'] ?? '3';
-			// จอแคบ (มือถือ) 26, จอกว้าง (เดสก์ท็อป/แท็บเล็ต) 24
-			$detail_font_size = ($screen == 1) ? 26 : 24;
+			// ขนาดตัวอักษรของรายละเอียด: 3 ระดับตาม breakpoint เดิมของ
+			// .tri-font-detail ใน tri91_old/css/tri-font.css แต่ปรับจอเล็กสุด
+			// (≤480px) จาก 24 เป็น 25 ตามที่ขอ (เดิมเล็กไป) ส่วน 481-767px=25,
+			// ≥768px=26 ยังเท่าเดิม — กำหนดตรงๆ ในไฟล์นี้แทนที่จะพึ่ง CSS
+			// ที่ใช้ร่วมกับหน้าอื่น
+			$screen_width = $_POST['screen_width'] ?? 768;
+			if ($screen_width <= 480){
+				$detail_font_size = 26;
+			}elseif ($screen_width <= 767){
+				$detail_font_size = 25;
+			}else{
+				$detail_font_size = 26;
+			}
 			if ($book_pages <= 0){
 
 				$sql = "

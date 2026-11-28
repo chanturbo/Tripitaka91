@@ -227,6 +227,46 @@ for the full story of why that comment field matters, discovered via the
 `flutter analyze` clean after each. Same deployment caveat: the PHP change
 is in `public_site/workspace/`, not live until uploaded.
 
+## Bug found by user Q&A, fixed: re-reporting a line already marked "fixed"
+
+User asked (2026-11-26): what happens if a line was already applied
+(`book_suscess=1`), then it turns out the line still has a typo and a new
+report comes in? Walking through it surfaced a real gap in
+`save_logedit.php` (not introduced this session — pre-existing): its
+`INSERT ... ON DUPLICATE KEY UPDATE` (keyed on book+page+line+**user**)
+updates `tripitaka91_wordincorrect`/`tripitaka91_wordcorrect`/etc. on a
+repeat report from the **same** user, but never touched `book_confirm` or
+`book_suscess`. So if that user had already been part of a completed apply
+cycle for that line, their fresh report would silently overwrite the old
+word pair but **stay flagged `book_suscess=1`** — invisible in the
+"ยังไม่ยืนยัน"/"ยืนยันแล้ว" tabs (both filter on `book_suscess=0`), sitting
+unnoticed inside the "แก้ไขแล้ว" tab as if already resolved.
+
+**Fixed**: added `book_confirm = 0, book_suscess = 0` to that same
+`ON DUPLICATE KEY UPDATE` clause (resets the resubmitted row), then an
+additional `UPDATE log_edit SET book_suscess = 0 WHERE book=? AND page=?
+AND line=? AND book_suscess = 1` right after each record's insert — this
+resets **every other row on that same line** too (other reporters' rows),
+so the whole line re-enters "ยังไม่ยืนยัน" together as one clean group,
+instead of splitting into a confusing part-fixed/part-new mix across two
+tabs. Does not touch other rows' `book_confirm` (their own endorsement
+counts on their own still-unchanged word pairs stay valid) or
+`tripitaka91_wordincorrect`/`wordcorrect` content on rows other than the
+one actually resubmitted.
+
+Verified end-to-end against the live DB with disposable test data
+(`book_id=9999`, two synthetic reporters both at `book_suscess=1`,
+resubmitted one via the exact SQL this PHP now runs): the resubmitted row
+got the new word pair + `book_confirm=0`/`book_suscess=0`, and the *other*
+reporter's row correctly flipped to `book_suscess=0` while keeping its own
+content and `book_confirm` untouched. Cleaned up afterward.
+
+This also resolves (by avoidance, not by a display fix) the earlier
+"Follow-up UI fixes" note above about the "แก้ไขแล้ว" tab mixing old-fixed
+and new-unconfirmed reports in one `GROUP_CONCAT` blob — with this fix,
+that mixed state can no longer happen, since any new report immediately
+pulls the whole line back to pending.
+
 ## Next step
 
 Upload the 4 touched/new `public_site/workspace/*.php` files to the live server, then

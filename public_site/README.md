@@ -19,24 +19,24 @@ All the actual code/small assets: `*.php`, `.htaccess`, `contact_us.html`,
 `favicon.png`, `privacy/`, `img/`, `icons/`,
 `สำรองเปลี่ยนรูปแบบการแสดง/` (an earlier manual backup of
 `tri91_process.php` the user had already made, carried over as-is), and
-**`tri91_old/include_file/`** (minus the 3 files below) — small PHP files
+**`tri91_legacy/include_file/`** (minus the 3 files below) — small PHP files
 (`webconfig.php`, `function.php`, etc.) that `tripitaka91.php`/`tripitaka91_1.php`
-actually `include()`. Don't assume `tri91_old/` is dead legacy code — only
+actually `include()`. Don't assume `tri91_legacy/` is dead legacy code — only
 the parts outside `include_file/` are purely static vendor assets (see
 below).
 
 **Deliberately excluded from `include_file/`, never commit these**:
 `dbconnect.php`, `dbconnect1.php`, `dbconnect_odbc.php` — confirmed unused
-dead code (only referenced by other unused legacy files inside `tri91_old/`
+dead code (only referenced by other unused legacy files inside `tri91_legacy/`
 itself), and they embed a MySQL password. Kept on disk, gitignored.
 
 ## What's on disk but NOT tracked (see `.gitignore`)
 
-`tri91_old/` (minus `include_file/`), `pdf/`, and `assets/` are copied onto
+`tri91_legacy/` (minus `include_file/`), `pdf/`, and `assets/` are copied onto
 disk here (so local references/paths resolve and a full working copy of the
 site exists in one place) but are **gitignored**, not committed:
 
-- `tri91_old/css|js|img|fonts|datatables*|jBox-master|font-awesome|multiselect/`
+- `tri91_legacy/css|js|img|fonts|datatables*|jBox-master|font-awesome|multiselect/`
   — vendored third-party front-end libraries (Bootstrap, jQuery, DataTables,
   jBox, Font Awesome) that `tripitaka91.php`/`tripitaka91_1.php` reference
   by relative path. Load-bearing for those two pages to render, but static

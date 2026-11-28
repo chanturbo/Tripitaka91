@@ -51,10 +51,10 @@ try {
         $tripitaka91Dateedit1 = $record['tripitaka91_dateedit1'];
         $tripitaka91Ip = $record['tripitaka91_ip'];
     
-        // ทำตามการบันทึกข้อมูลลงในฐานข้อมูล MySQL ต่อไปนี้        
+        // ทำตามการบันทึกข้อมูลลงในฐานข้อมูล MySQL ต่อไปนี้
         $stmt = $conn->prepare("
-            INSERT INTO log_edit 
-            (tripitaka91_book, tripitaka91_page, tripitaka91_line, book_detail_old, tripitaka91_wordincorrect, tripitaka91_wordcorrect, tripitaka91_wordcorrectcomment, tripitaka91_wordsum, tripitaka91_user, tripitaka91_dateadd, tripitaka91_dateadd1, tripitaka91_dateedit, tripitaka91_dateedit1, tripitaka91_ip) 
+            INSERT INTO log_edit
+            (tripitaka91_book, tripitaka91_page, tripitaka91_line, book_detail_old, tripitaka91_wordincorrect, tripitaka91_wordcorrect, tripitaka91_wordcorrectcomment, tripitaka91_wordsum, tripitaka91_user, tripitaka91_dateadd, tripitaka91_dateadd1, tripitaka91_dateedit, tripitaka91_dateedit1, tripitaka91_ip)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ON DUPLICATE KEY UPDATE
             tripitaka91_wordincorrect = VALUES(tripitaka91_wordincorrect),
@@ -65,9 +65,11 @@ try {
             tripitaka91_dateadd1 = VALUES(tripitaka91_dateadd1),
             tripitaka91_dateedit = VALUES(tripitaka91_dateedit),
             tripitaka91_dateedit1 = VALUES(tripitaka91_dateedit1),
-            tripitaka91_ip = VALUES(tripitaka91_ip)
+            tripitaka91_ip = VALUES(tripitaka91_ip),
+            book_confirm = 0,
+            book_suscess = 0
         ");
-    
+
         $stmt->bindParam(1, $tripitaka91Book);
         $stmt->bindParam(2, $tripitaka91Page);
         $stmt->bindParam(3, $tripitaka91Line);
@@ -81,10 +83,24 @@ try {
         $stmt->bindParam(11, $tripitaka91Dateadd1);
         $stmt->bindParam(12, $tripitaka91Dateedit);
         $stmt->bindParam(13, $tripitaka91Dateedit1);
-        $stmt->bindParam(14, $tripitaka91Ip);        
-    
+        $stmt->bindParam(14, $tripitaka91Ip);
+
         $stmt->execute();
-    }    
+
+        // ถ้าบรรทัดนี้เคยถูกยืนยันแก้ไขไปแล้ว (book_suscess=1) แต่ตอนนี้มีคำแจ้ง
+        // ใหม่เข้ามาอีก (ไม่ว่าจะเป็นคำผิดเดิมที่ยังไม่ได้แก้จริง หรือจุดผิดใหม่)
+        // ให้รีเซ็ตทุกแถวของบรรทัดนี้กลับเป็น "ยังไม่ยืนยัน" ทั้งบรรทัด กันไม่ให้
+        // แถวใหม่/แถวที่เพิ่งแก้ไขถูกซ่อนอยู่ในสถานะ "แก้ไขแล้ว" ของแถวอื่นที่เหลือ
+        $stmtReset = $conn->prepare("
+            UPDATE log_edit SET book_suscess = 0
+            WHERE tripitaka91_book = ? AND tripitaka91_page = ? AND tripitaka91_line = ?
+            AND book_suscess = 1
+        ");
+        $stmtReset->bindParam(1, $tripitaka91Book);
+        $stmtReset->bindParam(2, $tripitaka91Page);
+        $stmtReset->bindParam(3, $tripitaka91Line);
+        $stmtReset->execute();
+    }
 
     // ส่ง JSON response กลับไปที่ Flutter
     echo json_encode([

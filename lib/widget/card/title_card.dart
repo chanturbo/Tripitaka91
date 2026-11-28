@@ -63,8 +63,12 @@ class _TitleCardState extends State<TitleCard> {
     super.dispose();
   }
 
-  void _showInputDialog(BuildContext context, String initialText,
-      String tripitaka91No, String tripitaka91Code) {
+  void _showInputDialog(
+    BuildContext context,
+    String initialText,
+    String tripitaka91No,
+    String tripitaka91Code,
+  ) {
     showEditDhammaTopicDialog(
       context: context,
       initialText: initialText,
@@ -122,14 +126,14 @@ class _TitleCardState extends State<TitleCard> {
               title: widget.isMobile
                   ? Text(
                       widget.triTitle.replaceAll('', ''),
-                      style:
-                          const TextStyle(fontFamily: 'Roboto', fontSize: 18),
+                      style: const TextStyle(
+                        fontFamily: 'Roboto',
+                        fontSize: 18,
+                      ),
                     )
                   : ATextTitleMedium(text: widget.triTitle.replaceAll('', '')),
             ),
-            Container(
-              height: 12,
-            ),
+            Container(height: 12),
             Row(
               children: [
                 const SizedBox(width: 15),
@@ -142,14 +146,21 @@ class _TitleCardState extends State<TitleCard> {
                           // ignore: use_build_context_synchronously
                           LoadingDialog.show(context);
                           String txtTitle = textReplacer.replaceText(
-                              widget.triTitle, widget.bookBlue);
+                            widget.triTitle,
+                            widget.bookBlue,
+                          );
 
-                          String filename =
-                              widget.noTitleCate.replaceAll('.', '');
+                          String filename = widget.noTitleCate.replaceAll(
+                            '.',
+                            '',
+                          );
                           filename =
                               '$filename-${widget.noTitle}-${widget.bookIds}-${widget.pageId}-${widget.bookLine}';
                           await audioPlayerManager.playAudio(
-                              '1', filename, txtTitle);
+                            '1',
+                            filename,
+                            txtTitle,
+                          );
                           // ignore: use_build_context_synchronously
                           LoadingDialog.hide(context);
                         },
@@ -192,13 +203,16 @@ class _TitleCardState extends State<TitleCard> {
                 InkWell(
                   onTap: () async {
                     String txtTitle = textReplacer.replaceText(
-                        widget.triTitle, widget.bookBlue);
+                      widget.triTitle,
+                      widget.bookBlue,
+                    );
                     txtTitle +=
                         'สรุปเนื้อความจากพระไตรปิฎก ฉบับ มมร. เล่ม ${widget.bookIds} หน้า ${widget.pageId} บรรทัด ${widget.bookLine}';
                     Clipboard.setData(
                       ClipboardData(
-                          text:
-                              '$txtTitle อ่านรายละเอียด -> $tURLmain${widget.bookIds}-${widget.pageId}-${widget.bookLine}.htm'),
+                        text:
+                            '$txtTitle อ่านรายละเอียด -> $tURLmain${widget.bookIds}-${widget.pageId}-${widget.bookLine}.htm',
+                      ),
                     );
                     _showSnackbar(context, 'คัดลอกข้อมูลเรียบร้อยแล้ว');
                   },
@@ -240,12 +254,7 @@ class _TitleCardState extends State<TitleCard> {
                               return AlertDialog(
                                 contentPadding: const EdgeInsets.all(5),
                                 title: const Text('แจ้งการอ่านออกเสียง'),
-                                content: const SizedBox(
-                                  width: double.maxFinite,
-                                  child: EditSpeakScreen(
-                                    comments: '-',
-                                  ),
-                                ),
+                                content: const EditSpeakScreen(comments: '-'),
                                 actions: <Widget>[
                                   TextButton(
                                     onPressed: () {
@@ -324,7 +333,8 @@ class _TitleCardState extends State<TitleCard> {
                             color: Colors.blue, // Change color as needed
                             child: Center(
                               child: ATextDiskplaySmall(
-                                  text: 'เล่มสีน้ำเงิน ${widget.bookBlue}'),
+                                text: 'เล่มสีน้ำเงิน ${widget.bookBlue}',
+                              ),
                             ),
                           ),
                         ),
@@ -339,7 +349,8 @@ class _TitleCardState extends State<TitleCard> {
                             color: Colors.red, // Change color as needed
                             child: Center(
                               child: ATextDiskplaySmall(
-                                  text: 'เล่มสีแดง ${widget.bookRed}'),
+                                text: 'เล่มสีแดง ${widget.bookRed}',
+                              ),
                             ),
                           ),
                         ),

@@ -9,6 +9,7 @@ class AudioPlayerManager {
   final RemoteServiceSoundsGetLink remoteService = RemoteServiceSoundsGetLink();
   bool chkPlay = false;
   bool chkPause = false;
+  double _speed = 1.0;
 
   AudioPlayerManager() {
     _audioPlayer = AudioPlayer();
@@ -80,6 +81,7 @@ class AudioPlayerManager {
     if (soundLink != null && soundLink.isNotEmpty) {
       String url = tURL + soundLink[0].message;
       await _audioPlayer.setUrl(url);
+      await _audioPlayer.setSpeed(_speed); // setUrl รีเซ็ตความเร็วกลับเป็น 1.0 ต้องตั้งซ้ำทุกครั้งที่โหลดไฟล์ใหม่
       // เพิ่ม listener ที่ตรวจสอบเมื่อการเล่นเสียงเสร็จสิ้น
       _audioPlayer.playerStateStream.listen((playerState) {
         if (playerState.processingState == ProcessingState.completed) {
@@ -142,6 +144,13 @@ class AudioPlayerManager {
   void play() {
     chkPause = false;
     _audioPlayer.play();
+  }
+
+  double get speed => _speed;
+
+  Future<void> setSpeed(double speed) async {
+    _speed = speed;
+    await _audioPlayer.setSpeed(speed);
   }
 
   bool chkStatePlay() {

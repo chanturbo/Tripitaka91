@@ -924,11 +924,8 @@ class _BookShowTitleState extends State<BookShowTitle> {
                                               title: const Text(
                                                 'แจ้งการอ่านออกเสียง',
                                               ),
-                                              content: const SizedBox(
-                                                width: double.maxFinite,
-                                                child: EditSpeakScreen(
-                                                  comments: '-',
-                                                ),
+                                              content: const EditSpeakScreen(
+                                                comments: '-',
                                               ),
                                               actions: <Widget>[
                                                 TextButton(
@@ -1402,5 +1399,4 @@ class _BookShowTitleState extends State<BookShowTitle> {
       ),
     );
   }
-
 }
